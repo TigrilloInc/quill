@@ -1,9 +1,9 @@
 //
 //  AvatarButton.m
-//  chalk
+//  Quill
 //
 //  Created by Alex Costantini on 10/13/14.
-//  Copyright (c) 2014 chalk. All rights reserved.
+//  Copyright (c) 2014 Tigrillo. All rights reserved.
 //
 
 #import "AvatarButton.h"

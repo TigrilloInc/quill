@@ -860,7 +860,7 @@
 		129E12AF19648A2C00ED9D42 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/chalk.app/chalk";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/quill.app/quill";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -882,7 +882,7 @@
 		129E12B019648A2C00ED9D42 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/chalk.app/chalk";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/quill.app/quill";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",

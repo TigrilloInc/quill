@@ -1,9 +1,9 @@
 //
 //  NewProjectViewController.h
-//  chalk
+//  Quill
 //
 //  Created by Alex Costantini on 7/8/14.
-//  Copyright (c) 2014 chalk. All rights reserved.
+//  Copyright (c) 2014 Tigrillo. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

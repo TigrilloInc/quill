@@ -1,9 +1,9 @@
 //
 //  InviteViewController.m
-//  chalk
+//  Quill
 //
 //  Created by Alex Costantini on 7/18/14.
-//  Copyright (c) 2014 chalk. All rights reserved.
+//  Copyright (c) 2014 Tigrillo. All rights reserved.
 //
 
 #import "InviteViewController.h"
@@ -52,7 +52,7 @@
     MCOSMTPSession *smtpSession = [[MCOSMTPSession alloc] init];
     smtpSession.hostname = @"smtp.gmail.com";
     smtpSession.port = 465;
-    smtpSession.username = @"cos@chalk.to";
+    smtpSession.username = @"cos@tigrillo.co";
     smtpSession.password = @"foothill94022";
     smtpSession.authType = MCOAuthTypeSASLPlain;
     smtpSession.connectionType = MCOConnectionTypeTLS;
@@ -69,12 +69,12 @@
             [ref updateChildValues:@{ token : [FirebaseHelper sharedHelper].teamName}];
             
             MCOMessageBuilder *builder = [[MCOMessageBuilder alloc] init];
-            MCOAddress *from = [MCOAddress addressWithDisplayName:@"chalk.to" mailbox:@"cos@chalk.to"];
+            MCOAddress *from = [MCOAddress addressWithDisplayName:@"Quill" mailbox:@"cos@tigrillo.co"];
             MCOAddress *to = [MCOAddress addressWithDisplayName:nil mailbox:textField.text];
             [[builder header] setFrom:from];
             [[builder header] setTo:@[to]];
             
-            [[builder header] setSubject:@"Welcome to Chalk.to!"];
+            [[builder header] setSubject:@"Welcome to Quill!"];
             //[builder setHTMLBody:@""];
             [builder setTextBody:tokenURL];
             NSData * rfc822Data = [builder data];
