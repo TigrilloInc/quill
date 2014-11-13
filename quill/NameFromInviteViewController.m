@@ -1,0 +1,57 @@
+//
+//  NameFromInviteViewController.m
+//  chalk
+//
+//  Created by Alex Costantini on 7/22/14.
+//  Copyright (c) 2014 chalk. All rights reserved.
+//
+
+#import "NameFromInviteViewController.h"
+#import <Firebase/Firebase.h>
+#import "FirebaseHelper.h"
+
+@interface NameFromInviteViewController ()
+
+@end
+
+@implementation NameFromInviteViewController
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+}
+
+- (IBAction)doneTapped:(id)sender {
+
+    NSString *name = self.nameField.text;
+    
+    if (name.length > 0) {
+     
+        NSString *nameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@", [FirebaseHelper sharedHelper].uid];
+        
+        Firebase *ref = [[Firebase alloc] initWithUrl:nameString];
+        
+        [ref updateChildValues:@{ @"name" : name,
+                                  @"team" : [FirebaseHelper sharedHelper].teamName }];
+        
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+@end

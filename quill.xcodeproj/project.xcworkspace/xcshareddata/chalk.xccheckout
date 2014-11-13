@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>02E8131F-CD89-41C7-892B-A023C6D037AE</string>
+	<key>IDESourceControlProjectName</key>
+	<string>chalk</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>3F3CA7D6-A266-4810-9360-D9EC828B4B86</key>
+		<string>https://github.com/MailCore/mailcore2.git</string>
+		<key>645EDCA0-90FA-4CF9-8606-07626B83D32B</key>
+		<string>ssh://github.com/therealcos/chalk.git</string>
+		<key>7D4DBC36-6058-45F1-95E2-8FF5FE81F194</key>
+		<string>https://github.com/dinhviethoa/ctemplate</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>chalk.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>3F3CA7D6-A266-4810-9360-D9EC828B4B86</key>
+		<string>../../chalk/Resources/mailcore2</string>
+		<key>645EDCA0-90FA-4CF9-8606-07626B83D32B</key>
+		<string>../..</string>
+		<key>7D4DBC36-6058-45F1-95E2-8FF5FE81F194</key>
+		<string>../../chalk/Resources/mailcore2/Externals/builds/downloads/ctemplate</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/therealcos/chalk.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>645EDCA0-90FA-4CF9-8606-07626B83D32B</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>645EDCA0-90FA-4CF9-8606-07626B83D32B</string>
+			<key>IDESourceControlWCCName</key>
+			<string>chalk</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>7D4DBC36-6058-45F1-95E2-8FF5FE81F194</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ctemplate</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>3F3CA7D6-A266-4810-9360-D9EC828B4B86</string>
+			<key>IDESourceControlWCCName</key>
+			<string>mailcore2</string>
+		</dict>
+	</array>
+</dict>
+</plist>
