@@ -1,5 +1,5 @@
 //
-//  MasterViewController.h
+//  MasterView.h
 //  Quill
 //
 //  Created by Alex Costantini on 7/9/14.
@@ -8,8 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MasterViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+@class ProjectDetailViewController;
+
+@interface MasterView : UIView <UITableViewDelegate, UITableViewDataSource> {
     
+    ProjectDetailViewController *projectVC;
 }
 
 @property (weak, nonatomic) IBOutlet UIButton *avatarButton;

@@ -12,9 +12,10 @@
 #import "MasterViewController.h"
 #import "UICollectionView+Draggable.h"
 
-@interface ProjectDetailViewController : UIViewController <iCarouselDataSource, iCarouselDelegate, UISplitViewControllerDelegate, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource_Draggable, UICollectionViewDelegate, UIActionSheetDelegate> {
+@class MasterView;
+
+@interface ProjectDetailViewController : UIViewController <iCarouselDataSource, iCarouselDelegate, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource_Draggable, UICollectionViewDelegate, UIActionSheetDelegate> {
     
-    BOOL hideMaster;
     BOOL newBoardCreated;
     BOOL commentsOpen;
     UIButton *boardButton;
@@ -43,6 +44,9 @@
 
 @property float carouselOffset;
 
+
+
+@property (weak, nonatomic) IBOutlet MasterView *masterView;
 @property (weak, nonatomic) IBOutlet iCarousel *carousel;
 @property (weak, nonatomic) IBOutlet UILabel *projectNameLabel;
 
@@ -54,6 +58,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *boardNameEditButton;
 @property (weak, nonatomic) IBOutlet UILabel *boardNameLabel;
 
+@property (weak, nonatomic) IBOutlet UIButton *addUserButton;
 @property (strong, nonatomic) NSMutableArray *avatars;
 
 @property (weak, nonatomic) IBOutlet UIView *chatView;

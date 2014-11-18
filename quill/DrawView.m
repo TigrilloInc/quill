@@ -54,8 +54,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         _empty = YES;
         self.activeUserIDs = [NSMutableArray array];
         
-        UISplitViewController *splitVC = (UISplitViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
-        projectVC = (ProjectDetailViewController *)[splitVC.viewControllers objectAtIndex:1];
+        projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
         
         if (projectVC.userRole > 0) self.drawable = true;
         else self.drawable = false;
@@ -78,8 +77,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         _empty = YES;
         self.activeUserIDs = [NSMutableArray array];
         
-        UISplitViewController *splitVC = (UISplitViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
-        projectVC = (ProjectDetailViewController *)[splitVC.viewControllers objectAtIndex:1];
+        projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;;
         
         if (projectVC.userRole > 0) self.drawable = true;
         else self.drawable = false;

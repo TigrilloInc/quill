@@ -7,14 +7,13 @@
 //
 
 #import "ProjectDetailViewController.h"
-#import "MasterViewController.h"
 #import "BoardCollectionViewCell.h"
 #import "AddUserViewController.h"
 #import "AvatarButton.h"
-
 #import <Firebase/Firebase.h>
 #import "FirebaseHelper.h"
 #import "NSDate+ServerDate.h"
+#import "MasterView.h"
 
 @implementation ProjectDetailViewController
 
@@ -22,13 +21,21 @@
 {
     [super viewDidLoad];
     
-    self.splitViewController.delegate = self;
     self.chatTextField.delegate = self;
     self.editBoardNameTextField.delegate = self;
     self.carousel.delegate = self;
     
     self.carousel.type = iCarouselTypeCoverFlow2;
     self.carousel.bounceDistance = 0.1f;
+    
+    UIImageView *carouselFadeLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfade.png"]];
+    UIImageView *carouselFadeRight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfade.png"]];
+    [self.masterView addSubview:carouselFadeLeft];
+    carouselFadeLeft.center = CGPointMake(295, 320);
+    [self.view addSubview:carouselFadeRight];
+    carouselFadeRight.transform = CGAffineTransformMakeRotation(M_PI);
+    carouselFadeRight.center = CGPointMake(974, 320);
+    
     
     //self.nameLabel.font = [UIFont fontWithName:@"ZemestroStd-Bk" size:40];
     //self.chatTextField.font = [UIFont fontWithName:@"ZemestroStd-Bk" size:20];
@@ -39,16 +46,13 @@
     
     self.viewedCommentThreadIDs = [NSMutableArray array];
     
-    UISplitViewController *splitVC = (UISplitViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
-    masterVC = (MasterViewController *)[splitVC.viewControllers objectAtIndex:0];
-    
     [self setUpDrawMenu];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
+
     self.chatTextField.placeholder = @"Send a message...";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -193,6 +197,8 @@
 -(void) updateDetails {
     
     self.projectNameLabel.text = self.projectName;
+    [self.projectNameLabel sizeToFit];
+    self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+320, self.editButton.center.y);
     
     [self.chatTable reloadData];
     [self.carousel reloadData];
@@ -231,7 +237,7 @@
         
         UIImage *image = [UIImage imageNamed:@"user.png"];
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
-        avatar.frame = CGRectMake(550-(i*70), -50, image.size.width, image.size.height);
+        avatar.frame = CGRectMake(870-(i*70), -55, image.size.width, image.size.height);
         [avatar setImage:image forState:UIControlStateNormal];
         [avatar addTarget:self action:@selector(avatarTapped:) forControlEvents:UIControlEventTouchUpInside];
         avatar.userID = userIDs[i];
@@ -241,6 +247,8 @@
         if (![[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"inProject"] isEqualToString:[FirebaseHelper sharedHelper].currentProjectID]) {
             avatar.alpha = 0.5;
         }
+        
+        self.addUserButton.center = CGPointMake(995-(userIDs.count*70), self.addUserButton.center.y);
         
         [self.view bringSubviewToFront:avatar];
         [self.avatars addObject:avatar];
@@ -390,42 +398,33 @@
     self.activeBoardID = boardID;
     
     [[FirebaseHelper sharedHelper] setInBoard];
-    
-    hideMaster = !hideMaster;
-    
-    [self.view bringSubviewToFront:self.carousel];
-    
+
     [currentDrawView.activeUserIDs addObject:[FirebaseHelper sharedHelper].uid];
     [currentDrawView layoutAvatars];
     
     self.chatTextField.placeholder = @"Leave a comment...";
     
-    //    [self.chatTextField setTranslatesAutoresizingMaskIntoConstraints:YES];
-    //    [self.chatView setTranslatesAutoresizingMaskIntoConstraints:YES];
-    //    [self.chatFadeImage setTranslatesAutoresizingMaskIntoConstraints:YES];
-    //    [self.chatTable setTranslatesAutoresizingMaskIntoConstraints:YES];
-    //    [self.sendMessageButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-    //    [self.chatOpenButton setTranslatesAutoresizingMaskIntoConstraints:YES];
+    [self.view sendSubviewToBack:self.chatOpenButton];
+    [self.view sendSubviewToBack:self.chatTable];
+    [self.view sendSubviewToBack:self.chatFadeImage];
+    [self.view sendSubviewToBack:self.chatView];
     
     [UIView animateWithDuration:.35
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          
-                         [self.splitViewController willAnimateRotationToInterfaceOrientation:self.interfaceOrientation duration:0];
-                         [self.splitViewController willRotateToInterfaceOrientation:self.interfaceOrientation duration:0];
-                         [self.splitViewController didRotateFromInterfaceOrientation:self.interfaceOrientation];
-                         [self.splitViewController viewWillLayoutSubviews];
-                         [self.splitViewController viewDidLayoutSubviews];
-                         [self.splitViewController.view layoutSubviews];
-                         
+                         self.carousel.center = CGPointMake(self.view.center.x, self.view.center.y);
                          CGAffineTransform tr = CGAffineTransformScale(self.carousel.transform, 2, 2);
-                         self.carousel.center = CGPointMake(0, 0);
                          self.carousel.transform = tr;
+                         
+                         self.masterView.center = CGPointMake(-200, self.masterView.center.y);
                          
                          self.chatOpenButton.center = CGPointMake(self.view.center.x, self.chatOpenButton.center.y);
                          self.chatTextField.frame = CGRectMake(52, 102, 880, 30);
                          self.chatView.frame = CGRectMake(0, 626, 1024, 142);
+                         self.chatTable.frame = CGRectMake(0, 768-self.chatView.frame.size.height, self.view.frame.size.width, self.chatTable.frame.size.height);
+                         self.chatFadeImage.center = CGPointMake(self.view.center.x-100,self.chatFadeImage.center.y);
                          self.sendMessageButton.frame = CGRectMake(952, 102, 45, 30);
                          
                          boardButton.alpha = 0;
@@ -435,11 +434,8 @@
                          boardButton.hidden = true;
                          
                          if (self.userRole > 0) [self showDrawMenu];
-                         
-                         //[self.carousel setTranslatesAutoresizingMaskIntoConstraints:YES];
                      }
      ];
-    
 }
 
 - (IBAction)editTapped:(id)sender {
@@ -577,9 +573,7 @@
     
     UIButton *closeButton = (UIButton *)[self.view viewWithTag:1];
     closeButton.hidden = true;
-    
-    hideMaster = !hideMaster;
-    
+
     self.activeBoardID = nil;
     self.activeCommentThreadID = nil;
     
@@ -591,41 +585,33 @@
     [self drawBoard:currentDrawView];
     currentDrawView = nil;
     
-    if ([self.chatTextField isFirstResponder]) [self.chatTextField resignFirstResponder];
-    [self.chatTable reloadData];
+    [self.view bringSubviewToFront:self.masterView];
     
-    //[self.carousel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    if ([self.chatTextField isFirstResponder]) [self.chatTextField resignFirstResponder];
     
     [UIView animateWithDuration:.35
                           delay:0.0
-                        options:UIViewAnimationOptionCurveEaseInOut
+                        options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionBeginFromCurrentState
                      animations:^{
                          
-                         [self.splitViewController willAnimateRotationToInterfaceOrientation:self.interfaceOrientation duration:0];
-                         [self.splitViewController willRotateToInterfaceOrientation:self.interfaceOrientation duration:0];
-                         [self.splitViewController didRotateFromInterfaceOrientation:self.interfaceOrientation];
-                         [self.splitViewController viewWillLayoutSubviews];
-                         [self.splitViewController.view layoutSubviews];
-                         
                          CGAffineTransform tr = CGAffineTransformScale(self.carousel.transform, .5, .5);
-                         self.carousel.center= CGPointMake(0, 0);
                          self.carousel.transform = tr;
+                         self.carousel.center = CGPointMake(self.view.center.x+self.masterView.frame.size.width/2, self.carousel.center.y-64);
+                        
+                        float masterWidth = self.masterView.frame.size.width;
                          
-                         self.chatTextField.frame = CGRectMake(52, 102, 622, 30);
-                         self.chatView.frame = CGRectMake(self.chatView.frame.origin.x, self.chatView.frame.origin.y, 1024, self.chatView.frame.size.height);
-                         self.sendMessageButton.frame = CGRectMake(693, 102, 45, 30);
-                         //self.chatOpenButton.center = CGPointMake(self.chatView.center.x, self.chatOpenButton.center.y);
+                        self.chatTextField.frame = CGRectMake(52, 102, 622, 30);
+                        self.chatView.frame = CGRectMake(masterWidth, self.chatView.frame.origin.y, 1024-masterWidth, self.chatView.frame.size.height);
+                        self.sendMessageButton.frame = CGRectMake(693, 102, 45, 30);
+                        self.chatOpenButton.center = CGPointMake(self.chatView.center.x, self.chatOpenButton.center.y);
+                        self.chatFadeImage.center = CGPointMake(self.chatFadeImage.center.x+100+masterWidth, self.chatFadeImage.center.y);
+                        self.chatTable.frame = CGRectMake(masterWidth, 768-self.chatView.frame.size.height, self.view.frame.size.width-masterWidth, self.chatTable.frame.size.height);
                          
-                         boardButton.alpha = 1;
+                        self.masterView.center = CGPointMake(self.masterView.frame.size.width/2, self.masterView.center.y);
+                         
+                        boardButton.alpha = 1;
                      }
                      completion:^(BOOL finished) {
-                         
-                         //                         [self.chatTextField setTranslatesAutoresizingMaskIntoConstraints:NO];
-                         //                         [self.chatView setTranslatesAutoresizingMaskIntoConstraints:NO];
-                         //                         [self.chatFadeImage setTranslatesAutoresizingMaskIntoConstraints:NO];
-                         //                         [self.chatTable setTranslatesAutoresizingMaskIntoConstraints:NO];
-                         //                         [self.sendMessageButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-                         //                         [self.chatOpenButton setTranslatesAutoresizingMaskIntoConstraints:NO];
                          
                          [self.view bringSubviewToFront:self.chatView];
                          [self.view bringSubviewToFront:self.chatTable];
@@ -636,11 +622,9 @@
                          
                          [self.carousel setScrollEnabled:YES];
                          
-                         [masterVC.projectsTable reloadData];
-                         [masterVC.projectsTable selectRowAtIndexPath:masterVC.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
+                         [self.masterView.projectsTable reloadData];
+                         [self.masterView.projectsTable selectRowAtIndexPath:self.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
                      }];
-    
-    [self.splitViewController viewDidLayoutSubviews];
     
 }
 
@@ -805,7 +789,7 @@
     
     vc.modalPresentationStyle = UIModalPresentationFormSheet;
     vc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    [self.splitViewController presentViewController:vc animated:YES completion:nil];
+    [self presentViewController:vc animated:YES completion:nil];
     
 }
 
@@ -820,11 +804,6 @@
 }
 
 -(void)openComments {
-    
-    //    [self.chatView setTranslatesAutoresizingMaskIntoConstraints:YES];
-    //    [self.chatFadeImage setTranslatesAutoresizingMaskIntoConstraints:YES];
-    //    [self.chatTable setTranslatesAutoresizingMaskIntoConstraints:YES];
-    //    [self.chatOpenButton setTranslatesAutoresizingMaskIntoConstraints:YES];
     
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:.25];
@@ -864,13 +843,6 @@
     
     [self showChat];
     
-    //    [self.chatTextField setTranslatesAutoresizingMaskIntoConstraints:YES];
-    //    [self.chatView setTranslatesAutoresizingMaskIntoConstraints:YES];
-    //    [self.chatFadeImage setTranslatesAutoresizingMaskIntoConstraints:YES];
-    //    [self.chatTable setTranslatesAutoresizingMaskIntoConstraints:YES];
-    //    [self.sendMessageButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-    //    [self.chatOpenButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-    
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:[notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
     [UIView setAnimationCurve:[notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] doubleValue]];
@@ -908,9 +880,9 @@
     }
     else {
         
-        CGRect projectsTableRect = masterVC.projectsTable.frame;
+        CGRect projectsTableRect = self.masterView.projectsTable.frame;
         projectsTableRect.size.height -= 262.0;
-        masterVC.projectsTable.frame = projectsTableRect;
+        self.masterView.projectsTable.frame = projectsTableRect;
     }
     
     if (!self.activeBoardID) {
@@ -943,9 +915,9 @@
     viewRect.origin.y += 352.0;
     self.chatView.frame = viewRect;
     
-    CGRect projectsTableRect = masterVC.projectsTable.frame;
+    CGRect projectsTableRect = self.masterView.projectsTable.frame;
     projectsTableRect.size.height += 262.0;
-    masterVC.projectsTable.frame = projectsTableRect;
+    self.masterView.projectsTable.frame = projectsTableRect;
     
     CGRect fadeRect = self.chatFadeImage.frame;
     if(self.activeBoardID == nil) fadeRect.origin.y += 532.0;
@@ -975,9 +947,9 @@
     }
     else {
         
-        CGRect projectsTableRect = masterVC.projectsTable.frame;
+        CGRect projectsTableRect = self.masterView.projectsTable.frame;
         projectsTableRect.size.height += 262.0;
-        masterVC.projectsTable.frame = projectsTableRect;
+        self.masterView.projectsTable.frame = projectsTableRect;
     }
     
     if (self.activeBoardID) self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y+352.0);
@@ -995,20 +967,11 @@
 }
 
 #pragma mark -
-#pragma mark UISplitViewController
-
-- (BOOL)splitViewController: (UISplitViewController*)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation
-{
-    return hideMaster;
-}
-
-
-#pragma mark -
 #pragma mark iCarousel methods
 
 - (CATransform3D)carousel:(iCarousel *)carousel itemTransformForOffset:(CGFloat)offset baseTransform:(CATransform3D)transform
 {
-    CGFloat MAX_SCALE = 1.2f; //max scale of center item
+    CGFloat MAX_SCALE = 1.25f; //max scale of center item
     CGFloat MAX_SHIFT = 25.0f; //amount to shift items to keep spacing the same
     
     CGFloat shift = fminf(1.0f, fmaxf(-1.0f, offset));
@@ -1055,6 +1018,8 @@
     [self drawBoard:(DrawView *)view];
     [((DrawView *)view) layoutComments];
     
+    NSLog(@"YAYAYAYYAYAA");
+    
     return view;
 }
 
@@ -1079,6 +1044,8 @@
     NSDictionary *boardDict = [[FirebaseHelper sharedHelper].boards objectForKey:boardID];
     
     self.boardNameLabel.text = [boardDict objectForKey:@"name"];
+    [self.boardNameLabel sizeToFit];
+    self.boardNameEditButton.center = CGPointMake(self.boardNameLabel.frame.size.width+400, self.boardNameEditButton.center.y);
     
     double viewedAt = [[[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid] doubleValue];
     double updatedAt = [[boardDict objectForKey:@"updatedAt"] doubleValue];
@@ -1138,6 +1105,8 @@
         [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] setObject:self.editBoardNameTextField.text forKey:@"name"];
         
         self.boardNameLabel.text = self.editBoardNameTextField.text;
+        [self.boardNameLabel sizeToFit];
+        self.boardNameEditButton.center = CGPointMake(self.boardNameLabel.frame.size.width+400, self.boardNameEditButton.center.y);
         
         self.editBoardNameTextField.text = nil;
         

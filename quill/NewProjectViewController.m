@@ -20,9 +20,7 @@
     
     self.nameField.placeholder = @"Project Name";
     
-    UISplitViewController *splitVC = (UISplitViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
-    masterVC = (MasterViewController *)[splitVC.viewControllers objectAtIndex:0];
-    projectVC = (ProjectDetailViewController *)[splitVC.viewControllers objectAtIndex:1];
+    projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -107,8 +105,8 @@
                     
                     [self dismissViewControllerAnimated:YES completion:^{
                         
-                        [masterVC.projectsTable reloadData];
-                        [masterVC tableView:masterVC.projectsTable didSelectRowAtIndexPath:mostRecent];
+                        [projectVC.masterView.projectsTable reloadData];
+                        [projectVC.masterView tableView:projectVC.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
                         
                     }];
                 

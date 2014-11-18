@@ -54,8 +54,7 @@
     
     [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] removeObjectForKey:self.commentThreadID];
     
-    UISplitViewController *splitVC = (UISplitViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
-    ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[splitVC.viewControllers objectAtIndex:1];
+    ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     projectVC.activeCommentThreadID = nil;
     
     [self removeFromSuperview];

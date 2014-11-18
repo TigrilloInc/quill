@@ -13,7 +13,6 @@
 @interface NewProjectViewController : UIViewController {
 
     UITapGestureRecognizer *outsideTapRecognizer;
-    MasterViewController *masterVC;
     ProjectDetailViewController *projectVC;
 }
 

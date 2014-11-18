@@ -8,12 +8,15 @@
 
 #import <Foundation/Foundation.h>
 #import <Firebase/Firebase.h>
+#import "ProjectDetailViewController.h"
+#import "MasterView.h"
 
 @interface FirebaseHelper : NSObject {
     
     NSInteger projectChildrenCount;
 }
 
+@property (strong, nonatomic) ProjectDetailViewController *projectVC;
 @property (strong, nonatomic) NSString *uid;
 @property (strong, nonatomic) NSString *email;
 @property (strong, nonatomic) NSString *userName;

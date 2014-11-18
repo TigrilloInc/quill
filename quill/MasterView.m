@@ -1,12 +1,12 @@
 //
-//  MasterViewController.m
+//  MasterView.m
 //  Quill
 //
 //  Created by Alex Costantini on 7/9/14.
 //  Copyright (c) 2014 Tigrillo. All rights reserved.
 //
 
-#import "MasterViewController.h"
+#import "MasterView.h"
 #import <Firebase/Firebase.h>
 #import <FirebaseSimpleLogin/FirebaseSimpleLogin.h>
 #import "FirebaseHelper.h"
@@ -15,27 +15,54 @@
 #import "SettingsViewController.h"
 #import "InviteViewController.h"
 #import "NewProjectViewController.h"
-#import "ProjectDetailViewController.h"
 #import "DrawView.h"
 #import "NSDate+ServerDate.h"
+#import "ProjectDetailViewController.h"
 
-@interface MasterViewController ()
+@interface MasterView ()
 
 @end
 
-@implementation MasterViewController
+@implementation MasterView
 
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
     
-    self.defaultRow = [NSIndexPath indexPathForRow:0 inSection:0];
-    self.avatarButton.hidden = true;
-    //self.teamButton.titleLabel.font = [UIFont fontWithName:@"ZemestroStd-Bk" size:15];
-    //self.nameButton.titleLabel.font = [UIFont fontWithName:@"ZemestroStd-Bk" size:20];
+    if (self) {
+        
+        self.defaultRow = [NSIndexPath indexPathForRow:0 inSection:0];
+        self.avatarButton.hidden = true;
+        
+        projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    }
     
+    return self;
 }
+
+- (id)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    
+    if (self) {
+        
+        self.defaultRow = [NSIndexPath indexPathForRow:0 inSection:0];
+        self.avatarButton.hidden = true;
+        
+        projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    }
+    
+    return self;
+}
+
+//- (void)viewDidLoad
+//{
+//    [super viewDidLoad];
+//    
+//    self.defaultRow = [NSIndexPath indexPathForRow:0 inSection:0];
+//    self.avatarButton.hidden = true;
+//    //self.teamButton.titleLabel.font = [UIFont fontWithName:@"ZemestroStd-Bk" size:15];
+//    //self.nameButton.titleLabel.font = [UIFont fontWithName:@"ZemestroStd-Bk" size:20];
+//    
+//}
 
 #pragma mark - Table view data source
 
@@ -96,12 +123,15 @@
         
     }
     
+    cell.backgroundColor = tableView.backgroundColor;
+    cell.selectedBackgroundView = [[UIView alloc] initWithFrame:cell.bounds];
+    cell.selectedBackgroundView.backgroundColor = projectVC.view.backgroundColor;
+    
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     NSString *projectName = [tableView cellForRowAtIndexPath:indexPath].textLabel.text;
     
     NSString *projectID;
@@ -134,6 +164,10 @@
         projectVC.chatViewed = false;
         projectVC.viewedBoardIDs = [NSMutableArray array];
         
+        NSLog(@"projectDICT is %@", projectDict);
+        NSLog(@"boardIDs from DIDSELECT is %@", projectVC.boardIDs);
+        NSLog(@"projectVC is %@", projectVC);
+        
         [projectVC updateDetails];
         [projectVC cancelTapped:nil];
         if ([projectVC.chatTextField isFirstResponder]) [projectVC.chatTextField resignFirstResponder];
@@ -148,29 +182,29 @@
 
 - (IBAction)settingsTapped:(id)sender {
     
-    SettingsViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"Settings"];
+    SettingsViewController *vc = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"Settings"];
     
     vc.modalPresentationStyle = UIModalPresentationFormSheet;
     vc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    [self.splitViewController presentViewController:vc animated:YES completion:nil];
+    [projectVC presentViewController:vc animated:YES completion:nil];
 }
 
 - (IBAction)teamTapped:(id)sender {
-    
-    InviteViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"Invite"];
+
+    InviteViewController *vc = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"Invite"];
     
     vc.modalPresentationStyle = UIModalPresentationFormSheet;
     vc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    [self.splitViewController presentViewController:vc animated:YES completion:nil];
+    [projectVC presentViewController:vc animated:YES completion:nil];
 }
 
 - (IBAction)newProjectTapped:(id)sender {
     
-    NewProjectViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"NewProject"];
+    NewProjectViewController *vc = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"NewProject"];
     
     vc.modalPresentationStyle = UIModalPresentationFormSheet;
     vc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    [self.splitViewController presentViewController:vc animated:YES completion:nil];
+    [projectVC presentViewController:vc animated:YES completion:nil];
 }
 
 @end

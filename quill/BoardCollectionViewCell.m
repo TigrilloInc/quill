@@ -119,9 +119,7 @@
 
 -(void)deleteTapped {
  
-    UISplitViewController *splitVC = (UISplitViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
-    ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[splitVC.viewControllers objectAtIndex:1];
-
+    ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
     [projectVC.editBoardIDs removeObject:self.drawView.boardID];
     [projectVC.draggableCollectionView reloadData];

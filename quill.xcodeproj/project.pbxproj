@@ -32,6 +32,8 @@
 		12564B60196A5C3600F8F3D2 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12564B5F196A5C3600F8F3D2 /* Accounts.framework */; };
 		12564B62196A5C4000F8F3D2 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12564B61196A5C4000F8F3D2 /* Social.framework */; };
 		1265B18C1984533500349817 /* board.png in Resources */ = {isa = PBXBuildFile; fileRef = 1265B18B1984533500349817 /* board.png */; };
+		12899BB01A168CA100AF95BD /* MasterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 12899BAF1A168CA100AF95BD /* MasterView.m */; };
+		12899BB21A1AEC3B00AF95BD /* carouselfade.png in Resources */ = {isa = PBXBuildFile; fileRef = 12899BB11A1AEC3A00AF95BD /* carouselfade.png */; };
 		129E127219648A2C00ED9D42 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127119648A2C00ED9D42 /* Foundation.framework */; };
 		129E127419648A2C00ED9D42 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127319648A2C00ED9D42 /* CoreGraphics.framework */; };
 		129E127619648A2C00ED9D42 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127519648A2C00ED9D42 /* UIKit.framework */; };
@@ -174,6 +176,9 @@
 		12564B5F196A5C3600F8F3D2 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		12564B61196A5C4000F8F3D2 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		1265B18B1984533500349817 /* board.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = board.png; path = Resources/iCarousel/board.png; sourceTree = "<group>"; };
+		12899BAE1A168CA100AF95BD /* MasterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterView.h; sourceTree = "<group>"; };
+		12899BAF1A168CA100AF95BD /* MasterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterView.m; sourceTree = "<group>"; };
+		12899BB11A1AEC3A00AF95BD /* carouselfade.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = carouselfade.png; path = Resources/carouselfade.png; sourceTree = "<group>"; };
 		129E126E19648A2C00ED9D42 /* quill.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = quill.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		129E127119648A2C00ED9D42 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		129E127319648A2C00ED9D42 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -355,6 +360,8 @@
 				12A3FA0F1979861800E03E9E /* ProjectDetailViewController.m */,
 				129E12B419648C3200ED9D42 /* DrawView.h */,
 				129E12B519648C3200ED9D42 /* DrawView.m */,
+				12899BAE1A168CA100AF95BD /* MasterView.h */,
+				12899BAF1A168CA100AF95BD /* MasterView.m */,
 				12BE8D78196D025000503F84 /* MasterViewController.h */,
 				12BE8D79196D025000503F84 /* MasterViewController.m */,
 				12AA5FA919E7904700F6D552 /* AddUserViewController.h */,
@@ -396,6 +403,7 @@
 				12423D231A02A611005F6D1A /* usercommenthighlight.png */,
 				1216D98C19A262A80095DBD8 /* chatfade.png */,
 				12A9485619F814330042A036 /* chatfade2.png */,
+				12899BB11A1AEC3A00AF95BD /* carouselfade.png */,
 				1225C431199B194F0061027B /* close.png */,
 				129E129419648A2C00ED9D42 /* Images.xcassets */,
 				1219E36A19A671C800781945 /* Monaco.ttf */,
@@ -598,6 +606,7 @@
 				1216D9A819A5D1FA0095DBD8 /* klavika-light.otf in Resources */,
 				1219E36B19A671C800781945 /* Monaco.ttf in Resources */,
 				1230ABCA1972093300EB2389 /* Main_iPad.storyboard in Resources */,
+				12899BB21A1AEC3B00AF95BD /* carouselfade.png in Resources */,
 				129E128B19648A2C00ED9D42 /* Main_iPhone.storyboard in Resources */,
 				1216D98D19A262A80095DBD8 /* chatfade.png in Resources */,
 				1243AFB919FF2CD20029B976 /* usercomment.png in Resources */,
@@ -648,6 +657,7 @@
 				129E128419648A2C00ED9D42 /* main.m in Sources */,
 				12423D221A01CD78005F6D1A /* SplitViewController.m in Sources */,
 				12A3FA0D1977420400E03E9E /* SettingsViewController.m in Sources */,
+				12899BB01A168CA100AF95BD /* MasterView.m in Sources */,
 				12A310E7197F5AC900E03E9E /* NameFromInviteViewController.m in Sources */,
 				12A3FA161979BDD900E03E9E /* InviteViewController.m in Sources */,
 				12E898A719ECC6DA00E29E7B /* AvatarButton.m in Sources */,

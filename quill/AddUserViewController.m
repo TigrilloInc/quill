@@ -27,8 +27,7 @@
     
     self.selectedUsers = [NSMutableArray array];
     
-    UISplitViewController *splitVC = (UISplitViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
-    projectVC = (ProjectDetailViewController *)splitVC.viewControllers[1];
+    projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
     NSMutableDictionary *usersDict = (NSMutableDictionary *)CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)[[FirebaseHelper sharedHelper].team objectForKey:@"users"], kCFPropertyListMutableContainers));
     for (NSString *userID in usersDict.allKeys) {

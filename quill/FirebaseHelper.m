@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Tigrillo. All rights reserved.
 //
 
+
 #import "FirebaseHelper.h"
 #import "MasterViewController.h"
 #import "ProjectDetailViewController.h"
@@ -28,6 +29,8 @@ static FirebaseHelper *sharedHelper = nil;
         sharedHelper.comments = [NSMutableDictionary dictionary];
         sharedHelper.visibleProjectIDs = [NSMutableArray array];
         sharedHelper.loadedBoardIDs = [NSMutableArray array];
+        
+        sharedHelper.projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     }
     return sharedHelper;
 }
@@ -105,8 +108,7 @@ static FirebaseHelper *sharedHelper = nil;
         if ([currentProjectBoardIDs containsObject:boardID]){
             
             int boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
-            ProjectDetailViewController *projectVC = [self getProjectDetailViewController];
-            DrawView *drawView = (DrawView *)[projectVC.carousel itemViewAtIndex:boardIndex];
+            DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
             
             if (inBoard && ![drawView.activeUserIDs containsObject:userID]) [drawView.activeUserIDs addObject:userID];
             else if (!inBoard) [drawView.activeUserIDs removeObject:userID];
@@ -184,9 +186,9 @@ static FirebaseHelper *sharedHelper = nil;
         
         [self observeChatWithID:[projectDict objectForKey:@"chatID"]];
         
-        if (self.firstLoad) [self getMasterViewController].defaultRow = [self getLastViewedProjectIndexPath];
+        if (self.firstLoad) self.projectVC.masterView.defaultRow = [self getLastViewedProjectIndexPath];
         
-        if ([self getProjectDetailViewController].activeBoardID == nil && self.projects.allKeys.count == projectChildrenCount && !self.projectCreated) [self updateMasterViewController];
+        if (self.projectVC.activeBoardID == nil && self.projects.allKeys.count == projectChildrenCount && !self.projectCreated) [self updateMasterViewController];
         
     }];
     
@@ -209,19 +211,19 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void) updateMasterViewController {
     
-    NSLog(@"masterVC updated");
+    NSLog(@"masterView updated");
     
     self.firstLoad = false;
     
-    MasterViewController *masterVC = [self getMasterViewController];
+    NSLog(@"masterView is %@", self.projectVC.masterView);
     
-    [masterVC.nameButton setTitle:self.userName forState:UIControlStateNormal];
-    [masterVC.teamButton setTitle:self.teamName forState:UIControlStateNormal];
-    masterVC.avatarButton.hidden = false;
+    [self.projectVC.masterView.nameButton setTitle:self.userName forState:UIControlStateNormal];
+    [self.projectVC.masterView.teamButton setTitle:self.teamName forState:UIControlStateNormal];
+    self.projectVC.masterView.avatarButton.hidden = false;
     
-    [masterVC.projectsTable reloadData];
+    [self.projectVC.masterView.projectsTable reloadData];
     
-    [masterVC tableView:masterVC.projectsTable didSelectRowAtIndexPath:masterVC.defaultRow];
+    [self.projectVC.masterView tableView:self.projectVC.masterView.projectsTable didSelectRowAtIndexPath:self.projectVC.masterView.defaultRow];
     
 }
 
@@ -245,6 +247,7 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void) observeBoardWithID:(NSString *)boardID {
     
+
     NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
     Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
     
@@ -268,8 +271,7 @@ static FirebaseHelper *sharedHelper = nil;
             
             if (![[subpathValues objectForKey:@"uid"] isEqualToString:self.uid]) {
                 
-                ProjectDetailViewController *projectVC = [self getProjectDetailViewController];
-                DrawView *drawView = (DrawView *)[projectVC.carousel itemViewAtIndex:boardIndex];
+                DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
                 
                 NSMutableDictionary *allSubpathsDict = [[[self.boards objectForKey:boardID] objectForKey:@"allSubpaths"] objectForKey:[subpathValues objectForKey:@"uid"]];
                 NSMutableDictionary *undoDict = [[[self.boards objectForKey:boardID] objectForKey:@"undo"] objectForKey:[subpathValues objectForKey:@"uid"]];
@@ -318,12 +320,17 @@ static FirebaseHelper *sharedHelper = nil;
         NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
         if ([boardIDs containsObject:boardID]) {
             
-            ProjectDetailViewController *projectVC = [self getProjectDetailViewController];
             int boardIndex = [boardIDs indexOfObject:boardID];
             
-            DrawView *drawView = (DrawView *)[projectVC.carousel itemViewAtIndex:boardIndex];
+            DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
             
-            [projectVC drawBoard:drawView];
+            
+            NSLog(@"boardIDs is %@", boardIDs);
+            //NSLog(@"drawView is %@", drawView);
+            //NSLog(@"boardIndex is %i", boardIndex);
+            //NSLog(@"projectVC carousel is %@", self.projectVC.carousel);
+            
+            [self.projectVC drawBoard:drawView];
         }
     }];
     
@@ -331,10 +338,8 @@ static FirebaseHelper *sharedHelper = nil;
         
         [[self.boards objectForKey:boardID] setObject:snapshot.value forKey:@"name"];
         
-        ProjectDetailViewController *projectVC = [self getProjectDetailViewController];
-        
-        if (projectVC.carousel.currentItemIndex == [projectVC.boardIDs indexOfObject:boardID]) {
-            projectVC.boardNameLabel.text = snapshot.value;
+        if (self.projectVC.carousel.currentItemIndex == [self.projectVC.boardIDs indexOfObject:boardID]) {
+            self.projectVC.boardNameLabel.text = snapshot.value;
         }
     }];
     
@@ -378,8 +383,7 @@ static FirebaseHelper *sharedHelper = nil;
     NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
     
     int boardIndex = [boardIDs indexOfObject:boardID];
-    ProjectDetailViewController *projectVC = [self getProjectDetailViewController];
-    DrawView *drawView = (DrawView *)[projectVC.carousel itemViewAtIndex:boardIndex];
+    DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
     if (shouldRedraw) [drawView clear];
     
     NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
@@ -440,8 +444,7 @@ static FirebaseHelper *sharedHelper = nil;
         
         [self.chats setObject:chatDict forKey:chatID];
         
-        ProjectDetailViewController *projectVC = [self getProjectDetailViewController];
-        [projectVC.chatTable reloadData];
+        [self.projectVC.chatTable reloadData];
         
     }];
 }
@@ -486,9 +489,7 @@ static FirebaseHelper *sharedHelper = nil;
 -(void) observeCommentThreadWithID:(NSString *)commentThreadID boardID:(NSString *)boardID {
     
     //NSLog(@"commentThreadID from OBSERVECOMMENTTHREAD is %@", commentThreadID);
-    
-    ProjectDetailViewController *projectVC = [self getProjectDetailViewController];
-    
+
     NSString *commentsID = [[self.boards objectForKey:boardID] objectForKey:@"commentsID"];
     
     NSString *commentsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
@@ -517,7 +518,7 @@ static FirebaseHelper *sharedHelper = nil;
         if ([currentProjectBoardIDs containsObject:boardID]) {
             
             int boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
-            DrawView *drawView = (DrawView *)[projectVC.carousel itemViewAtIndex:boardIndex];
+            DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
             
             [drawView layoutComments];
         }
@@ -534,7 +535,7 @@ static FirebaseHelper *sharedHelper = nil;
         //NSLog(@"comments is %@", self.comments);
         //NSLog(@"threadDict is %@", [self.comments objectForKey:commentsID] );
         
-        if ([projectVC.activeCommentThreadID isEqualToString:commentThreadID]) [projectVC.chatTable reloadData];
+        if ([self.projectVC.activeCommentThreadID isEqualToString:commentThreadID]) [self.projectVC.chatTable reloadData];
     }];
     
 }
@@ -550,11 +551,9 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void) setInBoard {
     
-    ProjectDetailViewController *projectVC = [self getProjectDetailViewController];
-    
     NSString *boardID;
-    if (projectVC.activeBoardID == nil) boardID = @"none";
-    else boardID = projectVC.activeBoardID;
+    if (self.projectVC.activeBoardID == nil) boardID = @"none";
+    else boardID = self.projectVC.activeBoardID;
     
     [[[self.team objectForKey:@"users"] objectForKey:self.uid] setObject:boardID forKey:@"inBoard"];
     NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@",self.uid];
@@ -583,11 +582,17 @@ static FirebaseHelper *sharedHelper = nil;
 }
 
 -(void) setActiveBoardUpdatedAt {
+
     
-    NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/updatedAt", [self getProjectDetailViewController].activeBoardID];
+    NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/updatedAt", self.projectVC.activeBoardID];
     Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
     [boardRef setValue:@([[NSDate serverDate] timeIntervalSince1970]*100000000)];
-    [[self.boards objectForKey:[self getProjectDetailViewController].activeBoardID] setObject:@([[NSDate serverDate] timeIntervalSince1970]*100000000) forKey:@"updatedAt"];
+    [[self.boards objectForKey:self.projectVC.activeBoardID] setObject:@([[NSDate serverDate] timeIntervalSince1970]*100000000) forKey:@"updatedAt"];
+    
+//    NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/updatedAt", [self getProjectDetailViewController].activeBoardID];
+//    Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
+//    [boardRef setValue:@([[NSDate serverDate] timeIntervalSince1970]*100000000)];
+//    [[self.boards objectForKey:[self getProjectDetailViewController].activeBoardID] setObject:@([[NSDate serverDate] timeIntervalSince1970]*100000000) forKey:@"updatedAt"];
 }
 
 -(NSIndexPath *) getLastViewedProjectIndexPath {
@@ -616,19 +621,6 @@ static FirebaseHelper *sharedHelper = nil;
     return [NSIndexPath indexPathForItem:projectIndex inSection:0];
 }
 
-- (MasterViewController *) getMasterViewController
-{
-    UISplitViewController *splitVC = (UISplitViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
-    return (MasterViewController *)[splitVC.viewControllers objectAtIndex:0];
-}
-
-- (ProjectDetailViewController *) getProjectDetailViewController
-{
-    UISplitViewController *splitVC = (UISplitViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
-    
-    return (ProjectDetailViewController *)[splitVC.viewControllers objectAtIndex:1];
-}
-
 - (void) clearData {
     
     self.uid = nil;
@@ -637,11 +629,9 @@ static FirebaseHelper *sharedHelper = nil;
     self.teamName = nil;
     self.team = nil;
     self.projects = nil;
-    
-    MasterViewController *masterVC = [self getMasterViewController];
-    masterVC.title = nil;
-    UITableView *tableView = (UITableView *)masterVC.projectsTable;
-    [tableView reloadData];
+
+    [self.projectVC.masterView.projectsTable reloadData];
+
 }
 
 @end
