@@ -10,7 +10,7 @@
 #import "MasterViewController.h"
 #import "ProjectDetailViewController.h"
 
-@interface NewProjectViewController : UIViewController {
+@interface NewProjectViewController : UIViewController <UIGestureRecognizerDelegate> {
 
     UITapGestureRecognizer *outsideTapRecognizer;
     ProjectDetailViewController *projectVC;

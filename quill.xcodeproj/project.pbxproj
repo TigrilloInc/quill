@@ -24,7 +24,6 @@
 		1225C434199D4AB30061027B /* board2.png in Resources */ = {isa = PBXBuildFile; fileRef = 1225C433199D4AB30061027B /* board2.png */; };
 		1230ABC719709E7B00EB2389 /* FirebaseHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1230ABC619709E7B00EB2389 /* FirebaseHelper.m */; };
 		1230ABCA1972093300EB2389 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1230ABC81972093300EB2389 /* Main_iPad.storyboard */; };
-		12423D221A01CD78005F6D1A /* SplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12423D211A01CD78005F6D1A /* SplitViewController.m */; };
 		12423D241A02A611005F6D1A /* usercommenthighlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 12423D231A02A611005F6D1A /* usercommenthighlight.png */; };
 		1243AFB319FF0A900029B976 /* userhighlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 1243AFB219FF0A900029B976 /* userhighlight.png */; };
 		1243AFB919FF2CD20029B976 /* usercomment.png in Resources */ = {isa = PBXBuildFile; fileRef = 1243AFB819FF2CD20029B976 /* usercomment.png */; };
@@ -34,6 +33,7 @@
 		1265B18C1984533500349817 /* board.png in Resources */ = {isa = PBXBuildFile; fileRef = 1265B18B1984533500349817 /* board.png */; };
 		12899BB01A168CA100AF95BD /* MasterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 12899BAF1A168CA100AF95BD /* MasterView.m */; };
 		12899BB21A1AEC3B00AF95BD /* carouselfade.png in Resources */ = {isa = PBXBuildFile; fileRef = 12899BB11A1AEC3A00AF95BD /* carouselfade.png */; };
+		128DC2FE1A1C4E3500FF6076 /* carouselfadeblack.png in Resources */ = {isa = PBXBuildFile; fileRef = 128DC2FD1A1C4E3500FF6076 /* carouselfadeblack.png */; };
 		129E127219648A2C00ED9D42 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127119648A2C00ED9D42 /* Foundation.framework */; };
 		129E127419648A2C00ED9D42 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127319648A2C00ED9D42 /* CoreGraphics.framework */; };
 		129E127619648A2C00ED9D42 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127519648A2C00ED9D42 /* UIKit.framework */; };
@@ -66,7 +66,6 @@
 		12BE8D1D196A616000503F84 /* SignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BE8D1C196A616000503F84 /* SignInViewController.m */; };
 		12BE8D68196BA1B100503F84 /* NewTeamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BE8D67196BA1B100503F84 /* NewTeamViewController.m */; };
 		12BE8D74196CF04D00503F84 /* NewProjectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BE8D73196CF04D00503F84 /* NewProjectViewController.m */; };
-		12BE8D7A196D025000503F84 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BE8D79196D025000503F84 /* MasterViewController.m */; };
 		12C3780C19FEE9FC000C0DB4 /* CommentButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 12C3780B19FEE9FC000C0DB4 /* CommentButton.m */; };
 		12E898A719ECC6DA00E29E7B /* AvatarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 12E898A619ECC6DA00E29E7B /* AvatarButton.m */; };
 		12FF4C281A1545D7008A6001 /* libMailCore-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 12FF4C1D1A15459D008A6001 /* libMailCore-ios.a */; };
@@ -166,8 +165,6 @@
 		1230ABC519709E7B00EB2389 /* FirebaseHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FirebaseHelper.h; sourceTree = "<group>"; };
 		1230ABC619709E7B00EB2389 /* FirebaseHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FirebaseHelper.m; sourceTree = "<group>"; };
 		1230ABC91972093300EB2389 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
-		12423D201A01CD78005F6D1A /* SplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplitViewController.h; sourceTree = "<group>"; };
-		12423D211A01CD78005F6D1A /* SplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplitViewController.m; sourceTree = "<group>"; };
 		12423D231A02A611005F6D1A /* usercommenthighlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = usercommenthighlight.png; path = Resources/usercommenthighlight.png; sourceTree = "<group>"; };
 		1243AFB219FF0A900029B976 /* userhighlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userhighlight.png; path = Resources/userhighlight.png; sourceTree = "<group>"; };
 		1243AFB819FF2CD20029B976 /* usercomment.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = usercomment.png; path = Resources/usercomment.png; sourceTree = "<group>"; };
@@ -179,6 +176,7 @@
 		12899BAE1A168CA100AF95BD /* MasterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterView.h; sourceTree = "<group>"; };
 		12899BAF1A168CA100AF95BD /* MasterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterView.m; sourceTree = "<group>"; };
 		12899BB11A1AEC3A00AF95BD /* carouselfade.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = carouselfade.png; path = Resources/carouselfade.png; sourceTree = "<group>"; };
+		128DC2FD1A1C4E3500FF6076 /* carouselfadeblack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = carouselfadeblack.png; path = Resources/carouselfadeblack.png; sourceTree = "<group>"; };
 		129E126E19648A2C00ED9D42 /* quill.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = quill.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		129E127119648A2C00ED9D42 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		129E127319648A2C00ED9D42 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -226,8 +224,6 @@
 		12BE8D67196BA1B100503F84 /* NewTeamViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewTeamViewController.m; sourceTree = "<group>"; };
 		12BE8D72196CF04D00503F84 /* NewProjectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewProjectViewController.h; sourceTree = "<group>"; };
 		12BE8D73196CF04D00503F84 /* NewProjectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewProjectViewController.m; sourceTree = "<group>"; };
-		12BE8D78196D025000503F84 /* MasterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
-		12BE8D79196D025000503F84 /* MasterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MasterViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		12C3780A19FEE9FC000C0DB4 /* CommentButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CommentButton.h; path = "Resources/mailcore2/build-mac/../../../CommentButton.h"; sourceTree = "<group>"; };
 		12C3780B19FEE9FC000C0DB4 /* CommentButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CommentButton.m; path = "Resources/mailcore2/build-mac/../../../CommentButton.m"; sourceTree = "<group>"; };
 		12E898A519ECC6DA00E29E7B /* AvatarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AvatarButton.h; sourceTree = "<group>"; };
@@ -362,16 +358,14 @@
 				129E12B519648C3200ED9D42 /* DrawView.m */,
 				12899BAE1A168CA100AF95BD /* MasterView.h */,
 				12899BAF1A168CA100AF95BD /* MasterView.m */,
-				12BE8D78196D025000503F84 /* MasterViewController.h */,
-				12BE8D79196D025000503F84 /* MasterViewController.m */,
-				12AA5FA919E7904700F6D552 /* AddUserViewController.h */,
-				12AA5FAA19E7904700F6D552 /* AddUserViewController.m */,
 				12E898A519ECC6DA00E29E7B /* AvatarButton.h */,
 				12E898A619ECC6DA00E29E7B /* AvatarButton.m */,
-				1216D99F19A3DBED0095DBD8 /* BoardCollectionViewCell.h */,
-				1216D9A019A3DBED0095DBD8 /* BoardCollectionViewCell.m */,
 				12C3780A19FEE9FC000C0DB4 /* CommentButton.h */,
 				12C3780B19FEE9FC000C0DB4 /* CommentButton.m */,
+				1216D99F19A3DBED0095DBD8 /* BoardCollectionViewCell.h */,
+				1216D9A019A3DBED0095DBD8 /* BoardCollectionViewCell.m */,
+				12AA5FA919E7904700F6D552 /* AddUserViewController.h */,
+				12AA5FAA19E7904700F6D552 /* AddUserViewController.m */,
 				12A3FA141979BDD900E03E9E /* InviteViewController.h */,
 				12A3FA151979BDD900E03E9E /* InviteViewController.m */,
 				12A310E5197F5AC900E03E9E /* NameFromInviteViewController.h */,
@@ -384,8 +378,6 @@
 				12A3FA0C1977420400E03E9E /* SettingsViewController.m */,
 				12BE8D1B196A616000503F84 /* SignInViewController.h */,
 				12BE8D1C196A616000503F84 /* SignInViewController.m */,
-				12423D201A01CD78005F6D1A /* SplitViewController.h */,
-				12423D211A01CD78005F6D1A /* SplitViewController.m */,
 				12A310E2197DC65B00E03E9E /* SignUpFromInviteViewController.h */,
 				12A310E3197DC65B00E03E9E /* SignUpFromInviteViewController.m */,
 				12A310EB1980BE4300E03E9E /* iCarousel.h */,
@@ -404,6 +396,7 @@
 				1216D98C19A262A80095DBD8 /* chatfade.png */,
 				12A9485619F814330042A036 /* chatfade2.png */,
 				12899BB11A1AEC3A00AF95BD /* carouselfade.png */,
+				128DC2FD1A1C4E3500FF6076 /* carouselfadeblack.png */,
 				1225C431199B194F0061027B /* close.png */,
 				129E129419648A2C00ED9D42 /* Images.xcassets */,
 				1219E36A19A671C800781945 /* Monaco.ttf */,
@@ -618,6 +611,7 @@
 				12423D241A02A611005F6D1A /* usercommenthighlight.png in Resources */,
 				1265B18C1984533500349817 /* board.png in Resources */,
 				1225C434199D4AB30061027B /* board2.png in Resources */,
+				128DC2FE1A1C4E3500FF6076 /* carouselfadeblack.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -652,10 +646,8 @@
 				1216D99C19A275980095DBD8 /* LSCollectionViewLayoutHelper.m in Sources */,
 				1216D99B19A275980095DBD8 /* LSCollectionViewHelper.m in Sources */,
 				12A3FA101979861800E03E9E /* ProjectDetailViewController.m in Sources */,
-				12BE8D7A196D025000503F84 /* MasterViewController.m in Sources */,
 				12AA5FAB19E7904700F6D552 /* AddUserViewController.m in Sources */,
 				129E128419648A2C00ED9D42 /* main.m in Sources */,
-				12423D221A01CD78005F6D1A /* SplitViewController.m in Sources */,
 				12A3FA0D1977420400E03E9E /* SettingsViewController.m in Sources */,
 				12899BB01A168CA100AF95BD /* MasterView.m in Sources */,
 				12A310E7197F5AC900E03E9E /* NameFromInviteViewController.m in Sources */,

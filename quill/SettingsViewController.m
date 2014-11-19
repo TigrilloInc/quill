@@ -38,6 +38,7 @@
     
     outsideTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside)];
     
+    [outsideTapRecognizer setDelegate:self];
     [outsideTapRecognizer setNumberOfTapsRequired:1];
     outsideTapRecognizer.cancelsTouchesInView = NO;
     [self.view.window addGestureRecognizer:outsideTapRecognizer];
@@ -73,24 +74,27 @@
     if (outsideTapRecognizer.state == UIGestureRecognizerStateEnded)
     {
         CGPoint location = [outsideTapRecognizer locationInView:nil];
+        CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
         
-        if (![self.view pointInside:[self.view convertPoint:location fromView:self.view.window] withEvent:nil]){
+        if (!CGRectContainsPoint(self.view.frame, converted)){
             
+            [outsideTapRecognizer setDelegate:nil];
             [self.view.window removeGestureRecognizer:outsideTapRecognizer];
             [self dismissViewControllerAnimated:YES completion:nil];
         }
     }
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    return YES;
 }
-*/
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    return YES;
+}
 
 @end

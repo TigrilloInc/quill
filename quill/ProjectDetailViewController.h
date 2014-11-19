@@ -20,10 +20,13 @@
     BOOL commentsOpen;
     UIButton *boardButton;
     DrawView *currentDrawView;
+    UIImageView *carouselFadeRight;
     
     MasterViewController *masterVC;
     
     NSString *tappedUserID;
+    
+    CGFloat keyboardDiff;
 }
 
 @property (strong, nonatomic) NSString *projectName;

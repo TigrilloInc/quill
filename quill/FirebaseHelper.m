@@ -214,9 +214,7 @@ static FirebaseHelper *sharedHelper = nil;
     NSLog(@"masterView updated");
     
     self.firstLoad = false;
-    
-    NSLog(@"masterView is %@", self.projectVC.masterView);
-    
+
     [self.projectVC.masterView.nameButton setTitle:self.userName forState:UIControlStateNormal];
     [self.projectVC.masterView.teamButton setTitle:self.teamName forState:UIControlStateNormal];
     self.projectVC.masterView.avatarButton.hidden = false;
@@ -324,8 +322,7 @@ static FirebaseHelper *sharedHelper = nil;
             
             DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
             
-            
-            NSLog(@"boardIDs is %@", boardIDs);
+            //NSLog(@"boardIDs is %@", boardIDs);
             //NSLog(@"drawView is %@", drawView);
             //NSLog(@"boardIndex is %i", boardIndex);
             //NSLog(@"projectVC carousel is %@", self.projectVC.carousel);
@@ -488,8 +485,6 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void) observeCommentThreadWithID:(NSString *)commentThreadID boardID:(NSString *)boardID {
     
-    //NSLog(@"commentThreadID from OBSERVECOMMENTTHREAD is %@", commentThreadID);
-
     NSString *commentsID = [[self.boards objectForKey:boardID] objectForKey:@"commentsID"];
     
     NSString *commentsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
@@ -500,12 +495,15 @@ static FirebaseHelper *sharedHelper = nil;
     if (!threadDict) {
         
         threadDict = [@{ @"location" : [NSMutableDictionary dictionary],
-                         @"messages" : [NSMutableDictionary dictionary]
+                         @"messages" : [NSMutableDictionary dictionary],
+                         @"owner" : @""
                          } mutableCopy];
         [[self.comments objectForKey:commentsID] setObject:threadDict forKey:commentThreadID];
     }
     
     if (![threadDict objectForKey:@"messages"]) [threadDict setObject:[NSMutableDictionary dictionary] forKey:@"messages"];
+    
+    NSString *owner = [threadDict objectForKey:@"owner"];
     
     NSString *locationString = [NSString stringWithFormat:@"%@/location", commentThreadID];
     
@@ -515,7 +513,7 @@ static FirebaseHelper *sharedHelper = nil;
         
         NSArray *currentProjectBoardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
         
-        if ([currentProjectBoardIDs containsObject:boardID]) {
+        if ([currentProjectBoardIDs containsObject:boardID] && ![owner isEqualToString:self.uid]) {
             
             int boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
             DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
@@ -529,11 +527,6 @@ static FirebaseHelper *sharedHelper = nil;
     [[ref childByAppendingPath:messageString] observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot) {
         
         [[threadDict objectForKey:@"messages"] setObject:snapshot.value forKey:snapshot.name];
-        
-        //NSLog(@"commentThreadID is %@", commentThreadID);
-        //NSLog(@"commentsID is %@", commentsID);
-        //NSLog(@"comments is %@", self.comments);
-        //NSLog(@"threadDict is %@", [self.comments objectForKey:commentsID] );
         
         if ([self.projectVC.activeCommentThreadID isEqualToString:commentThreadID]) [self.projectVC.chatTable reloadData];
     }];

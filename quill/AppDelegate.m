@@ -27,7 +27,7 @@
     [NSDate serverDate];
     
     [[ref childByAppendingPath:@"poop"] setValue:@"pee"];
-    
+
     [authClient checkAuthStatusWithBlock:^(NSError *error, FAUser *user) {
         
         if (error != nil) NSLog(@"%@", error);

@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface InviteViewController : UIViewController {
+@interface InviteViewController : UIViewController <UIGestureRecognizerDelegate> {
     
+    UITapGestureRecognizer *outsideTapRecognizer;
     NSArray *inviteFields;
 }
 

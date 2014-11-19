@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ProjectDetailViewController.h"
 
-@interface AddUserViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+@interface AddUserViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate> {
 
     ProjectDetailViewController *projectVC;
     UITapGestureRecognizer *outsideTapRecognizer;

@@ -112,7 +112,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     for (int i=0; i<userIDs.count; i++) {
         
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
-        avatar.frame = CGRectMake(-50, (i-1)*70, avatar.userImage.size.width, avatar.userImage.size.height);
+        avatar.frame = CGRectMake(-50, (i-1)*64, avatar.userImage.size.width, avatar.userImage.size.height);
         CGAffineTransform tr = CGAffineTransformScale(avatar.transform, .25, .25);
         tr = CGAffineTransformRotate(tr, -M_PI_2);
         avatar.transform = tr;
@@ -126,15 +126,15 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
 
 -(void) layoutComments {
     
+    NSLog(@"COMMENTS LAID OUT");
+    
     for (CommentButton *commentButton in self.commentButtons) [commentButton removeFromSuperview];
     
     self.commentButtons = [NSMutableArray array];
     
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"commentsID"];
     NSDictionary *commentDict = [[FirebaseHelper sharedHelper].comments objectForKey:commentsID];
-    
-    NSLog(@"commentDict is %@", commentDict);
-    
+
     for (NSString *commentThreadID in commentDict.allKeys) {
         
         CommentButton *button = [CommentButton buttonWithType:UIButtonTypeCustom];
@@ -458,6 +458,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     NSDictionary *commentDict = @{ @"location" : @{ @"x" : @(point.x),
                                                     @"y" : @(point.y)
                                                     },
+                                   @"owner" : [FirebaseHelper sharedHelper].uid
                                    };
     
     NSString *commentThreadString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
@@ -480,6 +481,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     button.transform = tr;
     [button addTarget:self action:@selector(commentTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:button];
+    
+    [self.commentButtons addObject:button];
     
     [self commentTapped:button];
 }
@@ -609,7 +612,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     CommentButton *comment = (CommentButton *)sender;
     
-    
     [projectVC.viewedCommentThreadIDs addObject:comment.commentThreadID];
     
     for (CommentButton *commentButton in self.commentButtons) {
@@ -630,7 +632,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [projectVC.chatTable reloadData];
     
     [projectVC.chatTextField becomeFirstResponder];
-    
 }
 
 -(void) updateCarouselOffsetWithPoint:(CGPoint)point {
