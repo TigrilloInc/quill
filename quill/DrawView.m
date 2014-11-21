@@ -43,28 +43,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
 
 #pragma mark UIView lifecycle methods
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
-    
-    if (self) {
-        // NOTE: do not change the backgroundColor here, so it can be set in IB.
-        _paths = [NSMutableArray array];
-        _lineWidth = DEFAULT_WIDTH;
-        self.lineColorNumber = @1;
-        _empty = YES;
-        self.activeUserIDs = [NSMutableArray array];
-        
-        projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
-        
-        if (projectVC.userRole > 0) self.drawable = true;
-        else self.drawable = false;
-        
-        self.selectedAvatarUserID = nil;
-    }
-    
-    return self;
-}
-
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     
@@ -442,6 +420,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [projectVC.chatTextField resignFirstResponder];
     [projectVC.view bringSubviewToFront:projectVC.carousel];
     [projectVC showDrawMenu];
+    projectVC.carouselOffset = 0;
     
     for (CommentButton *commentButton in self.commentButtons) {
         
@@ -629,6 +608,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     projectVC.activeCommentThreadID = comment.commentThreadID;
     
+    [projectVC updateMessages];
     [projectVC.chatTable reloadData];
     
     [projectVC.chatTextField becomeFirstResponder];

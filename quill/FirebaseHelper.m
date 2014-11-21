@@ -441,6 +441,7 @@ static FirebaseHelper *sharedHelper = nil;
         
         [self.chats setObject:chatDict forKey:chatID];
         
+        [self.projectVC updateMessages];
         [self.projectVC.chatTable reloadData];
         
     }];
@@ -528,7 +529,10 @@ static FirebaseHelper *sharedHelper = nil;
         
         [[threadDict objectForKey:@"messages"] setObject:snapshot.value forKey:snapshot.name];
         
-        if ([self.projectVC.activeCommentThreadID isEqualToString:commentThreadID]) [self.projectVC.chatTable reloadData];
+        if ([self.projectVC.activeCommentThreadID isEqualToString:commentThreadID]) {
+            [self.projectVC updateMessages];
+            [self.projectVC.chatTable reloadData];
+        }
     }];
     
 }

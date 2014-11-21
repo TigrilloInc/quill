@@ -28,6 +28,8 @@
     
     [[ref childByAppendingPath:@"poop"] setValue:@"pee"];
 
+    //[authClient logout];
+    
     [authClient checkAuthStatusWithBlock:^(NSError *error, FAUser *user) {
         
         if (error != nil) NSLog(@"%@", error);

@@ -38,6 +38,7 @@
 @property (strong, nonatomic) NSMutableArray *editBoardIDs;
 @property (strong, nonatomic) NSMutableArray *viewedBoardIDs;
 @property (strong, nonatomic) NSMutableArray *viewedCommentThreadIDs;
+@property (strong, nonatomic) NSMutableArray *messages;
 @property (strong, nonatomic) NSMutableDictionary *roles;
 
 @property BOOL carouselMoving;
@@ -81,5 +82,6 @@
 -(void) drawBoard:(DrawView *)drawView;
 -(IBAction) cancelTapped:(id)sender;
 -(void) showDrawMenu;
+-(void) updateMessages;
 
 @end

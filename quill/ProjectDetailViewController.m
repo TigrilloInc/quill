@@ -14,6 +14,7 @@
 #import "FirebaseHelper.h"
 #import "NSDate+ServerDate.h"
 #import "MasterView.h"
+#import "ChatTableViewCell.h"
 
 @implementation ProjectDetailViewController
 
@@ -199,6 +200,7 @@
     [self.projectNameLabel sizeToFit];
     self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+310, self.editButton.center.y);
     
+    [self updateMessages];
     [self.chatTable reloadData];
     [self.carousel reloadData];
     [self.draggableCollectionView reloadData];
@@ -220,6 +222,95 @@
     
     [self carouselCurrentItemIndexDidChange:self.carousel];
     
+}
+
+-(void) updateMessages {
+    
+    self.messages = [NSMutableArray array];
+    
+    NSArray *messageKeys;
+    
+    if (self.activeCommentThreadID) {
+        
+        NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"commentsID"];
+        messageKeys = [[[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] objectForKey:@"messages"] allKeys];
+    }
+    else messageKeys = [[[FirebaseHelper sharedHelper].chats objectForKey:self.chatID] allKeys];
+    
+    for (NSString *messageID in messageKeys) {
+        
+        NSNumber *date;
+        
+        if (self.activeCommentThreadID != nil) {
+            
+            NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"commentsID"];
+            
+            date = [[[[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] objectForKey:@"messages"] objectForKey:messageID] objectForKey:@"sentAt"];
+            
+        }
+        else date = [[[[FirebaseHelper sharedHelper].chats objectForKey:self.chatID] objectForKey:messageID]  objectForKey:@"sentAt"];
+        
+        [self.messages addObject:date];
+    }
+    
+    NSNumber *viewedAt = [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid];
+    if (!viewedAt) viewedAt = @([[NSDate serverDate] timeIntervalSince1970]*100000000);
+    [self.messages addObject:viewedAt];
+    
+    NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
+    [self.messages sortUsingDescriptors:@[sorter]];
+    
+    if ([self.messages.lastObject isEqualToNumber:viewedAt] || (!self.activeCommentThreadID && self.chatViewed) || [self.viewedCommentThreadIDs containsObject:self.activeCommentThreadID]) {
+        [self.messages removeObject:viewedAt];
+        self.chatViewed = true;
+        if (![self.chatTextField isFirstResponder]) [self.chatOpenButton setTitle:@"OPEN" forState:UIControlStateNormal];
+    }
+    
+    for (NSString *messageID in messageKeys) {
+        
+        NSNumber *date;
+        
+        if (self.activeCommentThreadID){
+            
+            NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"commentsID"];
+            date = [[[[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] objectForKey:@"messages"] objectForKey:messageID] objectForKey:@"sentAt"];
+        }
+        else date = [[[[FirebaseHelper sharedHelper].chats objectForKey:self.chatID] objectForKey:messageID]  objectForKey:@"sentAt"];
+        
+        for (int i=0; i<self.messages.count; i++) {
+            
+            if (viewedAt == self.messages[i]) { [self.messages replaceObjectAtIndex:i withObject:@"---------------------------------------<NEW MESSAGES>---------------------------------------"];
+                if (!self.chatViewed && ![self.chatTextField isFirstResponder]) [self.chatOpenButton setTitle:@"NEW MESSAGES!" forState:UIControlStateNormal];
+            }
+            
+            else if (date == self.messages[i]) {
+                
+                NSString *text;
+                NSString *name;
+                
+                if (self.activeCommentThreadID) {
+                    
+                    NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"commentsID"];
+                    NSDictionary *messageDict = [[[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] objectForKey:@"messages"] objectForKey:messageID];
+                    
+                    text = [messageDict objectForKey:@"message"];
+                    name = [messageDict objectForKey:@"name"];
+                }
+                else {
+                    
+                    NSDictionary *messageDict = [[[FirebaseHelper sharedHelper].chats objectForKey:self.chatID] objectForKey:messageID];
+                    
+                    text = [messageDict objectForKey:@"message"];
+                    name = [messageDict objectForKey:@"name"];
+                }
+                
+                NSString *messageString = [NSString stringWithFormat:@"%@: %@", name, text];
+                NSLog(@"messageString is %@", messageString);
+                
+                [self.messages replaceObjectAtIndex:i withObject:messageString];
+            }
+        }
+    }
 }
 
 -(void) layoutAvatars {
@@ -367,6 +458,8 @@
 
 - (IBAction)sendTapped:(id)sender {
     
+    [self textFieldShouldReturn:self.chatTextField];
+    
 }
 
 -(void) boardTapped:(id)sender {
@@ -378,17 +471,13 @@
     
     newBoardCreated = false;
     [self.carousel setScrollEnabled:NO];
-    
+    self.carouselOffset = 0;
     UIButton *button = (UIButton *)sender;
     currentDrawView = (DrawView *)button.superview;
     NSString *boardID = currentDrawView.boardID;
-    
     self.boardNameLabel.font = [UIFont fontWithName:@"Helvetica" size:20];
-    
     [self.viewedBoardIDs addObject:boardID];
-    
     boardButton = button;
-    
     self.activeBoardID = boardID;
     
     [[FirebaseHelper sharedHelper] setInBoard];
@@ -589,10 +678,6 @@
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionBeginFromCurrentState
                      animations:^{
-                         
-                         CGAffineTransform tr = CGAffineTransformScale(self.carousel.transform, .5, .5);
-                         self.carousel.transform = tr;
-                         self.carousel.center = CGPointMake(self.view.center.x+self.masterView.frame.size.width/2, self.carousel.center.y-64);
                         
                         float masterWidth = self.masterView.frame.size.width;
                          
@@ -602,8 +687,12 @@
                         self.chatOpenButton.center = CGPointMake(self.chatView.center.x, self.chatOpenButton.center.y);
                         self.chatFadeImage.center = CGPointMake(self.chatFadeImage.center.x+100+masterWidth, self.chatFadeImage.center.y);
                         self.chatTable.frame = CGRectMake(masterWidth, 768-self.chatView.frame.size.height, self.view.frame.size.width-masterWidth, self.chatTable.frame.size.height);
-                         
-                        self.masterView.center = CGPointMake(self.masterView.frame.size.width/2, self.masterView.center.y);
+                        
+                         CGAffineTransform tr = CGAffineTransformScale(self.carousel.transform, .5, .5);
+                         self.carousel.transform = tr;
+                         self.carousel.center = CGPointMake(self.view.center.x+masterWidth/2, self.carouselOffset+self.carousel.center.y-64);
+                        
+                        self.masterView.center = CGPointMake(masterWidth/2, self.masterView.center.y);
                         carouselFadeRight.center = CGPointMake(974, carouselFadeRight.center.y);
                         [self.view bringSubviewToFront:carouselFadeRight];
                          
@@ -1087,7 +1176,6 @@
                                        };
         [[chatRef childByAutoId] setValue:messageDict];
         
-        //[[FirebaseHelper sharedHelper] setProjectViewedAt];
         [[FirebaseHelper sharedHelper] setProjectUpdatedAt];
         
         self.chatTextField.text = nil;
@@ -1123,127 +1211,27 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    int rows;
+    return self.messages.count;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (self.activeCommentThreadID) {
-        NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"commentsID"];
-        rows = [[[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] objectForKey:@"messages"] allKeys].count;
-        
-    }
-    else {
-        rows = [[[FirebaseHelper sharedHelper].chats objectForKey:self.chatID] allKeys].count;
-    }
+    NSString *messageString = self.messages[self.messages.count-(indexPath.row+1)];
     
-    //if (rows > 2) self.chatOpenButton.hidden = false;
-    //else self.chatOpenButton.hidden = true;
+    CGRect labelRect = [messageString boundingRectWithSize:CGSizeMake(self.chatTable.frame.size.width,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Helvetica" size:20]} context:nil];
     
-    return rows;
+    return labelRect.size.height+20;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ChatCell" forIndexPath:indexPath];
+    ChatTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ChatCell" forIndexPath:indexPath];
     
-    cell.transform = CGAffineTransformMakeRotation(M_PI);
-    
-    NSMutableArray *orderedMessages = [NSMutableArray array];
-    
-    NSArray *messageKeys;
-    
-    if (self.activeCommentThreadID) {
+    if (self.messages.count > indexPath.row) {
         
-        NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"commentsID"];
-        messageKeys = [[[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] objectForKey:@"messages"] allKeys];
+        cell.textLabel.text = self.messages[self.messages.count-(indexPath.row+1)];
     }
-    else messageKeys = [[[FirebaseHelper sharedHelper].chats objectForKey:self.chatID] allKeys];
-    
-    for (NSString *messageID in messageKeys) {
         
-        NSNumber *date;
-        
-        if (self.activeCommentThreadID != nil) {
-            
-            NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"commentsID"];
-            
-            date = [[[[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] objectForKey:@"messages"] objectForKey:messageID] objectForKey:@"sentAt"];
-            
-        }
-        else date = [[[[FirebaseHelper sharedHelper].chats objectForKey:self.chatID] objectForKey:messageID]  objectForKey:@"sentAt"];
-        
-        
-        [orderedMessages addObject:date];
-    }
-    
-    NSNumber *viewedAt = [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid];
-    if (!viewedAt) viewedAt = @([[NSDate serverDate] timeIntervalSince1970]*100000000);
-    [orderedMessages addObject:viewedAt];
-    
-    NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
-    [orderedMessages sortUsingDescriptors:@[sorter]];
-    
-    if ([orderedMessages.lastObject isEqualToNumber:viewedAt] || (!self.activeCommentThreadID && self.chatViewed) || [self.viewedCommentThreadIDs containsObject:self.activeCommentThreadID]) {
-        [orderedMessages removeObject:viewedAt];
-        self.chatViewed = true;
-        if (![self.chatTextField isFirstResponder]) [self.chatOpenButton setTitle:@"OPEN" forState:UIControlStateNormal];
-    }
-    
-    for (NSString *messageID in messageKeys) {
-        
-        NSNumber *date;
-        
-        if (self.activeCommentThreadID){
-            
-            NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"commentsID"];
-            date = [[[[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] objectForKey:@"messages"] objectForKey:messageID] objectForKey:@"sentAt"];
-        }
-        else date = [[[[FirebaseHelper sharedHelper].chats objectForKey:self.chatID] objectForKey:messageID]  objectForKey:@"sentAt"];
-        
-        for (int i=0; i<[orderedMessages count]; i++) {
-            
-            if (viewedAt == orderedMessages[i]) { [orderedMessages replaceObjectAtIndex:i withObject:@"---------------------------------------<NEW MESSAGES>---------------------------------------"];
-                if (!self.chatViewed && ![self.chatTextField isFirstResponder]) [self.chatOpenButton setTitle:@"NEW MESSAGES!" forState:UIControlStateNormal];
-            }
-            
-            else if (date == orderedMessages[i]) {
-                
-                NSString *text;
-                NSString *name;
-                
-                if (self.activeCommentThreadID) {
-                    
-                    NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"commentsID"];
-                    NSDictionary *messageDict = [[[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] objectForKey:@"messages"] objectForKey:messageID];
-                    
-                    text = [messageDict objectForKey:@"message"];
-                    name = [messageDict objectForKey:@"name"];
-                }
-                else {
-                    
-                    NSDictionary *messageDict = [[[FirebaseHelper sharedHelper].chats objectForKey:self.chatID] objectForKey:messageID];
-                    
-                    text = [messageDict objectForKey:@"message"];
-                    name = [messageDict objectForKey:@"name"];
-                }
-                
-                NSString *messageString = [NSString stringWithFormat:@"%@: %@", name, text];
-                NSLog(@"messageString is %@", messageString);
-                
-                [orderedMessages replaceObjectAtIndex:i withObject:messageString];
-            }
-        }
-    }
-    
-    //NSLog(@"orderedMessages is %@", orderedMessages);
-    //NSLog(@"viewedAt is %@", [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid]);
-    
-    if (orderedMessages.count > indexPath.row) {
-        
-        cell.textLabel.text = orderedMessages[orderedMessages.count-(indexPath.row+1)];
-    }
-    
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-    
     return cell;
 }
 
