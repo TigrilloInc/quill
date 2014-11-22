@@ -116,7 +116,10 @@
     cell.textLabel.text = [[self.availableUsersDict objectForKey:userID] objectForKey:@"name"];
     //cell.textLabel.font = [UIFont fontWithName:@"ZemestroStd-Bk" size:20];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.imageView.image = [UIImage imageNamed:@"user.png"];
+    
+    NSNumber *imageNumber = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"avatar"];
+    NSString *imageString = [NSString stringWithFormat:@"user%@.png", imageNumber];
+    cell.imageView.image = [UIImage imageNamed:imageString];
 
     if ([self.selectedUsers containsObject:userID]) cell.accessoryType = UITableViewCellAccessoryCheckmark;
     else cell.accessoryType = UITableViewCellAccessoryNone;

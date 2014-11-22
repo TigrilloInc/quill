@@ -90,11 +90,14 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     for (int i=0; i<userIDs.count; i++) {
         
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
+        avatar.userID = userIDs[i];
         avatar.frame = CGRectMake(-50, (i-1)*64, avatar.userImage.size.width, avatar.userImage.size.height);
         CGAffineTransform tr = CGAffineTransformScale(avatar.transform, .25, .25);
         tr = CGAffineTransformRotate(tr, -M_PI_2);
         avatar.transform = tr;
-        avatar.userID = userIDs[i];
+        NSNumber *imageNumber = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"avatar"];
+        NSString *imageString = [NSString stringWithFormat:@"user%@.png", imageNumber];
+        [avatar setImage:[UIImage imageNamed:imageString] forState:UIControlStateNormal];
         if (![self.activeUserIDs containsObject:avatar.userID]) avatar.alpha = 0.5;
         [avatar addTarget:self action:@selector(avatarTapped:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:avatar];
@@ -103,8 +106,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
 }
 
 -(void) layoutComments {
-    
-    NSLog(@"COMMENTS LAID OUT");
     
     for (CommentButton *commentButton in self.commentButtons) [commentButton removeFromSuperview];
     
@@ -126,12 +127,18 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         tr = CGAffineTransformRotate(tr, -M_PI_2);
         button.transform = tr;
         [button addTarget:self action:@selector(commentTapped:) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:button];
-        [self.commentButtons addObject:button];
         
-        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(commentLongPress:)];
-        longPress.minimumPressDuration = .2;
-        [button addGestureRecognizer:longPress];
+        NSString *ownerID = [[commentDict objectForKey:commentThreadID] objectForKey:@"owner"];
+
+        NSNumber *imageNumber = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:ownerID] objectForKey:@"avatar"];
+        NSString *imageString = [NSString stringWithFormat:@"user%@.png", imageNumber];
+        if(imageNumber != nil)[button setImage:[UIImage imageNamed:imageString] forState:UIControlStateNormal];
+        
+        if ([ownerID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
+            UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(commentLongPress:)];
+            longPress.minimumPressDuration = .2;
+            [button addGestureRecognizer:longPress];
+        }
         
         if ([commentThreadID isEqualToString:projectVC.activeCommentThreadID]) {
             
@@ -139,6 +146,9 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
             button.highlightedImage.hidden = false;
             button.deleteButton.hidden = false;
         }
+        
+        [self addSubview:button];
+        [self.commentButtons addObject:button];
     }
     
     [self bringSubviewToFront:[self viewWithTag:2]];
@@ -444,8 +454,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     Firebase *commentThreadRef = [[Firebase alloc] initWithUrl:commentThreadString];
     
     Firebase *commentThreadRefWithID = [commentThreadRef childByAutoId];
-    //NSString *commentThreadID = commentThreadRefWithID.name;
-    //[[FirebaseHelper sharedHelper] observeCommentThreadWithID:commentThreadID boardID:self.boardID];
     [commentThreadRefWithID setValue:commentDict withCompletionBlock:^(NSError *error, Firebase *ref) {
         [[FirebaseHelper sharedHelper] setProjectUpdatedAt];
     }];
@@ -453,12 +461,19 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     CommentButton *button = [CommentButton buttonWithType:UIButtonTypeCustom];
     button.commentThreadID = commentThreadRefWithID.name;
     button.point = point;
-    button.frame = CGRectMake(0, 0, button.userImage.size.width, button.userImage.size.height);
+    NSNumber *imageNumber = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"avatar"];
+    UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"user%@.png", imageNumber]];
+    if(imageNumber != nil)[button setImage:image forState:UIControlStateNormal];
+    button.frame = CGRectMake(0, 0, image.size.width, image.size.height);
     button.center = CGPointMake(point.x-40, point.y+40);
     CGAffineTransform tr = CGAffineTransformScale(button.transform, .25, .25);
     tr = CGAffineTransformRotate(tr, -M_PI_2);
     button.transform = tr;
     [button addTarget:self action:@selector(commentTapped:) forControlEvents:UIControlEventTouchUpInside];
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(commentLongPress:)];
+    longPress.minimumPressDuration = .2;
+    [button addGestureRecognizer:longPress];
+    
     [self addSubview:button];
     
     [self.commentButtons addObject:button];

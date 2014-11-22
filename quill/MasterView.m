@@ -116,7 +116,7 @@
         NSNumber *viewedAtDate = [[[[FirebaseHelper sharedHelper].projects objectForKey:projectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid];
         
         if ([updatedAtDate doubleValue] > [viewedAtDate doubleValue] && !cell.selected) {
-            NSLog(@"project %@ viewed at %@", projectID, viewedAtDate);
+            //NSLog(@"project %@ viewed at %@", projectID, viewedAtDate);
             cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:20];
         }
         else cell.textLabel.font = [UIFont fontWithName:@"Helvetica" size:20];
@@ -163,16 +163,11 @@
         projectVC.boardNameLabel.text = nil;
         projectVC.chatViewed = false;
         projectVC.viewedBoardIDs = [NSMutableArray array];
-        
-        NSLog(@"projectDICT is %@", projectDict);
-        NSLog(@"boardIDs from DIDSELECT is %@", projectVC.boardIDs);
-        NSLog(@"projectVC is %@", projectVC);
-        
+
         [projectVC updateDetails];
         [projectVC cancelTapped:nil];
         if ([projectVC.chatTextField isFirstResponder]) [projectVC.chatTextField resignFirstResponder];
         if (projectVC.activeBoardID == nil) [projectVC.carousel scrollToItemAtIndex:projectVC.carousel.numberOfItems-1 duration:0];
-        
     }
     
     [self.projectsTable reloadData];

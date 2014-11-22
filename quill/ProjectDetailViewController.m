@@ -305,7 +305,7 @@
                 }
                 
                 NSString *messageString = [NSString stringWithFormat:@"%@: %@", name, text];
-                NSLog(@"messageString is %@", messageString);
+                //NSLog(@"messageString is %@", messageString);
                 
                 [self.messages replaceObjectAtIndex:i withObject:messageString];
             }
@@ -325,12 +325,16 @@
     
     for (int i=0; i<userIDs.count; i++) {
         
-        UIImage *image = [UIImage imageNamed:@"user.png"];
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
-        avatar.frame = CGRectMake(870-(i*64), -60, image.size.width, image.size.height);
-        [avatar setImage:image forState:UIControlStateNormal];
-        [avatar addTarget:self action:@selector(avatarTapped:) forControlEvents:UIControlEventTouchUpInside];
         avatar.userID = userIDs[i];
+        NSNumber *imageNumber = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"avatar"];
+        NSString *imageString;
+        if (imageNumber) imageString = [NSString stringWithFormat:@"user%@.png", imageNumber];
+        else imageString = @"user.png";
+        UIImage *image = [UIImage imageNamed:imageString];
+        if(imageNumber != nil) [avatar setImage:image forState:UIControlStateNormal];
+        avatar.frame = CGRectMake(870-(i*64), -60, image.size.width, image.size.height);
+        [avatar addTarget:self action:@selector(avatarTapped:) forControlEvents:UIControlEventTouchUpInside];
         avatar.transform = CGAffineTransformScale(avatar.transform, .25, .25);
         [self.view addSubview:avatar];
         
@@ -570,6 +574,7 @@
     
     AvatarButton *avatar = (AvatarButton *)sender;
     NSString *userName = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"name"];
+    NSLog(@"team is %@", [FirebaseHelper sharedHelper].team);
     tappedUserID = avatar.userID;
     
     int roleNum = [[self.roles objectForKey:avatar.userID] intValue];
@@ -682,15 +687,15 @@
                         float masterWidth = self.masterView.frame.size.width;
                          
                         self.chatTextField.frame = CGRectMake(52, 102, 622, 30);
-                        self.chatView.frame = CGRectMake(masterWidth, self.chatView.frame.origin.y, 1024-masterWidth, self.chatView.frame.size.height);
-                        self.sendMessageButton.frame = CGRectMake(693, 102, 45, 30);
-                        self.chatOpenButton.center = CGPointMake(self.chatView.center.x, self.chatOpenButton.center.y);
-                        self.chatFadeImage.center = CGPointMake(self.chatFadeImage.center.x+100+masterWidth, self.chatFadeImage.center.y);
-                        self.chatTable.frame = CGRectMake(masterWidth, 768-self.chatView.frame.size.height, self.view.frame.size.width-masterWidth, self.chatTable.frame.size.height);
+                        self.chatView.frame = CGRectMake(245,626,779,142);
+                        self.sendMessageButton.frame = CGRectMake(709, 102, 45, 30);
+                         self.chatOpenButton.frame = CGRectMake(512, 601, 260, 49);
+                        self.chatFadeImage.frame = CGRectMake(245, 614, 1024, 25);
+                        self.chatTable.frame = CGRectMake(masterWidth, 626, 779, 89);
                         
                          CGAffineTransform tr = CGAffineTransformScale(self.carousel.transform, .5, .5);
                          self.carousel.transform = tr;
-                         self.carousel.center = CGPointMake(self.view.center.x+masterWidth/2, self.carouselOffset+self.carousel.center.y-64);
+                         self.carousel.center = CGPointMake(self.view.center.x+masterWidth/2, self.view.frame.size.height/2-64);
                         
                         self.masterView.center = CGPointMake(masterWidth/2, self.masterView.center.y);
                         carouselFadeRight.center = CGPointMake(974, carouselFadeRight.center.y);
@@ -1272,7 +1277,7 @@
 - (void)collectionView:(LSCollectionViewHelper *)collectionView moveItemAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
     
-    NSLog(@"BoardIDs is %@, EditBoardIDs is %@", self.boardIDs, self.editBoardIDs);
+    //NSLog(@"BoardIDs is %@, EditBoardIDs is %@", self.boardIDs, self.editBoardIDs);
     
     NSString *fromID = [self.editBoardIDs objectAtIndex:fromIndexPath.item];
     [self.editBoardIDs removeObjectAtIndex:fromIndexPath.item];

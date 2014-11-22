@@ -7,12 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ProjectDetailViewController.h"
 
 @interface SettingsViewController : UIViewController <UIGestureRecognizerDelegate> {
     
     UITapGestureRecognizer *outsideTapRecognizer;
 }
 
-
+@property (strong, nonatomic) NSMutableArray *avatars;
+@property int selectedAvatar;
 
 @end

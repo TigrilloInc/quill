@@ -10,6 +10,7 @@
 #import <Firebase/Firebase.h>
 #import <FirebaseSimpleLogin/FirebaseSimpleLogin.h>
 #import "FirebaseHelper.h"
+#import "AvatarButton.h"
 
 @interface SettingsViewController ()
 
@@ -30,7 +31,23 @@
 {
     [super viewDidLoad];
     
+    self.avatars = [NSMutableArray array];
     
+    for (int i=0; i<8; i++) {
+        
+        NSString *imageString = [NSString stringWithFormat:@"user%i.png", i+1];
+        UIImage *image = [UIImage imageNamed:imageString];
+        AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
+        if (i<4) avatar.frame = CGRectMake((i*100), 50, avatar.userImage.size.width, avatar.userImage.size.height);
+        else avatar.frame = CGRectMake(((i-4)*100), 150, avatar.userImage.size.width, avatar.userImage.size.height);
+        CGAffineTransform tr = CGAffineTransformScale(avatar.transform, .25, .25);
+        avatar.transform = tr;
+        [avatar setImage:image forState:UIControlStateNormal];
+        avatar.tag = i+1;
+        [avatar addTarget:self action:@selector(avatarTapped:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:avatar];
+        [self.avatars addObject:avatar];
+    }
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -44,10 +61,17 @@
     [self.view.window addGestureRecognizer:outsideTapRecognizer];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+-(void)avatarTapped:(id)sender {
+    
+    AvatarButton *avatar = (AvatarButton *)sender;
+    
+    for (AvatarButton *avtr in self.avatars) {
+        
+        avtr.highlightedImage.hidden = true;
+    }
+    
+    avatar.highlightedImage.hidden = false;
+    self.selectedAvatar = (int)avatar.tag;
 }
 
 - (IBAction)signOutTapped:(id)sender {
@@ -64,6 +88,14 @@
 }
 
 - (IBAction)doneTapped:(id)sender {
+    
+    NSString *avatarString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/avatar", [FirebaseHelper sharedHelper].uid];
+    Firebase *ref = [[Firebase alloc] initWithUrl:avatarString];
+    [ref setValue:@(self.selectedAvatar)];
+    
+    ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    NSString *imageString = [NSString stringWithFormat:@"user%i.png",self.selectedAvatar];
+    [projectVC.masterView.avatarButton setImage:[UIImage imageNamed:imageString] forState:UIControlStateNormal];
     
     [self dismissViewControllerAnimated:YES completion:nil];
     [self.view.window removeGestureRecognizer:outsideTapRecognizer];

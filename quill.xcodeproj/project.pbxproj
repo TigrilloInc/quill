@@ -33,8 +33,15 @@
 		1265B18C1984533500349817 /* board.png in Resources */ = {isa = PBXBuildFile; fileRef = 1265B18B1984533500349817 /* board.png */; };
 		12899BB01A168CA100AF95BD /* MasterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 12899BAF1A168CA100AF95BD /* MasterView.m */; };
 		12899BB21A1AEC3B00AF95BD /* carouselfade.png in Resources */ = {isa = PBXBuildFile; fileRef = 12899BB11A1AEC3A00AF95BD /* carouselfade.png */; };
-		128DC2FE1A1C4E3500FF6076 /* carouselfadeblack.png in Resources */ = {isa = PBXBuildFile; fileRef = 128DC2FD1A1C4E3500FF6076 /* carouselfadeblack.png */; };
 		128DC3071A1E8C7000FF6076 /* ChatTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 128DC3061A1E8C7000FF6076 /* ChatTableViewCell.m */; };
+		128DC3101A1FD50C00FF6076 /* user1.png in Resources */ = {isa = PBXBuildFile; fileRef = 128DC3081A1FD50C00FF6076 /* user1.png */; };
+		128DC3111A1FD50C00FF6076 /* user2.png in Resources */ = {isa = PBXBuildFile; fileRef = 128DC3091A1FD50C00FF6076 /* user2.png */; };
+		128DC3121A1FD50C00FF6076 /* user3.png in Resources */ = {isa = PBXBuildFile; fileRef = 128DC30A1A1FD50C00FF6076 /* user3.png */; };
+		128DC3131A1FD50C00FF6076 /* user4.png in Resources */ = {isa = PBXBuildFile; fileRef = 128DC30B1A1FD50C00FF6076 /* user4.png */; };
+		128DC3141A1FD50C00FF6076 /* user5.png in Resources */ = {isa = PBXBuildFile; fileRef = 128DC30C1A1FD50C00FF6076 /* user5.png */; };
+		128DC3151A1FD50C00FF6076 /* user6.png in Resources */ = {isa = PBXBuildFile; fileRef = 128DC30D1A1FD50C00FF6076 /* user6.png */; };
+		128DC3161A1FD50C00FF6076 /* user7.png in Resources */ = {isa = PBXBuildFile; fileRef = 128DC30E1A1FD50C00FF6076 /* user7.png */; };
+		128DC3171A1FD50C00FF6076 /* user8.png in Resources */ = {isa = PBXBuildFile; fileRef = 128DC30F1A1FD50C00FF6076 /* user8.png */; };
 		129E127219648A2C00ED9D42 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127119648A2C00ED9D42 /* Foundation.framework */; };
 		129E127419648A2C00ED9D42 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127319648A2C00ED9D42 /* CoreGraphics.framework */; };
 		129E127619648A2C00ED9D42 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127519648A2C00ED9D42 /* UIKit.framework */; };
@@ -177,9 +184,16 @@
 		12899BAE1A168CA100AF95BD /* MasterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterView.h; sourceTree = "<group>"; };
 		12899BAF1A168CA100AF95BD /* MasterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterView.m; sourceTree = "<group>"; };
 		12899BB11A1AEC3A00AF95BD /* carouselfade.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = carouselfade.png; path = Resources/carouselfade.png; sourceTree = "<group>"; };
-		128DC2FD1A1C4E3500FF6076 /* carouselfadeblack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = carouselfadeblack.png; path = Resources/carouselfadeblack.png; sourceTree = "<group>"; };
 		128DC3051A1E8C7000FF6076 /* ChatTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatTableViewCell.h; sourceTree = "<group>"; };
 		128DC3061A1E8C7000FF6076 /* ChatTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatTableViewCell.m; sourceTree = "<group>"; };
+		128DC3081A1FD50C00FF6076 /* user1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = user1.png; path = Resources/user1.png; sourceTree = "<group>"; };
+		128DC3091A1FD50C00FF6076 /* user2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = user2.png; path = Resources/user2.png; sourceTree = "<group>"; };
+		128DC30A1A1FD50C00FF6076 /* user3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = user3.png; path = Resources/user3.png; sourceTree = "<group>"; };
+		128DC30B1A1FD50C00FF6076 /* user4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = user4.png; path = Resources/user4.png; sourceTree = "<group>"; };
+		128DC30C1A1FD50C00FF6076 /* user5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = user5.png; path = Resources/user5.png; sourceTree = "<group>"; };
+		128DC30D1A1FD50C00FF6076 /* user6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = user6.png; path = Resources/user6.png; sourceTree = "<group>"; };
+		128DC30E1A1FD50C00FF6076 /* user7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = user7.png; path = Resources/user7.png; sourceTree = "<group>"; };
+		128DC30F1A1FD50C00FF6076 /* user8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = user8.png; path = Resources/user8.png; sourceTree = "<group>"; };
 		129E126E19648A2C00ED9D42 /* quill.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = quill.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		129E127119648A2C00ED9D42 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		129E127319648A2C00ED9D42 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -395,13 +409,20 @@
 				1225C433199D4AB30061027B /* board2.png */,
 				12AA5FB219EC44F400F6D552 /* drawing.png */,
 				1225C424199952710061027B /* user.png */,
+				128DC3081A1FD50C00FF6076 /* user1.png */,
+				128DC3091A1FD50C00FF6076 /* user2.png */,
+				128DC30A1A1FD50C00FF6076 /* user3.png */,
+				128DC30B1A1FD50C00FF6076 /* user4.png */,
+				128DC30C1A1FD50C00FF6076 /* user5.png */,
+				128DC30D1A1FD50C00FF6076 /* user6.png */,
+				128DC30E1A1FD50C00FF6076 /* user7.png */,
+				128DC30F1A1FD50C00FF6076 /* user8.png */,
 				1243AFB819FF2CD20029B976 /* usercomment.png */,
 				1243AFB219FF0A900029B976 /* userhighlight.png */,
 				12423D231A02A611005F6D1A /* usercommenthighlight.png */,
 				1216D98C19A262A80095DBD8 /* chatfade.png */,
 				12A9485619F814330042A036 /* chatfade2.png */,
 				12899BB11A1AEC3A00AF95BD /* carouselfade.png */,
-				128DC2FD1A1C4E3500FF6076 /* carouselfadeblack.png */,
 				1225C431199B194F0061027B /* close.png */,
 				129E129419648A2C00ED9D42 /* Images.xcassets */,
 				1219E36A19A671C800781945 /* Monaco.ttf */,
@@ -601,22 +622,29 @@
 				1216D9A519A5AA550095DBD8 /* klavika-regular.otf in Resources */,
 				12A9485719F814330042A036 /* chatfade2.png in Resources */,
 				1243AFB319FF0A900029B976 /* userhighlight.png in Resources */,
+				128DC3161A1FD50C00FF6076 /* user7.png in Resources */,
 				1216D9A819A5D1FA0095DBD8 /* klavika-light.otf in Resources */,
+				128DC3131A1FD50C00FF6076 /* user4.png in Resources */,
 				1219E36B19A671C800781945 /* Monaco.ttf in Resources */,
 				1230ABCA1972093300EB2389 /* Main_iPad.storyboard in Resources */,
 				12899BB21A1AEC3B00AF95BD /* carouselfade.png in Resources */,
 				129E128B19648A2C00ED9D42 /* Main_iPhone.storyboard in Resources */,
 				1216D98D19A262A80095DBD8 /* chatfade.png in Resources */,
+				128DC3151A1FD50C00FF6076 /* user6.png in Resources */,
 				1243AFB919FF2CD20029B976 /* usercomment.png in Resources */,
 				1225C425199952710061027B /* user.png in Resources */,
 				12AA5FB319EC44F400F6D552 /* drawing.png in Resources */,
 				1219E36919A6584100781945 /* ZemestroStd-Bk.otf in Resources */,
+				128DC3121A1FD50C00FF6076 /* user3.png in Resources */,
 				129E128219648A2C00ED9D42 /* InfoPlist.strings in Resources */,
+				128DC3171A1FD50C00FF6076 /* user8.png in Resources */,
 				1216D9AC19A5D6240095DBD8 /* netto.ttf in Resources */,
 				12423D241A02A611005F6D1A /* usercommenthighlight.png in Resources */,
+				128DC3101A1FD50C00FF6076 /* user1.png in Resources */,
 				1265B18C1984533500349817 /* board.png in Resources */,
+				128DC3111A1FD50C00FF6076 /* user2.png in Resources */,
+				128DC3141A1FD50C00FF6076 /* user5.png in Resources */,
 				1225C434199D4AB30061027B /* board2.png in Resources */,
-				128DC2FE1A1C4E3500FF6076 /* carouselfadeblack.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
