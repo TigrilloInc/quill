@@ -213,6 +213,7 @@ static FirebaseHelper *sharedHelper = nil;
 -(void) updateMasterViewController {
     
     NSLog(@"masterView updated");
+    NSLog(@"projects is %@", self.projects);
     
     self.firstLoad = false;
 

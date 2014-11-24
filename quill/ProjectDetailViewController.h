@@ -14,7 +14,7 @@
 
 @class MasterView;
 
-@interface ProjectDetailViewController : UIViewController <iCarouselDataSource, iCarouselDelegate, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource_Draggable, UICollectionViewDelegate, UIActionSheetDelegate> {
+@interface ProjectDetailViewController : UIViewController <iCarouselDataSource, iCarouselDelegate, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource_Draggable, UICollectionViewDelegate> {
     
     BOOL newBoardCreated;
     BOOL commentsOpen;
@@ -83,6 +83,7 @@
 -(void) drawBoard:(DrawView *)drawView;
 -(IBAction) cancelTapped:(id)sender;
 -(void) showDrawMenu;
+-(void) layoutAvatars;
 -(void) updateMessages;
 
 @end

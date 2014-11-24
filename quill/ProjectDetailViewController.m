@@ -15,6 +15,7 @@
 #import "NSDate+ServerDate.h"
 #import "MasterView.h"
 #import "ChatTableViewCell.h"
+#import "AvatarPopoverViewController.h"
 
 @implementation ProjectDetailViewController
 
@@ -573,30 +574,62 @@
 -(void) avatarTapped:(id)sender {
     
     AvatarButton *avatar = (AvatarButton *)sender;
-    NSString *userName = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"name"];
-    NSLog(@"team is %@", [FirebaseHelper sharedHelper].team);
-    tappedUserID = avatar.userID;
+    AvatarPopoverViewController *avatarPopover = [[AvatarPopoverViewController alloc] init];
     
-    int roleNum = [[self.roles objectForKey:avatar.userID] intValue];
-    NSString *roleString;
-    if (roleNum == 2) roleString = @"Owner";
-    else if (roleNum == 1) roleString = @"Collaborator";
-    else roleString = @"Viewer";
+    avatarPopover.userID = avatar.userID;
+    [avatarPopover updateMenu];
     
-    NSString *titleString = [NSString stringWithFormat:@"%@ (%@)", userName, roleString];
+//    NSString *userName = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"name"];
+//
+//    int roleNum = [[self.roles objectForKey:avatar.userID] intValue];
+//    NSString *roleString;
+//    if (roleNum == 2) roleString = @"Owner";
+//    else if (roleNum == 1) roleString = @"Collaborator";
+//    else roleString = @"Viewer";
+//    
+//    NSString *titleString = [NSString stringWithFormat:@"%@ (%@)", userName, roleString];
+//    
+//    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:titleString preferredStyle:UIAlertControllerStyleActionSheet];
+//    
+//    NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].currentProjectID, tappedUserID];
+//    Firebase *ref = [[Firebase alloc] initWithUrl:projectString];
+//    
+//    if (self.userRole == 2 && ![avatar.userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
+//        
+//        if (roleNum == 0) {
+//            UIAlertAction *collaboratorAction = [UIAlertAction actionWithTitle:@"Make Collaborator" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+//                [ref setValue:@1];
+//            }];
+//            [alertController addAction:collaboratorAction];
+//        }
+//        else {
+//            UIAlertAction *viewerAction = [UIAlertAction actionWithTitle:@"Make Viewer" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+//                [ref setValue:@0];
+//            }];
+//            [alertController addAction:viewerAction];
+//        }
+//        
+//        if (![avatar.userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
+//            UIAlertAction *removeAction = [UIAlertAction actionWithTitle:@"Remove from project" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+//                [ref removeValue];
+//            }];
+//            [alertController addAction:removeAction];
+//        }
+//    }
+//    else {
+//        UIAlertAction *leaveAction = [UIAlertAction actionWithTitle:@"Leave project" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+//            [ref removeValue];
+//        }];
+//        [alertController addAction:leaveAction];
+//    }
     
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:titleString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+    [avatarPopover setModalPresentationStyle:UIModalPresentationPopover];
     
-    if (self.userRole == 2 && ![avatar.userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
-        
-        if (roleNum == 0) [actionSheet addButtonWithTitle:@"Make Collaborator"];
-        else [actionSheet addButtonWithTitle:@"Make Viewer"];
-        
-        if (![avatar.userID isEqualToString:[FirebaseHelper sharedHelper].uid]) [actionSheet addButtonWithTitle:@"Remove from project"];
-    }
-    else [actionSheet addButtonWithTitle:@"Leave project"];
+    UIPopoverPresentationController *popover = [avatarPopover popoverPresentationController];
+    popover.sourceView = avatar;
+    popover.sourceRect = avatar.bounds;
     
-    [actionSheet showFromRect:avatar.frame inView:self.view animated:YES];
+    [self presentViewController:avatarPopover animated:YES completion:nil];
 }
 
 -(IBAction) applyChangesTapped:(id)sender {
@@ -1284,25 +1317,6 @@
     [self.editBoardIDs insertObject:fromID atIndex:toIndexPath.item];
     
     //NSLog(@"BoardIDs is %@, EditBoardIDs is %@", self.boardIDs, self.editBoardIDs);
-}
-
-#pragma mark -
-#pragma mark UIActionSheet
-
--(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (actionSheet.cancelButtonIndex == buttonIndex) return;
-    
-    NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-    
-    NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].currentProjectID, tappedUserID];
-    Firebase *ref = [[Firebase alloc] initWithUrl:projectString];
-    
-    if  ([buttonTitle isEqualToString:@"Leave project"] || [buttonTitle isEqualToString:@"Remove from project"] ) [ref removeValue];
-    if  ([buttonTitle isEqualToString:@"Make Collaborator"]) [ref setValue:@1];
-    if  ([buttonTitle isEqualToString:@"Make Viewer"]) [ref setValue:@0];
-    
-    tappedUserID = nil;
 }
 
 @end

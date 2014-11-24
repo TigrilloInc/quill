@@ -93,9 +93,19 @@
     Firebase *ref = [[Firebase alloc] initWithUrl:avatarString];
     [ref setValue:@(self.selectedAvatar)];
     
+    [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:@(self.selectedAvatar) forKey:@"avatar"];
+    
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
-    NSString *imageString = [NSString stringWithFormat:@"user%i.png",self.selectedAvatar];
-    [projectVC.masterView.avatarButton setImage:[UIImage imageNamed:imageString] forState:UIControlStateNormal];
+    UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"user%i.png",self.selectedAvatar]];
+    [projectVC.masterView.avatarButton setImage:image forState:UIControlStateNormal];
+    [projectVC.chatAvatar setImage:image forState:UIControlStateNormal];
+    [projectVC layoutAvatars];
+    
+    for (int i=0; i<projectVC.boardIDs.count; i++){
+        
+        DrawView *drawView = (DrawView *)[projectVC.carousel itemViewAtIndex:i];
+        [drawView layoutComments];
+    }
     
     [self dismissViewControllerAnimated:YES completion:nil];
     [self.view.window removeGestureRecognizer:outsideTapRecognizer];

@@ -42,6 +42,7 @@
 		128DC3151A1FD50C00FF6076 /* user6.png in Resources */ = {isa = PBXBuildFile; fileRef = 128DC30D1A1FD50C00FF6076 /* user6.png */; };
 		128DC3161A1FD50C00FF6076 /* user7.png in Resources */ = {isa = PBXBuildFile; fileRef = 128DC30E1A1FD50C00FF6076 /* user7.png */; };
 		128DC3171A1FD50C00FF6076 /* user8.png in Resources */ = {isa = PBXBuildFile; fileRef = 128DC30F1A1FD50C00FF6076 /* user8.png */; };
+		128DC3201A22C01800FF6076 /* AvatarPopoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 128DC31F1A22C01800FF6076 /* AvatarPopoverViewController.m */; };
 		129E127219648A2C00ED9D42 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127119648A2C00ED9D42 /* Foundation.framework */; };
 		129E127419648A2C00ED9D42 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127319648A2C00ED9D42 /* CoreGraphics.framework */; };
 		129E127619648A2C00ED9D42 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127519648A2C00ED9D42 /* UIKit.framework */; };
@@ -194,6 +195,8 @@
 		128DC30D1A1FD50C00FF6076 /* user6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = user6.png; path = Resources/user6.png; sourceTree = "<group>"; };
 		128DC30E1A1FD50C00FF6076 /* user7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = user7.png; path = Resources/user7.png; sourceTree = "<group>"; };
 		128DC30F1A1FD50C00FF6076 /* user8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = user8.png; path = Resources/user8.png; sourceTree = "<group>"; };
+		128DC31E1A22C01800FF6076 /* AvatarPopoverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AvatarPopoverViewController.h; path = ../AvatarPopoverViewController.h; sourceTree = "<group>"; };
+		128DC31F1A22C01800FF6076 /* AvatarPopoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AvatarPopoverViewController.m; path = ../AvatarPopoverViewController.m; sourceTree = "<group>"; };
 		129E126E19648A2C00ED9D42 /* quill.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = quill.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		129E127119648A2C00ED9D42 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		129E127319648A2C00ED9D42 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -381,6 +384,8 @@
 				12C3780B19FEE9FC000C0DB4 /* CommentButton.m */,
 				128DC3051A1E8C7000FF6076 /* ChatTableViewCell.h */,
 				128DC3061A1E8C7000FF6076 /* ChatTableViewCell.m */,
+				128DC31E1A22C01800FF6076 /* AvatarPopoverViewController.h */,
+				128DC31F1A22C01800FF6076 /* AvatarPopoverViewController.m */,
 				1216D99F19A3DBED0095DBD8 /* BoardCollectionViewCell.h */,
 				1216D9A019A3DBED0095DBD8 /* BoardCollectionViewCell.m */,
 				12AA5FA919E7904700F6D552 /* AddUserViewController.h */,
@@ -667,6 +672,7 @@
 				12BE8D74196CF04D00503F84 /* NewProjectViewController.m in Sources */,
 				124E5CF619AE83CB00442963 /* NSDate+ServerDate.m in Sources */,
 				12A310E4197DC65B00E03E9E /* SignUpFromInviteViewController.m in Sources */,
+				128DC3201A22C01800FF6076 /* AvatarPopoverViewController.m in Sources */,
 				1216D9A119A3DBED0095DBD8 /* BoardCollectionViewCell.m in Sources */,
 				12A310ED1980BE4300E03E9E /* iCarousel.m in Sources */,
 				129E12B619648C3200ED9D42 /* DrawView.m in Sources */,

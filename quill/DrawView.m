@@ -610,16 +610,19 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     for (CommentButton *commentButton in self.commentButtons) {
         
+        comment.deleteButton.hidden = true;
         commentButton.commentImage.hidden = false;
         commentButton.highlightedImage.hidden = true;
-        comment.deleteButton.hidden = true;
     }
     
     [self updateCarouselOffsetWithPoint:comment.point];
     
+    NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"commentsID"];
+    NSString *ownerID = [[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:comment.commentThreadID] objectForKey:@"owner"];
+    
+    if ([ownerID isEqualToString:[FirebaseHelper sharedHelper].uid]) comment.deleteButton.hidden = false;
     comment.commentImage.hidden = true;
     comment.highlightedImage.hidden = false;
-    comment.deleteButton.hidden = false;
     
     projectVC.activeCommentThreadID = comment.commentThreadID;
     
