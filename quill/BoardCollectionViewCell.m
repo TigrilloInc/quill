@@ -86,8 +86,6 @@
                 
                 int undoCount = [(NSNumber *)[[undoDict objectForKey:uid] objectForKey:@"currentIndex"] intValue];
                 
-                //if ([uid isEqualToString:[FirebaseHelper sharedHelper].uid]) NSLog(@"UNDO COUNT FROM DRAWBOARD IS %i", undoCount);
-                
                 if (undoCount > 0) {
                     
                     undone = true;

@@ -226,24 +226,19 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         [projectVC drawBoard:self];
     }
     
-    if ([projectVC.chatTextField isFirstResponder]) {
-        
-        [self hideChat];
-        return;
-    }
+    if ([projectVC.chatTextField isFirstResponder]) return;
     
     if (self.commenting) {
         
         [self addCommentAtPoint:[touch locationInView:self]];
-        self.commenting = false;
         return;
     }
     
     if (projectVC.userRole > 0) [self addUserDrawing];
     
     // initializes our point records to current location
-    self.previousPoint = [touch previousLocationInView:self];
     self.previousPreviousPoint = [touch previousLocationInView:self];
+    self.previousPoint = [touch previousLocationInView:self];
     self.currentPoint = [touch locationInView:self];
     
     CGMutablePathRef subpath = CGPathCreateMutable();
@@ -253,7 +248,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     // compute the rect containing the new segment plus padding for drawn line
     CGRect bounds = CGPathGetBoundingBox(subpath);
     CGRect drawBox = CGRectInset(bounds, -2.0 * self.lineWidth, -2.0 * self.lineWidth);
-    
     
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     NSDictionary *subpathValues =  @{ @"mid1x" : @(self.currentPoint.x),
@@ -289,7 +283,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     NSArray *allTouches = [[event allTouches] allObjects];
     
-    if (allTouches.count > 1 || !self.drawable || self.commenting) return;
+    if (allTouches.count > 1 || !self.drawable || self.commenting || [projectVC.chatTextField isFirstResponder] || self.selectedAvatarUserID) return;
     
     UITouch *touch = [touches anyObject];
     
@@ -360,6 +354,12 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     if (self.commenting) {
         
         self.commenting = false;
+        return;
+    }
+    
+    if ([projectVC.chatTextField isFirstResponder]) {
+        
+        [self hideChat];
         return;
     }
     
@@ -523,8 +523,10 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                          }
          
                          completion:^(BOOL finished) {
+
+                             button.center = CGPointMake(MAX(0,MIN(button.center.x,768)), MAX(0,MIN(button.center.y,1024)));
                              
-                             button.point = CGPointMake(button.center.x+40, button.center.y-40);
+                             button.point = CGPointMake(MAX(0,MIN(button.center.x,768))+40, button.center.y-40);
                              
                              [self updateCarouselOffsetWithPoint:button.point];
                              
@@ -548,7 +550,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         
         if ([[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:uid] objectForKey:@"inBoard"] isEqualToString:self.boardID] && [[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:uid] objectForKey:@"isDrawing"] integerValue] > 0) {
             
-            NSLog(@"Somebody else drawing!");
             isDrawing = true;
         }
     }
@@ -610,7 +611,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     for (CommentButton *commentButton in self.commentButtons) {
         
-        comment.deleteButton.hidden = true;
+        commentButton.deleteButton.hidden = true;
         commentButton.commentImage.hidden = false;
         commentButton.highlightedImage.hidden = true;
     }

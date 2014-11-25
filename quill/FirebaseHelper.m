@@ -179,7 +179,10 @@ static FirebaseHelper *sharedHelper = nil;
                 
                 for (NSString *boardID in child.value) {
                     
-                    if (![self.boards objectForKey:boardID]) [self.boards setObject:[NSMutableDictionary dictionary] forKey:boardID];
+                    if (![self.boards objectForKey:boardID]) {
+                        [self.boards setObject:[NSMutableDictionary dictionary] forKey:boardID];
+                        if (self.projectVC.activeBoardID == nil && [self.currentProjectID isEqualToString:projectID]) [self.projectVC.carousel reloadData];
+                    }
                 }
             }
         }
@@ -213,7 +216,6 @@ static FirebaseHelper *sharedHelper = nil;
 -(void) updateMasterViewController {
     
     NSLog(@"masterView updated");
-    NSLog(@"projects is %@", self.projects);
     
     self.firstLoad = false;
 
@@ -241,7 +243,9 @@ static FirebaseHelper *sharedHelper = nil;
     
     [ref observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
-        [self.team setObject:[snapshot.value objectForKey:@"projects"] forKey:@"projects"];
+        NSDictionary *projectsDict = [snapshot.value objectForKey:@"projects"];
+        
+        if (projectsDict) [self.team setObject:projectsDict forKey:@"projects"];
         
         for (NSString *userID in [[snapshot.value objectForKey:@"users"] allKeys]) {
             
@@ -332,8 +336,7 @@ static FirebaseHelper *sharedHelper = nil;
             //NSLog(@"boardIDs is %@", boardIDs);
             //NSLog(@"drawView is %@", drawView);
             //NSLog(@"boardIndex is %i", boardIndex);
-            //NSLog(@"projectVC carousel is %@", self.projectVC.carousel);
-            
+
             [self.projectVC drawBoard:drawView];
         }
     }];
@@ -521,7 +524,11 @@ static FirebaseHelper *sharedHelper = nil;
     
     [[ref childByAppendingPath:messageString] observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot) {
         
+        if(![threadDict objectForKey:@"messages"]) [threadDict setObject:[NSMutableDictionary dictionary] forKey:@"messages"];
+        
         [[threadDict objectForKey:@"messages"] setObject:snapshot.value forKey:snapshot.name];
+        
+        //NSLog(@"thread is %@", threadDict);
         
         if ([self.projectVC.activeCommentThreadID isEqualToString:commentThreadID]) {
             [self.projectVC updateMessages];
@@ -606,7 +613,7 @@ static FirebaseHelper *sharedHelper = nil;
     NSArray *orderedProjectNames = [projectNames sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     int projectIndex = [orderedProjectNames indexOfObject:defaultProjectName];
     
-    NSLog(@"last viewed project is %@", defaultProjectName);
+    //NSLog(@"last viewed project is %@", defaultProjectName);
     
     return [NSIndexPath indexPathForItem:projectIndex inSection:0];
 }

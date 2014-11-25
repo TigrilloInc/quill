@@ -578,56 +578,12 @@
     
     avatarPopover.userID = avatar.userID;
     [avatarPopover updateMenu];
-    
-//    NSString *userName = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"name"];
-//
-//    int roleNum = [[self.roles objectForKey:avatar.userID] intValue];
-//    NSString *roleString;
-//    if (roleNum == 2) roleString = @"Owner";
-//    else if (roleNum == 1) roleString = @"Collaborator";
-//    else roleString = @"Viewer";
-//    
-//    NSString *titleString = [NSString stringWithFormat:@"%@ (%@)", userName, roleString];
-//    
-//    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:titleString preferredStyle:UIAlertControllerStyleActionSheet];
-//    
-//    NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].currentProjectID, tappedUserID];
-//    Firebase *ref = [[Firebase alloc] initWithUrl:projectString];
-//    
-//    if (self.userRole == 2 && ![avatar.userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
-//        
-//        if (roleNum == 0) {
-//            UIAlertAction *collaboratorAction = [UIAlertAction actionWithTitle:@"Make Collaborator" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-//                [ref setValue:@1];
-//            }];
-//            [alertController addAction:collaboratorAction];
-//        }
-//        else {
-//            UIAlertAction *viewerAction = [UIAlertAction actionWithTitle:@"Make Viewer" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-//                [ref setValue:@0];
-//            }];
-//            [alertController addAction:viewerAction];
-//        }
-//        
-//        if (![avatar.userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
-//            UIAlertAction *removeAction = [UIAlertAction actionWithTitle:@"Remove from project" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-//                [ref removeValue];
-//            }];
-//            [alertController addAction:removeAction];
-//        }
-//    }
-//    else {
-//        UIAlertAction *leaveAction = [UIAlertAction actionWithTitle:@"Leave project" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-//            [ref removeValue];
-//        }];
-//        [alertController addAction:leaveAction];
-//    }
-    
     [avatarPopover setModalPresentationStyle:UIModalPresentationPopover];
     
     UIPopoverPresentationController *popover = [avatarPopover popoverPresentationController];
     popover.sourceView = avatar;
     popover.sourceRect = avatar.bounds;
+    popover.permittedArrowDirections = UIPopoverArrowDirectionUp;
     
     [self presentViewController:avatarPopover animated:YES completion:nil];
 }
@@ -742,6 +698,7 @@
                          
                          [self updateDetails];
                          
+                         [self.carousel reloadData];
                          [self.carousel setScrollEnabled:YES];
                          
                          [self.masterView.projectsTable reloadData];
