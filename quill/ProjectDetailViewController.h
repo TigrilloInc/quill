@@ -48,8 +48,6 @@
 
 @property float carouselOffset;
 
-
-
 @property (weak, nonatomic) IBOutlet MasterView *masterView;
 @property (weak, nonatomic) IBOutlet iCarousel *carousel;
 @property (weak, nonatomic) IBOutlet UILabel *projectNameLabel;
@@ -79,7 +77,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *applyChangesButton;
 
 -(void) updateDetails;
--(void) resetUndo;
 -(void) drawBoard:(DrawView *)drawView;
 -(IBAction) cancelTapped:(id)sender;
 -(void) showDrawMenu;

@@ -59,18 +59,20 @@
     
     NSString *projectName = self.nameField.text;
     
+    NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+    
     NSDictionary *projectDict =  @{ @"info" : @{ @"name" :   projectName,
                                                  @"boards" : @{ @"0" : boardID },
                                                  @"chatID" : chatID,
                                                  @"roles" : @{ [FirebaseHelper sharedHelper].uid : @2 }
                                                  },
-                                    @"viewedAt" :  @{ [FirebaseHelper sharedHelper].uid : @([[NSDate serverDate] timeIntervalSince1970]*100000000) },
-                                    @"updatedAt" : @([[NSDate serverDate] timeIntervalSince1970]*100000000)
+                                    @"viewedAt" :  @{ [FirebaseHelper sharedHelper].uid : dateString },
+                                    @"updatedAt" : dateString
                                     };
     
     NSMutableDictionary *allSubpathsDict = [NSMutableDictionary dictionary];
     for (NSString *uid in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
-        [allSubpathsDict setObject:@{[NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000]: @"penUp"} forKey: uid];
+        [allSubpathsDict setObject:@{ dateString : @"penUp" } forKey: uid];
     }
     
     NSDictionary *boardDict =  @{ @"name" : @"Untitled",
@@ -79,7 +81,7 @@
                                   @"commentsID" : commentsID,
                                   @"lastSubpath" : @{},
                                   @"allSubpaths" : allSubpathsDict,
-                                  @"updatedAt" : @([[NSDate serverDate] timeIntervalSince1970]*100000000),
+                                  @"updatedAt" : dateString,
                                   @"undo" :
                                       @{ [FirebaseHelper sharedHelper].uid :
                                              @{ @"currentIndex" : @0,
@@ -110,7 +112,6 @@
                         [projectVC.masterView tableView:projectVC.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
                         
                     }];
-                
                 }];
             }];
         }];

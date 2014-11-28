@@ -240,7 +240,7 @@
     
     for (NSString *messageID in messageKeys) {
         
-        NSNumber *date;
+        NSString *date;
         
         if (self.activeCommentThreadID != nil) {
             
@@ -254,14 +254,14 @@
         [self.messages addObject:date];
     }
     
-    NSNumber *viewedAt = [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid];
-    if (!viewedAt) viewedAt = @([[NSDate serverDate] timeIntervalSince1970]*100000000);
+    NSString *viewedAt = [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid];
+    if (!viewedAt) viewedAt = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     [self.messages addObject:viewedAt];
     
     NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
     [self.messages sortUsingDescriptors:@[sorter]];
     
-    if ([self.messages.lastObject isEqualToNumber:viewedAt] || (!self.activeCommentThreadID && self.chatViewed) || [self.viewedCommentThreadIDs containsObject:self.activeCommentThreadID]) {
+    if ([self.messages.lastObject isEqualToString:viewedAt] || (!self.activeCommentThreadID && self.chatViewed) || [self.viewedCommentThreadIDs containsObject:self.activeCommentThreadID]) {
         [self.messages removeObject:viewedAt];
         self.chatViewed = true;
         if (![self.chatTextField isFirstResponder]) [self.chatOpenButton setTitle:@"OPEN" forState:UIControlStateNormal];
@@ -269,7 +269,7 @@
     
     for (NSString *messageID in messageKeys) {
         
-        NSNumber *date;
+        NSString *date;
         
         if (self.activeCommentThreadID){
             
@@ -280,11 +280,11 @@
         
         for (int i=0; i<self.messages.count; i++) {
             
-            if (viewedAt == self.messages[i]) { [self.messages replaceObjectAtIndex:i withObject:@"---------------------------------------<NEW MESSAGES>---------------------------------------"];
+            if ([viewedAt isEqualToString:self.messages[i]]) { [self.messages replaceObjectAtIndex:i withObject:@"---------------------------------------<NEW MESSAGES>---------------------------------------"];
                 if (!self.chatViewed && ![self.chatTextField isFirstResponder]) [self.chatOpenButton setTitle:@"NEW MESSAGES!" forState:UIControlStateNormal];
             }
             
-            else if (date == self.messages[i]) {
+            else if ([date isEqualToString:self.messages[i]]) {
                 
                 NSString *text;
                 NSString *name;
@@ -306,7 +306,6 @@
                 }
                 
                 NSString *messageString = [NSString stringWithFormat:@"%@: %@", name, text];
-                //NSLog(@"messageString is %@", messageString);
                 
                 [self.messages replaceObjectAtIndex:i withObject:messageString];
             }
@@ -428,39 +427,6 @@
     
 }
 
--(void) resetUndo {
-    
-    int currentIndex = [(NSNumber *)[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.activeBoardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndex"] intValue];
-    
-    if (currentIndex == 0) return;
-    
-    NSMutableDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.activeBoardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
-    
-    [undoDict setObject:@0 forKey:@"currentIndex"];
-    NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@", self.activeBoardID, [FirebaseHelper sharedHelper].uid];
-    Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
-    [[boardRef childByAppendingPath:@"currentIndex"] setValue:@0];
-    
-    int total = [(NSNumber *)[undoDict objectForKey:@"total"] intValue];
-    total -= currentIndex;
-    [undoDict setObject:@(total) forKey:@"total"];
-    [[boardRef childByAppendingPath:@"total"] setValue:@(total)];
-    
-    NSMutableDictionary *allSubpathsDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.activeBoardID] objectForKey:@"allSubpaths"] objectForKey:[FirebaseHelper sharedHelper].uid];
-    
-    for (NSString *dateString in allSubpathsDict.allKeys) {
-        
-        if ([dateString longLongValue] > [self.activeBoardUndoIndexDate longLongValue]) {
-            
-            [allSubpathsDict removeObjectForKey:dateString];
-            
-            NSString *subpathString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/allSubpaths/%@/%@", self.activeBoardID, [FirebaseHelper sharedHelper].uid, dateString];
-            Firebase *subpathRef = [[Firebase alloc] initWithUrl:subpathString];
-            [subpathRef removeValue];
-        }
-    }
-}
-
 - (IBAction)sendTapped:(id)sender {
     
     [self textFieldShouldReturn:self.chatTextField];
@@ -561,6 +527,9 @@
     for (int i=0; i<self.boardIDs.count; i++) {
         [self collectionView:self.draggableCollectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
     }
+    
+    [self.view bringSubviewToFront:self.applyChangesButton];
+    [self.view bringSubviewToFront:self.cancelButton];
 }
 
 - (IBAction)boardNameEditTapped:(id)sender {
@@ -597,9 +566,15 @@
     
     if (self.editProjectNameTextField.text.length > 0) {
         
-        [[ref childByAppendingPath:@"name"] setValue:self.editProjectNameTextField.text];
+        NSString *newName = self.editProjectNameTextField.text;
         
-        [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] setObject:self.editProjectNameTextField.text forKey:@"name"];
+        [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] setObject:newName forKey:@"name"];
+        
+        [self.masterView updateProjects];        
+        self.masterView.defaultRow = [NSIndexPath indexPathForRow:[self.masterView.orderedProjectNames indexOfObject:newName] inSection:0];
+        
+        [[ref childByAppendingPath:@"name"] setValue:newName];
+        
     }
     
     if (![self.editBoardIDs isEqualToArray:self.boardIDs]) {
@@ -718,13 +693,13 @@
         NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@", currentDrawView.boardID, [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
         [[ref childByAppendingPath:@"currentIndex"] setValue:@(undoCount)];
-        [[ref childByAppendingPath:@"currentIndexDate"] setValue:@([self.activeBoardUndoIndexDate longLongValue])];
+        [[ref childByAppendingPath:@"currentIndexDate"] setValue:self.activeBoardUndoIndexDate];
         
         [self drawBoard:currentDrawView];
         
         NSMutableDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
         [undoDict setObject:@(undoCount) forKey:@"currentIndex"];
-        [undoDict setObject:@([self.activeBoardUndoIndexDate longLongValue]) forKey:@"currentIndexDate"];
+        [undoDict setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
         
     }
 }
@@ -760,16 +735,16 @@
             
             NSString *currentIndexDateString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@/currentIndexDate", self.activeBoardID, [FirebaseHelper sharedHelper].uid];
             Firebase *ref = [[Firebase alloc] initWithUrl:currentIndexDateString];
-            [ref setValue:@([self.activeBoardUndoIndexDate longLongValue])];
+            [ref setValue:self.activeBoardUndoIndexDate];
             
-            [[[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:@([self.activeBoardUndoIndexDate longLongValue]) forKey:@"currentIndexDate"];
+            [[[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
         }
     }
 }
 
 - (void) clearTapped {
     
-    [self resetUndo];
+    [[FirebaseHelper sharedHelper] resetUndo];
     
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     
@@ -820,9 +795,11 @@
     
     NSMutableDictionary *allSubpathsDict = [NSMutableDictionary dictionary];
     
+    NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+    
     for (NSString *uid in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
         
-        [allSubpathsDict setObject:[@{[NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000]: @"penUp"} mutableCopy] forKey: uid];
+        [allSubpathsDict setObject:[@{ dateString : @"penUp"} mutableCopy] forKey: uid];
     }
     
     NSString *boardNum = [NSString stringWithFormat:@"%lu", (unsigned long)self.boardIDs.count];
@@ -832,7 +809,7 @@
                                   @"commentsID" : commentsID,
                                   @"lastSubpath" : [NSMutableDictionary dictionary],
                                   @"allSubpaths" : allSubpathsDict,
-                                  @"updatedAt" : @([[NSDate serverDate] timeIntervalSince1970]*100000000),
+                                  @"updatedAt" : dateString,
                                   @"undo" :
                                       @{ [FirebaseHelper sharedHelper].uid :
                                              [@{ @"currentIndex" : @0,
@@ -1158,6 +1135,8 @@
         
         NSString *chatString;
         
+        NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+        
         if (self.activeCommentThreadID) {
             NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"commentsID"];
             chatString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@/%@/messages", commentsID, self.activeCommentThreadID];
@@ -1167,7 +1146,7 @@
         Firebase *chatRef = [[Firebase alloc] initWithUrl:chatString];
         NSDictionary *messageDict = @{ @"name" : [FirebaseHelper sharedHelper].userName ,
                                        @"message" : textField.text,
-                                       @"sentAt" : @([[NSDate serverDate] timeIntervalSince1970]*100000000)
+                                       @"sentAt" : dateString
                                        };
         [[chatRef childByAutoId] setValue:messageDict];
         

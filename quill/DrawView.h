@@ -10,7 +10,7 @@
 #import "CommentButton.h"
 
 @interface DrawView : UIView {
-    
+
 }
 
 @property (nonatomic, strong) NSNumber *lineColorNumber;

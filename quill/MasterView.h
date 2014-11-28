@@ -20,5 +20,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *nameButton;
 @property (weak, nonatomic) IBOutlet UIButton *teamButton;
 @property (strong, nonatomic) NSIndexPath *defaultRow;
+@property (strong, nonatomic) NSArray *orderedProjectNames;
+
+-(void)updateProjects;
 
 @end

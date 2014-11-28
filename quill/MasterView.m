@@ -54,16 +54,18 @@
     return self;
 }
 
-//- (void)viewDidLoad
-//{
-//    [super viewDidLoad];
-//    
-//    self.defaultRow = [NSIndexPath indexPathForRow:0 inSection:0];
-//    self.avatarButton.hidden = true;
-//    //self.teamButton.titleLabel.font = [UIFont fontWithName:@"ZemestroStd-Bk" size:15];
-//    //self.nameButton.titleLabel.font = [UIFont fontWithName:@"ZemestroStd-Bk" size:20];
-//    
-//}
+-(void)updateProjects {
+    
+    NSMutableArray *projectNames = [NSMutableArray array];
+    
+    for (NSString *projectID in [FirebaseHelper sharedHelper].visibleProjectIDs) {
+        
+        NSString *projectName = [(NSDictionary *)[[FirebaseHelper sharedHelper].projects objectForKey:projectID] objectForKey:@"name"];
+        [projectNames addObject:projectName];
+    }
+    
+    self.orderedProjectNames = [projectNames sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+}
 
 #pragma mark - Table view data source
 
@@ -91,33 +93,25 @@
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MasterCell" forIndexPath:indexPath];
     
-    NSMutableArray *projectNames = [NSMutableArray array];
+    [self updateProjects];
     
-    for (NSString *projectID in [FirebaseHelper sharedHelper].visibleProjectIDs) {
+    if (self.orderedProjectNames.count > indexPath.row)  {
         
-        NSString *projectName = [(NSDictionary *)[[FirebaseHelper sharedHelper].projects objectForKey:projectID] objectForKey:@"name"];
-        [projectNames addObject:projectName];
-    }
-    
-    NSArray *orderedProjectNames = [projectNames sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    
-    if (orderedProjectNames.count > indexPath.row)  {
-        
-        cell.textLabel.text = orderedProjectNames[indexPath.row];
+        cell.textLabel.text = self.orderedProjectNames[indexPath.row];
         
         NSString *projectID;
         
         for (NSString *pID in [FirebaseHelper sharedHelper].visibleProjectIDs) {
             
             NSString *name = [[[FirebaseHelper sharedHelper].projects objectForKey:pID] objectForKey:@"name"];
-            if ([name isEqualToString:orderedProjectNames[indexPath.row]]) projectID = pID;
+            if ([name isEqualToString:self.orderedProjectNames[indexPath.row]]) projectID = pID;
         }
         
-        NSNumber *updatedAtDate = [[[FirebaseHelper sharedHelper].projects objectForKey:projectID] objectForKey:@"updatedAt"];
-        NSNumber *viewedAtDate = [[[[FirebaseHelper sharedHelper].projects objectForKey:projectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid];
+        NSString *updatedAtString = [[[FirebaseHelper sharedHelper].projects objectForKey:projectID] objectForKey:@"updatedAt"];
+        NSString *viewedAtString = [[[[FirebaseHelper sharedHelper].projects objectForKey:projectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid];
         
-        if ([updatedAtDate doubleValue] > [viewedAtDate doubleValue] && !cell.selected) {
-            //NSLog(@"project %@ viewed at %@", projectID, viewedAtDate);
+        if ([updatedAtString doubleValue] > [viewedAtString doubleValue] && !cell.selected) {
+
             cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:20];
         }
         else cell.textLabel.font = [UIFont fontWithName:@"Helvetica" size:20];

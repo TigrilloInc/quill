@@ -45,6 +45,7 @@
 - (void) setProjectViewedAt;
 - (void) setProjectUpdatedAt;
 - (void) setActiveBoardUpdatedAt;
+- (void) resetUndo;
 - (NSIndexPath *) getLastViewedProjectIndexPath;
 
 @end

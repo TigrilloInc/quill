@@ -276,7 +276,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [lastSubpathDict setObject:[FirebaseHelper sharedHelper].uid forKey:@"uid"];
     [lastSubpathRef setValue:lastSubpathDict];
     
-    [projectVC resetUndo];
+    [[FirebaseHelper sharedHelper] resetUndo];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -380,7 +380,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [undoDict setObject:@(undoTotal) forKey:@"total"];
     
     NSDictionary *newUndoDict = @{  @"currentIndex" : @0,
-                                    @"currentIndexDate" : @([[NSDate serverDate] timeIntervalSince1970]*100000000),
+                                    @"currentIndexDate" : dateString,
                                     @"total" : @(undoTotal)
                                     };
     
