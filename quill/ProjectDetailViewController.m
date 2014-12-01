@@ -44,7 +44,7 @@
     self.chatTable.transform = CGAffineTransformMakeRotation(M_PI);
     
     self.editBoardNameTextField.hidden = true;
-    
+    self.activeBoardUndoIndexDates = [NSMutableDictionary dictionary];
     self.viewedCommentThreadIDs = [NSMutableArray array];
     
     [self setUpDrawMenu];
@@ -356,16 +356,16 @@
     drawView.loadingView.hidden = true;
     if (![[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:drawView.boardID]) [[FirebaseHelper sharedHelper].loadedBoardIDs addObject:drawView.boardID];
     
-    NSDictionary *allSubpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:drawView.boardID] objectForKey:@"allSubpaths"];
+    NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:drawView.boardID] objectForKey:@"subpaths"];
     
     NSDictionary *dictRef = [[[FirebaseHelper sharedHelper].boards objectForKey:drawView.boardID] objectForKey:@"undo"];
     NSMutableDictionary *undoDict = (NSMutableDictionary *)CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)dictRef, kCFPropertyListMutableContainers));
     
     NSMutableDictionary *subpathsToDraw = [NSMutableDictionary dictionary];
     
-    for (NSString *uid in allSubpathsDict.allKeys) {
+    for (NSString *uid in subpathsDict.allKeys) {
         
-        NSDictionary *uidDict = [allSubpathsDict objectForKey:uid];
+        NSDictionary *uidDict = [subpathsDict objectForKey:uid];
         
         NSMutableArray *userOrderedKeys = [uidDict.allKeys mutableCopy];
         NSSortDescriptor *descendingSorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
@@ -373,43 +373,35 @@
         
         BOOL undone = false;
         BOOL cleared = false;
+        int undoCount = [[[undoDict objectForKey:uid] objectForKey:@"currentIndex"] intValue];
         
         for (int i=0; i<userOrderedKeys.count; i++) {
             
-            NSMutableDictionary *subpathValues = [[uidDict objectForKey:(NSString *)userOrderedKeys[i]] mutableCopy];
+            NSMutableDictionary *subpathValues = [[uidDict objectForKey:userOrderedKeys[i]] mutableCopy];
             
             if ([subpathValues respondsToSelector:@selector(objectForKey:)]){
                 
                 if (drawView.selectedAvatarUserID != nil && ![uid isEqualToString:drawView.selectedAvatarUserID]) [subpathValues setObject:@1 forKey:@"faded"];
                 if (!undone && !cleared) [subpathsToDraw setObject:subpathValues forKey:userOrderedKeys[i]];
                 
-            } else if ([[uidDict objectForKey:(NSString *)userOrderedKeys[i]] respondsToSelector:@selector(isEqualToString:)]) {
+            } else if ([[uidDict objectForKey:userOrderedKeys[i]] respondsToSelector:@selector(isEqualToString:)]) {
                 
-                if ([[uidDict objectForKey:(NSString *)userOrderedKeys[i]] isEqualToString:@"penUp"]) {
-                    
-                    int undoCount = [(NSNumber *)[[undoDict objectForKey:uid] objectForKey:@"currentIndex"] intValue];
+                if ([[uidDict objectForKey:userOrderedKeys[i]] isEqualToString:@"penUp"]) {
                     
                     if (undoCount > 0) {
                         
                         undone = true;
                         undoCount--;
-
-                        [[undoDict objectForKey:uid] setObject:@(undoCount) forKey:@"currentIndex"];
-
-                    } else {
                         
-                        if (undone) {
-                            
-                            self.activeBoardUndoIndexDate = userOrderedKeys[i];
+                    } else {
 
-                        }
+                        if (undone) [self.activeBoardUndoIndexDates setObject:userOrderedKeys[i] forKey:uid];
                         undone = false;
                     }
                     
-                } else if ([[uidDict objectForKey:(NSString *)userOrderedKeys[i]] isEqualToString:@"clear"]) {
+                } else if ([[uidDict objectForKey:userOrderedKeys[i]] isEqualToString:@"clear"]) {
                     
                     if (!undone) cleared = true;
-                    
                 }
             }
         }
@@ -450,6 +442,7 @@
     [self.viewedBoardIDs addObject:boardID];
     boardButton = button;
     self.activeBoardID = boardID;
+    [self.activeBoardUndoIndexDates setObject:[[[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndexDate"] forKey:[FirebaseHelper sharedHelper].uid];
     
     [[FirebaseHelper sharedHelper] setInBoard];
 
@@ -678,67 +671,52 @@
                          
                          [self.masterView.projectsTable reloadData];
                          [self.masterView.projectsTable selectRowAtIndexPath:self.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
-                     }];
+                     }
+     ];
 }
 
 - (void) undoTapped {
     
-    int undoCount = [(NSNumber *)[[[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndex"] intValue];
-    int undoTotal = [(NSNumber *)[[[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"total"] intValue];
+    int undoCount = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndex"] intValue];
+    int undoTotal = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"total"] intValue];
     
     if (undoCount < undoTotal)  {
         
         undoCount++;
         
+        NSMutableDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
+        [undoDict setObject:@(undoCount) forKey:@"currentIndex"];
+        
         NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@", currentDrawView.boardID, [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
         [[ref childByAppendingPath:@"currentIndex"] setValue:@(undoCount)];
-        [[ref childByAppendingPath:@"currentIndexDate"] setValue:self.activeBoardUndoIndexDate];
         
         [self drawBoard:currentDrawView];
         
-        NSMutableDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
-        [undoDict setObject:@(undoCount) forKey:@"currentIndex"];
-        [undoDict setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
-        
+        [undoDict setObject:[self.activeBoardUndoIndexDates objectForKey:[FirebaseHelper sharedHelper].uid] forKey:@"currentIndexDate"];
+        [[ref childByAppendingPath:@"currentIndexDate"] setValue:[self.activeBoardUndoIndexDates objectForKey:[FirebaseHelper sharedHelper].uid]];
     }
 }
 
 - (void) redoTapped {
     
-    int undoCount = [(NSNumber *)[[[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndex"] intValue];
+    int undoCount = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndex"] intValue];
     
     if (undoCount > 0) {
         
         undoCount--;
         
-        [[[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:@(undoCount) forKey:@"currentIndex"];
+        NSMutableDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
+        [undoDict setObject:@(undoCount) forKey:@"currentIndex"];
         
-        NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@/currentIndex", currentDrawView.boardID, [FirebaseHelper sharedHelper].uid];
+        NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@/", currentDrawView.boardID, [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
-        [ref setValue:@(undoCount)];
+        [[ref childByAppendingPath:@"currentIndex"] setValue:@(undoCount)];
         
         [self drawBoard:currentDrawView];
-    }
-    
-    if (undoCount == 0) {
         
-        NSDictionary *allSubpathsDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"allSubpaths"] objectForKey:[FirebaseHelper sharedHelper].uid];
-        
-        NSMutableArray *orderedKeys = [allSubpathsDict.allKeys mutableCopy];
-        NSSortDescriptor *descendingSorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
-        [orderedKeys sortUsingDescriptors:@[descendingSorter]];
-        
-        self.activeBoardUndoIndexDate = orderedKeys[0];
-        
-        if (self.activeBoardID != nil) {
-            
-            NSString *currentIndexDateString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@/currentIndexDate", self.activeBoardID, [FirebaseHelper sharedHelper].uid];
-            Firebase *ref = [[Firebase alloc] initWithUrl:currentIndexDateString];
-            [ref setValue:self.activeBoardUndoIndexDate];
-            
-            [[[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
-        }
+        [[ref childByAppendingPath:@"currentIndexDate"] setValue:[self.activeBoardUndoIndexDates objectForKey:[FirebaseHelper sharedHelper].uid]];
+        [undoDict setObject:[self.activeBoardUndoIndexDates objectForKey:[FirebaseHelper sharedHelper].uid] forKey:@"currentIndexDate"];
     }
 }
 
@@ -748,18 +726,14 @@
     
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     
-    NSString *refString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", currentDrawView.boardID];
+    NSString *refString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", currentDrawView.boardID, [FirebaseHelper sharedHelper].uid];
     Firebase *ref = [[Firebase alloc] initWithUrl:refString];
-    NSDictionary *clearDict = @{ dateString  :  @"clear" };
-    NSString *allSubpathsString = [NSString stringWithFormat:@"allSubpaths/%@", [FirebaseHelper sharedHelper].uid];
-    [[ref childByAppendingPath:allSubpathsString] updateChildValues:clearDict];
+    NSDictionary *clearDict = @{ dateString : @"clear" };
+    [ref updateChildValues:clearDict];
     
-    [[ref childByAppendingPath:@"lastSubpath"] setValue:@{ @"clear" : [FirebaseHelper sharedHelper].uid }];
-    
-    [[[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"allSubpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:@"clear" forKey:dateString];
+    [[[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:@"clear" forKey:dateString];
     
     [currentDrawView touchesEnded:nil withEvent:nil];
-    
     [currentDrawView clear];
 }
 
@@ -793,26 +767,21 @@
     Firebase *commentsRefWithID = [commentsRef childByAutoId];
     NSString *commentsID = commentsRefWithID.name;
     
-    NSMutableDictionary *allSubpathsDict = [NSMutableDictionary dictionary];
-    
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
-    
-    for (NSString *uid in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
-        
-        [allSubpathsDict setObject:[@{ dateString : @"penUp"} mutableCopy] forKey: uid];
-    }
     
     NSString *boardNum = [NSString stringWithFormat:@"%lu", (unsigned long)self.boardIDs.count];
     NSDictionary *boardDict =  @{ @"name" : @"Untitled",
                                   @"project" : self.projectName,
                                   @"number" : boardNum,
                                   @"commentsID" : commentsID,
-                                  @"lastSubpath" : [NSMutableDictionary dictionary],
-                                  @"allSubpaths" : allSubpathsDict,
+                                  @"subpaths" : @{ [FirebaseHelper sharedHelper].uid :
+                                                          [@{ dateString : @"penUp"} mutableCopy]
+                                                      },
                                   @"updatedAt" : dateString,
                                   @"undo" :
                                       @{ [FirebaseHelper sharedHelper].uid :
                                              [@{ @"currentIndex" : @0,
+                                                 @"currentIndexDate" : dateString,
                                                  @"total" : @0
                                                  } mutableCopy]
                                          }

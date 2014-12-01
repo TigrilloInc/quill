@@ -8,6 +8,7 @@
 
 #import "AddUserViewController.h"
 #import "FirebaseHelper.h"
+#import "NSDate+ServerDate.h"
 
 @implementation AddUserViewController
 
@@ -76,23 +77,48 @@
 }
 
 - (IBAction)addUserTapped:(id)sender {
-
-    NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles", [FirebaseHelper sharedHelper].currentProjectID];
-    Firebase *ref = [[Firebase alloc] initWithUrl:projectString];
+    
+    NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+    
+    NSDictionary *newUndoDict = @{  @"currentIndex" : @0,
+                                    @"currentIndexDate" : dateString,
+                                    @"total" : @0
+                                    };    
+    
+    NSDictionary *newSubpathsDict = @{ dateString : @"penUp"};
     
     for (NSString *userID in self.selectedUsers) {
         
         if (self.roleSwitch.on) [projectVC.roles setObject:@0 forKey:userID];
         else [projectVC.roles setObject:@1 forKey:userID];
+        
+        for (NSString *boardID in projectVC.boardIDs) {
+            
+            NSString *undoString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@", boardID, userID];
+            Firebase *undoRef = [[Firebase alloc] initWithUrl:undoString];
+            [undoRef setValue:newUndoDict withCompletionBlock:^(NSError *error, Firebase *ref) {
+                [[FirebaseHelper sharedHelper] observeUndoForUser:userID onBoard:boardID];
+            }];
+            
+            NSString *subpathsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", boardID, userID];
+            Firebase *subpathsRef = [[Firebase alloc] initWithUrl:subpathsString];
+            [subpathsRef setValue:newSubpathsDict withCompletionBlock:^(NSError *error, Firebase *ref) {
+                [[FirebaseHelper sharedHelper] observeSubpathsForUser:userID onBoard:boardID];
+            }];
+        }
     }
-
-    [ref updateChildValues:projectVC.roles withCompletionBlock:^(NSError *error, Firebase *ref) {
+    
+    NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles", [FirebaseHelper sharedHelper].currentProjectID];
+    Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
+    
+    [projectRef updateChildValues:projectVC.roles withCompletionBlock:^(NSError *error, Firebase *ref) {
         
         [outsideTapRecognizer setDelegate:nil];
         [self.view.window removeGestureRecognizer:outsideTapRecognizer];
         [self dismissViewControllerAnimated:YES completion:nil];
         [projectVC updateDetails];
     }];
+    
 }
 
 #pragma mark - Table view data source

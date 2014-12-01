@@ -77,11 +77,11 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     
     if ([projectVC.activeBoardID isEqualToString:self.boardID]) {
         
-        NSDictionary *userPaths = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"allSubpaths"];
+        NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"];
         
-        for (NSString *userID in userPaths.allKeys) {
-            
-            if (![unsortedUserIDs containsObject:userID] && ((NSDictionary *)[userPaths objectForKey:userID]).allKeys.count > 1) [unsortedUserIDs addObject:userID];
+        for (NSString *userID in subpathsDict.allKeys) {
+
+            if (![unsortedUserIDs containsObject:userID] && ((NSDictionary *)[subpathsDict objectForKey:userID]).allKeys.count > 1) [unsortedUserIDs addObject:userID];
         }
     }
     
@@ -264,17 +264,10 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     [self setNeedsDisplayInRect:drawBox];
     
-    NSString *allSubpathsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/allSubpaths/%@", self.boardID, [FirebaseHelper sharedHelper].uid];
-    Firebase *allSubpathsRef = [[Firebase alloc] initWithUrl:allSubpathsString];
-    NSString *lastSubpathString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/lastSubpath", self.boardID];
-    Firebase *lastSubpathRef = [[Firebase alloc] initWithUrl:lastSubpathString];
-    
-    [allSubpathsRef updateChildValues:@{ dateString  :  subpathValues }];
-    [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"allSubpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:subpathValues forKey:dateString];
-    
-    NSMutableDictionary *lastSubpathDict = [subpathValues mutableCopy];
-    [lastSubpathDict setObject:[FirebaseHelper sharedHelper].uid forKey:@"uid"];
-    [lastSubpathRef setValue:lastSubpathDict];
+    NSString *subpathsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", self.boardID, [FirebaseHelper sharedHelper].uid];
+    Firebase *subpathsRef = [[Firebase alloc] initWithUrl:subpathsString];
+    [subpathsRef updateChildValues:@{ dateString  :  subpathValues }];
+    [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:subpathValues forKey:dateString];
     
     [[FirebaseHelper sharedHelper] resetUndo];
 }
@@ -332,19 +325,12 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     [self setNeedsDisplayInRect:drawBox];
     
-    NSString *allSubpathsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/allSubpaths/%@", self.boardID, [FirebaseHelper sharedHelper].uid];
-    Firebase *allSubpathsRef = [[Firebase alloc] initWithUrl:allSubpathsString];
-    NSString *lastSubpathString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/lastSubpath", self.boardID];
-    Firebase *lastSubpathRef = [[Firebase alloc] initWithUrl:lastSubpathString];
-    
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     
-    [allSubpathsRef updateChildValues:@{ dateString  :  subpathValues }];
-    [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"allSubpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:subpathValues forKey:dateString];
-    
-    NSMutableDictionary *lastSubpathDict = [subpathValues mutableCopy];
-    [lastSubpathDict setObject:[FirebaseHelper sharedHelper].uid forKey:@"uid"];
-    [lastSubpathRef setValue:lastSubpathDict];
+    NSString *subpathsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", self.boardID, [FirebaseHelper sharedHelper].uid];
+    Firebase *subpathsRef = [[Firebase alloc] initWithUrl:subpathsString];
+    [subpathsRef updateChildValues:@{ dateString  :  subpathValues }];
+    [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:subpathValues forKey:dateString];
 }
 
 -(void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -370,35 +356,31 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
     
     NSDictionary *penUpDict = @{ dateString  :  @"penUp" };
-    NSString *allSubpathsString = [NSString stringWithFormat:@"allSubpaths/%@", [FirebaseHelper sharedHelper].uid];
-    [[boardRef childByAppendingPath:allSubpathsString] updateChildValues:penUpDict];
+    NSString *subpathsString = [NSString stringWithFormat:@"subpaths/%@", [FirebaseHelper sharedHelper].uid];
+    [[boardRef childByAppendingPath:subpathsString] updateChildValues:penUpDict];
     
-    NSMutableDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
-    
-    int undoTotal = [[undoDict objectForKey:@"total"] intValue];
+    NSMutableDictionary *undoDict = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"undo"];
+    int undoTotal = [[[undoDict objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"total"] intValue];
     undoTotal++;
-    [undoDict setObject:@(undoTotal) forKey:@"total"];
     
-    NSDictionary *newUndoDict = @{  @"currentIndex" : @0,
-                                    @"currentIndexDate" : dateString,
-                                    @"total" : @(undoTotal)
-                                    };
+    NSMutableDictionary *newUndoDict = [@{ @"currentIndex" : @0,
+                                           @"currentIndexDate" : dateString,
+                                           @"total" : @(undoTotal)
+                                           } mutableCopy];
+    
+    [undoDict setObject:newUndoDict forKey:[FirebaseHelper sharedHelper].uid];
     
     NSString *undoString = [NSString stringWithFormat:@"undo/%@", [FirebaseHelper sharedHelper].uid];
     [[boardRef childByAppendingPath:undoString] setValue:newUndoDict];
-    
-    [[boardRef childByAppendingPath:@"lastSubpath"] setValue:@{ @"penUp" : [FirebaseHelper sharedHelper].uid }];
-    
-    [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"allSubpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:@"penUp" forKey:dateString];
+
+    [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:@"penUp" forKey:dateString];
     
     [[FirebaseHelper sharedHelper] setProjectUpdatedAt];
     [[FirebaseHelper sharedHelper] setActiveBoardUpdatedAt];
 }
 
 -(void) drawSubpath:(NSDictionary *)subpathValues {
-    
-    if (subpathValues.allValues.count < 8) return;
-    
+
     CGPoint mid1;
     CGPoint mid2;
     CGPoint prev;

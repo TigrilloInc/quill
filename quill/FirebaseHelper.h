@@ -36,6 +36,8 @@
 - (void) observeLocalUser;
 - (void) clearData;
 - (void) observeBoardWithID:(NSString *)boardID;
+- (void) observeSubpathsForUser:(NSString *)userID onBoard:(NSString *)boardID;
+- (void) observeUndoForUser:(NSString *)userID onBoard:(NSString *)boardID;
 - (void) observeCurrentProjectBoards;
 - (void) removeCurrentProjectBoardObservers;
 - (void) updateCurrentProjectBoards;

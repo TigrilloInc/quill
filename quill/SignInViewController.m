@@ -50,9 +50,9 @@
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
     
     if ([emailTest evaluateWithObject:self.emailField.text] == true && self.passwordField.text.length > 0) {
-    
+        
         if (_signingIn == true) {
-
+            
             [authClient loginWithEmail:self.emailField.text andPassword:self.passwordField.text
                    withCompletionBlock:^(NSError* error, FAUser* user) {
                        

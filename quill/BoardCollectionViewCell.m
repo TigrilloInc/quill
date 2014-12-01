@@ -53,16 +53,16 @@
     
     [self.drawView clear];
     
-    NSDictionary *allSubpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"allSubpaths"];
+    NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"subpaths"];
     
     NSDictionary *dictRef = [[[FirebaseHelper sharedHelper].boards objectForKey:self.drawView.boardID] objectForKey:@"undo"];
     NSMutableDictionary *undoDict = (NSMutableDictionary *)CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)dictRef, kCFPropertyListMutableContainers));
     
     NSMutableDictionary *subpathsToDraw = [NSMutableDictionary dictionary];
     
-    for (NSString *uid in allSubpathsDict.allKeys) {
+    for (NSString *uid in subpathsDict.allKeys) {
         
-        NSDictionary *uidDict = [allSubpathsDict objectForKey:uid];
+        NSDictionary *uidDict = [subpathsDict objectForKey:uid];
         
         NSMutableArray *userOrderedKeys = [uidDict.allKeys mutableCopy];
         NSSortDescriptor *descendingSorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];

@@ -70,21 +70,21 @@
                                     @"updatedAt" : dateString
                                     };
     
-    NSMutableDictionary *allSubpathsDict = [NSMutableDictionary dictionary];
+    NSMutableDictionary *subpathsDict = [NSMutableDictionary dictionary];
     for (NSString *uid in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
-        [allSubpathsDict setObject:@{ dateString : @"penUp" } forKey: uid];
+        [subpathsDict setObject:@{ dateString : @"penUp" } forKey: uid];
     }
     
     NSDictionary *boardDict =  @{ @"name" : @"Untitled",
                                   @"project" : projectID,
                                   @"number" : @0,
                                   @"commentsID" : commentsID,
-                                  @"lastSubpath" : @{},
-                                  @"allSubpaths" : allSubpathsDict,
+                                  @"subpaths" : subpathsDict,
                                   @"updatedAt" : dateString,
                                   @"undo" :
                                       @{ [FirebaseHelper sharedHelper].uid :
                                              @{ @"currentIndex" : @0,
+                                                @"currentIndexDate" : dateString,
                                                 @"total" : @0
                                                 }
                                          }
