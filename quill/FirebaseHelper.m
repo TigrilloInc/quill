@@ -140,16 +140,13 @@ static FirebaseHelper *sharedHelper = nil;
     
     [ref observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
-        for (NSString *projectID in self.projects.allKeys) [[ref childByAppendingPath:projectID] removeAllObservers];
-        self.projects = [NSMutableDictionary dictionary];
-        
         projectChildrenCount = snapshot.childrenCount;
         
         if (projectChildrenCount > 0) {
             
             for (FDataSnapshot *child in snapshot.children) {
                 
-                [self observeProjectWithID:child.name];
+                if (![self.projects.allKeys containsObject:child.name]) [self observeProjectWithID:child.name];
             }
         }
         else [self updateMasterViewController];
@@ -161,11 +158,10 @@ static FirebaseHelper *sharedHelper = nil;
     NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@", projectID];
     Firebase *ref = [[Firebase alloc] initWithUrl:projectString];
     
-    NSMutableDictionary *projectDict = [NSMutableDictionary dictionary];
-    
-    Firebase *infoRef = [ref childByAppendingPath:@"info"];
-    [infoRef removeAllObservers];
-    [infoRef observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+    [[ref childByAppendingPath:@"info"] removeAllObservers];
+    [[ref childByAppendingPath:@"info"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+        
+        NSMutableDictionary *projectDict = [NSMutableDictionary dictionary];
         
         if ([((NSDictionary *)[snapshot.value objectForKey:@"roles"]).allKeys containsObject:self.uid] && ![self.visibleProjectIDs containsObject:projectID]) [self.visibleProjectIDs addObject:projectID];
         
@@ -196,19 +192,21 @@ static FirebaseHelper *sharedHelper = nil;
         
     }];
     
-    Firebase *viewedAtRef = [ref childByAppendingPath:@"viewedAt"];
-    [viewedAtRef removeAllObservers];
-    [viewedAtRef observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+    [[ref childByAppendingPath:@"viewedAt"] removeAllObservers];
+    [[ref childByAppendingPath:@"viewedAt"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         [[self.projects objectForKey:projectID] setObject:snapshot.value forKey:@"viewedAt"];
         
     }];
     
-    Firebase *updatedAtRef = [ref childByAppendingPath:@"updatedAt"];
-    [updatedAtRef removeAllObservers];
-    [updatedAtRef observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+    [[ref childByAppendingPath:@"updatedAt"] removeAllObservers];
+    [[ref childByAppendingPath:@"updatedAt"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         [[self.projects objectForKey:projectID] setObject:snapshot.value forKey:@"updatedAt"];
+        if (!self.firstLoad) {
+            [self.projectVC.masterView.projectsTable reloadData];
+            [self.projectVC.masterView.projectsTable selectRowAtIndexPath:self.projectVC.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
+        }
     }];
 }
 

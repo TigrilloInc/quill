@@ -22,7 +22,7 @@
     
     NSString *userName = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:self.userID] objectForKey:@"name"];
     
-    int roleNum = [[[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"roles"] objectForKey:self.userID] intValue];
+    int roleNum = [[[[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"info"] objectForKey:@"roles"] objectForKey:self.userID] intValue];
     
     NSString *roleString;
     

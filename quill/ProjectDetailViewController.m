@@ -429,11 +429,14 @@
         return;
     }
     
+    UIButton *button = (UIButton *)sender;
+    currentDrawView = (DrawView *)button.superview;
+    
+    if (![[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:currentDrawView.boardID]) return;
+    
     newBoardCreated = false;
     [self.carousel setScrollEnabled:NO];
     self.carouselOffset = 0;
-    UIButton *button = (UIButton *)sender;
-    currentDrawView = (DrawView *)button.superview;
     NSString *boardID = currentDrawView.boardID;
     self.boardNameLabel.font = [UIFont fontWithName:@"Helvetica" size:20];
     [self.viewedBoardIDs addObject:boardID];
@@ -796,9 +799,7 @@
     [[FirebaseHelper sharedHelper] observeBoardWithID:self.activeBoardID];
     
     [self.carousel reloadData];
-    
     [self.carousel scrollByNumberOfItems:self.carousel.numberOfItems duration:.5];
-    
 }
 
 - (IBAction)addUserTapped:(id)sender {
@@ -1063,6 +1064,8 @@
 }
 
 - (void)carouselCurrentItemIndexDidChange:(iCarousel *)carousel {
+    
+    NSLog(@"boardIDs is %@", self.boardIDs);
     
     NSString *boardID = self.boardIDs[carousel.currentItemIndex];
     NSDictionary *boardDict = [[FirebaseHelper sharedHelper].boards objectForKey:boardID];

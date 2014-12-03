@@ -70,6 +70,14 @@
                                     @"updatedAt" : dateString
                                     };
     
+    NSDictionary *localProjectDict =  @{ @"name" :   projectName,
+                                         @"boards" : [@[ boardID ] mutableCopy],
+                                         @"chatID" : chatID,
+                                         @"roles" : [@{ [FirebaseHelper sharedHelper].uid : @2 } mutableCopy],
+                                         @"viewedAt" :  [@{ [FirebaseHelper sharedHelper].uid : dateString } mutableCopy],
+                                         @"updatedAt" : dateString
+                                         };
+    
     NSDictionary *boardDict =  @{ @"name" : @"Untitled",
                                   @"project" : projectID,
                                   @"number" : @0,
@@ -86,10 +94,11 @@
                                                 } mutableCopy]
                                 };
     
-    [[FirebaseHelper sharedHelper].projects setObject:[projectDict mutableCopy] forKey:projectRefWithID.name];
+    [[FirebaseHelper sharedHelper].projects setObject:[localProjectDict mutableCopy] forKey:projectRefWithID.name];
     [[FirebaseHelper sharedHelper].boards setObject:[boardDict mutableCopy] forKey:boardRefWithID.name];
     [FirebaseHelper sharedHelper].projectCreated = true;
     [FirebaseHelper sharedHelper].currentProjectID = projectID;
+    [[FirebaseHelper sharedHelper].visibleProjectIDs addObject:projectID];
     [[FirebaseHelper sharedHelper].loadedBoardIDs addObject:boardRefWithID.name];
     
     [projectRefWithID updateChildValues:projectDict withCompletionBlock:^(NSError *error, Firebase *ref) {
