@@ -732,7 +732,7 @@
     [[[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:@"clear" forKey:dateString];
     
     [currentDrawView touchesEnded:nil withEvent:nil];
-    [currentDrawView clear];
+    [self drawBoard:currentDrawView];
 }
 
 -(void) eraseTapped {
@@ -1042,8 +1042,10 @@
         [((DrawView *)view) addSubview:((DrawView *)view).loadingView];
     }
     
-    [self drawBoard:(DrawView *)view];
-    [((DrawView *)view) layoutComments];
+    if ([[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.boardIDs[index]]) {
+        [self drawBoard:(DrawView *)view];
+        [((DrawView *)view) layoutComments];
+    }
     
     return view;
 }

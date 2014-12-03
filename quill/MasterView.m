@@ -141,13 +141,6 @@
         
         self.defaultRow = indexPath;
         
-        [[FirebaseHelper sharedHelper] setProjectViewedAt];
-        [[FirebaseHelper sharedHelper] updateCurrentProjectBoards];
-        [[FirebaseHelper sharedHelper] removeCurrentProjectBoardObservers];
-        [FirebaseHelper sharedHelper].currentProjectID = projectID;
-        [[FirebaseHelper sharedHelper] observeCurrentProjectBoards];
-        [[FirebaseHelper sharedHelper] setInProject];
-        
         NSDictionary *projectDict = [[FirebaseHelper sharedHelper].projects objectForKey:projectID];
         
         projectVC.projectName = projectName;
@@ -163,6 +156,11 @@
         [projectVC cancelTapped:nil];
         if ([projectVC.chatTextField isFirstResponder]) [projectVC.chatTextField resignFirstResponder];
         if (projectVC.activeBoardID == nil) [projectVC.carousel scrollToItemAtIndex:projectVC.carousel.numberOfItems-1 duration:0];
+        
+        [[FirebaseHelper sharedHelper] setProjectViewedAt];
+        [FirebaseHelper sharedHelper].currentProjectID = projectID;
+        [[FirebaseHelper sharedHelper] setInProject];
+        [[FirebaseHelper sharedHelper] observeCurrentProjectBoards];
     }
     
     [self.projectsTable reloadData];
