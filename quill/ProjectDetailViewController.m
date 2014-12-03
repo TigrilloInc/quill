@@ -44,7 +44,6 @@
     self.chatTable.transform = CGAffineTransformMakeRotation(M_PI);
     
     self.editBoardNameTextField.hidden = true;
-    self.activeBoardUndoIndexDates = [NSMutableDictionary dictionary];
     self.viewedCommentThreadIDs = [NSMutableArray array];
     
     [self setUpDrawMenu];
@@ -371,7 +370,7 @@
         NSSortDescriptor *descendingSorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
         [userOrderedKeys sortUsingDescriptors:@[descendingSorter]];
         
-        BOOL undone = false;
+        BOOL undone = true;
         BOOL cleared = false;
         int undoCount = [[[undoDict objectForKey:uid] objectForKey:@"currentIndex"] intValue];
         
@@ -395,7 +394,8 @@
                         
                     } else {
 
-                        if (undone) [self.activeBoardUndoIndexDates setObject:userOrderedKeys[i] forKey:uid];
+                        if (undone && [uid isEqualToString:[FirebaseHelper sharedHelper].uid]) self.activeBoardUndoIndexDate = userOrderedKeys[i];
+                        
                         undone = false;
                     }
                     
@@ -442,7 +442,7 @@
     [self.viewedBoardIDs addObject:boardID];
     boardButton = button;
     self.activeBoardID = boardID;
-    [self.activeBoardUndoIndexDates setObject:[[[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndexDate"] forKey:[FirebaseHelper sharedHelper].uid];
+    self.activeBoardUndoIndexDate = [[[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndexDate"];
     
     [[FirebaseHelper sharedHelper] setInBoard];
 
@@ -687,14 +687,13 @@
         NSMutableDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
         [undoDict setObject:@(undoCount) forKey:@"currentIndex"];
         
-        NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@", currentDrawView.boardID, [FirebaseHelper sharedHelper].uid];
-        Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
-        [[ref childByAppendingPath:@"currentIndex"] setValue:@(undoCount)];
-        
         [self drawBoard:currentDrawView];
         
-        [undoDict setObject:[self.activeBoardUndoIndexDates objectForKey:[FirebaseHelper sharedHelper].uid] forKey:@"currentIndexDate"];
-        [[ref childByAppendingPath:@"currentIndexDate"] setValue:[self.activeBoardUndoIndexDates objectForKey:[FirebaseHelper sharedHelper].uid]];
+        [undoDict setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
+        
+        NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@", currentDrawView.boardID, [FirebaseHelper sharedHelper].uid];
+        Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
+        [ref setValue:undoDict];
     }
 }
 
@@ -709,14 +708,13 @@
         NSMutableDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
         [undoDict setObject:@(undoCount) forKey:@"currentIndex"];
         
-        NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@/", currentDrawView.boardID, [FirebaseHelper sharedHelper].uid];
-        Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
-        [[ref childByAppendingPath:@"currentIndex"] setValue:@(undoCount)];
-        
         [self drawBoard:currentDrawView];
         
-        [[ref childByAppendingPath:@"currentIndexDate"] setValue:[self.activeBoardUndoIndexDates objectForKey:[FirebaseHelper sharedHelper].uid]];
-        [undoDict setObject:[self.activeBoardUndoIndexDates objectForKey:[FirebaseHelper sharedHelper].uid] forKey:@"currentIndexDate"];
+        [undoDict setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
+        
+        NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@/", currentDrawView.boardID, [FirebaseHelper sharedHelper].uid];
+        Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
+        [ref setValue:undoDict];
     }
 }
 
@@ -774,17 +772,16 @@
                                   @"project" : self.projectName,
                                   @"number" : boardNum,
                                   @"commentsID" : commentsID,
-                                  @"subpaths" : @{ [FirebaseHelper sharedHelper].uid :
-                                                          [@{ dateString : @"penUp"} mutableCopy]
-                                                      },
+                                  @"subpaths" : [@{ [FirebaseHelper sharedHelper].uid :
+                                                        [@{ dateString : @"penUp"} mutableCopy]
+                                                    } mutableCopy],
                                   @"updatedAt" : dateString,
-                                  @"undo" :
-                                      @{ [FirebaseHelper sharedHelper].uid :
-                                             [@{ @"currentIndex" : @0,
-                                                 @"currentIndexDate" : dateString,
-                                                 @"total" : @0
+                                  @"undo" :  [@{ [FirebaseHelper sharedHelper].uid :
+                                                     [@{ @"currentIndex" : @0,
+                                                         @"currentIndexDate" : dateString,
+                                                         @"total" : @0
+                                                         } mutableCopy]
                                                  } mutableCopy]
-                                         }
                                   };
     
     Firebase *boardRefWithID = [boardRef childByAutoId];

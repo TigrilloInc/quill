@@ -18,41 +18,48 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  
-    Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
-    FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
     
     [FirebaseHelper sharedHelper];
     
     [NSDate serverDate];
     
-    //[authClient logout];
+    [self checkAuthStatus];
+    
+    return YES;
+}
+
+-(void) checkAuthStatus {
+    
+    Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
+    FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
     
     [authClient checkAuthStatusWithBlock:^(NSError *error, FAUser *user) {
         
-        if (error != nil) NSLog(@"%@", error);
-
+        if (error != nil) {
+            NSLog(@"%@", error);
+            [authClient logout];
+            [self checkAuthStatus];
+        }
+        
         else if (user == nil) {
             
             SignInViewController *vc = [self.window.rootViewController.storyboard instantiateViewControllerWithIdentifier:@"SignIn"];
-
+            
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
             
             nav.modalPresentationStyle = UIModalPresentationFormSheet;
             nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
             [self.window.rootViewController presentViewController:nav animated:YES completion:nil];
-
+            
         } else {
-
+            
             NSLog(@"User logged in as %@", user.uid);
-
+            
             [FirebaseHelper sharedHelper].uid = user.uid;
             [[FirebaseHelper sharedHelper] observeLocalUser];
-    
+            
         }
     }];
-    
-    return YES;
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {

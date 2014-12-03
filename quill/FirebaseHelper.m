@@ -332,21 +332,33 @@ static FirebaseHelper *sharedHelper = nil;
     Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
     
     [ref observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
-            
+        
+        NSMutableDictionary *oldSubpathsDict = [[[self.boards objectForKey:boardID] objectForKey:@"subpaths"] objectForKey:userID];
+        NSMutableArray *oldOrderedKeys = [NSMutableArray arrayWithArray:oldSubpathsDict.allKeys];
+        NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
+        [oldOrderedKeys sortUsingDescriptors:@[sorter]];
+        
+        double oldLastSubpathDate = [[oldOrderedKeys lastObject] doubleValue];
+        
         NSMutableDictionary *undoDict = [[self.boards objectForKey:boardID] objectForKey:@"undo"];
         
         double oldIndexDate = [[[undoDict objectForKey:userID] objectForKey:@"currentIndexDate"] doubleValue];
         
         [undoDict setObject:[snapshot.value mutableCopy] forKey:userID];
         
-        NSMutableDictionary *subpathsDict = [[[self.boards objectForKey:boardID] objectForKey:@"subpaths"] objectForKey:userID];
-        NSMutableArray *orderedKeys = [NSMutableArray arrayWithArray:subpathsDict.allKeys];
-        NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
-        [orderedKeys sortUsingDescriptors:@[sorter]];
+        int newIndex = [[snapshot.value objectForKey:@"currentIndex"] integerValue];
+        double newIndexDate = [[snapshot.value objectForKey:@"currentIndexDate"] doubleValue];
         
-        for (NSString *dateString in orderedKeys) {
+        NSMutableDictionary *newSubpathsDict = [[[self.boards objectForKey:boardID] objectForKey:@"subpaths"] objectForKey:userID];
+        NSMutableArray *newOrderedKeys = [NSMutableArray arrayWithArray:newSubpathsDict.allKeys];
+        [newOrderedKeys sortUsingDescriptors:@[sorter]];
+        
+        NSLog(@"oldLastSubpathDate is %f", oldLastSubpathDate);
+        NSLog(@"newIndexDate is %f", newIndexDate);
+        
+        for (NSString *dateString in newOrderedKeys) {
             
-            if (oldIndexDate > 0 && [dateString doubleValue] > oldIndexDate) [subpathsDict removeObjectForKey:dateString];
+            if (oldIndexDate > 0 && [dateString doubleValue] > oldIndexDate && newIndex == 0 && oldLastSubpathDate != newIndexDate) [newSubpathsDict removeObjectForKey:dateString];
         }
         
         NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
@@ -569,7 +581,7 @@ static FirebaseHelper *sharedHelper = nil;
     
     for (NSString *dateString in subpathsDict.allKeys) {
         
-        if ([dateString doubleValue] > [[self.projectVC.activeBoardUndoIndexDates objectForKey:self.uid] doubleValue]) {
+        if ([dateString doubleValue] > [self.projectVC.activeBoardUndoIndexDate doubleValue]) {
             
             [subpathsDict removeObjectForKey:dateString];
             

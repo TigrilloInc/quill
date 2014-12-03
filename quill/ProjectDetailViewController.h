@@ -33,12 +33,12 @@
 @property (strong, nonatomic) NSString *chatID;
 @property (strong, nonatomic) NSString *activeBoardID;
 @property (strong, nonatomic) NSString *activeCommentThreadID;
+@property (strong, nonatomic) NSString *activeBoardUndoIndexDate;
 @property (strong, nonatomic) NSMutableArray *boardIDs;
 @property (strong, nonatomic) NSMutableArray *editBoardIDs;
 @property (strong, nonatomic) NSMutableArray *viewedBoardIDs;
 @property (strong, nonatomic) NSMutableArray *viewedCommentThreadIDs;
 @property (strong, nonatomic) NSMutableArray *messages;
-@property (strong, nonatomic) NSMutableDictionary *activeBoardUndoIndexDates;
 @property (strong, nonatomic) NSMutableDictionary *roles;
 
 @property BOOL carouselMoving;
