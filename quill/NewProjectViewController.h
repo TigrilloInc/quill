@@ -12,6 +12,11 @@
 
 @interface NewProjectViewController : UIViewController <UIGestureRecognizerDelegate> {
 
+    BOOL projectDone;
+    BOOL teamDone;
+    BOOL boardDone;
+    BOOL chatDone;
+    
     UITapGestureRecognizer *outsideTapRecognizer;
     ProjectDetailViewController *projectVC;
 }

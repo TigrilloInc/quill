@@ -70,52 +70,59 @@
                                     @"updatedAt" : dateString
                                     };
     
-    NSMutableDictionary *subpathsDict = [NSMutableDictionary dictionary];
-    for (NSString *uid in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
-        [subpathsDict setObject:@{ dateString : @"penUp" } forKey: uid];
-    }
-    
     NSDictionary *boardDict =  @{ @"name" : @"Untitled",
                                   @"project" : projectID,
                                   @"number" : @0,
                                   @"commentsID" : commentsID,
-                                  @"subpaths" : subpathsDict,
+                                  @"subpaths" : [@{ [FirebaseHelper sharedHelper].uid :
+                                                        [@{ dateString : @"penUp" } mutableCopy]
+                                                    } mutableCopy],
                                   @"updatedAt" : dateString,
-                                  @"undo" :
-                                      @{ [FirebaseHelper sharedHelper].uid :
-                                             @{ @"currentIndex" : @0,
-                                                @"currentIndexDate" : dateString,
-                                                @"total" : @0
-                                                }
-                                         }
+                                  @"undo" : [@{ [FirebaseHelper sharedHelper].uid :
+                                                    [@{ @"currentIndex" : @0,
+                                                        @"currentIndexDate" : dateString,
+                                                        @"total" : @0
+                                                        } mutableCopy]
+                                                } mutableCopy]
                                 };
     
+    [[FirebaseHelper sharedHelper].projects setObject:[projectDict mutableCopy] forKey:projectRefWithID.name];
+    [[FirebaseHelper sharedHelper].boards setObject:[boardDict mutableCopy] forKey:boardRefWithID.name];
     [FirebaseHelper sharedHelper].projectCreated = true;
     [FirebaseHelper sharedHelper].currentProjectID = projectID;
+    [[FirebaseHelper sharedHelper].loadedBoardIDs addObject:boardRefWithID.name];
     
     [projectRefWithID updateChildValues:projectDict withCompletionBlock:^(NSError *error, Firebase *ref) {
-        
-        [teamRef updateChildValues:@{ projectID : @0 } withCompletionBlock:^(NSError *error, Firebase *ref) {
-            
-            [boardRefWithID updateChildValues:boardDict withCompletionBlock:^(NSError *error, Firebase *ref) {
-                
-                [chatRefWithID updateChildValues:@{} withCompletionBlock:^(NSError *error, Firebase *ref) {
-                    
-                    [self.view.window removeGestureRecognizer:outsideTapRecognizer];
-                    [FirebaseHelper sharedHelper].projectCreated = false;
-                    
-                    NSIndexPath *mostRecent = [[FirebaseHelper sharedHelper] getLastViewedProjectIndexPath];
-                    
-                    [self dismissViewControllerAnimated:YES completion:^{
-                        
-                        [projectVC.masterView.projectsTable reloadData];
-                        [projectVC.masterView tableView:projectVC.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
-                        
-                    }];
-                }];
-            }];
-        }];
+        projectDone = true;
+        if (projectDone && teamDone && boardDone && chatDone) [self projectCreated];
     }];
+    
+    [teamRef updateChildValues:@{ projectID : @0 } withCompletionBlock:^(NSError *error, Firebase *ref) {
+        teamDone = true;
+        if (projectDone && teamDone && boardDone && chatDone) [self projectCreated];
+    }];
+    
+    [boardRefWithID updateChildValues:boardDict withCompletionBlock:^(NSError *error, Firebase *ref) {
+        boardDone = true;
+        if (projectDone && teamDone && boardDone && chatDone) [self projectCreated];
+    }];
+    
+    [chatRefWithID updateChildValues:@{} withCompletionBlock:^(NSError *error, Firebase *ref) {
+        chatDone = true;
+        if (projectDone && teamDone && boardDone && chatDone) [self projectCreated];
+    }];
+}
+
+-(void) projectCreated {
+    
+    [self.view.window removeGestureRecognizer:outsideTapRecognizer];
+    [FirebaseHelper sharedHelper].projectCreated = false;
+    
+    NSIndexPath *mostRecent = [[FirebaseHelper sharedHelper] getLastViewedProjectIndexPath];
+    [projectVC.masterView.projectsTable reloadData];
+    [projectVC.masterView tableView:projectVC.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void) tappedOutside

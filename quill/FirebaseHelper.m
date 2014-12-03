@@ -391,20 +391,15 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void) loadBoardWithID:(NSString *)boardID {
     
-    NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
-    
-    int boardIndex = [boardIDs indexOfObject:boardID];
-    DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
-    
     NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
     Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
     
     [ref observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         [self.boards setObject:snapshot.value forKey:boardID];
-        [self.projectVC drawBoard:drawView];
+        if (![self.loadedBoardIDs containsObject:boardID]) [self.loadedBoardIDs addObject:boardID];
+        [self.projectVC.carousel reloadData];
         [self observeBoardWithID:boardID];
-        
     }];
 }
 

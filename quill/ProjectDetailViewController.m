@@ -352,9 +352,6 @@
     
     [drawView clear];
     
-    drawView.loadingView.hidden = true;
-    if (![[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:drawView.boardID]) [[FirebaseHelper sharedHelper].loadedBoardIDs addObject:drawView.boardID];
-    
     NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:drawView.boardID] objectForKey:@"subpaths"];
     
     NSDictionary *dictRef = [[[FirebaseHelper sharedHelper].boards objectForKey:drawView.boardID] objectForKey:@"undo"];
@@ -792,7 +789,7 @@
     self.activeBoardID = boardRefWithID.name;
     
     [self.boardIDs addObject:self.activeBoardID];
-    
+    [[FirebaseHelper sharedHelper].loadedBoardIDs addObject:self.activeBoardID];
     [[FirebaseHelper sharedHelper].boards setObject:[boardDict mutableCopy] forKey:self.activeBoardID];
     [[[FirebaseHelper sharedHelper].projects objectForKey:@"boards"] setObject:self.activeBoardID forKey:boardNum];
     
@@ -1033,20 +1030,20 @@
     gradientButton.tag = 2;
     
     ((DrawView *)view).boardID = self.boardIDs[index];
-    
-    if (![[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.boardIDs[index]] && ![FirebaseHelper sharedHelper].projectCreated) {
+
+    if (![[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.boardIDs[index]]) {
         ((DrawView *)view).loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         ((DrawView *)view).loadingView.transform = CGAffineTransformMakeScale(5, 5);
         [((DrawView *)view).loadingView setCenter:((DrawView *)view).center];
         [((DrawView *)view).loadingView startAnimating];
         [((DrawView *)view) addSubview:((DrawView *)view).loadingView];
     }
+    else ((DrawView *)view).loadingView.hidden = true;
     
-    if ([[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.boardIDs[index]]) {
-        [self drawBoard:(DrawView *)view];
-        [((DrawView *)view) layoutComments];
-    }
     
+    [self drawBoard:(DrawView *)view];
+    [((DrawView *)view) layoutComments];
+
     return view;
 }
 
@@ -1181,18 +1178,18 @@
 #pragma mark -
 #pragma mark UICollectionView
 
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
-{
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    
     return 1;
 }
 
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    
     return self.editBoardIDs.count;
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
     BoardCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CollectionCell" forIndexPath:indexPath];
     
     cell.drawView.boardID = self.editBoardIDs[indexPath.row];
@@ -1201,8 +1198,8 @@
     return cell;
 }
 
-- (BOOL)collectionView:(LSCollectionViewHelper *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath
-{
+- (BOOL)collectionView:(LSCollectionViewHelper *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
+    
     return YES;
 }
 
@@ -1211,16 +1208,11 @@
     return YES;
 }
 
-- (void)collectionView:(LSCollectionViewHelper *)collectionView moveItemAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-    
-    //NSLog(@"BoardIDs is %@, EditBoardIDs is %@", self.boardIDs, self.editBoardIDs);
+- (void)collectionView:(LSCollectionViewHelper *)collectionView moveItemAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
     
     NSString *fromID = [self.editBoardIDs objectAtIndex:fromIndexPath.item];
     [self.editBoardIDs removeObjectAtIndex:fromIndexPath.item];
     [self.editBoardIDs insertObject:fromID atIndex:toIndexPath.item];
-    
-    //NSLog(@"BoardIDs is %@, EditBoardIDs is %@", self.boardIDs, self.editBoardIDs);
 }
 
 @end

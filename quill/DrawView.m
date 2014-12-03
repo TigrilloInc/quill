@@ -372,8 +372,10 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     NSString *undoString = [NSString stringWithFormat:@"undo/%@", [FirebaseHelper sharedHelper].uid];
     [[boardRef childByAppendingPath:undoString] setValue:newUndoDict];
-
+    
     [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:@"penUp" forKey:dateString];
+    
+    NSLog(@"CHECK IS %@", [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"]);
     
     [[FirebaseHelper sharedHelper] setProjectUpdatedAt];
     [[FirebaseHelper sharedHelper] setActiveBoardUpdatedAt];
