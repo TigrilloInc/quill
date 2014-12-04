@@ -1,3 +1,4 @@
+
 //
 //  FirebaseHelper.m
 //  Quill
@@ -155,6 +156,8 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void) observeProjectWithID:(NSString *)projectID {
     
+    NSLog(@"OBSERVING NEW PROJECT %@", projectID);
+    
     NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@", projectID];
     Firebase *ref = [[Firebase alloc] initWithUrl:projectString];
     
@@ -188,7 +191,7 @@ static FirebaseHelper *sharedHelper = nil;
         
         if (self.firstLoad) self.projectVC.masterView.defaultRow = [self getLastViewedProjectIndexPath];
         
-        if (self.projectVC.activeBoardID == nil && self.projects.allKeys.count == projectChildrenCount && !self.projectCreated) [self updateMasterViewController];
+        if (self.projectVC.activeBoardID == nil && self.projects.allKeys.count == projectChildrenCount) [self updateMasterViewController];
         
     }];
     
@@ -359,6 +362,9 @@ static FirebaseHelper *sharedHelper = nil;
         NSMutableArray *newOrderedKeys = [NSMutableArray arrayWithArray:newSubpathsDict.allKeys];
         [newOrderedKeys sortUsingDescriptors:@[sorter]];
         
+        NSLog(@"boardDict is %@", [self.boards objectForKey:boardID]);
+        NSLog(@"newSubpathsDict is %@", newSubpathsDict);
+        
         for (NSString *dateString in newOrderedKeys) {
             
             if (oldIndexDate > 0 && [dateString doubleValue] > oldIndexDate && newIndex == 0 && oldLastSubpathDate != newIndexDate) [newSubpathsDict removeObjectForKey:dateString];
@@ -407,11 +413,15 @@ static FirebaseHelper *sharedHelper = nil;
     
     Firebase *ref = [[Firebase alloc] initWithUrl:chatString];
     
+    NSLog(@"OBSERVING NEW CHAT %@", chatID);
+    
     [ref removeAllObservers];
     [ref observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot) {
         
         NSMutableDictionary *chatDict = [NSMutableDictionary dictionaryWithDictionary:[self.chats objectForKey:chatID]];
         [chatDict setObject:snapshot.value forKey:snapshot.name];
+        
+        NSLog(@"chatDict is %@", chatDict);
         
         [self.chats setObject:chatDict forKey:chatID];
         

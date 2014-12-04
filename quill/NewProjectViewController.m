@@ -96,49 +96,28 @@
     
     [[FirebaseHelper sharedHelper].projects setObject:[localProjectDict mutableCopy] forKey:projectRefWithID.name];
     [[FirebaseHelper sharedHelper].boards setObject:[boardDict mutableCopy] forKey:boardRefWithID.name];
-    [FirebaseHelper sharedHelper].projectCreated = true;
     [FirebaseHelper sharedHelper].currentProjectID = projectID;
     [[FirebaseHelper sharedHelper].visibleProjectIDs addObject:projectID];
     [[FirebaseHelper sharedHelper].loadedBoardIDs addObject:boardRefWithID.name];
+    [[FirebaseHelper sharedHelper] observeProjectWithID:projectID];
     
-    [projectRefWithID updateChildValues:projectDict withCompletionBlock:^(NSError *error, Firebase *ref) {
-        projectDone = true;
-        if (projectDone && teamDone && boardDone && chatDone) [self projectCreated];
-    }];
-    
-    [teamRef updateChildValues:@{ projectID : @0 } withCompletionBlock:^(NSError *error, Firebase *ref) {
-        teamDone = true;
-        if (projectDone && teamDone && boardDone && chatDone) [self projectCreated];
-    }];
-    
-    [boardRefWithID updateChildValues:boardDict withCompletionBlock:^(NSError *error, Firebase *ref) {
-        boardDone = true;
-        if (projectDone && teamDone && boardDone && chatDone) [self projectCreated];
-    }];
-    
-    [chatRefWithID updateChildValues:@{} withCompletionBlock:^(NSError *error, Firebase *ref) {
-        chatDone = true;
-        if (projectDone && teamDone && boardDone && chatDone) [self projectCreated];
-    }];
-}
-
--(void) projectCreated {
-    
-    [self.view.window removeGestureRecognizer:outsideTapRecognizer];
-    [FirebaseHelper sharedHelper].projectCreated = false;
+    [projectRefWithID updateChildValues:projectDict];
+    [teamRef updateChildValues:@{ projectID : @0 }];
+    [boardRefWithID updateChildValues:boardDict];
+    [chatRefWithID updateChildValues:@{}];
     
     NSIndexPath *mostRecent = [[FirebaseHelper sharedHelper] getLastViewedProjectIndexPath];
     [projectVC.masterView.projectsTable reloadData];
     [projectVC.masterView tableView:projectVC.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
     
+    [self.view.window removeGestureRecognizer:outsideTapRecognizer];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
--(void) tappedOutside
-{
+-(void) tappedOutside {
     
-    if (outsideTapRecognizer.state == UIGestureRecognizerStateEnded)
-    {
+    if (outsideTapRecognizer.state == UIGestureRecognizerStateEnded) {
+        
         CGPoint location = [outsideTapRecognizer locationInView:nil];
         CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
         

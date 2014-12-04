@@ -1065,8 +1065,6 @@
 
 - (void)carouselCurrentItemIndexDidChange:(iCarousel *)carousel {
     
-    NSLog(@"boardIDs is %@", self.boardIDs);
-    
     NSString *boardID = self.boardIDs[carousel.currentItemIndex];
     NSDictionary *boardDict = [[FirebaseHelper sharedHelper].boards objectForKey:boardID];
     

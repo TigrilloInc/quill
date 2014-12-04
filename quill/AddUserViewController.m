@@ -94,12 +94,14 @@
         
         for (NSString *boardID in projectVC.boardIDs) {
             
+            [[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"undo"] setObject:[newUndoDict mutableCopy] forKey:userID];
             NSString *undoString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@", boardID, userID];
             Firebase *undoRef = [[Firebase alloc] initWithUrl:undoString];
             [undoRef setValue:newUndoDict withCompletionBlock:^(NSError *error, Firebase *ref) {
                 [[FirebaseHelper sharedHelper] observeUndoForUser:userID onBoard:boardID];
             }];
             
+            [[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"subpaths"] setObject:[newSubpathsDict mutableCopy] forKey:userID];
             NSString *subpathsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", boardID, userID];
             Firebase *subpathsRef = [[Firebase alloc] initWithUrl:subpathsString];
             [subpathsRef setValue:newSubpathsDict withCompletionBlock:^(NSError *error, Firebase *ref) {

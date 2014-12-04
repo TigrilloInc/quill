@@ -30,15 +30,15 @@
 @property (strong, nonatomic) NSMutableArray *visibleProjectIDs;
 @property (strong, nonatomic) NSMutableArray *loadedBoardIDs;
 @property BOOL firstLoad;
-@property BOOL projectCreated;
 
 + (FirebaseHelper *)sharedHelper;
 - (void) observeLocalUser;
 - (void) clearData;
+- (void) observeCurrentProjectBoards;
+- (void) observeProjectWithID:(NSString *)projectID;
 - (void) observeBoardWithID:(NSString *)boardID;
 - (void) observeSubpathsForUser:(NSString *)userID onBoard:(NSString *)boardID;
 - (void) observeUndoForUser:(NSString *)userID onBoard:(NSString *)boardID;
-- (void) observeCurrentProjectBoards;
 - (void) observeCommentThreadWithID:(NSString *)commentThreadID boardID:(NSString *)boardID;
 - (void) setInProject;
 - (void) setInBoard;
