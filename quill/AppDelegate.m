@@ -62,6 +62,11 @@
     }];
 }
 
+void uncaughtExceptionHandler(NSException *exception) {
+    
+    
+}
+
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     
     Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/tokens"];

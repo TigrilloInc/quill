@@ -1039,11 +1039,10 @@
         [((DrawView *)view).loadingView startAnimating];
         [((DrawView *)view) addSubview:((DrawView *)view).loadingView];
     }
-    else ((DrawView *)view).loadingView.hidden = true;
-    
-    
-    [self drawBoard:(DrawView *)view];
-    [((DrawView *)view) layoutComments];
+    else {
+        [self drawBoard:(DrawView *)view];
+        [((DrawView *)view) layoutComments];
+    }
 
     return view;
 }

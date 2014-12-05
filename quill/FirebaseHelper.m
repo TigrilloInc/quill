@@ -156,8 +156,6 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void) observeProjectWithID:(NSString *)projectID {
     
-    NSLog(@"OBSERVING NEW PROJECT %@", projectID);
-    
     NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@", projectID];
     Firebase *ref = [[Firebase alloc] initWithUrl:projectString];
     
@@ -209,6 +207,7 @@ static FirebaseHelper *sharedHelper = nil;
         if (!self.firstLoad) {
             [self.projectVC.masterView.projectsTable reloadData];
             [self.projectVC.masterView.projectsTable selectRowAtIndexPath:self.projectVC.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
+            //[self.projectVC.masterView tableView:self.projectVC.masterView.projectsTable didSelectRowAtIndexPath:self.projectVC.masterView.defaultRow];
         }
     }];
 }
@@ -260,14 +259,11 @@ static FirebaseHelper *sharedHelper = nil;
     NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
     Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
     
-    [[ref childByAppendingPath:@"subpaths"] removeAllObservers];
-    [[ref childByAppendingPath:@"subpaths"] observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
-       
-        for (NSString *userID in [snapshot.value allKeys]) {
-            
-            if ([userID isEqualToString:self.uid]) continue;
-            [self observeSubpathsForUser:userID onBoard:boardID];
-        }
+    [[ref childByAppendingPath:@"commentsID"] removeAllObservers];
+    [[ref childByAppendingPath:@"commentsID"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+        
+        [[self.boards objectForKey:boardID] setObject:snapshot.value forKey:@"commentsID"];
+        [self observeCommentsOnBoardWithID:boardID];
     }];
     
     [[ref childByAppendingPath:@"undo"]  removeAllObservers];
@@ -276,6 +272,16 @@ static FirebaseHelper *sharedHelper = nil;
         for (NSString *userID in [snapshot.value allKeys]) {
             
             [self observeUndoForUser:userID onBoard:boardID];
+        }
+    }];
+    
+    [[ref childByAppendingPath:@"subpaths"] removeAllObservers];
+    [[ref childByAppendingPath:@"subpaths"] observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+       
+        for (NSString *userID in [snapshot.value allKeys]) {
+            
+            if ([userID isEqualToString:self.uid]) continue;
+            [self observeSubpathsForUser:userID onBoard:boardID];
         }
     }];
     
@@ -293,12 +299,6 @@ static FirebaseHelper *sharedHelper = nil;
         [[self.boards objectForKey:boardID] setObject:snapshot.value forKey:@"updatedAt"];
     }];
     
-    [[ref childByAppendingPath:@"commentsID"] removeAllObservers];
-    [[ref childByAppendingPath:@"commentsID"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
-        
-        [[self.boards objectForKey:boardID] setObject:snapshot.value forKey:@"commentsID"];
-        [self observeCommentsOnBoardWithID:boardID];
-    }];
 }
 
 -(void) observeSubpathsForUser:(NSString *)userID onBoard:(NSString *)boardID {
@@ -361,10 +361,7 @@ static FirebaseHelper *sharedHelper = nil;
         NSMutableDictionary *newSubpathsDict = [[[self.boards objectForKey:boardID] objectForKey:@"subpaths"] objectForKey:userID];
         NSMutableArray *newOrderedKeys = [NSMutableArray arrayWithArray:newSubpathsDict.allKeys];
         [newOrderedKeys sortUsingDescriptors:@[sorter]];
-        
-        NSLog(@"boardDict is %@", [self.boards objectForKey:boardID]);
-        NSLog(@"newSubpathsDict is %@", newSubpathsDict);
-        
+
         for (NSString *dateString in newOrderedKeys) {
             
             if (oldIndexDate > 0 && [dateString doubleValue] > oldIndexDate && newIndex == 0 && oldLastSubpathDate != newIndexDate) [newSubpathsDict removeObjectForKey:dateString];
@@ -413,16 +410,12 @@ static FirebaseHelper *sharedHelper = nil;
     
     Firebase *ref = [[Firebase alloc] initWithUrl:chatString];
     
-    NSLog(@"OBSERVING NEW CHAT %@", chatID);
-    
     [ref removeAllObservers];
     [ref observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot) {
         
         NSMutableDictionary *chatDict = [NSMutableDictionary dictionaryWithDictionary:[self.chats objectForKey:chatID]];
         [chatDict setObject:snapshot.value forKey:snapshot.name];
-        
-        NSLog(@"chatDict is %@", chatDict);
-        
+    
         [self.chats setObject:chatDict forKey:chatID];
         
         [self.projectVC updateMessages];
@@ -448,6 +441,11 @@ static FirebaseHelper *sharedHelper = nil;
         
         [self.comments setObject:commentThreadsDict forKey:commentsID];
         
+        NSArray *currentProjectBoardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
+        int boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
+        DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
+        [drawView layoutComments];
+        
         for (NSString *commentThreadID in commentThreadsDict.allKeys) {
             
             [self observeCommentThreadWithID:commentThreadID boardID:boardID];
@@ -464,6 +462,11 @@ static FirebaseHelper *sharedHelper = nil;
         
         [self observeCommentThreadWithID:snapshot.name boardID:boardID];
     }];
+    
+    [ref observeEventType:FEventTypeChildRemoved withBlock:^(FDataSnapshot *snapshot) {
+        
+        [[self.comments objectForKey:commentsID] removeObjectForKey:snapshot.name];
+    }];
 }
 
 -(void) observeCommentThreadWithID:(NSString *)commentThreadID boardID:(NSString *)boardID {
@@ -479,6 +482,8 @@ static FirebaseHelper *sharedHelper = nil;
     
     [[ref childByAppendingPath:locationString] removeAllObservers];
     [[ref childByAppendingPath:locationString] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot){
+        
+        if (snapshot.value == [NSNull null]) return;
         
         [threadDict setObject:snapshot.value forKey:@"location"];
         
