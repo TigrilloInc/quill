@@ -63,7 +63,6 @@ static FirebaseHelper *sharedHelper = nil;
     NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/", userID];
     Firebase *ref = [[Firebase alloc] initWithUrl:userString];
     
-    [ref removeAllObservers];
     [ref observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
  
         NSDictionary *oldUserDict = CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)[[self.team objectForKey:@"users"] objectForKey:userID], kCFPropertyListMutableContainers));
@@ -155,7 +154,6 @@ static FirebaseHelper *sharedHelper = nil;
     NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@", projectID];
     Firebase *ref = [[Firebase alloc] initWithUrl:projectString];
     
-    [[ref childByAppendingPath:@"info"] removeAllObservers];
     [[ref childByAppendingPath:@"info"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         NSMutableDictionary *projectDict = [NSMutableDictionary dictionary];
@@ -189,21 +187,17 @@ static FirebaseHelper *sharedHelper = nil;
         
     }];
     
-    [[ref childByAppendingPath:@"viewedAt"] removeAllObservers];
     [[ref childByAppendingPath:@"viewedAt"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         [[self.projects objectForKey:projectID] setObject:snapshot.value forKey:@"viewedAt"];
-        
     }];
     
-    [[ref childByAppendingPath:@"updatedAt"] removeAllObservers];
     [[ref childByAppendingPath:@"updatedAt"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         [[self.projects objectForKey:projectID] setObject:snapshot.value forKey:@"updatedAt"];
         if (!self.firstLoad) {
             [self.projectVC.masterView.projectsTable reloadData];
             [self.projectVC.masterView.projectsTable selectRowAtIndexPath:self.projectVC.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
-            //[self.projectVC.masterView tableView:self.projectVC.masterView.projectsTable didSelectRowAtIndexPath:self.projectVC.masterView.defaultRow];
         }
     }];
 }
@@ -262,7 +256,6 @@ static FirebaseHelper *sharedHelper = nil;
         [self observeCommentsOnBoardWithID:boardID];
     }];
     
-    [[ref childByAppendingPath:@"name"] removeAllObservers];
     [[ref childByAppendingPath:@"name"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         [[self.boards objectForKey:boardID] setObject:snapshot.value forKey:@"name"];
@@ -270,7 +263,6 @@ static FirebaseHelper *sharedHelper = nil;
         if (self.projectVC.carousel.currentItemIndex == [self.projectVC.boardIDs indexOfObject:boardID]) self.projectVC.boardNameLabel.text = snapshot.value;
     }];
     
-    [[ref childByAppendingPath:@"undo"]  removeAllObservers];
     [[ref childByAppendingPath:@"undo"] observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         for (NSString *userID in [snapshot.value allKeys]) {
@@ -279,7 +271,6 @@ static FirebaseHelper *sharedHelper = nil;
         }
     }];
     
-    [[ref childByAppendingPath:@"subpaths"] removeAllObservers];
     [[ref childByAppendingPath:@"subpaths"] observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
        
         for (NSString *userID in [snapshot.value allKeys]) {
@@ -289,7 +280,6 @@ static FirebaseHelper *sharedHelper = nil;
         }
     }];
     
-    [[ref childByAppendingPath:@"updatedAt"] removeAllObservers];
     [[ref childByAppendingPath:@"updatedAt"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         [[self.boards objectForKey:boardID] setObject:snapshot.value forKey:@"updatedAt"];
@@ -301,7 +291,6 @@ static FirebaseHelper *sharedHelper = nil;
     NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", boardID, userID];
     Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
     
-    [ref removeAllObservers];
     [ref observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot){
 
         NSMutableDictionary *subpathsDict = [[[self.boards objectForKey:boardID] objectForKey:@"subpaths"] objectForKey:userID];
@@ -334,7 +323,6 @@ static FirebaseHelper *sharedHelper = nil;
     NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@", boardID, userID];
     Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
     
-    [ref removeAllObservers];
     [ref observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         NSMutableDictionary *oldSubpathsDict = [[[self.boards objectForKey:boardID] objectForKey:@"subpaths"] objectForKey:userID];
@@ -381,7 +369,6 @@ static FirebaseHelper *sharedHelper = nil;
     for (NSString *boardID in boardIDs) {
         
         if (![self.loadedBoardIDs containsObject:boardID]) [self loadBoardWithID:boardID];
-        else [self observeBoardWithID:boardID];
     }
 }
 
@@ -393,8 +380,6 @@ static FirebaseHelper *sharedHelper = nil;
     [ref observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         [self.boards setObject:snapshot.value forKey:boardID];
-        if (![self.loadedBoardIDs containsObject:boardID]) [self.loadedBoardIDs addObject:boardID];
-        [self.projectVC.carousel reloadData];
         [self observeBoardWithID:boardID];
     }];
 }
@@ -404,8 +389,7 @@ static FirebaseHelper *sharedHelper = nil;
     NSString *chatString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/chats/%@", chatID];
     
     Firebase *ref = [[Firebase alloc] initWithUrl:chatString];
-    
-    [ref removeAllObservers];
+
     [ref observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot) {
         
         NSMutableDictionary *chatDict = [NSMutableDictionary dictionaryWithDictionary:[self.chats objectForKey:chatID]];
@@ -425,23 +409,22 @@ static FirebaseHelper *sharedHelper = nil;
     
     NSString *commentsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
     Firebase *ref = [[Firebase alloc] initWithUrl:commentsString];
-    
-    [ref removeAllObservers];
-    
+
     [ref observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
+        if (![self.loadedBoardIDs containsObject:boardID]) [self.loadedBoardIDs addObject:boardID];
+        [self.projectVC.carousel reloadData];
+
         if (snapshot.value == [NSNull null]) return;
         
-        NSDictionary *commentThreadsDict = snapshot.value;
-
-        [self.comments setObject:commentThreadsDict forKey:commentsID];
-
-        NSArray *currentProjectBoardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
-        int boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
-        DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
-        [drawView layoutComments];
-        
-        for (NSString *commentThreadID in commentThreadsDict.allKeys) {
+        for (NSString *commentThreadID in [snapshot.value allKeys]) {
+            
+            NSDictionary *infoDict = [[snapshot.value objectForKey:commentThreadID] objectForKey:@"info"];
+            NSDictionary *commentDict = @{ @"location" : [infoDict objectForKey:@"location"],
+                                           @"owner" : [infoDict objectForKey:@"owner"]
+                                           };
+            
+            [[self.comments objectForKey:commentsID] setObject:[commentDict mutableCopy] forKey:commentThreadID];
             
             [self observeCommentThreadWithID:commentThreadID boardID:boardID];
         }
@@ -449,17 +432,23 @@ static FirebaseHelper *sharedHelper = nil;
     
     [ref observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot) {
 
-        if (snapshot.value == [NSNull null] || [[snapshot.value objectForKey:@"owner"] isEqualToString:self.uid]) return;
+        if ([[[snapshot.value objectForKey:@"info"] objectForKey:@"owner"] isEqualToString:self.uid]) return;
         
-        if (![[self.comments objectForKey:commentsID] objectForKey:snapshot.name])
-            [[self.comments objectForKey:commentsID] setObject:[snapshot.value mutableCopy] forKey:snapshot.name];
-
-        [self observeCommentThreadWithID:snapshot.name boardID:boardID];
+        if (![[self.comments objectForKey:commentsID] objectForKey:snapshot.name]){
+            
+            NSDictionary *infoDict = [snapshot.value objectForKey:@"info"];
+            NSDictionary *commentDict = @{ @"location" : [infoDict objectForKey:@"location"],
+                                           @"owner" : [infoDict objectForKey:@"owner"]
+                                           };
+            
+            [[self.comments objectForKey:commentsID] setObject:[commentDict mutableCopy] forKey:snapshot.name];
+            [self observeCommentThreadWithID:snapshot.name boardID:boardID];
+        }
     }];
     
     [ref observeEventType:FEventTypeChildRemoved withBlock:^(FDataSnapshot *snapshot) {
         
-        if (snapshot.value == [NSNull null] || [[snapshot.value objectForKey:@"owner"] isEqualToString:self.uid]) return;
+        if ([[[snapshot.value objectForKey:@"info"] objectForKey:@"owner"] isEqualToString:self.uid]) return;
         
         [[self.comments objectForKey:commentsID] removeObjectForKey:snapshot.name];
         
@@ -467,10 +456,12 @@ static FirebaseHelper *sharedHelper = nil;
         
         if ([currentProjectBoardIDs containsObject:boardID]) {
             
-            int boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
+            NSInteger boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
             DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
             [drawView layoutComments];
         }
+        
+        [[ref childByAppendingPath:snapshot.name] removeAllObservers];
     }];
 }
 
@@ -481,30 +472,29 @@ static FirebaseHelper *sharedHelper = nil;
     NSString *commentsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
     Firebase *ref = [[Firebase alloc] initWithUrl:commentsString];
     
-    NSString *locationString = [NSString stringWithFormat:@"%@/location", commentThreadID];
+    NSString *infoString = [NSString stringWithFormat:@"%@/info", commentThreadID];
     
     NSMutableDictionary *threadDict = [[self.comments objectForKey:commentsID] objectForKey:commentThreadID];
     
-    [[ref childByAppendingPath:locationString] removeAllObservers];
-    [[ref childByAppendingPath:locationString] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot){
+    [[ref childByAppendingPath:infoString] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot){
         
         if (snapshot.value == [NSNull null] || [[snapshot.value objectForKey:@"owner"] isEqualToString:self.uid]) return;
         
-        [threadDict setObject:snapshot.value forKey:@"location"];
+        [threadDict setObject:[snapshot.value objectForKey:@"location"] forKey:@"location"];
         
         NSArray *currentProjectBoardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
 
         if ([currentProjectBoardIDs containsObject:boardID]) {
             
-            int boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
+            NSInteger boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
             DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
             [drawView layoutComments];
+            NSLog(@"layoutComments 2");
         }
     }];
     
     NSString *messageString = [NSString stringWithFormat:@"%@/messages", commentThreadID];
     
-    [[ref childByAppendingPath:messageString] removeAllObservers];
     [[ref childByAppendingPath:messageString] observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot) {
         
         if(![threadDict objectForKey:@"messages"]) [threadDict setObject:[NSMutableDictionary dictionary] forKey:@"messages"];

@@ -114,6 +114,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"commentsID"];
     NSDictionary *commentDict = [[FirebaseHelper sharedHelper].comments objectForKey:commentsID];
 
+    NSLog(@"comment is %@", commentDict);
+    
     if (!commentDict) return;
     
     for (NSString *commentThreadID in commentDict.allKeys) {
@@ -438,7 +440,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     Firebase *commentThreadRef = [[Firebase alloc] initWithUrl:commentThreadString];
     
     Firebase *commentThreadRefWithID = [commentThreadRef childByAutoId];
-    [commentThreadRefWithID setValue:commentDict];
+    [commentThreadRefWithID setValue:@{ @"info" : commentDict }];
     
     [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] setObject:[commentDict mutableCopy] forKey:commentThreadRefWithID.name];
     [[FirebaseHelper sharedHelper] observeCommentThreadWithID:commentThreadRefWithID.name boardID:self.boardID];
@@ -516,11 +518,15 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                              
                              [self updateCarouselOffsetWithPoint:button.point];
                              
-                             NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"commentsID"];
-                             NSString *locationString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@/%@/location", commentsID, button.commentThreadID];
-                             Firebase *locationRef = [[Firebase alloc] initWithUrl:locationString];
+                             NSDictionary *locationDict = @{ @"x" : @(button.point.x), @"y" : @(button.point.y) };
                              
-                             [locationRef setValue:@{ @"x" : @(button.point.x), @"y" : @(button.point.y) }];
+                             NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"commentsID"];
+                             
+                             [[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:button.commentThreadID] setObject:[locationDict mutableCopy] forKey:@"location"];
+                             
+                             NSString *locationString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@/%@/info/location", commentsID, button.commentThreadID];
+                             Firebase *locationRef = [[Firebase alloc] initWithUrl:locationString];
+                             [locationRef setValue:locationDict];
                              
                          }];
     }

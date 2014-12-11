@@ -1043,6 +1043,7 @@
 
         [self drawBoard:(DrawView *)view];
         [((DrawView *)view) layoutComments];
+        NSLog(@"layoutComments 1");
     }
 
     return view;
