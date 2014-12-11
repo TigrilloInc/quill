@@ -151,16 +151,16 @@
         projectVC.boardNameLabel.text = nil;
         projectVC.chatViewed = false;
         projectVC.viewedBoardIDs = [NSMutableArray array];
-
+        
+        [[FirebaseHelper sharedHelper] setProjectViewedAt];
+        [FirebaseHelper sharedHelper].currentProjectID = projectID;
+        [[FirebaseHelper sharedHelper] setInProject:projectID];
+        [[FirebaseHelper sharedHelper] observeCurrentProjectBoards];
+        
         [projectVC updateDetails];
         [projectVC cancelTapped:nil];
         if ([projectVC.chatTextField isFirstResponder]) [projectVC.chatTextField resignFirstResponder];
         if (projectVC.activeBoardID == nil) [projectVC.carousel scrollToItemAtIndex:projectVC.carousel.numberOfItems-1 duration:0];
-        
-        [[FirebaseHelper sharedHelper] setProjectViewedAt];
-        [FirebaseHelper sharedHelper].currentProjectID = projectID;
-        [[FirebaseHelper sharedHelper] setInProject];
-        [[FirebaseHelper sharedHelper] observeCurrentProjectBoards];
     }
     
     [self.projectsTable reloadData];

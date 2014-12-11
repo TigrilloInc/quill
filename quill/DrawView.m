@@ -114,6 +114,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"commentsID"];
     NSDictionary *commentDict = [[FirebaseHelper sharedHelper].comments objectForKey:commentsID];
 
+    if (!commentDict) return;
+    
     for (NSString *commentThreadID in commentDict.allKeys) {
         
         CommentButton *button = [CommentButton buttonWithType:UIButtonTypeCustom];
@@ -426,9 +428,9 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:projectVC.activeBoardID] objectForKey:@"commentsID"];
     
-    NSDictionary *commentDict = @{ @"location" : @{ @"x" : @(point.x),
+    NSDictionary *commentDict = @{ @"location" : [@{ @"x" : @(point.x),
                                                     @"y" : @(point.y)
-                                                    },
+                                                    } mutableCopy],
                                    @"owner" : [FirebaseHelper sharedHelper].uid
                                    };
     
@@ -436,9 +438,10 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     Firebase *commentThreadRef = [[Firebase alloc] initWithUrl:commentThreadString];
     
     Firebase *commentThreadRefWithID = [commentThreadRef childByAutoId];
-    [commentThreadRefWithID setValue:commentDict withCompletionBlock:^(NSError *error, Firebase *ref) {
-        [[FirebaseHelper sharedHelper] setProjectUpdatedAt];
-    }];
+    [commentThreadRefWithID setValue:commentDict];
+    
+    [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] setObject:[commentDict mutableCopy] forKey:commentThreadRefWithID.name];
+    [[FirebaseHelper sharedHelper] observeCommentThreadWithID:commentThreadRefWithID.name boardID:self.boardID];
     
     CommentButton *button = [CommentButton buttonWithType:UIButtonTypeCustom];
     button.commentThreadID = commentThreadRefWithID.name;
@@ -461,6 +464,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [self.commentButtons addObject:button];
     
     [self commentTapped:button];
+    
 }
 
 -(void) commentLongPress:(UILongPressGestureRecognizer*)sender {

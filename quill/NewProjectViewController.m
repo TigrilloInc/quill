@@ -95,6 +95,7 @@
                                 };
     
     [[FirebaseHelper sharedHelper].projects setObject:[localProjectDict mutableCopy] forKey:projectRefWithID.name];
+    [[FirebaseHelper sharedHelper].comments setObject:[NSMutableDictionary dictionary] forKey:commentsID];
     [[FirebaseHelper sharedHelper].boards setObject:[boardDict mutableCopy] forKey:boardRefWithID.name];
     [FirebaseHelper sharedHelper].currentProjectID = projectID;
     [[FirebaseHelper sharedHelper].visibleProjectIDs addObject:projectID];

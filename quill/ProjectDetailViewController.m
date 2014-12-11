@@ -313,7 +313,7 @@
 }
 
 -(void) layoutAvatars {
-    
+
     for (AvatarButton *avatar in self.avatars) {
         [avatar removeFromSuperview];
     }
@@ -337,13 +337,13 @@
         avatar.transform = CGAffineTransformScale(avatar.transform, .25, .25);
         [self.view addSubview:avatar];
         
-        if (![[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"inProject"] isEqualToString:[FirebaseHelper sharedHelper].currentProjectID]) {
+        if (![[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"inProject"] isEqualToString:[FirebaseHelper sharedHelper].currentProjectID] && ![avatar.userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
             avatar.alpha = 0.5;
         }
         
         self.addUserButton.center = CGPointMake(990-(userIDs.count*64), self.addUserButton.center.y);
         
-        [self.view bringSubviewToFront:avatar];
+        [self.view sendSubviewToBack:avatar];
         [self.avatars addObject:avatar];
     }
 }
@@ -444,7 +444,7 @@
     self.activeBoardID = boardID;
     self.activeBoardUndoIndexDate = [[[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndexDate"];
     
-    [[FirebaseHelper sharedHelper] setInBoard];
+    [[FirebaseHelper sharedHelper] setInBoard:boardID];
 
     [currentDrawView.activeUserIDs addObject:[FirebaseHelper sharedHelper].uid];
     [currentDrawView layoutAvatars];
@@ -624,7 +624,7 @@
     self.activeBoardID = nil;
     self.activeCommentThreadID = nil;
     
-    [[FirebaseHelper sharedHelper] setInBoard];
+    [[FirebaseHelper sharedHelper] setInBoard:@"none"];
     
     [currentDrawView.activeUserIDs removeObject:[FirebaseHelper sharedHelper].uid];
     [currentDrawView layoutAvatars];
@@ -666,7 +666,6 @@
                          
                          [self updateDetails];
                          
-                         [self.carousel reloadData];
                          [self.carousel setScrollEnabled:YES];
                          
                          [self.masterView.projectsTable reloadData];
@@ -794,6 +793,7 @@
     [self.boardIDs addObject:self.activeBoardID];
     [[FirebaseHelper sharedHelper].loadedBoardIDs addObject:self.activeBoardID];
     [[FirebaseHelper sharedHelper].boards setObject:[boardDict mutableCopy] forKey:self.activeBoardID];
+    [[FirebaseHelper sharedHelper].comments setObject:[NSMutableDictionary dictionary] forKey:commentsID];
     [[[FirebaseHelper sharedHelper].projects objectForKey:@"boards"] setObject:self.activeBoardID forKey:boardNum];
     
     [[FirebaseHelper sharedHelper] observeBoardWithID:self.activeBoardID];
@@ -1040,6 +1040,7 @@
         [((DrawView *)view) addSubview:((DrawView *)view).loadingView];
     }
     else {
+
         [self drawBoard:(DrawView *)view];
         [((DrawView *)view) layoutComments];
     }
