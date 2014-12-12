@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="u5o-7l-ZfK">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14A389" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="u5o-7l-ZfK">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
     </dependencies>
     <scenes>
         <!--Sign In View Controller-->
@@ -486,6 +486,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background4.png" id="m3y-wV-D63">
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="N38-cw-Ht6">
                                 <rect key="frame" x="792" y="541" width="213" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -661,6 +665,36 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="3Yb-Sn-Nyj"/>
                                 </connections>
                             </textField>
+                            <collectionView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="Gdt-c0-HVM">
+                                <rect key="frame" x="246" y="0.0" width="780" height="650"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="30" minimumInteritemSpacing="10" id="aGu-lt-bXA" userLabel="Draggable Collection View Flow Layout" customClass="DraggableCollectionViewFlowLayout">
+                                    <size key="itemSize" width="192" height="144"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="60" minY="120" maxX="60" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="CollectionCell" reuseIdentifier="CollectionCell" id="Fo2-Hr-OM1" customClass="BoardCollectionViewCell">
+                                        <rect key="frame" x="60" y="120" width="192" height="144"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="192" height="144"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </collectionViewCell>
+                                </cells>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="draggable" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <outlet property="dataSource" destination="u5o-7l-ZfK" id="VZ7-yF-31D"/>
+                                    <outlet property="delegate" destination="u5o-7l-ZfK" id="tMM-UT-Isr"/>
+                                </connections>
+                            </collectionView>
                             <view contentMode="scaleToFill" id="r9C-xd-JPc" customClass="MasterView">
                                 <rect key="frame" x="0.0" y="0.0" width="245" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -668,7 +702,7 @@
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="70" sectionHeaderHeight="22" sectionFooterHeight="22" id="hWs-Mz-psw">
                                         <rect key="frame" x="0.0" y="88" width="245" height="590"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                        <color key="backgroundColor" red="0.9137254901960784" green="0.9137254901960784" blue="0.9137254901960784" alpha="1" colorSpace="calibratedRGB"/>
                                         <prototypes>
                                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MasterCell" rowHeight="70" id="kK3-7j-9yP">
                                                 <rect key="frame" x="0.0" y="22" width="260" height="70"/>
@@ -734,36 +768,6 @@
                                     <outlet property="teamButton" destination="vkO-BG-XlA" id="cch-l4-Znj"/>
                                 </connections>
                             </view>
-                            <collectionView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="Gdt-c0-HVM">
-                                <rect key="frame" x="246" y="0.0" width="780" height="650"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="30" minimumInteritemSpacing="10" id="aGu-lt-bXA" userLabel="Draggable Collection View Flow Layout" customClass="DraggableCollectionViewFlowLayout">
-                                    <size key="itemSize" width="192" height="144"/>
-                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="60" minY="120" maxX="60" maxY="0.0"/>
-                                </collectionViewFlowLayout>
-                                <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="CollectionCell" reuseIdentifier="CollectionCell" id="Fo2-Hr-OM1" customClass="BoardCollectionViewCell">
-                                        <rect key="frame" x="60" y="120" width="192" height="144"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="192" height="144"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        </view>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    </collectionViewCell>
-                                </cells>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="draggable" value="YES"/>
-                                </userDefinedRuntimeAttributes>
-                                <connections>
-                                    <outlet property="dataSource" destination="u5o-7l-ZfK" id="VZ7-yF-31D"/>
-                                    <outlet property="delegate" destination="u5o-7l-ZfK" id="tMM-UT-Isr"/>
-                                </connections>
-                            </collectionView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
@@ -772,6 +776,7 @@
                         <outlet property="addBoardButton" destination="N38-cw-Ht6" id="nP1-3w-pCv"/>
                         <outlet property="addUserButton" destination="vuh-Ig-Tk2" id="efm-9a-nbV"/>
                         <outlet property="applyChangesButton" destination="x1v-BJ-G8Z" id="Prx-JS-tnX"/>
+                        <outlet property="backgroundImage" destination="m3y-wV-D63" id="AiC-UF-2tu"/>
                         <outlet property="boardNameEditButton" destination="vuw-ek-kay" id="JXr-hL-THv"/>
                         <outlet property="boardNameLabel" destination="Hbm-ZL-EhN" id="FXB-H3-xWR"/>
                         <outlet property="cancelButton" destination="PVv-oK-WDb" id="fLw-os-hmH"/>
@@ -797,6 +802,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="background4.png" width="1024" height="768"/>
         <image name="chatfade2.png" width="2048" height="60"/>
         <image name="newproject.png" width="260" height="90"/>
         <image name="user.png" width="222" height="225"/>

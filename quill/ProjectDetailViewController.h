@@ -51,6 +51,7 @@
 @property (weak, nonatomic) IBOutlet MasterView *masterView;
 @property (weak, nonatomic) IBOutlet iCarousel *carousel;
 @property (weak, nonatomic) IBOutlet UILabel *projectNameLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *backgroundImage;
 
 @property (weak, nonatomic) IBOutlet UIButton *addBoardButton;
 

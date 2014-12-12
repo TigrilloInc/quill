@@ -30,18 +30,18 @@
     self.carousel.type = iCarouselTypeCoverFlow2;
     self.carousel.bounceDistance = 0.1f;
     
-    UIImageView *carouselFadeLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfade.png"]];
+    UIImageView *carouselFadeLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfadeleft.png"]];
     [self.masterView addSubview:carouselFadeLeft];
-    carouselFadeLeft.center = CGPointMake(295, 340);
+    carouselFadeLeft.center = CGPointMake(self.masterView.frame.size.width+carouselFadeLeft.frame.size.width/2, self.view.center.y);
 
-    carouselFadeRight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfade.png"]];
+    carouselFadeRight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfaderight.png"]];
     [self.view addSubview:carouselFadeRight];
-    carouselFadeRight.transform = CGAffineTransformMakeRotation(M_PI);
-    carouselFadeRight.center = CGPointMake(974, 340);
+    carouselFadeRight.center = CGPointMake(1024-carouselFadeRight.frame.size.width/2, self.view.center.y);
     
     //self.nameLabel.font = [UIFont fontWithName:@"ZemestroStd-Bk" size:40];
     //self.chatTextField.font = [UIFont fontWithName:@"ZemestroStd-Bk" size:20];
     self.chatTable.transform = CGAffineTransformMakeRotation(M_PI);
+    [self showChat];
     
     self.editBoardNameTextField.hidden = true;
     self.viewedCommentThreadIDs = [NSMutableArray array];
@@ -192,6 +192,7 @@
     [self.view sendSubviewToBack:self.chatTable];
     [self.view sendSubviewToBack:self.chatFadeImage];
     [self.view sendSubviewToBack:self.chatView];
+    [self.view sendSubviewToBack:self.backgroundImage];
 }
 
 -(void) updateDetails {
@@ -343,7 +344,6 @@
         
         self.addUserButton.center = CGPointMake(990-(userIDs.count*64), self.addUserButton.center.y);
         
-        [self.view sendSubviewToBack:avatar];
         [self.avatars addObject:avatar];
     }
 }
@@ -457,6 +457,7 @@
         
         [self.view sendSubviewToBack:avatar];
     }
+    [self.view sendSubviewToBack:self.backgroundImage];
     
     [UIView animateWithDuration:.35
                           delay:0.0
@@ -468,7 +469,6 @@
                          self.carousel.transform = tr;
                          
                          self.masterView.center = CGPointMake(-200, self.masterView.center.y);
-                         carouselFadeRight.center = CGPointMake(1174, carouselFadeRight.center.y);
                          
                          self.chatOpenButton.center = CGPointMake(self.view.center.x, self.chatOpenButton.center.y);
                          self.chatTextField.frame = CGRectMake(52, 102, 880, 30);
@@ -477,6 +477,7 @@
                          self.chatFadeImage.center = CGPointMake(self.view.center.x-100,self.chatFadeImage.center.y);
                          self.sendMessageButton.frame = CGRectMake(952, 102, 45, 30);
                          
+                         carouselFadeRight.alpha = 0;
                          boardButton.alpha = 0;
                      }
                      completion:^(BOOL finished) {
@@ -655,8 +656,7 @@
                          self.carousel.center = CGPointMake(self.view.center.x+masterWidth/2, self.view.frame.size.height/2-64);
                         
                         self.masterView.center = CGPointMake(masterWidth/2, self.masterView.center.y);
-                        carouselFadeRight.center = CGPointMake(974, carouselFadeRight.center.y);
-                        [self.view bringSubviewToFront:carouselFadeRight];
+                        carouselFadeRight.alpha = 1;
                          
                         boardButton.alpha = 1;
                      }
@@ -1022,9 +1022,11 @@
         view.transform = tr;
     }
     
-    UIImage *gradientImage = [UIImage imageNamed:@"board2.png"];
+    UIImage *gradientImage = [UIImage imageNamed:@"board7.png"];
     UIButton *gradientButton = [UIButton buttonWithType:UIButtonTypeCustom];
     gradientButton.frame = CGRectMake(0.0f, 0.0f, gradientImage.size.width, gradientImage.size.height);
+    gradientButton.center = view.center;
+    gradientButton.adjustsImageWhenHighlighted = NO;
     [gradientButton setBackgroundImage:gradientImage forState:UIControlStateNormal];
     [gradientButton addTarget:self action:@selector(boardTapped:) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:gradientButton];
@@ -1043,7 +1045,6 @@
 
         [self drawBoard:(DrawView *)view];
         [((DrawView *)view) layoutComments];
-        NSLog(@"layoutComments 1");
     }
 
     return view;

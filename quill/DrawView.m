@@ -114,8 +114,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"commentsID"];
     NSDictionary *commentDict = [[FirebaseHelper sharedHelper].comments objectForKey:commentsID];
 
-    NSLog(@"comment is %@", commentDict);
-    
     if (!commentDict) return;
     
     for (NSString *commentThreadID in commentDict.allKeys) {

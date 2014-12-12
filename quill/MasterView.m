@@ -35,6 +35,7 @@
         self.avatarButton.hidden = true;
         
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+
     }
     
     return self;
@@ -49,6 +50,7 @@
         self.avatarButton.hidden = true;
         
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+
     }
     
     return self;
@@ -120,7 +122,7 @@
     
     cell.backgroundColor = tableView.backgroundColor;
     cell.selectedBackgroundView = [[UIView alloc] initWithFrame:cell.bounds];
-    cell.selectedBackgroundView.backgroundColor = projectVC.view.backgroundColor;
+    cell.selectedBackgroundView.backgroundColor = [UIColor colorWithRed:.9569 green:.9569 blue:.9569 alpha:1];
     
     return cell;
 }

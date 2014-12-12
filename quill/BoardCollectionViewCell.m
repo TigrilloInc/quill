@@ -38,6 +38,10 @@
         self.drawView.transform = tr;
         [self.contentView addSubview:self.drawView];
         
+        UIImageView *gradientImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"board3.png"]];
+        gradientImage.transform = tr;
+        [self.contentView addSubview:gradientImage];
+        
         UIImage *deleteImage = [UIImage imageNamed:@"close.png"];
         self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.deleteButton.frame = CGRectMake(-deleteImage.size.width/2, -deleteImage.size.height/2, deleteImage.size.width, deleteImage.size.height);
@@ -76,11 +80,7 @@
             
             if ([subpathValues respondsToSelector:@selector(objectForKey:)]){
                 
-                if (!undone) {
-                    
-                    [subpathsToDraw setObject:subpathValues forKey:userOrderedKeys[i]];
-                    //[drawView drawSubpath:subpathValues];
-                }
+                if (!undone) [subpathsToDraw setObject:subpathValues forKey:userOrderedKeys[i]];
                 
             } else {
                 
@@ -111,7 +111,6 @@
         
         NSDictionary *subpathDict = [subpathsToDraw objectForKey:allOrderedKeys[i]];
         [self.drawView drawSubpath:subpathDict];
-
     }
 }
 
