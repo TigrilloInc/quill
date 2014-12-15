@@ -19,6 +19,7 @@
 #import "DrawView.h"
 #import "NSDate+ServerDate.h"
 #import "ProjectDetailViewController.h"
+#import "ProjectsTableViewCell.h"
 
 @interface MasterView ()
 
@@ -33,9 +34,8 @@
         
         self.defaultRow = [NSIndexPath indexPathForRow:0 inSection:0];
         self.avatarButton.hidden = true;
-        
-        projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
 
+        projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     }
     
     return self;
@@ -50,7 +50,6 @@
         self.avatarButton.hidden = true;
         
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
-
     }
     
     return self;
@@ -88,14 +87,21 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [FirebaseHelper sharedHelper].visibleProjectIDs.count;
+    return [FirebaseHelper sharedHelper].visibleProjectIDs.count+1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MasterCell" forIndexPath:indexPath];
+    ProjectsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MasterCell" forIndexPath:indexPath];
+    cell.backgroundColor = tableView.backgroundColor;
     
     [self updateProjects];
+    
+    if (indexPath.row == [FirebaseHelper sharedHelper].visibleProjectIDs.count) {
+        
+        cell.textLabel.text = @" +   NEW PROJECT";
+        return cell;
+    }
     
     if (self.orderedProjectNames.count > indexPath.row)  {
         
@@ -112,25 +118,27 @@
         NSString *updatedAtString = [[[FirebaseHelper sharedHelper].projects objectForKey:projectID] objectForKey:@"updatedAt"];
         NSString *viewedAtString = [[[[FirebaseHelper sharedHelper].projects objectForKey:projectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid];
         
-        if ([updatedAtString doubleValue] > [viewedAtString doubleValue] && !cell.selected) {
-
+        if ([updatedAtString doubleValue] > [viewedAtString doubleValue] && !cell.selected)
             cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:20];
-        }
-        else cell.textLabel.font = [UIFont fontWithName:@"Helvetica" size:20];
         
+        cell.selectedBackgroundView.backgroundColor = [UIColor colorWithRed:.9176 green:.9176 blue:.8863 alpha:1];
     }
-    
-    cell.backgroundColor = tableView.backgroundColor;
-    cell.selectedBackgroundView = [[UIView alloc] initWithFrame:cell.bounds];
-    cell.selectedBackgroundView.backgroundColor = [UIColor colorWithRed:.9569 green:.9569 blue:.9569 alpha:1];
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSString *projectName = [tableView cellForRowAtIndexPath:indexPath].textLabel.text;
+    if (indexPath.row == [FirebaseHelper sharedHelper].visibleProjectIDs.count) {
+        
+        [self newProjectTapped];
+        [tableView selectRowAtIndexPath:self.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
+        return;
+    }
     
+    ProjectsTableViewCell *cell = (ProjectsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    
+    NSString *projectName = cell.textLabel.text;
     NSString *projectID;
     
     for (NSString *pID in [FirebaseHelper sharedHelper].projects.allKeys) {
@@ -188,7 +196,7 @@
     [projectVC presentViewController:vc animated:YES completion:nil];
 }
 
-- (IBAction)newProjectTapped:(id)sender {
+- (void)newProjectTapped {
     
     NewProjectViewController *vc = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"NewProject"];
     

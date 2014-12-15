@@ -20,6 +20,7 @@
     BOOL commentsOpen;
     UIButton *boardButton;
     DrawView *currentDrawView;
+    UIImageView *carouselFadeLeft;
     UIImageView *carouselFadeRight;
     
     MasterViewController *masterVC;

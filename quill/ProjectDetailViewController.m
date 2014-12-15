@@ -30,18 +30,20 @@
     self.carousel.type = iCarouselTypeCoverFlow2;
     self.carousel.bounceDistance = 0.1f;
     
-    UIImageView *carouselFadeLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfadeleft.png"]];
-    [self.masterView addSubview:carouselFadeLeft];
-    carouselFadeLeft.center = CGPointMake(self.masterView.frame.size.width+carouselFadeLeft.frame.size.width/2, self.view.center.y);
+    carouselFadeLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfadeleft.png"]];
+    [self.carousel addSubview:carouselFadeLeft];
+    carouselFadeLeft.frame = CGRectMake(0, -5, 64, 400);
 
     carouselFadeRight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfaderight.png"]];
-    [self.view addSubview:carouselFadeRight];
-    carouselFadeRight.center = CGPointMake(1024-carouselFadeRight.frame.size.width/2, self.view.center.y);
+    [self.carousel addSubview:carouselFadeRight];
+    carouselFadeRight.frame = CGRectMake(750, -5, 64, 400);
     
-    //self.nameLabel.font = [UIFont fontWithName:@"ZemestroStd-Bk" size:40];
-    //self.chatTextField.font = [UIFont fontWithName:@"ZemestroStd-Bk" size:20];
+    self.projectNameLabel.font = [UIFont fontWithName:@"SourceSansPro-ExtraLight" size:40];
+    self.chatTextField.font = [UIFont fontWithName:@"SourceSansPro-ExtraLight" size:20];
     self.chatTable.transform = CGAffineTransformMakeRotation(M_PI);
     [self showChat];
+    
+    self.masterView.projectsTable.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"projectsshadow.png"]];
     
     self.editBoardNameTextField.hidden = true;
     self.viewedCommentThreadIDs = [NSMutableArray array];
@@ -193,6 +195,7 @@
     [self.view sendSubviewToBack:self.chatFadeImage];
     [self.view sendSubviewToBack:self.chatView];
     [self.view sendSubviewToBack:self.backgroundImage];
+
 }
 
 -(void) updateDetails {
@@ -333,7 +336,7 @@
         else imageString = @"user.png";
         UIImage *image = [UIImage imageNamed:imageString];
         if(imageNumber != nil) [avatar setImage:image forState:UIControlStateNormal];
-        avatar.frame = CGRectMake(870-(i*64), -60, image.size.width, image.size.height);
+        avatar.frame = CGRectMake(860-(i*64), -50, image.size.width, image.size.height);
         [avatar addTarget:self action:@selector(avatarTapped:) forControlEvents:UIControlEventTouchUpInside];
         avatar.transform = CGAffineTransformScale(avatar.transform, .25, .25);
         [self.view addSubview:avatar];
@@ -342,7 +345,7 @@
             avatar.alpha = 0.5;
         }
         
-        self.addUserButton.center = CGPointMake(990-(userIDs.count*64), self.addUserButton.center.y);
+        self.addUserButton.center = CGPointMake(980-(userIDs.count*64), self.addUserButton.center.y);
         
         [self.avatars addObject:avatar];
     }
@@ -450,13 +453,10 @@
     [currentDrawView layoutAvatars];
     
     self.chatTextField.placeholder = @"Leave a comment...";
-    
+
     [self hideChat];
     
-    for (AvatarButton *avatar in self.avatars) {
-        
-        [self.view sendSubviewToBack:avatar];
-    }
+    for (AvatarButton *avatar in self.avatars) [self.view sendSubviewToBack:avatar];
     [self.view sendSubviewToBack:self.backgroundImage];
     
     [UIView animateWithDuration:.35
@@ -468,16 +468,15 @@
                          CGAffineTransform tr = CGAffineTransformScale(self.carousel.transform, 2, 2);
                          self.carousel.transform = tr;
                          
-                         self.masterView.center = CGPointMake(-200, self.masterView.center.y);
+                         self.masterView.center = CGPointMake(-105, self.masterView.center.y);
                          
                          self.chatOpenButton.center = CGPointMake(self.view.center.x, self.chatOpenButton.center.y);
                          self.chatTextField.frame = CGRectMake(52, 102, 880, 30);
                          self.chatView.frame = CGRectMake(0, 626, 1024, 142);
                          self.chatTable.frame = CGRectMake(0, 768-self.chatView.frame.size.height, self.view.frame.size.width, self.chatTable.frame.size.height);
-                         self.chatFadeImage.center = CGPointMake(self.view.center.x-100,self.chatFadeImage.center.y);
+                         self.chatFadeImage.center = CGPointMake(self.view.center.x,self.chatFadeImage.center.y);
                          self.sendMessageButton.frame = CGRectMake(952, 102, 45, 30);
                          
-                         carouselFadeRight.alpha = 0;
                          boardButton.alpha = 0;
                      }
                      completion:^(BOOL finished) {
@@ -645,19 +644,18 @@
                         float masterWidth = self.masterView.frame.size.width;
                          
                         self.chatTextField.frame = CGRectMake(52, 102, 622, 30);
-                        self.chatView.frame = CGRectMake(245,626,779,142);
+                        self.chatView.frame = CGRectMake(210,626,814,142);
                         self.sendMessageButton.frame = CGRectMake(709, 102, 45, 30);
-                         self.chatOpenButton.frame = CGRectMake(512, 601, 260, 49);
-                        self.chatFadeImage.frame = CGRectMake(245, 614, 1024, 25);
-                        self.chatTable.frame = CGRectMake(masterWidth, 626, 779, 89);
+                        self.chatOpenButton.frame = CGRectMake(512, 601, 260, 49);
+                        self.chatFadeImage.frame = CGRectMake(210, 614, 1024, 25);
+                        self.chatTable.frame = CGRectMake(masterWidth, 626, 814, 89);
                         
                          CGAffineTransform tr = CGAffineTransformScale(self.carousel.transform, .5, .5);
                          self.carousel.transform = tr;
                          self.carousel.center = CGPointMake(self.view.center.x+masterWidth/2, self.view.frame.size.height/2-64);
                         
                         self.masterView.center = CGPointMake(masterWidth/2, self.masterView.center.y);
-                        carouselFadeRight.alpha = 1;
-                         
+
                         boardButton.alpha = 1;
                      }
                      completion:^(BOOL finished) {

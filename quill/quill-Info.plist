@@ -42,6 +42,8 @@
 		<string>netto.ttf</string>
 		<string>klavika-light.otf</string>
 		<string>klavika-regular.otf</string>
+		<string>SourceSansPro-ExtraLight.otf</string>
+		<string>SourceSansPro-Light.otf</string>
 	</array>
 	<key>UIMainStoryboardFile</key>
 	<string>Main_iPhone</string>
