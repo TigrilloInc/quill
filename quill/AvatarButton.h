@@ -15,4 +15,6 @@
 @property (strong, nonatomic) UIImageView *drawingImage;
 @property (strong, nonatomic) UIImageView *highlightedImage;
 
+-(void) generateIdenticon;
+
 @end

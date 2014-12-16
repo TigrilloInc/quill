@@ -11,10 +11,13 @@
 @interface CommentButton : UIButton
 
 @property CGPoint point;
+@property (strong, nonatomic) NSString *userID;
 @property (strong, nonatomic) NSString *commentThreadID;
 @property (strong, nonatomic) UIImage *userImage;
 @property (strong, nonatomic) UIImageView *commentImage;
 @property (strong, nonatomic) UIImageView *highlightedImage;
 @property (strong, nonatomic) UIButton *deleteButton;
+
+-(void) generateIdenticon;
 
 @end

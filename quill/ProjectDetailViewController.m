@@ -32,11 +32,11 @@
     
     carouselFadeLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfadeleft.png"]];
     [self.carousel addSubview:carouselFadeLeft];
-    carouselFadeLeft.frame = CGRectMake(0, -5, 64, 400);
+    carouselFadeLeft.frame = CGRectMake(0, -5, 50, 400);
 
     carouselFadeRight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfaderight.png"]];
     [self.carousel addSubview:carouselFadeRight];
-    carouselFadeRight.frame = CGRectMake(750, -5, 64, 400);
+    carouselFadeRight.frame = CGRectMake(764, -5, 50, 400);
     
     self.projectNameLabel.font = [UIFont fontWithName:@"SourceSansPro-ExtraLight" size:40];
     self.chatTextField.font = [UIFont fontWithName:@"SourceSansPro-ExtraLight" size:20];
@@ -318,9 +318,7 @@
 
 -(void) layoutAvatars {
 
-    for (AvatarButton *avatar in self.avatars) {
-        [avatar removeFromSuperview];
-    }
+    for (AvatarButton *avatar in self.avatars) [avatar removeFromSuperview];
     
     self.avatars = [NSMutableArray array];
     
@@ -330,13 +328,8 @@
         
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
         avatar.userID = userIDs[i];
-        NSNumber *imageNumber = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"avatar"];
-        NSString *imageString;
-        if (imageNumber) imageString = [NSString stringWithFormat:@"user%@.png", imageNumber];
-        else imageString = @"user.png";
-        UIImage *image = [UIImage imageNamed:imageString];
-        if(imageNumber != nil) [avatar setImage:image forState:UIControlStateNormal];
-        avatar.frame = CGRectMake(860-(i*64), -50, image.size.width, image.size.height);
+        [avatar generateIdenticon];
+        avatar.frame = CGRectMake(850-(i*64), -62, avatar.userImage.size.width, avatar.userImage.size.height);
         [avatar addTarget:self action:@selector(avatarTapped:) forControlEvents:UIControlEventTouchUpInside];
         avatar.transform = CGAffineTransformScale(avatar.transform, .25, .25);
         [self.view addSubview:avatar];
@@ -345,8 +338,7 @@
             avatar.alpha = 0.5;
         }
         
-        self.addUserButton.center = CGPointMake(980-(userIDs.count*64), self.addUserButton.center.y);
-        
+        self.addUserButton.center = CGPointMake(985-(userIDs.count*64), self.addUserButton.center.y); 
         [self.avatars addObject:avatar];
     }
 }

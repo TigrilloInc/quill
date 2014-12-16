@@ -37,13 +37,10 @@
 	<true/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Monaco.ttf</string>
-		<string>ZemestroStd-Bk.otf</string>
-		<string>netto.ttf</string>
-		<string>klavika-light.otf</string>
-		<string>klavika-regular.otf</string>
 		<string>SourceSansPro-ExtraLight.otf</string>
 		<string>SourceSansPro-Light.otf</string>
+		<string>SourceSansPro-Regular.ttf</string>
+		<string>SourceSansPro-Semibold.ttf</string>
 	</array>
 	<key>UIMainStoryboardFile</key>
 	<string>Main_iPhone</string>

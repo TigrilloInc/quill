@@ -33,8 +33,7 @@
     if (self) {
         
         self.defaultRow = [NSIndexPath indexPathForRow:0 inSection:0];
-        self.avatarButton.hidden = true;
-
+        
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     }
     
@@ -47,7 +46,6 @@
     if (self) {
         
         self.defaultRow = [NSIndexPath indexPathForRow:0 inSection:0];
-        self.avatarButton.hidden = true;
         
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     }

@@ -210,12 +210,17 @@ static FirebaseHelper *sharedHelper = nil;
 
     [self.projectVC.masterView.nameButton setTitle:self.userName forState:UIControlStateNormal];
     [self.projectVC.masterView.teamButton setTitle:self.teamName forState:UIControlStateNormal];
-    NSNumber *imageNumber = [[[self.team objectForKey:@"users"] objectForKey:self.uid] objectForKey:@"avatar"];
-    NSString *imageString = [NSString stringWithFormat:@"user%@.png", imageNumber];
-    [self.projectVC.masterView.avatarButton setImage:[UIImage imageNamed:imageString] forState:UIControlStateNormal];
-    self.projectVC.masterView.avatarButton.hidden = false;
     
-    [self.projectVC.chatAvatar setImage:[UIImage imageNamed:imageString] forState:UIControlStateNormal];
+    self.projectVC.masterView.avatarButton = [AvatarButton buttonWithType:UIButtonTypeCustom];
+    [self.projectVC.masterView.avatarButton addTarget:self.projectVC.masterView action:@selector(settingsTapped:) forControlEvents:UIControlEventTouchUpInside];
+    self.projectVC.masterView.avatarButton.userID = self.uid;
+    [self.projectVC.masterView.avatarButton generateIdenticon];
+    self.projectVC.masterView.avatarButton.frame = CGRectMake(-82, -35, self.projectVC.masterView.avatarButton.userImage.size.width, self.projectVC.masterView.avatarButton.userImage.size.height);
+    self.projectVC.masterView.avatarButton.transform = CGAffineTransformMakeScale(.25, .25);
+    [self.projectVC.masterView addSubview:self.projectVC.masterView.avatarButton];
+    
+    self.projectVC.chatAvatar.userID = self.uid;
+    [self.projectVC.chatAvatar generateIdenticon];
     self.projectVC.chatAvatar.hidden = false;
     
     [self.projectVC.masterView.projectsTable reloadData];

@@ -14,7 +14,4 @@
     UITapGestureRecognizer *outsideTapRecognizer;
 }
 
-@property (strong, nonatomic) NSMutableArray *avatars;
-@property int selectedAvatar;
-
 @end

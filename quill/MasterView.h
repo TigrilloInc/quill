@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AvatarButton.h"
 
 @class ProjectDetailViewController;
 
@@ -15,13 +16,14 @@
     ProjectDetailViewController *projectVC;
 }
 
-@property (weak, nonatomic) IBOutlet UIButton *avatarButton;
 @property (weak, nonatomic) IBOutlet UITableView *projectsTable;
 @property (weak, nonatomic) IBOutlet UIButton *nameButton;
 @property (weak, nonatomic) IBOutlet UIButton *teamButton;
+@property (weak, nonatomic) AvatarButton *avatarButton;
 @property (strong, nonatomic) NSIndexPath *defaultRow;
 @property (strong, nonatomic) NSArray *orderedProjectNames;
 
 -(void)updateProjects;
+-(IBAction)settingsTapped:(id)sender;
 
 @end

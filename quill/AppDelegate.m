@@ -32,6 +32,8 @@
     Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
     FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
     
+    NSLog(@"checking authentication status...");
+    
     [authClient checkAuthStatusWithBlock:^(NSError *error, FAUser *user) {
         
         if (error != nil) {
