@@ -135,6 +135,16 @@
     return self.availableUsersDict.allKeys.count;
 }
 
+- (NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return 6;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return 66.0;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"UserCell" forIndexPath:indexPath];
@@ -142,13 +152,18 @@
     NSString *userID = self.availableUsersDict.allKeys[indexPath.row];
     
     cell.textLabel.text = [[self.availableUsersDict objectForKey:userID] objectForKey:@"name"];
-    //cell.textLabel.font = [UIFont fontWithName:@"ZemestroStd-Bk" size:20];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    NSNumber *imageNumber = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"avatar"];
-    NSString *imageString = [NSString stringWithFormat:@"user%@.png", imageNumber];
-    cell.imageView.image = [UIImage imageNamed:imageString];
-
+    AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
+    avatar.userID = userID;
+    [avatar generateIdenticon];
+    avatar.frame = CGRectMake(-95, -90, avatar.userImage.size.width, avatar.userImage.size.height);
+    avatar.transform = CGAffineTransformMakeScale(.25, .25);
+    avatar.tag = 1;
+    avatar.userInteractionEnabled = false;
+    
+    if (![cell viewWithTag:1]) [cell.contentView addSubview:avatar];
+    
     if ([self.selectedUsers containsObject:userID]) cell.accessoryType = UITableViewCellAccessoryCheckmark;
     else cell.accessoryType = UITableViewCellAccessoryNone;
     

@@ -23,9 +23,9 @@
         self.drawingImage.hidden = true;
         [self addSubview:self.drawingImage];
         
-        self.highlightedImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"userhighlight.png"]];
+        self.highlightedImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"userhighlight2.png"]];
         self.highlightedImage.hidden = true;
-        self.highlightedImage.center = self.drawingImage.center;
+        self.highlightedImage.center = CGPointMake(125, 117);
         [self addSubview:self.highlightedImage];
     }
     return self;
@@ -139,7 +139,7 @@
     identicon.tileValues = tileValues;
     identicon.tileColor = tileColor;
     [self addSubview:identicon];
-    identicon.center = CGPointMake(self.userImage.size.width/2,118);
+    identicon.center = CGPointMake(self.userImage.size.width/2,117);
 }
 
 @end

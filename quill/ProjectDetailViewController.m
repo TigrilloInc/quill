@@ -38,7 +38,7 @@
     [self.carousel addSubview:carouselFadeRight];
     carouselFadeRight.frame = CGRectMake(764, -5, 50, 400);
     
-    self.projectNameLabel.font = [UIFont fontWithName:@"SourceSansPro-ExtraLight" size:40];
+    self.projectNameLabel.font = [UIFont fontWithName:@"SourceSansPro-ExtraLight" size:48];
     self.chatTextField.font = [UIFont fontWithName:@"SourceSansPro-ExtraLight" size:20];
     self.chatTable.transform = CGAffineTransformMakeRotation(M_PI);
     [self showChat];
@@ -202,7 +202,7 @@
     
     self.projectNameLabel.text = self.projectName;
     [self.projectNameLabel sizeToFit];
-    self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+310, self.editButton.center.y);
+    self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+280, self.editButton.center.y);
     
     [self updateMessages];
     [self.chatTable reloadData];

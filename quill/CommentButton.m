@@ -22,12 +22,12 @@
         
         self.adjustsImageWhenHighlighted = NO;
         
-        self.commentImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"usercomment.png"]];
-        self.commentImage.center = CGPointMake(110, 110);
+        self.commentImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"usercomment2.png"]];
+        self.commentImage.center = CGPointMake(125, 136);
         [self addSubview:self.commentImage];
         
-        self.highlightedImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"usercommenthighlight.png"]];
-        self.highlightedImage.center = CGPointMake(110, 110);
+        self.highlightedImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"usercommenthighlight2.png"]];
+        self.highlightedImage.center = CGPointMake(125, 136);
         self.highlightedImage.hidden = true;
         [self addSubview:self.highlightedImage];
         
@@ -171,7 +171,7 @@
     identicon.tileValues = tileValues;
     identicon.tileColor = tileColor;
     [self addSubview:identicon];
-    identicon.center = CGPointMake(125,118);
+    identicon.center = CGPointMake(125,117);
 }
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {

@@ -215,13 +215,16 @@ static FirebaseHelper *sharedHelper = nil;
     [self.projectVC.masterView.avatarButton addTarget:self.projectVC.masterView action:@selector(settingsTapped:) forControlEvents:UIControlEventTouchUpInside];
     self.projectVC.masterView.avatarButton.userID = self.uid;
     [self.projectVC.masterView.avatarButton generateIdenticon];
-    self.projectVC.masterView.avatarButton.frame = CGRectMake(-82, -35, self.projectVC.masterView.avatarButton.userImage.size.width, self.projectVC.masterView.avatarButton.userImage.size.height);
+    self.projectVC.masterView.avatarButton.frame = CGRectMake(-87, -33, self.projectVC.masterView.avatarButton.userImage.size.width, self.projectVC.masterView.avatarButton.userImage.size.height);
     self.projectVC.masterView.avatarButton.transform = CGAffineTransformMakeScale(.25, .25);
     [self.projectVC.masterView addSubview:self.projectVC.masterView.avatarButton];
     
+    self.projectVC.chatAvatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
     self.projectVC.chatAvatar.userID = self.uid;
     [self.projectVC.chatAvatar generateIdenticon];
-    self.projectVC.chatAvatar.hidden = false;
+    self.projectVC.chatAvatar.frame = CGRectMake(-100,-7, self.projectVC.chatAvatar.userImage.size.width, self.projectVC.chatAvatar.userImage.size.height);
+    self.projectVC.chatAvatar.transform = CGAffineTransformMakeScale(.16, .16);
+    [self.projectVC.chatView addSubview:self.projectVC.chatAvatar];
     
     [self.projectVC.masterView.projectsTable reloadData];
     

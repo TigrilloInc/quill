@@ -92,7 +92,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
         avatar.userID = userIDs[i];
         [avatar generateIdenticon];
-        avatar.frame = CGRectMake(-50, (i-1)*64, avatar.userImage.size.width, avatar.userImage.size.height);
+        avatar.frame = CGRectMake(-62, -12+(i-1)*64, avatar.userImage.size.width, avatar.userImage.size.height);
         CGAffineTransform tr = CGAffineTransformScale(avatar.transform, .25, .25);
         tr = CGAffineTransformRotate(tr, -M_PI_2);
         avatar.transform = tr;
@@ -124,7 +124,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         button.userID = [[commentDict objectForKey:commentThreadID] objectForKey:@"owner"];
         [button generateIdenticon];
         button.frame = CGRectMake(0, 0, button.userImage.size.width, button.userImage.size.height);
-        button.center = CGPointMake(button.point.x-40, button.point.y+40);
+        button.center = CGPointMake(button.point.x-40, button.point.y+22);
         CGAffineTransform tr = CGAffineTransformScale(button.transform, .25, .25);
         tr = CGAffineTransformRotate(tr, -M_PI_2);
         button.transform = tr;
@@ -440,11 +440,10 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     CommentButton *button = [CommentButton buttonWithType:UIButtonTypeCustom];
     button.commentThreadID = commentThreadRefWithID.name;
     button.point = point;
-    NSNumber *imageNumber = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"avatar"];
-    UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"user%@.png", imageNumber]];
-    if(imageNumber != nil)[button setImage:image forState:UIControlStateNormal];
-    button.frame = CGRectMake(0, 0, image.size.width, image.size.height);
-    button.center = CGPointMake(point.x-40, point.y+40);
+    button.userID = [FirebaseHelper sharedHelper].uid;
+    [button generateIdenticon];
+    button.frame = CGRectMake(0, 0, button.userImage.size.width, button.userImage.size.height);
+    button.center = CGPointMake(point.x-40, point.y+22);
     CGAffineTransform tr = CGAffineTransformScale(button.transform, .25, .25);
     tr = CGAffineTransformRotate(tr, -M_PI_2);
     button.transform = tr;
@@ -470,6 +469,15 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     if (CGRectContainsPoint(button.deleteButton.bounds, pointForTargetView)) return;
     
     if (sender.state == UIGestureRecognizerStateBegan) {
+        
+        for (CommentButton *commentButton in self.commentButtons) {
+            
+            commentButton.deleteButton.hidden = true;
+            commentButton.commentImage.hidden = false;
+            commentButton.highlightedImage.hidden = true;
+        }
+        
+        [self bringSubviewToFront:button];
         
         [UIView animateWithDuration:.1
                               delay:0.0
@@ -500,13 +508,15 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                              CGAffineTransform tr = button.transform;
                              tr = CGAffineTransformScale(tr, 1/1.25, 1/1.25);
                              button.transform = tr;
+                             
+                             button.center = CGPointMake(button.center.x+9, button.center.y-6);
                          }
          
                          completion:^(BOOL finished) {
 
                              button.center = CGPointMake(MAX(0,MIN(button.center.x,768)), MAX(0,MIN(button.center.y,1024)));
                              
-                             button.point = CGPointMake(MAX(0,MIN(button.center.x,768))+40, button.center.y-40);
+                             button.point = CGPointMake(MAX(0,MIN(button.center.x,768))+40, button.center.y-22);
                              
                              [self updateCarouselOffsetWithPoint:button.point];
                              
