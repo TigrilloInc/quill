@@ -42,6 +42,9 @@
 		12860FC41A41170E0074B452 /* usercomment2.png in Resources */ = {isa = PBXBuildFile; fileRef = 12860FC31A41170E0074B452 /* usercomment2.png */; };
 		12860FC61A4140310074B452 /* usercommenthighlight2.png in Resources */ = {isa = PBXBuildFile; fileRef = 12860FC51A4140310074B452 /* usercommenthighlight2.png */; };
 		12860FC81A414FF70074B452 /* userhighlight2.png in Resources */ = {isa = PBXBuildFile; fileRef = 12860FC71A414FF70074B452 /* userhighlight2.png */; };
+		12860FCA1A420AF20074B452 /* usercommenthighlight3.png in Resources */ = {isa = PBXBuildFile; fileRef = 12860FC91A420AF20074B452 /* usercommenthighlight3.png */; };
+		12860FCD1A423EDA0074B452 /* WidthPopoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12860FCC1A423EDA0074B452 /* WidthPopoverViewController.m */; };
+		12860FD01A423F000074B452 /* ColorPopoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12860FCF1A423F000074B452 /* ColorPopoverViewController.m */; };
 		12899BB01A168CA100AF95BD /* MasterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 12899BAF1A168CA100AF95BD /* MasterView.m */; };
 		12899BB21A1AEC3B00AF95BD /* carouselfade.png in Resources */ = {isa = PBXBuildFile; fileRef = 12899BB11A1AEC3A00AF95BD /* carouselfade.png */; };
 		128DC3071A1E8C7000FF6076 /* ChatTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 128DC3061A1E8C7000FF6076 /* ChatTableViewCell.m */; };
@@ -210,6 +213,11 @@
 		12860FC31A41170E0074B452 /* usercomment2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = usercomment2.png; path = Resources/usercomment2.png; sourceTree = "<group>"; };
 		12860FC51A4140310074B452 /* usercommenthighlight2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = usercommenthighlight2.png; path = Resources/usercommenthighlight2.png; sourceTree = "<group>"; };
 		12860FC71A414FF70074B452 /* userhighlight2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userhighlight2.png; path = Resources/userhighlight2.png; sourceTree = "<group>"; };
+		12860FC91A420AF20074B452 /* usercommenthighlight3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = usercommenthighlight3.png; path = Resources/usercommenthighlight3.png; sourceTree = "<group>"; };
+		12860FCB1A423EDA0074B452 /* WidthPopoverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WidthPopoverViewController.h; sourceTree = "<group>"; };
+		12860FCC1A423EDA0074B452 /* WidthPopoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WidthPopoverViewController.m; sourceTree = "<group>"; };
+		12860FCE1A423F000074B452 /* ColorPopoverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorPopoverViewController.h; sourceTree = "<group>"; };
+		12860FCF1A423F000074B452 /* ColorPopoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorPopoverViewController.m; sourceTree = "<group>"; };
 		12899BAE1A168CA100AF95BD /* MasterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterView.h; sourceTree = "<group>"; };
 		12899BAF1A168CA100AF95BD /* MasterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterView.m; sourceTree = "<group>"; };
 		12899BB11A1AEC3A00AF95BD /* carouselfade.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = carouselfade.png; path = Resources/carouselfade.png; sourceTree = "<group>"; };
@@ -423,6 +431,10 @@
 				12BE8D73196CF04D00503F84 /* NewProjectViewController.m */,
 				128DC31E1A22C01800FF6076 /* AvatarPopoverViewController.h */,
 				128DC31F1A22C01800FF6076 /* AvatarPopoverViewController.m */,
+				12860FCB1A423EDA0074B452 /* WidthPopoverViewController.h */,
+				12860FCC1A423EDA0074B452 /* WidthPopoverViewController.m */,
+				12860FCE1A423F000074B452 /* ColorPopoverViewController.h */,
+				12860FCF1A423F000074B452 /* ColorPopoverViewController.m */,
 				1216D99F19A3DBED0095DBD8 /* BoardCollectionViewCell.h */,
 				1216D9A019A3DBED0095DBD8 /* BoardCollectionViewCell.m */,
 				12AA5FA919E7904700F6D552 /* AddUserViewController.h */,
@@ -466,6 +478,7 @@
 				12860FC71A414FF70074B452 /* userhighlight2.png */,
 				12423D231A02A611005F6D1A /* usercommenthighlight.png */,
 				12860FC51A4140310074B452 /* usercommenthighlight2.png */,
+				12860FC91A420AF20074B452 /* usercommenthighlight3.png */,
 				12860F9E1A3E9A1B0074B452 /* projectsshadow.png */,
 				12C4E4C61A3B5B3100DB0E23 /* background.png */,
 				12C4E4D61A3B88D400DB0E23 /* background2.png */,
@@ -672,6 +685,7 @@
 				12C4E4C71A3B5B3100DB0E23 /* background.png in Resources */,
 				12C4E4D71A3B88D400DB0E23 /* background2.png in Resources */,
 				12860F931A3E29410074B452 /* background5.png in Resources */,
+				12860FCA1A420AF20074B452 /* usercommenthighlight3.png in Resources */,
 				129E129519648A2C00ED9D42 /* Images.xcassets in Resources */,
 				12860FBE1A40C8CD0074B452 /* userbutton2.png in Resources */,
 				12860FC21A40C8CD0074B452 /* userbutton6.png in Resources */,
@@ -731,6 +745,7 @@
 				12BE8D74196CF04D00503F84 /* NewProjectViewController.m in Sources */,
 				124E5CF619AE83CB00442963 /* NSDate+ServerDate.m in Sources */,
 				12A310E4197DC65B00E03E9E /* SignUpFromInviteViewController.m in Sources */,
+				12860FD01A423F000074B452 /* ColorPopoverViewController.m in Sources */,
 				128DC3201A22C01800FF6076 /* AvatarPopoverViewController.m in Sources */,
 				1216D9A119A3DBED0095DBD8 /* BoardCollectionViewCell.m in Sources */,
 				12860FB61A40C58E0074B452 /* IdenticonView.m in Sources */,
@@ -741,6 +756,7 @@
 				12BE8D68196BA1B100503F84 /* NewTeamViewController.m in Sources */,
 				12C3780C19FEE9FC000C0DB4 /* CommentButton.m in Sources */,
 				1216D99D19A275980095DBD8 /* DraggableCollectionViewFlowLayout.m in Sources */,
+				12860FCD1A423EDA0074B452 /* WidthPopoverViewController.m in Sources */,
 				12BE8D1D196A616000503F84 /* SignInViewController.m in Sources */,
 				1230ABC719709E7B00EB2389 /* FirebaseHelper.m in Sources */,
 				1216D99C19A275980095DBD8 /* LSCollectionViewLayoutHelper.m in Sources */,

@@ -45,6 +45,7 @@
 
 @property BOOL carouselMoving;
 @property BOOL chatViewed;
+@property BOOL erasing;
 
 @property int userRole;
 
@@ -54,6 +55,7 @@
 @property (weak, nonatomic) IBOutlet iCarousel *carousel;
 @property (weak, nonatomic) IBOutlet UILabel *projectNameLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImage;
+@property (weak, nonatomic) DrawView *currentDrawView;
 
 @property (weak, nonatomic) IBOutlet UIButton *addBoardButton;
 

@@ -92,7 +92,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
         avatar.userID = userIDs[i];
         [avatar generateIdenticon];
-        avatar.frame = CGRectMake(-62, -12+(i-1)*64, avatar.userImage.size.width, avatar.userImage.size.height);
+        avatar.frame = CGRectMake(-71, -12+(i-1)*66, avatar.userImage.size.width, avatar.userImage.size.height);
         CGAffineTransform tr = CGAffineTransformScale(avatar.transform, .25, .25);
         tr = CGAffineTransformRotate(tr, -M_PI_2);
         avatar.transform = tr;
@@ -188,7 +188,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
             if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(230.0f/255.0f) green:1.0f blue:(200.0f/255.0f) alpha:1.0f];
             else lineColor = [UIColor colorWithRed:(60.0f/255.0f) green:1.0f blue:0.0f alpha:1.0f];
         }
-        
+
         CGContextSetStrokeColorWithColor(context, lineColor.CGColor);
         CGContextSetLineWidth(context, [[subpathValues objectForKey:@"width"] floatValue]);
         CGContextStrokePath(context);
@@ -241,9 +241,21 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     CGPathMoveToPoint(subpath, NULL, self.currentPoint.x, self.currentPoint.y);
     CGPathAddLineToPoint(subpath, NULL, self.currentPoint.x, self.currentPoint.y);
     
+    NSNumber *lineColorNumber;
+    CGFloat lineWidth;
+    
+    if (projectVC.erasing) {
+        lineColorNumber = @(0);
+        lineWidth = 100.0f;
+    }
+    else {
+        lineColorNumber = self.lineColorNumber;
+        lineWidth = self.lineWidth;
+    }
+    
     // compute the rect containing the new segment plus padding for drawn line
     CGRect bounds = CGPathGetBoundingBox(subpath);
-    CGRect drawBox = CGRectInset(bounds, -2.0 * self.lineWidth, -2.0 * self.lineWidth);
+    CGRect drawBox = CGRectInset(bounds, -2.0 * lineWidth, -2.0 * self.lineWidth);
     
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     NSDictionary *subpathValues =  @{ @"mid1x" : @(self.currentPoint.x),
@@ -252,8 +264,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                                       @"mid2y" : @(self.currentPoint.y),
                                       @"prevx" : @(self.currentPoint.x),
                                       @"prevy" : @(self.currentPoint.y),
-                                      @"color" : self.lineColorNumber,
-                                      @"width" : @(self.lineWidth)
+                                      @"color" : lineColorNumber,
+                                      @"width" : @(lineWidth)
                                       };
     
     [_paths addObject:subpathValues];
@@ -302,10 +314,21 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     CGPathAddQuadCurveToPoint(subpath, NULL,
                               self.previousPoint.x, self.previousPoint.y,
                               mid2.x, mid2.y);
+    NSNumber *lineColorNumber;
+    CGFloat lineWidth;
+    
+    if (projectVC.erasing) {
+        lineColorNumber = @(0);
+        lineWidth = 100.0f;
+    }
+    else {
+        lineColorNumber = self.lineColorNumber;
+        lineWidth = self.lineWidth;
+    }
     
     // compute the rect containing the new segment plus padding for drawn line
     CGRect bounds = CGPathGetBoundingBox(subpath);
-    CGRect drawBox = CGRectInset(bounds, -2.0 * self.lineWidth, -2.0 * self.lineWidth);
+    CGRect drawBox = CGRectInset(bounds, -2.0 * lineWidth, -2.0 * lineWidth);
     
     NSDictionary *subpathValues =  @{ @"mid1x" : @(mid1.x),
                                       @"mid1y" : @(mid1.y),
@@ -313,8 +336,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                                       @"mid2y" : @(mid2.y),
                                       @"prevx" : @(self.previousPoint.x),
                                       @"prevy" : @(self.previousPoint.y),
-                                      @"color" : self.lineColorNumber,
-                                      @"width" : @(self.lineWidth)
+                                      @"color" : lineColorNumber,
+                                      @"width" : @(lineWidth)
                                       };
     
     [_paths addObject:subpathValues];
@@ -388,6 +411,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     prev.x = [[subpathValues objectForKey:@"prevx"] floatValue];
     prev.y = [[subpathValues objectForKey:@"prevy"] floatValue];
     
+    CGFloat lineWidth = [[subpathValues objectForKey:@"width"] floatValue];
+    
     CGMutablePathRef subpath = CGPathCreateMutable();
     CGPathMoveToPoint(subpath, NULL, mid1.x, mid1.y);
     CGPathAddQuadCurveToPoint(subpath, NULL,
@@ -395,7 +420,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                               mid2.x, mid2.y);
     
     CGRect bounds = CGPathGetBoundingBox(subpath);
-    CGRect drawBox = CGRectInset(bounds, -2.0 * self.lineWidth, -2.0 * self.lineWidth);
+    CGRect drawBox = CGRectInset(bounds, -2.0 * lineWidth, -2.0 * lineWidth);
     
     [_paths addObject:subpathValues];
     
@@ -472,6 +497,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         
         for (CommentButton *commentButton in self.commentButtons) {
             
+            if ([commentButton isEqual:button]) continue;
+            
             commentButton.deleteButton.hidden = true;
             commentButton.commentImage.hidden = false;
             commentButton.highlightedImage.hidden = true;
@@ -513,7 +540,13 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                          }
          
                          completion:^(BOOL finished) {
-
+                             
+                             if ([projectVC.chatTextField isFirstResponder]) {
+                                 button.deleteButton.hidden = false;
+                                 button.commentImage.hidden = true;
+                                 button.highlightedImage.hidden = false;
+                             }
+                             
                              button.center = CGPointMake(MAX(0,MIN(button.center.x,768)), MAX(0,MIN(button.center.y,1024)));
                              
                              button.point = CGPointMake(MAX(0,MIN(button.center.x,768))+40, button.center.y-22);
