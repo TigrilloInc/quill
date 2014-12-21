@@ -95,7 +95,7 @@
     
     [self updateProjects];
     
-    if (indexPath.row == [FirebaseHelper sharedHelper].visibleProjectIDs.count) {
+    if (indexPath.row == [FirebaseHelper sharedHelper].visibleProjectIDs.count && ![FirebaseHelper sharedHelper].firstLoad) {
         
         cell.textLabel.text = @" +   NEW PROJECT";
         return cell;
@@ -116,8 +116,12 @@
         NSString *updatedAtString = [[[FirebaseHelper sharedHelper].projects objectForKey:projectID] objectForKey:@"updatedAt"];
         NSString *viewedAtString = [[[[FirebaseHelper sharedHelper].projects objectForKey:projectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid];
         
-        if ([updatedAtString doubleValue] > [viewedAtString doubleValue] && !cell.selected)
+        if ([updatedAtString doubleValue] > [viewedAtString doubleValue] && !cell.selected) {
+            NSLog(@"PROJECT IS %@", projectID);
+            NSLog(@"UPDATED AT IS %f", [updatedAtString doubleValue]);
+            NSLog(@"VIEWED AT IS %f", [viewedAtString doubleValue]);
             cell.textLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
+        }
         
         cell.selectedBackgroundView.backgroundColor = [UIColor colorWithRed:.9176 green:.9176 blue:.8863 alpha:1];
     }
@@ -135,6 +139,7 @@
     }
     
     ProjectsTableViewCell *cell = (ProjectsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    cell.textLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
     
     NSString *projectName = cell.textLabel.text;
     NSString *projectID;

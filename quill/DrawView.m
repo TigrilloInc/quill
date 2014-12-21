@@ -54,6 +54,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         self.lineColorNumber = @1;
         _empty = YES;
         self.activeUserIDs = [NSMutableArray array];
+        self.loadingView = nil;
         
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;;
         
@@ -147,7 +148,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         [self.commentButtons addObject:button];
     }
     
-    [self bringSubviewToFront:[self viewWithTag:2]];
+    [self bringSubviewToFront:[self viewWithTag:1]];
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -246,7 +247,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     if (projectVC.erasing) {
         lineColorNumber = @(0);
-        lineWidth = 100.0f;
+        lineWidth = 120.0f;
     }
     else {
         lineColorNumber = self.lineColorNumber;
@@ -319,7 +320,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     if (projectVC.erasing) {
         lineColorNumber = @(0);
-        lineWidth = 100.0f;
+        lineWidth = 120.0f;
     }
     else {
         lineColorNumber = self.lineColorNumber;
@@ -393,7 +394,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [[boardRef childByAppendingPath:undoString] setValue:newUndoDict];
     
     [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:@"penUp" forKey:dateString];
-
+    
     [[FirebaseHelper sharedHelper] setProjectUpdatedAt];
     [[FirebaseHelper sharedHelper] setActiveBoardUpdatedAt];
 }

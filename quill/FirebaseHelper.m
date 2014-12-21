@@ -23,6 +23,7 @@ static FirebaseHelper *sharedHelper = nil;
     
     if (!sharedHelper) {
         sharedHelper = [[FirebaseHelper alloc] init];
+        sharedHelper.firstLoad = true;
         sharedHelper.team = [NSMutableDictionary dictionary];
         sharedHelper.projects = [NSMutableDictionary dictionary];
         sharedHelper.boards = [NSMutableDictionary dictionary];
@@ -40,8 +41,6 @@ static FirebaseHelper *sharedHelper = nil;
     
     NSString *uidString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@", self.uid];
     Firebase *ref = [[Firebase alloc] initWithUrl:uidString];
-    
-    self.firstLoad = true;
     
     [ref observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
@@ -156,7 +155,10 @@ static FirebaseHelper *sharedHelper = nil;
     
     [[ref childByAppendingPath:@"info"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
-        NSMutableDictionary *projectDict = [NSMutableDictionary dictionary];
+        NSMutableDictionary *projectDict;
+        
+        if ([self.projects objectForKey:projectID]) projectDict = [self.projects objectForKey:projectID];
+        else projectDict = [NSMutableDictionary dictionary];
         
         if ([((NSDictionary *)[snapshot.value objectForKey:@"roles"]).allKeys containsObject:self.uid] && ![self.visibleProjectIDs containsObject:projectID]) [self.visibleProjectIDs addObject:projectID];
         
@@ -171,7 +173,8 @@ static FirebaseHelper *sharedHelper = nil;
                     if (![self.boards objectForKey:boardID]) {
                         
                         [self.boards setObject:[NSMutableDictionary dictionary] forKey:boardID];
-                        if (self.projectVC.activeBoardID == nil && [self.currentProjectID isEqualToString:projectID]) [self.projectVC.carousel reloadData];
+                        if (self.projectVC.activeBoardID == nil && [self.currentProjectID isEqualToString:projectID]) { [self.projectVC.carousel reloadData];
+                        }
                     }
                 }
             }
@@ -419,10 +422,18 @@ static FirebaseHelper *sharedHelper = nil;
     Firebase *ref = [[Firebase alloc] initWithUrl:commentsString];
 
     [ref observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
-        
-        if (![self.loadedBoardIDs containsObject:boardID]) [self.loadedBoardIDs addObject:boardID];
-        [self.projectVC.carousel reloadData];
 
+        NSArray *currentProjectBoardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
+        
+        if (![self.loadedBoardIDs containsObject:boardID] && [currentProjectBoardIDs containsObject:boardID]) {
+            
+            [self.loadedBoardIDs addObject:boardID];
+            NSInteger boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
+            DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
+            drawView.loadingView.hidden = true;
+            [drawView layoutComments];
+        }
+        
         if (snapshot.value == [NSNull null]) return;
         
         for (NSString *commentThreadID in [snapshot.value allKeys]) {
@@ -572,22 +583,25 @@ static FirebaseHelper *sharedHelper = nil;
     if (!self.currentProjectID) return;
     
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
-    
+
     [[[self.projects objectForKey:self.currentProjectID] objectForKey:@"viewedAt"] setObject:dateString forKey:self.uid];
+    
+    NSLog(@"NEW PROJECT VIEWEDAT IS %@", [self.projects objectForKey:self.currentProjectID]);
+    
     NSString *oldProjectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/viewedAt/%@", self.currentProjectID, self.uid];
     Firebase *oldProjectRef = [[Firebase alloc] initWithUrl:oldProjectString];
     [oldProjectRef setValue:dateString];
-    
 }
 
 -(void) setProjectUpdatedAt {
     
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     
+    [[self.projects objectForKey:self.currentProjectID] setObject:dateString forKey:@"updatedAt"];
+    
     NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/updatedAt", self.currentProjectID];
     Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
     [projectRef setValue:dateString];
-    [[self.projects objectForKey:self.currentProjectID] setObject:dateString forKey:@"updatedAt"];
 }
 
 -(void) setActiveBoardUpdatedAt {

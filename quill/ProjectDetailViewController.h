@@ -19,8 +19,8 @@
     
     BOOL newBoardCreated;
     BOOL commentsOpen;
+    NSArray *drawButtons;
     UIButton *boardButton;
-    DrawView *currentDrawView;
     UIImageView *carouselFadeLeft;
     UIImageView *carouselFadeRight;
     

@@ -78,120 +78,58 @@
     UIButton *closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
     closeButton.frame = CGRectMake(10, 20, 60, 30);
     [closeButton setTitle:@"< Back" forState:UIControlStateNormal];
-    [closeButton addTarget:self action:@selector(closeTapped) forControlEvents:UIControlEventTouchUpInside];
+    [closeButton addTarget:self action:@selector(closeTapped:) forControlEvents:UIControlEventTouchUpInside];
     closeButton.hidden = true;
     [self.view addSubview:closeButton];
-    closeButton.tag = 1;
+    closeButton.tag = 100;
     
-    UIButton *undoButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    undoButton.frame = CGRectMake(30, 680, 80, 80);
-    [undoButton setTitle:@"Undo" forState:UIControlStateNormal];
-    [undoButton addTarget:self action:@selector(undoTapped) forControlEvents:UIControlEventTouchUpInside];
-    undoButton.hidden = true;
-    [self.view addSubview:undoButton];
-    undoButton.tag = 3;
+    drawButtons = @[ @"undo",
+                     @"redo",
+                     @"clear",
+                     @"erase",
+                     @"color",
+                     @"width",
+                     @"comment"
+                    ];
     
-    UIButton *redoButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    redoButton.frame = CGRectMake(110, 680, 80, 80);
-    [redoButton setTitle:@"Redo" forState:UIControlStateNormal];
-    [redoButton addTarget:self action:@selector(redoTapped) forControlEvents:UIControlEventTouchUpInside];
-    redoButton.hidden = true;
-    [self.view addSubview:redoButton];
-    redoButton.tag = 4;
-    
-    UIButton *clearButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    clearButton.frame = CGRectMake(190, 680, 80, 80);
-    [clearButton setTitle:@"Clear" forState:UIControlStateNormal];
-    [clearButton addTarget:self action:@selector(clearTapped) forControlEvents:UIControlEventTouchUpInside];
-    clearButton.hidden = true;
-    [self.view addSubview:clearButton];
-    clearButton.tag = 6;
-    
-    UIButton *eraseButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    eraseButton.frame = CGRectMake(270, 680, 80, 80);
-    [eraseButton setTitle:@"Erase" forState:UIControlStateNormal];
-    [eraseButton addTarget:self action:@selector(eraseTapped) forControlEvents:UIControlEventTouchUpInside];
-    eraseButton.hidden = true;
-    [self.view addSubview:eraseButton];
-    eraseButton.tag = 7;
-    
-    UIButton *colorButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    colorButton.frame = CGRectMake(350, 680, 80, 80);
-    [colorButton setTitle:@"Color" forState:UIControlStateNormal];
-    [colorButton addTarget:self action:@selector(colorTapped:) forControlEvents:UIControlEventTouchUpInside];
-    colorButton.hidden = true;
-    [self.view addSubview:colorButton];
-    colorButton.tag = 8;
-    
-    UIButton *widthButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    widthButton.frame = CGRectMake(430, 680, 80, 80);
-    [widthButton setTitle:@"Width" forState:UIControlStateNormal];
-    [widthButton addTarget:self action:@selector(widthTapped:) forControlEvents:UIControlEventTouchUpInside];
-    widthButton.hidden = true;
-    [self.view addSubview:widthButton];
-    widthButton.tag = 9;
-    
-    UIButton *commentButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    commentButton.frame = CGRectMake(510, 680, 80, 80);
-    [commentButton setTitle:@"Comment" forState:UIControlStateNormal];
-    [commentButton addTarget:self action:@selector(commentTapped) forControlEvents:UIControlEventTouchUpInside];
-    commentButton.hidden = true;
-    [self.view addSubview:commentButton];
-    commentButton.tag = 10;
-    
+    for (int i = 0; i<drawButtons.count; i++) {
+        
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIImage *buttonImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@.png",drawButtons[i]]];
+        button.frame = CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height);
+        [button setImage:buttonImage forState:UIControlStateNormal];
+        button.transform = CGAffineTransformMakeScale(.1, .1);
+        button.center = CGPointMake(272+i*80, 720);
+        [button addTarget:self action:NSSelectorFromString([NSString stringWithFormat:@"%@Tapped:", drawButtons[i]]) forControlEvents:UIControlEventTouchUpInside];
+        button.hidden = true;
+        [self.view addSubview:button];
+        button.tag = i+2;
+    }
 }
 
 -(void) showDrawMenu {
     
-    UIButton *closeButton = (UIButton *)[self.view viewWithTag:1];
+    UIButton *closeButton = (UIButton *)[self.view viewWithTag:100];
     closeButton.hidden = false;
     [self.view bringSubviewToFront:closeButton];
     
-    UIButton *undoButton = (UIButton *)[self.view viewWithTag:3];
-    undoButton.hidden = false;
-    [self.view bringSubviewToFront:undoButton];
-    
-    UIButton *redoButton = (UIButton *)[self.view viewWithTag:4];
-    redoButton.hidden = false;
-    [self.view bringSubviewToFront:redoButton];
-    
-    UIButton *clearButton = (UIButton *)[self.view viewWithTag:6];
-    clearButton.hidden = false;
-    [self.view bringSubviewToFront:clearButton];
-    
-    UIButton *eraseButton = (UIButton *)[self.view viewWithTag:7];
-    eraseButton.hidden = false;
-    [self.view bringSubviewToFront:eraseButton];
-    
-    UIButton *colorButton = (UIButton *)[self.view viewWithTag:8];
-    colorButton.hidden = false;
-    [self.view bringSubviewToFront:colorButton];
-    
-    UIButton *widthButton = (UIButton *)[self.view viewWithTag:9];
-    widthButton.hidden = false;
-    [self.view bringSubviewToFront:widthButton];
-    
-    UIButton *commentButton = (UIButton *)[self.view viewWithTag:10];
-    commentButton.hidden = false;
-    [self.view bringSubviewToFront:commentButton];
+    for (int i=0; i<drawButtons.count; i++) {
+        
+        UIButton *button = (UIButton *)[self.view viewWithTag:i+2];
+        button.hidden = false;
+        [self.view bringSubviewToFront:button];
+    }
 }
 
 -(void) hideDrawMenu {
     
-    UIButton *closeButton = (UIButton *)[self.view viewWithTag:1];
-    closeButton.hidden = true;
-    UIButton *undoButton = (UIButton *)[self.view viewWithTag:3];
-    undoButton.hidden = true;
-    UIButton *redoButton = (UIButton *)[self.view viewWithTag:4];
-    redoButton.hidden = true;
-    UIButton *clearButton = (UIButton *)[self.view viewWithTag:6];
-    clearButton.hidden = true;
-    UIButton *eraseButton = (UIButton *)[self.view viewWithTag:7];
-    eraseButton.hidden = true;
-    UIButton *drawButton = (UIButton *)[self.view viewWithTag:8];
-    drawButton.hidden = true;
-    UIButton *commentButton = (UIButton *)[self.view viewWithTag:9];
-    commentButton.hidden = true;
+    for (int i=0; i<=drawButtons.count; i++) {
+        
+        UIButton *button = (UIButton *)[self.view viewWithTag:i+2];
+        button.hidden = true;
+    }
+    
+    [(UIButton *)[self.view viewWithTag:7] setImage:[UIImage imageNamed:@"width.png"] forState:UIControlStateNormal];
 }
 
 -(void) showChat {
@@ -222,6 +160,7 @@
     [self.chatTable reloadData];
     [self.carousel reloadData];
     [self.draggableCollectionView reloadData];
+
     
     [self layoutAvatars];
     
@@ -616,15 +555,15 @@
     self.chatOpenButton.hidden = false;
 }
 
--(void)closeTapped {
+-(void)closeTapped:(id)sender {
     
     boardButton.hidden = false;
-    
+    self.currentDrawView.commenting = false;
     commentsOpen = false;
     
     [self hideDrawMenu];
     
-    UIButton *closeButton = (UIButton *)[self.view viewWithTag:1];
+    UIButton *closeButton = (UIButton *)[self.view viewWithTag:100];
     closeButton.hidden = true;
 
     self.activeBoardID = nil;
@@ -678,7 +617,9 @@
      ];
 }
 
-- (void) undoTapped {
+- (void) undoTapped:(id)sender {
+    
+    self.currentDrawView.commenting = false;
     
     int undoCount = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndex"] intValue];
     int undoTotal = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"total"] intValue];
@@ -700,7 +641,9 @@
     }
 }
 
-- (void) redoTapped {
+- (void) redoTapped:(id)sender {
+    
+    self.currentDrawView.commenting = false;
     
     int undoCount = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndex"] intValue];
     
@@ -721,7 +664,9 @@
     }
 }
 
-- (void) clearTapped {
+- (void) clearTapped:(id)sender {
+    
+    self.currentDrawView.commenting = false;
     
     [[FirebaseHelper sharedHelper] resetUndo];
     
@@ -738,15 +683,27 @@
     [self drawBoard:self.currentDrawView];
 }
 
--(void) eraseTapped {
+-(void) eraseTapped:(id)sender {
+
+    self.currentDrawView.commenting = false;
+    
+    UIButton *eraseButton = (UIButton *)[self.view viewWithTag:5];
+    CGPoint centerPoint = eraseButton.center;
+    UIImage *buttonImage;
+    
+    if (self.erasing) buttonImage = [UIImage imageNamed:@"erase.png"];
+    else buttonImage = [UIImage imageNamed:@"drawing.png"];
+    
+    eraseButton.frame = CGRectMake(0, 0, buttonImage.size.width*.1, buttonImage.size.height*.1);
+    [eraseButton setImage:buttonImage forState:UIControlStateNormal];
+    eraseButton.center = centerPoint;
     
     self.erasing = !self.erasing;
-
 }
-
 
 -(void) colorTapped:(id)sender {
     
+    self.currentDrawView.commenting = false;
     self.erasing = false;
     
     UIButton *colorButton = (UIButton *)sender;
@@ -762,7 +719,6 @@
     popover.permittedArrowDirections = UIPopoverArrowDirectionDown;
     
     [self presentViewController:colorPopover animated:NO completion:nil];
-
 }
 
 -(void) widthTapped:(id)sender {
@@ -784,7 +740,7 @@
     [self presentViewController:widthPopover animated:NO completion:nil];
 }
 
--(void) commentTapped {
+-(void) commentTapped:(id)sender {
     
     self.currentDrawView.commenting = true;
 }
@@ -838,6 +794,8 @@
     
     [self.carousel reloadData];
     [self.carousel scrollByNumberOfItems:self.carousel.numberOfItems duration:.5];
+    
+    NSLog(@"PROJECT BEFORE IS %@", [[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID]);
 }
 
 - (IBAction)addUserTapped:(id)sender {
@@ -1068,33 +1026,33 @@
     [gradientButton setBackgroundImage:gradientImage forState:UIControlStateNormal];
     [gradientButton addTarget:self action:@selector(boardTapped:) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:gradientButton];
-    gradientButton.tag = 2;
+    gradientButton.tag = 1;
     
     ((DrawView *)view).boardID = self.boardIDs[index];
 
-    if (![[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.boardIDs[index]]) {
+    if ([[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.boardIDs[index]]) {
+        [self drawBoard:(DrawView *)view];
+        [((DrawView *)view) layoutComments];
+    }
+    else {
         ((DrawView *)view).loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         ((DrawView *)view).loadingView.transform = CGAffineTransformMakeScale(5, 5);
         [((DrawView *)view).loadingView setCenter:((DrawView *)view).center];
         [((DrawView *)view).loadingView startAnimating];
         [((DrawView *)view) addSubview:((DrawView *)view).loadingView];
     }
-    else {
-
-        [self drawBoard:(DrawView *)view];
-        [((DrawView *)view) layoutComments];
-    }
 
     return view;
 }
 
-- (void)carouselDidEndScrollingAnimation:(iCarousel *)carousel
-{
+- (void)carouselDidEndScrollingAnimation:(iCarousel *)carousel {
+    
+    NSLog(@"PROJECT AFTER IS %@", [[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID]);
     
     self.carouselMoving = false;
     
     if (newBoardCreated) {
-        [self boardTapped:[carousel.currentItemView viewWithTag:2]];
+        [self boardTapped:[carousel.currentItemView viewWithTag:1]];
     }
 }
 
