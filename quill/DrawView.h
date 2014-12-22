@@ -26,6 +26,7 @@
 @property (nonatomic, strong) NSMutableArray *commentButtons;
 @property (nonatomic, strong) UIActivityIndicatorView *loadingView;
 @property (nonatomic, strong) CommentButton *movingCommentButton;
+@property (strong, nonatomic) UIImageView *avatarBackgroundImage;
 
 -(void)clear;
 -(void)drawSubpath:(NSDictionary *)subpathValues;

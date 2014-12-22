@@ -277,23 +277,38 @@
     
     NSArray *userIDs = [self.roles.allKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     
+    [self.avatarBackgroundImage removeFromSuperview];
+    CGRect imageRect = CGRectMake(0, 0, 345+userIDs.count*(66*4), 280);
+    CGImageRef imageRef = CGImageCreateWithImageInRect([[UIImage imageNamed:@"avatarbackground.png"] CGImage], imageRect);
+    self.avatarBackgroundImage = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:imageRef]];
+    self.avatarBackgroundImage.transform = CGAffineTransformScale(self.avatarBackgroundImage.transform, .25, .25);
+    self.avatarBackgroundImage.frame = CGRectMake(1024-self.avatarBackgroundImage.frame.size.width, 18, self.avatarBackgroundImage.frame.size.width, self.avatarBackgroundImage.frame.size.height);
+    [self.view insertSubview:self.avatarBackgroundImage aboveSubview:self.backgroundImage];
+    
     for (int i=0; i<userIDs.count; i++) {
         
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
         avatar.userID = userIDs[i];
         [avatar generateIdenticon];
-        avatar.frame = CGRectMake(850-(i*66), -71, avatar.userImage.size.width, avatar.userImage.size.height);
+        avatar.frame = CGRectMake(850-(i*66), -70, avatar.userImage.size.width, avatar.userImage.size.height);
         [avatar addTarget:self action:@selector(avatarTapped:) forControlEvents:UIControlEventTouchUpInside];
         avatar.transform = CGAffineTransformScale(avatar.transform, .25, .25);
-        [self.view addSubview:avatar];
+        [self.view insertSubview:avatar aboveSubview:self.avatarBackgroundImage];
         
         if (![[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"inProject"] isEqualToString:[FirebaseHelper sharedHelper].currentProjectID] && ![avatar.userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
-            //avatar.alpha = 0.5;
+            avatar.alpha = 0.5;
         }
-        
-        self.addUserButton.center = CGPointMake(985-(userIDs.count*66), self.addUserButton.center.y);
         [self.avatars addObject:avatar];
     }
+    
+    [self.addUserButton removeFromSuperview];
+    self.addUserButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.addUserButton addTarget:self action:@selector(addUserTapped) forControlEvents:UIControlEventTouchUpInside];
+    UIImage *plusImage = [UIImage imageNamed:@"plus.png"];
+    [self.addUserButton setImage:plusImage forState:UIControlStateNormal];
+    self.addUserButton.frame = CGRectMake(858-(userIDs.count*66), -63, plusImage.size.width, plusImage.size.height);
+    self.addUserButton.transform = CGAffineTransformScale(self.addUserButton.transform, .25, .25);
+    [self.view insertSubview:self.addUserButton aboveSubview:self.avatarBackgroundImage];
 }
 
 -(void) drawBoard:(DrawView *)drawView {
@@ -402,6 +417,8 @@
     [self hideChat];
     
     for (AvatarButton *avatar in self.avatars) [self.view sendSubviewToBack:avatar];
+    [self.view sendSubviewToBack:self.addUserButton];
+    [self.view sendSubviewToBack:self.avatarBackgroundImage];
     [self.view sendSubviewToBack:self.backgroundImage];
     
     [UIView animateWithDuration:.25
@@ -544,7 +561,6 @@
     
     self.editProjectNameTextField.hidden = true;
     self.editBoardNameTextField.hidden = true;
-    self.boardNameEditButton.hidden = false;
     self.applyChangesButton.hidden = true;
     self.cancelButton.hidden = true;
     
@@ -794,11 +810,9 @@
     
     [self.carousel reloadData];
     [self.carousel scrollByNumberOfItems:self.carousel.numberOfItems duration:.5];
-    
-    NSLog(@"PROJECT BEFORE IS %@", [[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID]);
 }
 
-- (IBAction)addUserTapped:(id)sender {
+- (void)addUserTapped {
     
     AddUserViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"AddUser"];
     
@@ -1031,8 +1045,16 @@
     ((DrawView *)view).boardID = self.boardIDs[index];
 
     if ([[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.boardIDs[index]]) {
+        
         [self drawBoard:(DrawView *)view];
         [((DrawView *)view) layoutComments];
+        
+        for (NSString *userID in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
+            
+            if ([[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"inBoard"] isEqualToString:((DrawView *)view).boardID])
+                [((DrawView *)view).activeUserIDs addObject:userID];
+        }
+        [((DrawView *)view) layoutAvatars];
     }
     else {
         ((DrawView *)view).loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -1047,13 +1069,9 @@
 
 - (void)carouselDidEndScrollingAnimation:(iCarousel *)carousel {
     
-    NSLog(@"PROJECT AFTER IS %@", [[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID]);
-    
     self.carouselMoving = false;
     
-    if (newBoardCreated) {
-        [self boardTapped:[carousel.currentItemView viewWithTag:1]];
-    }
+    if (newBoardCreated) [self boardTapped:[carousel.currentItemView viewWithTag:1]];
 }
 
 - (void)carouselDidScroll:(iCarousel *)carousel {
@@ -1066,17 +1084,29 @@
     NSString *boardID = self.boardIDs[carousel.currentItemIndex];
     NSDictionary *boardDict = [[FirebaseHelper sharedHelper].boards objectForKey:boardID];
     
-    self.boardNameLabel.text = [boardDict objectForKey:@"name"];
-    [self.boardNameLabel sizeToFit];
-    self.boardNameEditButton.center = CGPointMake(self.boardNameLabel.frame.size.width+400, self.boardNameEditButton.center.y);
+    NSString *boardName = [boardDict objectForKey:@"name"];
+    
+    if (boardName) {
+        self.boardNameLabel.text = boardName;
+        self.boardNameEditButton.hidden = false;
+    }
+    else self.boardNameEditButton.hidden = true;
+    
     
     double viewedAt = [[[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid] doubleValue];
     double updatedAt = [[boardDict objectForKey:@"updatedAt"] doubleValue];
     
+    UIFont *labelFont;
+    
     if (updatedAt > viewedAt && ![self.viewedBoardIDs containsObject:boardID] && !newBoardCreated)
-        self.boardNameLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
+        labelFont = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
     else
-        self.boardNameLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
+        labelFont = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
+    
+    self.boardNameLabel.font = labelFont;
+    [self.boardNameLabel sizeToFit];
+
+    self.boardNameEditButton.center = CGPointMake(self.boardNameLabel.frame.size.width+400, self.boardNameEditButton.center.y);
 }
 
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event

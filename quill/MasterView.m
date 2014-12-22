@@ -116,12 +116,8 @@
         NSString *updatedAtString = [[[FirebaseHelper sharedHelper].projects objectForKey:projectID] objectForKey:@"updatedAt"];
         NSString *viewedAtString = [[[[FirebaseHelper sharedHelper].projects objectForKey:projectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid];
         
-        if ([updatedAtString doubleValue] > [viewedAtString doubleValue] && !cell.selected) {
-            NSLog(@"PROJECT IS %@", projectID);
-            NSLog(@"UPDATED AT IS %f", [updatedAtString doubleValue]);
-            NSLog(@"VIEWED AT IS %f", [viewedAtString doubleValue]);
+        if ([updatedAtString doubleValue] > [viewedAtString doubleValue] && !cell.selected)
             cell.textLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
-        }
         
         cell.selectedBackgroundView.backgroundColor = [UIColor colorWithRed:.9176 green:.9176 blue:.8863 alpha:1];
     }

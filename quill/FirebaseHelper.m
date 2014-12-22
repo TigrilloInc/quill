@@ -270,8 +270,13 @@ static FirebaseHelper *sharedHelper = nil;
     [[ref childByAppendingPath:@"name"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         [[self.boards objectForKey:boardID] setObject:snapshot.value forKey:@"name"];
-        
-        if (self.projectVC.carousel.currentItemIndex == [self.projectVC.boardIDs indexOfObject:boardID]) self.projectVC.boardNameLabel.text = snapshot.value;
+
+        if (self.projectVC.carousel.currentItemIndex == [self.projectVC.boardIDs indexOfObject:boardID]) {
+            self.projectVC.boardNameLabel.text = snapshot.value;
+            [self.projectVC.boardNameLabel sizeToFit];
+            self.projectVC.boardNameEditButton.hidden = false;
+            self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.boardNameLabel.frame.size.width+400, self.projectVC.boardNameEditButton.center.y);
+        }
     }];
     
     [[ref childByAppendingPath:@"undo"] observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
@@ -585,9 +590,7 @@ static FirebaseHelper *sharedHelper = nil;
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
 
     [[[self.projects objectForKey:self.currentProjectID] objectForKey:@"viewedAt"] setObject:dateString forKey:self.uid];
-    
-    NSLog(@"NEW PROJECT VIEWEDAT IS %@", [self.projects objectForKey:self.currentProjectID]);
-    
+
     NSString *oldProjectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/viewedAt/%@", self.currentProjectID, self.uid];
     Firebase *oldProjectRef = [[Firebase alloc] initWithUrl:oldProjectString];
     [oldProjectRef setValue:dateString];

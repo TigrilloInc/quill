@@ -501,19 +501,8 @@
                                     <action selector="newBoardTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="fvw-jL-Sw1"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="vuh-Ig-Tk2" userLabel="Button - +">
-                                <rect key="frame" x="963" y="29" width="43" height="38"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="45"/>
-                                <state key="normal" title="+">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="addUserTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="TXx-je-TPd"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="fby-KJ-NQF">
-                                <rect key="frame" x="656" y="50" width="51" height="30"/>
+                                <rect key="frame" x="656" y="40" width="51" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <state key="normal" title="Edit">
@@ -540,7 +529,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Project Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="7VA-hg-eFW">
-                                <rect key="frame" x="262" y="31" width="392" height="44"/>
+                                <rect key="frame" x="254" y="19" width="392" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="SourceSansPro-Light" family="Source Sans Pro" pointSize="50"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -758,7 +747,6 @@
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
                         <outlet property="addBoardButton" destination="N38-cw-Ht6" id="nP1-3w-pCv"/>
-                        <outlet property="addUserButton" destination="vuh-Ig-Tk2" id="efm-9a-nbV"/>
                         <outlet property="applyChangesButton" destination="x1v-BJ-G8Z" id="Prx-JS-tnX"/>
                         <outlet property="backgroundImage" destination="m3y-wV-D63" id="AiC-UF-2tu"/>
                         <outlet property="boardNameEditButton" destination="vuw-ek-kay" id="JXr-hL-THv"/>

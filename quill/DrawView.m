@@ -88,6 +88,20 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     
     NSArray *userIDs = [unsortedUserIDs sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     
+    [self.avatarBackgroundImage removeFromSuperview];
+
+    if (userIDs.count > 0) {
+        
+        CGRect imageRect = CGRectMake(0, 0, 325+(userIDs.count-1)*(66*4), 280);
+        CGImageRef imageRef = CGImageCreateWithImageInRect([[UIImage imageNamed:@"avatarbackground.png"] CGImage], imageRect);
+        self.avatarBackgroundImage = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:imageRef]];
+        CGAffineTransform bgtr = CGAffineTransformScale(self.avatarBackgroundImage.transform, .25, .25);
+        bgtr = CGAffineTransformRotate(bgtr, -M_PI_2);
+        self.avatarBackgroundImage.transform = bgtr;
+        self.avatarBackgroundImage.frame = CGRectMake(18, self.avatarBackgroundImage.frame.size.width-70, self.avatarBackgroundImage.frame.size.width, self.avatarBackgroundImage.frame.size.height);
+        [self addSubview:self.avatarBackgroundImage];
+    }
+
     for (int i=0; i<userIDs.count; i++) {
         
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
@@ -142,6 +156,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
             button.commentImage.hidden = true;
             button.highlightedImage.hidden = false;
             button.deleteButton.hidden = false;
+            
+            [self updateCarouselOffsetWithPoint:button.point];
         }
         
         [self addSubview:button];

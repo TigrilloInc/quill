@@ -38,7 +38,7 @@
         self.drawView.transform = tr;
         [self.contentView addSubview:self.drawView];
         
-        UIImageView *gradientImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"board3.png"]];
+        UIImageView *gradientImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"board7.png"]];
         gradientImage.transform = tr;
         [self.contentView addSubview:gradientImage];
         
