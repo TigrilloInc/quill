@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "iCarousel.h"
-#import "DrawView.h"
+#import "BoardView.h"
 #import "MasterViewController.h"
 #import "UICollectionView+Draggable.h"
 #import "AvatarButton.h"
@@ -56,7 +56,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *projectNameLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImage;
 @property (strong, nonatomic) UIImageView *avatarBackgroundImage;
-@property (weak, nonatomic) DrawView *currentDrawView;
+@property (weak, nonatomic) BoardView *currentBoardView;
 
 @property (weak, nonatomic) IBOutlet UIButton *addBoardButton;
 
@@ -83,7 +83,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *applyChangesButton;
 
 -(void) updateDetails;
--(void) drawBoard:(DrawView *)drawView;
+-(void) drawBoard:(BoardView *)boardView;
 -(IBAction) cancelTapped:(id)sender;
 -(void) showDrawMenu;
 -(void) layoutAvatars;

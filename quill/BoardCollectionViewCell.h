@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "DrawView.h"
+#import "BoardView.h"
 
 @interface BoardCollectionViewCell : UICollectionViewCell
 
-@property (nonatomic, strong) DrawView *drawView;
+@property (nonatomic, strong) BoardView *boardView;
 @property (nonatomic, strong) UIButton *deleteButton;
 
 -(void) updateSubpathsForBoardID:(NSString *)boardID;

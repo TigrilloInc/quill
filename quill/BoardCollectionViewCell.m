@@ -29,14 +29,14 @@
         
         self.clipsToBounds = false;
         
-        self.drawView = [[DrawView alloc] initWithFrame:CGRectMake(0, 0, 768, 1024)];
-        self.drawView.drawable = false;
-        CGAffineTransform tr = self.drawView.transform;
+        self.boardView = [[BoardView alloc] initWithFrame:CGRectMake(0, 0, 768, 1024)];
+        self.boardView.drawable = false;
+        CGAffineTransform tr = self.boardView.transform;
         tr = CGAffineTransformScale(tr, .1875, .1875);
         tr = CGAffineTransformTranslate(tr, -1536, -2348);
         tr = CGAffineTransformRotate(tr, M_PI_2);
-        self.drawView.transform = tr;
-        [self.contentView addSubview:self.drawView];
+        self.boardView.transform = tr;
+        [self.contentView addSubview:self.boardView];
         
         UIImageView *gradientImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"board7.png"]];
         gradientImage.transform = tr;
@@ -55,11 +55,11 @@
 
 -(void) updateSubpathsForBoardID:(NSString *)boardID {
     
-    [self.drawView clear];
+    [self.boardView clear];
     
     NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"subpaths"];
     
-    NSDictionary *dictRef = [[[FirebaseHelper sharedHelper].boards objectForKey:self.drawView.boardID] objectForKey:@"undo"];
+    NSDictionary *dictRef = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardView.boardID] objectForKey:@"undo"];
     NSMutableDictionary *undoDict = (NSMutableDictionary *)CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)dictRef, kCFPropertyListMutableContainers));
     
     NSMutableDictionary *subpathsToDraw = [NSMutableDictionary dictionary];
@@ -110,7 +110,7 @@
     for (int i=0; i<allOrderedKeys.count; i++) {
         
         NSDictionary *subpathDict = [subpathsToDraw objectForKey:allOrderedKeys[i]];
-        [self.drawView drawSubpath:subpathDict];
+        [self.boardView drawSubpath:subpathDict];
     }
 }
 
@@ -118,7 +118,7 @@
  
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
-    [projectVC.editBoardIDs removeObject:self.drawView.boardID];
+    [projectVC.editBoardIDs removeObject:self.boardView.boardID];
     [projectVC.draggableCollectionView reloadData];
     
 }

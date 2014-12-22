@@ -7,7 +7,7 @@
 //
 
 #import "CommentButton.h"
-#import "DrawView.h"
+#import "BoardView.h"
 #import "FirebaseHelper.h"
 #import "ProjectDetailViewController.h"
 #import "IdenticonView.h"
@@ -46,9 +46,9 @@
 
 -(void) deleteTapped {
     
-    DrawView *drawView = (DrawView *)self.superview;
+    BoardView *boardView = (BoardView *)self.superview;
     
-    NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:drawView.boardID] objectForKey:@"commentsID"];
+    NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"commentsID"];
     NSString *commentThreadString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@/%@/", commentsID, self.commentThreadID];
     Firebase *commentThreadRef = [[Firebase alloc] initWithUrl:commentThreadString];
     [commentThreadRef removeValue];
@@ -60,7 +60,7 @@
     
     [self removeFromSuperview];
     
-    [drawView hideChat];
+    [boardView hideChat];
 }
 
 - (void) generateIdenticon {

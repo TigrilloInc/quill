@@ -59,6 +59,7 @@
 		12860FE81A4643590074B452 /* width3.png in Resources */ = {isa = PBXBuildFile; fileRef = 12860FE61A4643590074B452 /* width3.png */; };
 		12860FEA1A47AF800074B452 /* avatarbackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 12860FE91A47AF800074B452 /* avatarbackground.png */; };
 		12860FEC1A47C3170074B452 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 12860FEB1A47C3170074B452 /* plus.png */; };
+		12860FEF1A47F9A30074B452 /* DrawView.m in Sources */ = {isa = PBXBuildFile; fileRef = 12860FEE1A47F9A30074B452 /* DrawView.m */; };
 		12899BB01A168CA100AF95BD /* MasterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 12899BAF1A168CA100AF95BD /* MasterView.m */; };
 		12899BB21A1AEC3B00AF95BD /* carouselfade.png in Resources */ = {isa = PBXBuildFile; fileRef = 12899BB11A1AEC3A00AF95BD /* carouselfade.png */; };
 		128DC3071A1E8C7000FF6076 /* ChatTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 128DC3061A1E8C7000FF6076 /* ChatTableViewCell.m */; };
@@ -79,7 +80,7 @@
 		129E129E19648A2C00ED9D42 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127519648A2C00ED9D42 /* UIKit.framework */; };
 		129E12A619648A2C00ED9D42 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 129E12A419648A2C00ED9D42 /* InfoPlist.strings */; };
 		129E12A819648A2C00ED9D42 /* quillTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 129E12A719648A2C00ED9D42 /* quillTests.m */; };
-		129E12B619648C3200ED9D42 /* DrawView.m in Sources */ = {isa = PBXBuildFile; fileRef = 129E12B519648C3200ED9D42 /* DrawView.m */; };
+		129E12B619648C3200ED9D42 /* BoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 129E12B519648C3200ED9D42 /* BoardView.m */; };
 		129E12C41964D77700ED9D42 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E12C31964D77700ED9D42 /* libicucore.dylib */; };
 		129E12C61964DB4300ED9D42 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E12C51964DB4300ED9D42 /* libc++.dylib */; };
 		12A310E4197DC65B00E03E9E /* SignUpFromInviteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12A310E3197DC65B00E03E9E /* SignUpFromInviteViewController.m */; };
@@ -246,6 +247,8 @@
 		12860FE61A4643590074B452 /* width3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = width3.png; path = Resources/width3.png; sourceTree = "<group>"; };
 		12860FE91A47AF800074B452 /* avatarbackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = avatarbackground.png; path = Resources/avatarbackground.png; sourceTree = "<group>"; };
 		12860FEB1A47C3170074B452 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = plus.png; path = Resources/plus.png; sourceTree = "<group>"; };
+		12860FED1A47F9A30074B452 /* DrawView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawView.h; sourceTree = "<group>"; };
+		12860FEE1A47F9A30074B452 /* DrawView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawView.m; sourceTree = "<group>"; };
 		12899BAE1A168CA100AF95BD /* MasterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterView.h; sourceTree = "<group>"; };
 		12899BAF1A168CA100AF95BD /* MasterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterView.m; sourceTree = "<group>"; };
 		12899BB11A1AEC3A00AF95BD /* carouselfade.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = carouselfade.png; path = Resources/carouselfade.png; sourceTree = "<group>"; };
@@ -273,8 +276,8 @@
 		129E12A319648A2C00ED9D42 /* quillTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "quillTests-Info.plist"; sourceTree = "<group>"; };
 		129E12A519648A2C00ED9D42 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		129E12A719648A2C00ED9D42 /* quillTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = quillTests.m; sourceTree = "<group>"; };
-		129E12B419648C3200ED9D42 /* DrawView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawView.h; sourceTree = "<group>"; };
-		129E12B519648C3200ED9D42 /* DrawView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawView.m; sourceTree = "<group>"; };
+		129E12B419648C3200ED9D42 /* BoardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoardView.h; sourceTree = "<group>"; };
+		129E12B519648C3200ED9D42 /* BoardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BoardView.m; sourceTree = "<group>"; };
 		129E12C31964D77700ED9D42 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		129E12C51964DB4300ED9D42 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		12A310E2197DC65B00E03E9E /* SignUpFromInviteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUpFromInviteViewController.h; sourceTree = "<group>"; };
@@ -441,8 +444,10 @@
 				1230ABC619709E7B00EB2389 /* FirebaseHelper.m */,
 				12A3FA0E1979861800E03E9E /* ProjectDetailViewController.h */,
 				12A3FA0F1979861800E03E9E /* ProjectDetailViewController.m */,
-				129E12B419648C3200ED9D42 /* DrawView.h */,
-				129E12B519648C3200ED9D42 /* DrawView.m */,
+				129E12B419648C3200ED9D42 /* BoardView.h */,
+				129E12B519648C3200ED9D42 /* BoardView.m */,
+				12860FED1A47F9A30074B452 /* DrawView.h */,
+				12860FEE1A47F9A30074B452 /* DrawView.m */,
 				12899BAE1A168CA100AF95BD /* MasterView.h */,
 				12899BAF1A168CA100AF95BD /* MasterView.m */,
 				12E898A519ECC6DA00E29E7B /* AvatarButton.h */,
@@ -799,6 +804,7 @@
 			files = (
 				1216D99E19A275980095DBD8 /* UICollectionView+Draggable.m in Sources */,
 				12BE8D74196CF04D00503F84 /* NewProjectViewController.m in Sources */,
+				12860FEF1A47F9A30074B452 /* DrawView.m in Sources */,
 				124E5CF619AE83CB00442963 /* NSDate+ServerDate.m in Sources */,
 				12A310E4197DC65B00E03E9E /* SignUpFromInviteViewController.m in Sources */,
 				12860FD01A423F000074B452 /* ColorPopoverViewController.m in Sources */,
@@ -807,7 +813,7 @@
 				12860FB61A40C58E0074B452 /* IdenticonView.m in Sources */,
 				12A310ED1980BE4300E03E9E /* iCarousel.m in Sources */,
 				12860FA21A3EA61F0074B452 /* ProjectsTableViewCell.m in Sources */,
-				129E12B619648C3200ED9D42 /* DrawView.m in Sources */,
+				129E12B619648C3200ED9D42 /* BoardView.m in Sources */,
 				129E128819648A2C00ED9D42 /* AppDelegate.m in Sources */,
 				12BE8D68196BA1B100503F84 /* NewTeamViewController.m in Sources */,
 				12C3780C19FEE9FC000C0DB4 /* CommentButton.m in Sources */,

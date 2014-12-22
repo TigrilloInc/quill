@@ -189,7 +189,7 @@
     
     if (self.activeCommentThreadID) {
         
-        NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentDrawView.boardID] objectForKey:@"commentsID"];
+        NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"commentsID"];
         messageKeys = [[[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] objectForKey:@"messages"] allKeys];
     }
     else messageKeys = [[[FirebaseHelper sharedHelper].chats objectForKey:self.chatID] allKeys];
@@ -200,7 +200,7 @@
         
         if (self.activeCommentThreadID != nil) {
             
-            NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentDrawView.boardID] objectForKey:@"commentsID"];
+            NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"commentsID"];
             
             date = [[[[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] objectForKey:@"messages"] objectForKey:messageID] objectForKey:@"sentAt"];
             
@@ -229,7 +229,7 @@
         
         if (self.activeCommentThreadID){
             
-            NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentDrawView.boardID] objectForKey:@"commentsID"];
+            NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"commentsID"];
             date = [[[[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] objectForKey:@"messages"] objectForKey:messageID] objectForKey:@"sentAt"];
         }
         else date = [[[[FirebaseHelper sharedHelper].chats objectForKey:self.chatID] objectForKey:messageID]  objectForKey:@"sentAt"];
@@ -247,7 +247,7 @@
                 
                 if (self.activeCommentThreadID) {
                     
-                    NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentDrawView.boardID] objectForKey:@"commentsID"];
+                    NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"commentsID"];
                     NSDictionary *messageDict = [[[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] objectForKey:@"messages"] objectForKey:messageID];
                     
                     text = [messageDict objectForKey:@"message"];
@@ -311,13 +311,13 @@
     [self.view insertSubview:self.addUserButton aboveSubview:self.avatarBackgroundImage];
 }
 
--(void) drawBoard:(DrawView *)drawView {
+-(void) drawBoard:(BoardView *)boardView {
     
-    [drawView clear];
+    [boardView clear];
     
-    NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:drawView.boardID] objectForKey:@"subpaths"];
+    NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"subpaths"];
     
-    NSDictionary *dictRef = [[[FirebaseHelper sharedHelper].boards objectForKey:drawView.boardID] objectForKey:@"undo"];
+    NSDictionary *dictRef = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"undo"];
     NSMutableDictionary *undoDict = (NSMutableDictionary *)CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)dictRef, kCFPropertyListMutableContainers));
     
     NSMutableDictionary *subpathsToDraw = [NSMutableDictionary dictionary];
@@ -340,7 +340,7 @@
             
             if ([subpathValues respondsToSelector:@selector(objectForKey:)]){
                 
-                if (drawView.selectedAvatarUserID != nil && ![uid isEqualToString:drawView.selectedAvatarUserID]) [subpathValues setObject:@1 forKey:@"faded"];
+                if (boardView.selectedAvatarUserID != nil && ![uid isEqualToString:boardView.selectedAvatarUserID]) [subpathValues setObject:@1 forKey:@"faded"];
                 if (!undone && !cleared) [subpathsToDraw setObject:subpathValues forKey:userOrderedKeys[i]];
                 
             } else if ([[uidDict objectForKey:userOrderedKeys[i]] respondsToSelector:@selector(isEqualToString:)]) {
@@ -374,7 +374,7 @@
     for (int i=0; i<allOrderedKeys.count; i++) {
         
         NSDictionary *subpathDict = [subpathsToDraw objectForKey:allOrderedKeys[i]];
-        [drawView drawSubpath:subpathDict];
+        [boardView drawSubpath:subpathDict];
     }
     
 }
@@ -393,14 +393,14 @@
     }
     
     UIButton *button = (UIButton *)sender;
-    self.currentDrawView = (DrawView *)button.superview;
+    self.currentBoardView = (BoardView *)button.superview;
     
-    if (![[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.currentDrawView.boardID]) return;
+    if (![[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.currentBoardView.boardID]) return;
     
     newBoardCreated = false;
     [self.carousel setScrollEnabled:NO];
     self.carouselOffset = 0;
-    NSString *boardID = self.currentDrawView.boardID;
+    NSString *boardID = self.currentBoardView.boardID;
     self.boardNameLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
     [self.viewedBoardIDs addObject:boardID];
     boardButton = button;
@@ -409,8 +409,8 @@
     
     [[FirebaseHelper sharedHelper] setInBoard:boardID];
 
-    [self.currentDrawView.activeUserIDs addObject:[FirebaseHelper sharedHelper].uid];
-    [self.currentDrawView layoutAvatars];
+    [self.currentBoardView.activeUserIDs addObject:[FirebaseHelper sharedHelper].uid];
+    [self.currentBoardView layoutAvatars];
     
     self.chatTextField.placeholder = @"Leave a comment...";
 
@@ -574,7 +574,7 @@
 -(void)closeTapped:(id)sender {
     
     boardButton.hidden = false;
-    self.currentDrawView.commenting = false;
+    self.currentBoardView.commenting = false;
     commentsOpen = false;
     
     [self hideDrawMenu];
@@ -587,11 +587,11 @@
     
     [[FirebaseHelper sharedHelper] setInBoard:@"none"];
     
-    [self.currentDrawView.activeUserIDs removeObject:[FirebaseHelper sharedHelper].uid];
-    [self.currentDrawView layoutAvatars];
-    self.currentDrawView.selectedAvatarUserID = nil;
-    [self drawBoard:self.currentDrawView];
-    self.currentDrawView = nil;
+    [self.currentBoardView.activeUserIDs removeObject:[FirebaseHelper sharedHelper].uid];
+    [self.currentBoardView layoutAvatars];
+    self.currentBoardView.selectedAvatarUserID = nil;
+    [self drawBoard:self.currentBoardView];
+    self.currentBoardView = nil;
     
     [self.view bringSubviewToFront:self.masterView];
     
@@ -635,23 +635,23 @@
 
 - (void) undoTapped:(id)sender {
     
-    self.currentDrawView.commenting = false;
+    self.currentBoardView.commenting = false;
     
-    int undoCount = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndex"] intValue];
-    int undoTotal = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"total"] intValue];
+    int undoCount = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndex"] intValue];
+    int undoTotal = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"total"] intValue];
     
     if (undoCount < undoTotal)  {
         
         undoCount++;
         
-        NSMutableDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
+        NSMutableDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
         [undoDict setObject:@(undoCount) forKey:@"currentIndex"];
         
-        [self drawBoard:self.currentDrawView];
+        [self drawBoard:self.currentBoardView];
         
         [undoDict setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
         
-        NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@", self.currentDrawView.boardID, [FirebaseHelper sharedHelper].uid];
+        NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@", self.currentBoardView.boardID, [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
         [ref setValue:undoDict];
     }
@@ -659,22 +659,22 @@
 
 - (void) redoTapped:(id)sender {
     
-    self.currentDrawView.commenting = false;
+    self.currentBoardView.commenting = false;
     
-    int undoCount = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndex"] intValue];
+    int undoCount = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndex"] intValue];
     
     if (undoCount > 0) {
         
         undoCount--;
         
-        NSMutableDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentDrawView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
+        NSMutableDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
         [undoDict setObject:@(undoCount) forKey:@"currentIndex"];
         
-        [self drawBoard:self.currentDrawView];
+        [self drawBoard:self.currentBoardView];
         
         [undoDict setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
         
-        NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@/", self.currentDrawView.boardID, [FirebaseHelper sharedHelper].uid];
+        NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@/", self.currentBoardView.boardID, [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
         [ref setValue:undoDict];
     }
@@ -682,26 +682,26 @@
 
 - (void) clearTapped:(id)sender {
     
-    self.currentDrawView.commenting = false;
+    self.currentBoardView.commenting = false;
     
     [[FirebaseHelper sharedHelper] resetUndo];
     
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     
-    NSString *refString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", self.currentDrawView.boardID, [FirebaseHelper sharedHelper].uid];
+    NSString *refString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", self.currentBoardView.boardID, [FirebaseHelper sharedHelper].uid];
     Firebase *ref = [[Firebase alloc] initWithUrl:refString];
     NSDictionary *clearDict = @{ dateString : @"clear" };
     [ref updateChildValues:clearDict];
     
-    [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentDrawView.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:@"clear" forKey:dateString];
+    [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:@"clear" forKey:dateString];
     
-    [self.currentDrawView touchesEnded:nil withEvent:nil];
-    [self drawBoard:self.currentDrawView];
+    [self.currentBoardView touchesEnded:nil withEvent:nil];
+    [self drawBoard:self.currentBoardView];
 }
 
 -(void) eraseTapped:(id)sender {
 
-    self.currentDrawView.commenting = false;
+    self.currentBoardView.commenting = false;
     
     UIButton *eraseButton = (UIButton *)[self.view viewWithTag:5];
     CGPoint centerPoint = eraseButton.center;
@@ -719,7 +719,7 @@
 
 -(void) colorTapped:(id)sender {
     
-    self.currentDrawView.commenting = false;
+    self.currentBoardView.commenting = false;
     self.erasing = false;
     
     UIButton *colorButton = (UIButton *)sender;
@@ -758,7 +758,7 @@
 
 -(void) commentTapped:(id)sender {
     
-    self.currentDrawView.commenting = true;
+    self.currentBoardView.commenting = true;
 }
 
 - (IBAction)newBoardTapped:(id)sender {
@@ -903,7 +903,7 @@
         carouselRect.origin.y -= self.carouselOffset;
         self.carousel.frame = carouselRect;
         
-        for (AvatarButton *avatar in self.currentDrawView.avatarButtons) {
+        for (AvatarButton *avatar in self.currentBoardView.avatarButtons) {
             
             CGRect avatarRect = avatar.frame;
             avatarRect.origin.x += self.carouselOffset;
@@ -973,7 +973,7 @@
         carouselRect.origin.y += self.carouselOffset;
         self.carousel.frame = carouselRect;
         
-        for (AvatarButton *avatar in self.currentDrawView.avatarButtons) {
+        for (AvatarButton *avatar in self.currentBoardView.avatarButtons) {
             
             CGRect avatarRect = avatar.frame;
             avatarRect.origin.x -= self.carouselOffset;
@@ -1024,8 +1024,8 @@
 {
     if (view == nil) {
         
-        DrawView *drawView = [[DrawView alloc] initWithFrame:CGRectMake(0, 0, 768, 1024)];
-        view = drawView;
+        BoardView *boardView = [[BoardView alloc] initWithFrame:CGRectMake(0, 0, 768, 1024)];
+        view = boardView;
         CGAffineTransform tr = view.transform;
         tr = CGAffineTransformScale(tr, .5, .5);
         tr = CGAffineTransformRotate(tr, M_PI_2);
@@ -1042,26 +1042,26 @@
     [view addSubview:gradientButton];
     gradientButton.tag = 1;
     
-    ((DrawView *)view).boardID = self.boardIDs[index];
+    ((BoardView *)view).boardID = self.boardIDs[index];
 
     if ([[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.boardIDs[index]]) {
         
-        [self drawBoard:(DrawView *)view];
-        [((DrawView *)view) layoutComments];
+        [self drawBoard:(BoardView *)view];
+        [((BoardView *)view) layoutComments];
         
         for (NSString *userID in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
             
-            if ([[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"inBoard"] isEqualToString:((DrawView *)view).boardID])
-                [((DrawView *)view).activeUserIDs addObject:userID];
+            if ([[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"inBoard"] isEqualToString:((BoardView *)view).boardID])
+                [((BoardView *)view).activeUserIDs addObject:userID];
         }
-        [((DrawView *)view) layoutAvatars];
+        [((BoardView *)view) layoutAvatars];
     }
     else {
-        ((DrawView *)view).loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        ((DrawView *)view).loadingView.transform = CGAffineTransformMakeScale(5, 5);
-        [((DrawView *)view).loadingView setCenter:((DrawView *)view).center];
-        [((DrawView *)view).loadingView startAnimating];
-        [((DrawView *)view) addSubview:((DrawView *)view).loadingView];
+        ((BoardView *)view).loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        ((BoardView *)view).loadingView.transform = CGAffineTransformMakeScale(5, 5);
+        [((BoardView *)view).loadingView setCenter:((BoardView *)view).center];
+        [((BoardView *)view).loadingView startAnimating];
+        [((BoardView *)view) addSubview:((BoardView *)view).loadingView];
     }
 
     return view;
@@ -1132,7 +1132,7 @@
         NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
         
         if (self.activeCommentThreadID) {
-            NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentDrawView.boardID] objectForKey:@"commentsID"];
+            NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"commentsID"];
             chatString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@/%@/messages", commentsID, self.activeCommentThreadID];
         }
         else chatString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/chats/%@", self.chatID];
@@ -1221,7 +1221,7 @@
     
     BoardCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CollectionCell" forIndexPath:indexPath];
     
-    cell.drawView.boardID = self.editBoardIDs[indexPath.row];
+    cell.boardView.boardID = self.editBoardIDs[indexPath.row];
     [cell updateSubpathsForBoardID:self.editBoardIDs[indexPath.row]];
     
     return cell;

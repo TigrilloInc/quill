@@ -8,7 +8,7 @@
 
 #import "WidthPopoverViewController.h"
 #import "ProjectDetailViewController.h"
-#import "DrawView.h"
+#import "BoardView.h"
 
 @interface WidthPopoverViewController ()
 
@@ -57,7 +57,7 @@
         imageName = @"width3.png";
     }
     
-    projectVC.currentDrawView.lineWidth = lineWidth;
+    projectVC.currentBoardView.lineWidth = lineWidth;
     [(UIButton *)[projectVC.view viewWithTag:7] setImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
     
     [self dismissViewControllerAnimated:NO completion:nil];

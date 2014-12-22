@@ -16,7 +16,7 @@
 #import "SettingsViewController.h"
 #import "InviteViewController.h"
 #import "NewProjectViewController.h"
-#import "DrawView.h"
+#import "BoardView.h"
 #import "NSDate+ServerDate.h"
 #import "ProjectDetailViewController.h"
 #import "ProjectsTableViewCell.h"

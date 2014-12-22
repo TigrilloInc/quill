@@ -8,7 +8,7 @@
 
 #import "ColorPopoverViewController.h"
 #import "ProjectDetailViewController.h"
-#import "DrawView.h"
+#import "BoardView.h"
 
 @interface ColorPopoverViewController ()
 
@@ -43,7 +43,7 @@
     UIButton *colorButton = (UIButton *)sender;
     
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
-    projectVC.currentDrawView.lineColorNumber = @(colorButton.tag);
+    projectVC.currentBoardView.lineColorNumber = @(colorButton.tag);
     
     [self dismissViewControllerAnimated:NO completion:nil];
 }

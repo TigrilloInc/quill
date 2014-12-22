@@ -11,7 +11,7 @@
 #import "FirebaseHelper.h"
 #import "MasterViewController.h"
 #import "ProjectDetailViewController.h"
-#import "DrawView.h"
+#import "BoardView.h"
 #import "NSDate+ServerDate.h"
 #import "AvatarButton.h"
 
@@ -107,19 +107,19 @@ static FirebaseHelper *sharedHelper = nil;
         if ([currentProjectBoardIDs containsObject:boardID]){
             
             int boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
-            DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
+            BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
             
-            if (inBoard && ![drawView.activeUserIDs containsObject:userID]) [drawView.activeUserIDs addObject:userID];
-            else if (!inBoard) [drawView.activeUserIDs removeObject:userID];
+            if (inBoard && ![boardView.activeUserIDs containsObject:userID]) [boardView.activeUserIDs addObject:userID];
+            else if (!inBoard) [boardView.activeUserIDs removeObject:userID];
             
-            [drawView layoutAvatars];
+            [boardView layoutAvatars];
             
-            NSArray *userIDs = [drawView.activeUserIDs sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+            NSArray *userIDs = [boardView.activeUserIDs sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
             
             if ([userIDs containsObject:userID]) {
                 
                 int avatarIndex = [userIDs indexOfObject:userID];
-                AvatarButton *avatar = (AvatarButton *)drawView.avatarButtons[avatarIndex];
+                AvatarButton *avatar = (AvatarButton *)boardView.avatarButtons[avatarIndex];
                 
                 if ([[newUserDict objectForKey:@"isDrawing"] integerValue] > 0 ) avatar.drawingImage.hidden = false;
                 else avatar.drawingImage.hidden = true;
@@ -328,8 +328,8 @@ static FirebaseHelper *sharedHelper = nil;
         if ([boardIDs containsObject:boardID] && [snapshot.value respondsToSelector:@selector(objectForKey:)]) {
             
             int boardIndex = [boardIDs indexOfObject:boardID];
-            DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
-            [drawView drawSubpath:snapshot.value];
+            BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
+            [boardView drawSubpath:snapshot.value];
         }
     }];
 }
@@ -370,8 +370,8 @@ static FirebaseHelper *sharedHelper = nil;
         if ([boardIDs containsObject:boardID]) {
             
             int boardIndex = [boardIDs indexOfObject:boardID];
-            DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
-            [self.projectVC drawBoard:drawView];
+            BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
+            [self.projectVC drawBoard:boardView];
         }
         
         if ([userID isEqualToString:self.uid]) [ref removeAllObservers];
@@ -434,9 +434,9 @@ static FirebaseHelper *sharedHelper = nil;
             
             [self.loadedBoardIDs addObject:boardID];
             NSInteger boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
-            DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
-            drawView.loadingView.hidden = true;
-            [drawView layoutComments];
+            BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
+            boardView.loadingView.hidden = true;
+            [boardView layoutComments];
         }
         
         if (snapshot.value == [NSNull null]) return;
@@ -481,8 +481,8 @@ static FirebaseHelper *sharedHelper = nil;
         if ([currentProjectBoardIDs containsObject:boardID]) {
             
             NSInteger boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
-            DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
-            [drawView layoutComments];
+            BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
+            [boardView layoutComments];
         }
         
         [[ref childByAppendingPath:snapshot.name] removeAllObservers];
@@ -511,9 +511,8 @@ static FirebaseHelper *sharedHelper = nil;
         if ([currentProjectBoardIDs containsObject:boardID]) {
             
             NSInteger boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
-            DrawView *drawView = (DrawView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
-            [drawView layoutComments];
-            NSLog(@"layoutComments 2");
+            BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
+            [boardView layoutComments];
         }
     }];
     
