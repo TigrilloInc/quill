@@ -17,12 +17,12 @@
 #import "ChatTableViewCell.h"
 #import "AvatarPopoverViewController.h"
 #import "ColorPopoverViewController.h"
-#import "WidthPopoverViewController.h"
+#import "PenTypePopoverViewController.h"
 
 @implementation ProjectDetailViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+    
     [super viewDidLoad];
     
     self.chatTextField.delegate = self;
@@ -88,7 +88,7 @@
                      @"clear",
                      @"erase",
                      @"color",
-                     @"width",
+                     @"pen",
                      @"comment"
                     ];
     
@@ -346,6 +346,8 @@
             } else if ([[uidDict objectForKey:userOrderedKeys[i]] respondsToSelector:@selector(isEqualToString:)]) {
                 
                 if ([[uidDict objectForKey:userOrderedKeys[i]] isEqualToString:@"penUp"]) {
+                    
+                    [subpathsToDraw setObject:@{userOrderedKeys[i] : @"penUp"} forKey:userOrderedKeys[i]];
                     
                     if (undoCount > 0) {
                         
@@ -702,19 +704,16 @@
 -(void) eraseTapped:(id)sender {
 
     self.currentBoardView.commenting = false;
+    self.erasing = true;
     
     UIButton *eraseButton = (UIButton *)[self.view viewWithTag:5];
     CGPoint centerPoint = eraseButton.center;
-    UIImage *buttonImage;
+    UIImage *buttonImage = [UIImage imageNamed:@"eraseselected.png"];
     
-    if (self.erasing) buttonImage = [UIImage imageNamed:@"erase.png"];
-    else buttonImage = [UIImage imageNamed:@"drawing.png"];
-    
-    eraseButton.frame = CGRectMake(0, 0, buttonImage.size.width*.1, buttonImage.size.height*.1);
     [eraseButton setImage:buttonImage forState:UIControlStateNormal];
+    eraseButton.frame = CGRectMake(0, 0, buttonImage.size.width*.1, buttonImage.size.height*.1);
     eraseButton.center = centerPoint;
-    
-    self.erasing = !self.erasing;
+
 }
 
 -(void) colorTapped:(id)sender {
@@ -737,23 +736,23 @@
     [self presentViewController:colorPopover animated:NO completion:nil];
 }
 
--(void) widthTapped:(id)sender {
+-(void) penTapped:(id)sender {
     
     self.erasing = false;
     
     UIButton *widthButton = (UIButton *)sender;
     
-    WidthPopoverViewController *widthPopover = [[WidthPopoverViewController alloc] init];
+    PenTypePopoverViewController *penTypePopover = [[PenTypePopoverViewController alloc] init];
     
-    [widthPopover setModalPresentationStyle:UIModalPresentationPopover];
+    [penTypePopover setModalPresentationStyle:UIModalPresentationPopover];
     
-    UIPopoverPresentationController *popover = [widthPopover popoverPresentationController];
+    UIPopoverPresentationController *popover = [penTypePopover popoverPresentationController];
     popover.sourceView = widthButton;
     popover.sourceRect = widthButton.bounds;
     popover.backgroundColor = nil;
     popover.permittedArrowDirections = UIPopoverArrowDirectionDown;
     
-    [self presentViewController:widthPopover animated:NO completion:nil];
+    [self presentViewController:penTypePopover animated:NO completion:nil];
 }
 
 -(void) commentTapped:(id)sender {

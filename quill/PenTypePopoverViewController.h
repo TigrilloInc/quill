@@ -1,5 +1,5 @@
 //
-//  WidthPopoverViewController.h
+//  PenTypePopoverViewController.h
 //  quill
 //
 //  Created by Alex Costantini on 12/17/14.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface WidthPopoverViewController : UIViewController
+@interface PenTypePopoverViewController : UIViewController
 
 @end

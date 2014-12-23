@@ -325,11 +325,13 @@ static FirebaseHelper *sharedHelper = nil;
         
         NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
         
-        if ([boardIDs containsObject:boardID] && [snapshot.value respondsToSelector:@selector(objectForKey:)]) {
+        if ([boardIDs containsObject:boardID]) {
             
             int boardIndex = [boardIDs indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
-            [boardView drawSubpath:snapshot.value];
+
+            if([snapshot.value respondsToSelector:@selector(objectForKey:)]) [boardView drawSubpath:snapshot.value];
+            else [boardView drawSubpath:@{snapshot.name : snapshot.value}];
         }
     }];
 }

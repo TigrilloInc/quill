@@ -19,7 +19,6 @@
 #import "AvatarButton.h"
 
 #define DEFAULT_COLOR               [UIColor blackColor]
-#define DEFAULT_WIDTH               2.0f
 #define DEFAULT_BACKGROUND_COLOR    [UIColor whiteColor]
 
 static const CGFloat kPointMinDistance = 2.0f;
@@ -47,22 +46,11 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     
     if (self) {
         self.backgroundColor = DEFAULT_BACKGROUND_COLOR;
-        //self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.0];
-        _lineWidth = DEFAULT_WIDTH;
+        self.penType = 1;
         self.lineColorNumber = @1;
         _empty = YES;
         self.activeUserIDs = [NSMutableArray array];
         self.loadingView = nil;
-        
-        self.highlighterView = [[DrawView alloc] initWithFrame:frame];
-        self.highlighterView.alpha = 0.5;
-        [self addSubview:self.highlighterView];
-        
-        self.penView = [[DrawView alloc] initWithFrame:frame];
-        [self addSubview:self.penView];
-        
-        self.eraserView = [[DrawView alloc] initWithFrame:frame];
-        [self addSubview:self.eraserView];
 
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;;
         
@@ -174,54 +162,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     [self bringSubviewToFront:[self viewWithTag:1]];
 }
 
-- (void)drawRect:(CGRect)rect {
-//    // clear rect
-//    [self.backgroundColor set];
-//    UIRectFill(rect);
-//    
-//    // get the graphics context and draw the path
-//    CGContextRef context = UIGraphicsGetCurrentContext();
-//    CGContextSetLineCap(context, kCGLineCapRound);
-//    
-//    for (NSDictionary *subpathValues in _paths) {
-//        
-//        CGMutablePathRef subpath = CGPathCreateMutable();
-//        CGPathMoveToPoint(subpath, NULL, [[subpathValues objectForKey:@"mid1x"] floatValue], [[subpathValues objectForKey:@"mid1y"] floatValue]);
-//        CGPathAddQuadCurveToPoint(subpath, NULL,
-//                                  [[subpathValues objectForKey:@"prevx"] floatValue], [[subpathValues objectForKey:@"prevy"] floatValue],
-//                                  [[subpathValues objectForKey:@"mid2x"] floatValue], [[subpathValues objectForKey:@"mid2y"] floatValue]);
-//        CGContextAddPath(context, subpath);
-//        
-//        int colorNumber = [[subpathValues objectForKey:@"color"] intValue];
-//        UIColor *lineColor;
-//        
-//        if (colorNumber == 0) lineColor = [UIColor whiteColor];
-//        if (colorNumber == 1) {
-//            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(220.0f/255.0f) green:(220.0f/255.0f) blue:(220.0f/255.0f) alpha:1.0f];
-//            else lineColor = [UIColor blackColor];
-//        }
-//        if (colorNumber == 2) {
-//            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(200.0f/255.0f) green:(230.0f/255.0f) blue:1.0f alpha:1.0f];
-//            else lineColor = [UIColor colorWithRed:0.0f green:(60.0f/255.0f) blue:1.0f alpha:1.0f];
-//        }
-//        if (colorNumber == 3) {
-//            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:1.0f green:(200.0f/255.0f) blue:(200.0f/255.0f) alpha:1.0f];
-//            else lineColor = [UIColor colorWithRed:1.0f green:0.0f blue:0.0f alpha:1.0f];
-//        }
-//        if (colorNumber == 4) {
-//            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(230.0f/255.0f) green:1.0f blue:(200.0f/255.0f) alpha:1.0f];
-//            else lineColor = [UIColor colorWithRed:(60.0f/255.0f) green:1.0f blue:0.0f alpha:1.0f];
-//        }
-//
-//        CGContextSetStrokeColorWithColor(context, lineColor.CGColor);
-//        CGContextSetLineWidth(context, [[subpathValues objectForKey:@"width"] floatValue]);
-//        CGContextStrokePath(context);
-//        CGContextBeginPath(context);
-//    }
-//    
-//    self.empty = NO;
-}
-
 #pragma mark private Helper function
 
 CGPoint midPoint(CGPoint p1, CGPoint p2) {
@@ -265,21 +205,22 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     CGPathMoveToPoint(subpath, NULL, self.currentPoint.x, self.currentPoint.y);
     CGPathAddLineToPoint(subpath, NULL, self.currentPoint.x, self.currentPoint.y);
     
+    NSNumber *penType;
     NSNumber *lineColorNumber;
     CGFloat lineWidth;
     
     if (projectVC.erasing) {
+        penType = @(0);
         lineColorNumber = @(0);
         lineWidth = 120.0f;
     }
     else {
+        penType = @(self.penType);
         lineColorNumber = self.lineColorNumber;
-        lineWidth = self.lineWidth;
+        if (self.penType == 1 ) lineWidth = 2.0f;
+        else if (self.penType == 2) lineWidth = 7.0f;
+        else lineWidth = 30.0f;
     }
-    
-    // compute the rect containing the new segment plus padding for drawn line
-    CGRect bounds = CGPathGetBoundingBox(subpath);
-    CGRect drawBox = CGRectInset(bounds, -2.0 * lineWidth, -2.0 * self.lineWidth);
     
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     NSDictionary *subpathValues =  @{ @"mid1x" : @(self.currentPoint.x),
@@ -289,18 +230,12 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                                       @"prevx" : @(self.currentPoint.x),
                                       @"prevy" : @(self.currentPoint.y),
                                       @"color" : lineColorNumber,
-                                      @"width" : @(lineWidth)
+                                      @"pen" : penType
                                       };
-    
-    if (lineWidth > 10) {
-        [self.highlighterView.paths addObject:subpathValues];
-        [self.highlighterView setNeedsDisplayInRect:drawBox];
-    }
-    else {
-        [self.penView.paths addObject:subpathValues];
-        [self.penView setNeedsDisplayInRect:drawBox];
-    }
-    
+
+    [self.paths addObject:subpathValues];
+    [self setNeedsDisplay];
+
     NSString *subpathsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", self.boardID, [FirebaseHelper sharedHelper].uid];
     Firebase *subpathsRef = [[Firebase alloc] initWithUrl:subpathsString];
     [subpathsRef updateChildValues:@{ dateString  :  subpathValues }];
@@ -322,11 +257,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     // if the finger has moved less than the min dist ...
     CGFloat dx = point.x - self.currentPoint.x;
     CGFloat dy = point.y - self.currentPoint.y;
-    
-    if ((dx * dx + dy * dy) < kPointMinDistanceSquared) {
-        // ... then ignore this movement
-        return;
-    }
+    if ((dx * dx + dy * dy) < kPointMinDistanceSquared) return;
     
     // update points: previousPrevious -> mid1 -> previous -> mid2 -> current
     self.previousPreviousPoint = self.previousPoint;
@@ -336,29 +267,23 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     CGPoint mid1 = midPoint(self.previousPoint, self.previousPreviousPoint);
     CGPoint mid2 = midPoint(self.currentPoint, self.previousPoint);
     
-    // to represent the finger movement, create a new path segment,
-    // a quadratic bezier path from mid1 to mid2, using previous as a control point
-    CGMutablePathRef subpath = CGPathCreateMutable();
-    CGPathMoveToPoint(subpath, NULL, mid1.x, mid1.y);
-    CGPathAddQuadCurveToPoint(subpath, NULL,
-                              self.previousPoint.x, self.previousPoint.y,
-                              mid2.x, mid2.y);
+    NSNumber *penType;
     NSNumber *lineColorNumber;
     CGFloat lineWidth;
     
     if (projectVC.erasing) {
+        penType = @(0);
         lineColorNumber = @(0);
         lineWidth = 120.0f;
     }
     else {
+        penType = @(self.penType);
         lineColorNumber = self.lineColorNumber;
-        lineWidth = self.lineWidth;
+        if (self.penType == 1 ) lineWidth = 2.0f;
+        else if (self.penType == 2) lineWidth = 7.0f;
+        else lineWidth = 30.0f;
     }
-    
-    // compute the rect containing the new segment plus padding for drawn line
-    CGRect bounds = CGPathGetBoundingBox(subpath);
-    CGRect drawBox = CGRectInset(bounds, -2.0 * lineWidth, -2.0 * lineWidth);
-    
+
     NSDictionary *subpathValues =  @{ @"mid1x" : @(mid1.x),
                                       @"mid1y" : @(mid1.y),
                                       @"mid2x" : @(mid2.x),
@@ -366,18 +291,12 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                                       @"prevx" : @(self.previousPoint.x),
                                       @"prevy" : @(self.previousPoint.y),
                                       @"color" : lineColorNumber,
-                                      @"width" : @(lineWidth)
+                                      @"pen" : penType
                                       };
-    
-    if (lineWidth > 10) {
-        [self.highlighterView.paths addObject:subpathValues];
-        [self.highlighterView setNeedsDisplayInRect:drawBox];
-    }
-    else {
-        [self.penView.paths addObject:subpathValues];
-        [self.penView setNeedsDisplayInRect:drawBox];
-    }
-    
+   
+    [self.paths addObject:subpathValues];
+    [self setNeedsDisplay];
+
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     
     NSString *subpathsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", self.boardID, [FirebaseHelper sharedHelper].uid];
@@ -409,6 +328,10 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
     
     NSDictionary *penUpDict = @{ dateString  :  @"penUp" };
+    
+    [self.paths addObject:penUpDict];
+    [self setNeedsDisplay];
+    
     NSString *subpathsString = [NSString stringWithFormat:@"subpaths/%@", [FirebaseHelper sharedHelper].uid];
     [[boardRef childByAppendingPath:subpathsString] updateChildValues:penUpDict];
     
@@ -432,38 +355,93 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [[FirebaseHelper sharedHelper] setActiveBoardUpdatedAt];
 }
 
+- (void)drawRect:(CGRect)rect {
+
+    // clear rect
+    [self.backgroundColor set];
+    UIRectFill(rect);
+    
+    // get the graphics context and draw the path
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetLineCap(context, kCGLineCapRound);
+    
+    UIColor *lineColor;
+    CGFloat lineWidth = 0;
+    
+    for (NSDictionary *subpathValues in self.paths) {
+
+        if (subpathValues.allKeys.count == 1) {
+            
+            CGContextSetStrokeColorWithColor(context, lineColor.CGColor);
+            CGContextSetLineWidth(context, lineWidth);
+            CGContextStrokePath(context);
+            CGContextBeginPath(context);
+            
+            continue;
+        }
+        
+        CGMutablePathRef subpath = CGPathCreateMutable();
+        CGPathMoveToPoint(subpath, NULL, [[subpathValues objectForKey:@"mid1x"] floatValue], [[subpathValues objectForKey:@"mid1y"] floatValue]);
+        CGPathAddQuadCurveToPoint(subpath, NULL,
+                                  [[subpathValues objectForKey:@"prevx"] floatValue], [[subpathValues objectForKey:@"prevy"] floatValue],
+                                  [[subpathValues objectForKey:@"mid2x"] floatValue], [[subpathValues objectForKey:@"mid2y"] floatValue]);
+        CGContextAddPath(context, subpath);
+        
+        int penType = [[subpathValues objectForKey:@"pen"] intValue];
+        CGFloat alpha = 1;
+        
+        if (penType == 0) {
+            lineWidth = 120.0f;
+            alpha = 1.0f;
+        }
+        if (penType == 1) {
+            lineWidth = 2.0f;
+            alpha = 1.0f;
+        }
+        if (penType == 2) {
+            lineWidth = 7.0f;
+            alpha = 1.0f;
+        }
+        if (penType == 3) {
+            lineWidth = 30.0f;
+            alpha = 0.5f;
+        }
+        
+        int colorNumber = [[subpathValues objectForKey:@"color"] intValue];
+        
+        if (colorNumber == 0) lineColor = [UIColor whiteColor];
+        if (colorNumber == 1) {
+            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(220.0f/255.0f) green:(220.0f/255.0f) blue:(220.0f/255.0f) alpha:alpha];
+            else lineColor = [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:alpha];
+        }
+        if (colorNumber == 2) {
+            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(200.0f/255.0f) green:(230.0f/255.0f) blue:1.0f alpha:alpha];
+            else lineColor = [UIColor colorWithRed:0.0f green:(60.0f/255.0f) blue:1.0f alpha:alpha];
+        }
+        if (colorNumber == 3) {
+            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:1.0f green:(200.0f/255.0f) blue:(200.0f/255.0f) alpha:alpha];
+            else lineColor = [UIColor colorWithRed:1.0f green:0.0f blue:0.0f alpha:alpha];
+        }
+        if (colorNumber == 4) {
+            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(230.0f/255.0f) green:1.0f blue:(200.0f/255.0f) alpha:1.0f];
+            else lineColor = [UIColor colorWithRed:(60.0f/255.0f) green:1.0f blue:0.0f alpha:1.0f];
+        }
+        
+        if ([subpathValues isEqual:self.paths.lastObject]) {
+            
+            CGContextSetStrokeColorWithColor(context, lineColor.CGColor);
+            CGContextSetLineWidth(context, lineWidth);
+            CGContextStrokePath(context);
+            CGContextBeginPath(context);
+        }
+    }
+}
+
 -(void) drawSubpath:(NSDictionary *)subpathValues {
 
-    CGPoint mid1;
-    CGPoint mid2;
-    CGPoint prev;
+    [self.paths addObject:subpathValues];
+    [self setNeedsDisplay];
     
-    mid1.x = [[subpathValues objectForKey:@"mid1x"] floatValue];
-    mid1.y = [[subpathValues objectForKey:@"mid1y"] floatValue];
-    mid2.x = [[subpathValues objectForKey:@"mid2x"] floatValue];
-    mid2.y = [[subpathValues objectForKey:@"mid2y"] floatValue];
-    prev.x = [[subpathValues objectForKey:@"prevx"] floatValue];
-    prev.y = [[subpathValues objectForKey:@"prevy"] floatValue];
-    
-    CGFloat lineWidth = [[subpathValues objectForKey:@"width"] floatValue];
-    
-    CGMutablePathRef subpath = CGPathCreateMutable();
-    CGPathMoveToPoint(subpath, NULL, mid1.x, mid1.y);
-    CGPathAddQuadCurveToPoint(subpath, NULL,
-                              prev.x, prev.y,
-                              mid2.x, mid2.y);
-    
-    CGRect bounds = CGPathGetBoundingBox(subpath);
-    CGRect drawBox = CGRectInset(bounds, -2.0 * lineWidth, -2.0 * lineWidth);
-    
-    if (lineWidth > 10) {
-        [self.highlighterView.paths addObject:subpathValues];
-        [self.highlighterView setNeedsDisplayInRect:drawBox];
-    }
-    else {
-        [self.penView.paths addObject:subpathValues];
-        [self.penView setNeedsDisplayInRect:drawBox];
-    }
 }
 
 -(void) hideChat {
@@ -729,11 +707,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 
 -(void)clear {
     
-    self.highlighterView.paths = [NSMutableArray array];
-    self.penView.paths = [NSMutableArray array];
-    
-    [self.highlighterView setNeedsDisplay];
-    [self.penView setNeedsDisplay];
+    self.paths = [NSMutableArray array];
     [self setNeedsDisplay];
 }
 

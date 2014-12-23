@@ -8,14 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "CommentButton.h"
-#import "DrawView.h"
 
 @interface BoardView : UIView {
 
 }
 
 @property (nonatomic, strong) NSNumber *lineColorNumber;
-@property (nonatomic, assign) CGFloat lineWidth;
+@property (nonatomic, assign) int penType;
 @property (nonatomic, assign) BOOL empty;
 @property (nonatomic, assign) BOOL drawable;
 @property (nonatomic, assign) BOOL commenting;
@@ -28,9 +27,8 @@
 @property (nonatomic, strong) UIActivityIndicatorView *loadingView;
 @property (nonatomic, strong) CommentButton *movingCommentButton;
 @property (strong, nonatomic) UIImageView *avatarBackgroundImage;
-@property (strong, nonatomic) DrawView *highlighterView;
-@property (strong, nonatomic) DrawView *penView;
-@property (strong, nonatomic) DrawView *eraserView;
+@property (nonatomic, strong) NSMutableArray *paths;
+@property (strong, nonatomic) UIColor *backgroundColor;
 
 -(void)clear;
 -(void)drawSubpath:(NSDictionary *)subpathValues;
