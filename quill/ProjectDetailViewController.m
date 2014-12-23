@@ -96,6 +96,7 @@
         
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         UIImage *buttonImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@.png",drawButtons[i]]];
+        if (i == 5) buttonImage = [UIImage imageNamed:@"penselected.png"];
         button.frame = CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height);
         [button setImage:buttonImage forState:UIControlStateNormal];
         button.transform = CGAffineTransformMakeScale(.1, .1);
@@ -129,7 +130,7 @@
         button.hidden = true;
     }
     
-    [(UIButton *)[self.view viewWithTag:7] setImage:[UIImage imageNamed:@"width.png"] forState:UIControlStateNormal];
+    [(UIButton *)[self.view viewWithTag:7] setImage:[UIImage imageNamed:@"penselected.png"] forState:UIControlStateNormal];
 }
 
 -(void) showChat {
@@ -593,6 +594,7 @@
     [self.currentBoardView layoutAvatars];
     self.currentBoardView.selectedAvatarUserID = nil;
     [self drawBoard:self.currentBoardView];
+    NSLog(@"drawBoard 5 called");
     self.currentBoardView = nil;
     
     [self.view bringSubviewToFront:self.masterView];
@@ -650,6 +652,7 @@
         [undoDict setObject:@(undoCount) forKey:@"currentIndex"];
         
         [self drawBoard:self.currentBoardView];
+        NSLog(@"drawBoard 6 called");
         
         [undoDict setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
         
@@ -673,6 +676,7 @@
         [undoDict setObject:@(undoCount) forKey:@"currentIndex"];
         
         [self drawBoard:self.currentBoardView];
+        NSLog(@"drawBoard 7 called");
         
         [undoDict setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
         
@@ -699,6 +703,7 @@
     
     [self.currentBoardView touchesEnded:nil withEvent:nil];
     [self drawBoard:self.currentBoardView];
+    NSLog(@"drawBoard 8 called");
 }
 
 -(void) eraseTapped:(id)sender {
@@ -775,14 +780,19 @@
     
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     
+    NSMutableDictionary *subpathsDict = [NSMutableDictionary dictionary];
+    
+    for (NSString *userID in self.roles.allKeys) {
+        
+        [subpathsDict setObject:[@{ dateString : @"penUp"} mutableCopy] forKey:userID];
+    }
+    
     NSString *boardNum = [NSString stringWithFormat:@"%lu", (unsigned long)self.boardIDs.count];
     NSDictionary *boardDict =  @{ @"name" : @"Untitled",
                                   @"project" : self.projectName,
                                   @"number" : boardNum,
                                   @"commentsID" : commentsID,
-                                  @"subpaths" : [@{ [FirebaseHelper sharedHelper].uid :
-                                                        [@{ dateString : @"penUp"} mutableCopy]
-                                                    } mutableCopy],
+                                  @"subpaths" : subpathsDict,
                                   @"updatedAt" : dateString,
                                   @"undo" :  [@{ [FirebaseHelper sharedHelper].uid :
                                                      [@{ @"currentIndex" : @0,
@@ -1046,6 +1056,7 @@
     if ([[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.boardIDs[index]]) {
         
         [self drawBoard:(BoardView *)view];
+        NSLog(@"drawBoard 9 called");
         [((BoardView *)view) layoutComments];
         
         for (NSString *userID in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {

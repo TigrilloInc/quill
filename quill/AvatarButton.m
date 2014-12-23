@@ -21,6 +21,8 @@
         
         self.drawingImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"drawing.png"]];
         self.drawingImage.hidden = true;
+        self.drawingImage.transform = CGAffineTransformMakeScale(.5, .5);
+        self.drawingImage.center = CGPointMake(125.5,116);
         [self addSubview:self.drawingImage];
         
         self.highlightedImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"userhighlight2.png"]];
@@ -140,6 +142,8 @@
     identicon.tileColor = tileColor;
     [self addSubview:identicon];
     identicon.center = CGPointMake(self.userImage.size.width/2,115);
+    
+    [self bringSubviewToFront:self.drawingImage];
 }
 
 @end

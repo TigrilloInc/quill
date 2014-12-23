@@ -284,6 +284,7 @@ static FirebaseHelper *sharedHelper = nil;
         for (NSString *userID in [snapshot.value allKeys]) {
             
             [self observeUndoForUser:userID onBoard:boardID];
+            NSLog(@"observeUndo 2 called");
         }
     }];
     
@@ -368,14 +369,6 @@ static FirebaseHelper *sharedHelper = nil;
             if (oldIndexDate > 0 && [dateString doubleValue] > oldIndexDate && newIndex == 0 && oldLastSubpathDate != newIndexDate) [newSubpathsDict removeObjectForKey:dateString];
         }
         
-        NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
-        if ([boardIDs containsObject:boardID]) {
-            
-            int boardIndex = [boardIDs indexOfObject:boardID];
-            BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
-            [self.projectVC drawBoard:boardView];
-        }
-        
         if ([userID isEqualToString:self.uid]) [ref removeAllObservers];
     }];
 }
@@ -399,6 +392,7 @@ static FirebaseHelper *sharedHelper = nil;
         
         [self.boards setObject:snapshot.value forKey:boardID];
         [self observeBoardWithID:boardID];
+        NSLog(@"observeBoard 1 called");
     }];
 }
 
@@ -429,7 +423,22 @@ static FirebaseHelper *sharedHelper = nil;
     Firebase *ref = [[Firebase alloc] initWithUrl:commentsString];
 
     [ref observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
-
+        
+        if (snapshot.value != [NSNull null]) {
+        
+            for (NSString *commentThreadID in [snapshot.value allKeys]) {
+                
+                NSDictionary *infoDict = [[snapshot.value objectForKey:commentThreadID] objectForKey:@"info"];
+                NSDictionary *commentDict = @{ @"location" : [infoDict objectForKey:@"location"],
+                                               @"owner" : [infoDict objectForKey:@"owner"]
+                                               };
+                
+                [[self.comments objectForKey:commentsID] setObject:[commentDict mutableCopy] forKey:commentThreadID];
+                
+                [self observeCommentThreadWithID:commentThreadID boardID:boardID];
+            }
+        }
+        
         NSArray *currentProjectBoardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
         
         if (![self.loadedBoardIDs containsObject:boardID] && [currentProjectBoardIDs containsObject:boardID]) {
@@ -439,20 +448,8 @@ static FirebaseHelper *sharedHelper = nil;
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
             boardView.loadingView.hidden = true;
             [boardView layoutComments];
-        }
-        
-        if (snapshot.value == [NSNull null]) return;
-        
-        for (NSString *commentThreadID in [snapshot.value allKeys]) {
-            
-            NSDictionary *infoDict = [[snapshot.value objectForKey:commentThreadID] objectForKey:@"info"];
-            NSDictionary *commentDict = @{ @"location" : [infoDict objectForKey:@"location"],
-                                           @"owner" : [infoDict objectForKey:@"owner"]
-                                           };
-            
-            [[self.comments objectForKey:commentsID] setObject:[commentDict mutableCopy] forKey:commentThreadID];
-            
-            [self observeCommentThreadWithID:commentThreadID boardID:boardID];
+            [self.projectVC drawBoard:boardView];
+            NSLog(@"drawBoard 3 called");
         }
     }];
     

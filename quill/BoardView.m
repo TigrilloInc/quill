@@ -46,11 +46,19 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     
     if (self) {
         self.backgroundColor = DEFAULT_BACKGROUND_COLOR;
+        //self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.0];
         self.penType = 1;
         self.lineColorNumber = @1;
         _empty = YES;
         self.activeUserIDs = [NSMutableArray array];
         self.loadingView = nil;
+
+//        self.highlighterView = [[DrawView alloc] initWithFrame:frame];
+//        self.highlighterView.alpha = 0.5;
+//        [self addSubview:self.highlighterView];
+//        
+//        self.penView = [[DrawView alloc] initWithFrame:frame];
+//        [self addSubview:self.penView];
 
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;;
         
@@ -122,6 +130,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"commentsID"];
     NSDictionary *commentDict = [[FirebaseHelper sharedHelper].comments objectForKey:commentsID];
 
+    NSLog(@"laying out comments %@", [commentDict allKeys]);
+    
     if (!commentDict) return;
     
     for (NSString *commentThreadID in commentDict.allKeys) {
@@ -184,6 +194,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         
         self.selectedAvatarUserID = nil;
         [projectVC drawBoard:self];
+        NSLog(@"drawBoard 1 called");
     }
     
     if ([projectVC.chatTextField isFirstResponder]) return;
@@ -232,10 +243,14 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                                       @"color" : lineColorNumber,
                                       @"pen" : penType
                                       };
-
+    
+    // compute the rect containing the new segment plus padding for drawn line
+    CGRect bounds = CGPathGetBoundingBox(subpath);
+    CGRect drawBox = CGRectInset(bounds, -2.0 * lineWidth, -2.0 * lineWidth);
+    
     [self.paths addObject:subpathValues];
-    [self setNeedsDisplay];
-
+    [self setNeedsDisplayInRect:drawBox];
+    
     NSString *subpathsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", self.boardID, [FirebaseHelper sharedHelper].uid];
     Firebase *subpathsRef = [[Firebase alloc] initWithUrl:subpathsString];
     [subpathsRef updateChildValues:@{ dateString  :  subpathValues }];
@@ -294,8 +309,17 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                                       @"pen" : penType
                                       };
    
+    CGMutablePathRef subpath = CGPathCreateMutable();
+    CGPathMoveToPoint(subpath, NULL, mid1.x, mid1.y);
+    CGPathAddQuadCurveToPoint(subpath, NULL,
+                              self.previousPoint.x, self.previousPoint.y,
+                              mid2.x, mid2.y);
+    
+    CGRect bounds = CGPathGetBoundingBox(subpath);
+    CGRect drawBox = CGRectInset(bounds, -2.0 * lineWidth, -2.0 * lineWidth);
+    
     [self.paths addObject:subpathValues];
-    [self setNeedsDisplay];
+    [self setNeedsDisplayInRect:drawBox];
 
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     
@@ -330,7 +354,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     NSDictionary *penUpDict = @{ dateString  :  @"penUp" };
     
     [self.paths addObject:penUpDict];
-    [self setNeedsDisplay];
     
     NSString *subpathsString = [NSString stringWithFormat:@"subpaths/%@", [FirebaseHelper sharedHelper].uid];
     [[boardRef childByAppendingPath:subpathsString] updateChildValues:penUpDict];
@@ -439,8 +462,35 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 
 -(void) drawSubpath:(NSDictionary *)subpathValues {
 
+    CGPoint mid1;
+    CGPoint mid2;
+    CGPoint prev;
+    
+    mid1.x = [[subpathValues objectForKey:@"mid1x"] floatValue];
+    mid1.y = [[subpathValues objectForKey:@"mid1y"] floatValue];
+    mid2.x = [[subpathValues objectForKey:@"mid2x"] floatValue];
+    mid2.y = [[subpathValues objectForKey:@"mid2y"] floatValue];
+    prev.x = [[subpathValues objectForKey:@"prevx"] floatValue];
+    prev.y = [[subpathValues objectForKey:@"prevy"] floatValue];
+    
+    int penType = [[subpathValues objectForKey:@"pen"] intValue];
+    CGFloat lineWidth = 0;
+    
+    if (penType == 1 ) lineWidth = 2.0f;
+    else if (penType == 2) lineWidth = 7.0f;
+    else lineWidth = 30.0f;
+    
+    CGMutablePathRef subpath = CGPathCreateMutable();
+    CGPathMoveToPoint(subpath, NULL, mid1.x, mid1.y);
+    CGPathAddQuadCurveToPoint(subpath, NULL,
+                              prev.x, prev.y,
+                              mid2.x, mid2.y);
+    
+    CGRect bounds = CGPathGetBoundingBox(subpath);
+    CGRect drawBox = CGRectInset(bounds, -2.0 * lineWidth, -2.0 * lineWidth);
+    
     [self.paths addObject:subpathValues];
-    [self setNeedsDisplay];
+    [self setNeedsDisplayInRect:drawBox];
     
 }
 
@@ -644,6 +694,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     }
     
     [projectVC drawBoard:self];
+    NSLog(@"drawBoard 2 called");
 }
 
 -(void) commentTapped:(id)sender {
@@ -706,6 +757,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 #pragma mark interface
 
 -(void)clear {
+    
+    
     
     self.paths = [NSMutableArray array];
     [self setNeedsDisplay];
