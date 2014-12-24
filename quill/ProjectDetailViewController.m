@@ -314,6 +314,8 @@
 
 -(void) drawBoard:(BoardView *)boardView {
     
+    NSLog(@"drawboard called --- undoDict is %@", [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"undo"]);
+    
     [boardView clear];
     
     NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"subpaths"];
@@ -326,7 +328,7 @@
     for (NSString *uid in subpathsDict.allKeys) {
         
         NSDictionary *uidDict = [subpathsDict objectForKey:uid];
-        
+
         NSMutableArray *userOrderedKeys = [uidDict.allKeys mutableCopy];
         NSSortDescriptor *descendingSorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
         [userOrderedKeys sortUsingDescriptors:@[descendingSorter]];
@@ -594,7 +596,6 @@
     [self.currentBoardView layoutAvatars];
     self.currentBoardView.selectedAvatarUserID = nil;
     [self drawBoard:self.currentBoardView];
-    NSLog(@"drawBoard 5 called");
     self.currentBoardView = nil;
     
     [self.view bringSubviewToFront:self.masterView];
@@ -652,7 +653,6 @@
         [undoDict setObject:@(undoCount) forKey:@"currentIndex"];
         
         [self drawBoard:self.currentBoardView];
-        NSLog(@"drawBoard 6 called");
         
         [undoDict setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
         
@@ -676,7 +676,6 @@
         [undoDict setObject:@(undoCount) forKey:@"currentIndex"];
         
         [self drawBoard:self.currentBoardView];
-        NSLog(@"drawBoard 7 called");
         
         [undoDict setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
         
@@ -703,7 +702,6 @@
     
     [self.currentBoardView touchesEnded:nil withEvent:nil];
     [self drawBoard:self.currentBoardView];
-    NSLog(@"drawBoard 8 called");
 }
 
 -(void) eraseTapped:(id)sender {
@@ -1056,7 +1054,6 @@
     if ([[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.boardIDs[index]]) {
         
         [self drawBoard:(BoardView *)view];
-        NSLog(@"drawBoard 9 called");
         [((BoardView *)view) layoutComments];
         
         for (NSString *userID in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {

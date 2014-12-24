@@ -130,8 +130,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"commentsID"];
     NSDictionary *commentDict = [[FirebaseHelper sharedHelper].comments objectForKey:commentsID];
 
-    NSLog(@"laying out comments %@", [commentDict allKeys]);
-    
     if (!commentDict) return;
     
     for (NSString *commentThreadID in commentDict.allKeys) {
@@ -194,7 +192,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         
         self.selectedAvatarUserID = nil;
         [projectVC drawBoard:self];
-        NSLog(@"drawBoard 1 called");
     }
     
     if ([projectVC.chatTextField isFirstResponder]) return;
@@ -694,7 +691,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     }
     
     [projectVC drawBoard:self];
-    NSLog(@"drawBoard 2 called");
 }
 
 -(void) commentTapped:(id)sender {

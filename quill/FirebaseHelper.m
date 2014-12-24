@@ -325,8 +325,9 @@ static FirebaseHelper *sharedHelper = nil;
         }
         
         NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
+        NSArray *dateStrings = [[[[self.boards objectForKey:boardID] objectForKey:@"subpaths"] objectForKey:userID] allKeys];
         
-        if ([boardIDs containsObject:boardID]) {
+        if ([boardIDs containsObject:boardID] && ![dateStrings containsObject:snapshot.name]) {
             
             int boardIndex = [boardIDs indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
