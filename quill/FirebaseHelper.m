@@ -144,7 +144,7 @@ static FirebaseHelper *sharedHelper = nil;
                 if (![self.projects.allKeys containsObject:child.name]) [self observeProjectWithID:child.name];
             }
         }
-        else [self updateMasterViewController];
+        else [self updateMasterView];
     }];
 }
 
@@ -186,7 +186,7 @@ static FirebaseHelper *sharedHelper = nil;
         
         if (self.firstLoad) self.projectVC.masterView.defaultRow = [self getLastViewedProjectIndexPath];
         
-        if (self.projectVC.activeBoardID == nil && self.projects.allKeys.count == projectChildrenCount) [self updateMasterViewController];
+        if (self.projectVC.activeBoardID == nil && self.projects.allKeys.count == projectChildrenCount) [self updateMasterView];
         
     }];
     
@@ -205,7 +205,7 @@ static FirebaseHelper *sharedHelper = nil;
     }];
 }
 
--(void) updateMasterViewController {
+-(void) updateMasterView {
     
     NSLog(@"masterView updated");
     
@@ -214,18 +214,20 @@ static FirebaseHelper *sharedHelper = nil;
     [self.projectVC.masterView.nameButton setTitle:self.userName forState:UIControlStateNormal];
     [self.projectVC.masterView.teamButton setTitle:self.teamName forState:UIControlStateNormal];
     
+    [self.projectVC.masterView.avatarButton removeFromSuperview];
     self.projectVC.masterView.avatarButton = [AvatarButton buttonWithType:UIButtonTypeCustom];
     [self.projectVC.masterView.avatarButton addTarget:self.projectVC.masterView action:@selector(settingsTapped:) forControlEvents:UIControlEventTouchUpInside];
     self.projectVC.masterView.avatarButton.userID = self.uid;
     [self.projectVC.masterView.avatarButton generateIdenticon];
-    self.projectVC.masterView.avatarButton.frame = CGRectMake(-87, -33, self.projectVC.masterView.avatarButton.userImage.size.width, self.projectVC.masterView.avatarButton.userImage.size.height);
+    self.projectVC.masterView.avatarButton.frame = CGRectMake(-87, -25, self.projectVC.masterView.avatarButton.userImage.size.width, self.projectVC.masterView.avatarButton.userImage.size.height);
     self.projectVC.masterView.avatarButton.transform = CGAffineTransformMakeScale(.25, .25);
     [self.projectVC.masterView addSubview:self.projectVC.masterView.avatarButton];
     
+    [self.projectVC.chatAvatar removeFromSuperview];
     self.projectVC.chatAvatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
     self.projectVC.chatAvatar.userID = self.uid;
     [self.projectVC.chatAvatar generateIdenticon];
-    self.projectVC.chatAvatar.frame = CGRectMake(-100,2, self.projectVC.chatAvatar.userImage.size.width, self.projectVC.chatAvatar.userImage.size.height);
+    self.projectVC.chatAvatar.frame = CGRectMake(-100,4, self.projectVC.chatAvatar.userImage.size.width, self.projectVC.chatAvatar.userImage.size.height);
     self.projectVC.chatAvatar.transform = CGAffineTransformMakeScale(.16, .16);
     [self.projectVC.chatView addSubview:self.projectVC.chatAvatar];
     
@@ -274,8 +276,9 @@ static FirebaseHelper *sharedHelper = nil;
         if (self.projectVC.carousel.currentItemIndex == [self.projectVC.boardIDs indexOfObject:boardID]) {
             self.projectVC.boardNameLabel.text = snapshot.value;
             [self.projectVC.boardNameLabel sizeToFit];
+            self.projectVC.boardNameLabel.center = CGPointMake(self.projectVC.carousel.center.x, self.projectVC.boardNameLabel.center.y);
+            self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.carousel.center.x+self.projectVC.boardNameLabel.frame.size.width/2+20, self.projectVC.boardNameLabel.center.y);
             self.projectVC.boardNameEditButton.hidden = false;
-            self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.boardNameLabel.frame.size.width+395, self.projectVC.boardNameLabel.center.y-1);
         }
     }];
     
@@ -284,7 +287,6 @@ static FirebaseHelper *sharedHelper = nil;
         for (NSString *userID in [snapshot.value allKeys]) {
             
             [self observeUndoForUser:userID onBoard:boardID];
-            NSLog(@"observeUndo 2 called");
         }
     }];
     
@@ -393,7 +395,6 @@ static FirebaseHelper *sharedHelper = nil;
         
         [self.boards setObject:snapshot.value forKey:boardID];
         [self observeBoardWithID:boardID];
-        NSLog(@"observeBoard 1 called");
     }];
 }
 
@@ -450,7 +451,6 @@ static FirebaseHelper *sharedHelper = nil;
             boardView.loadingView.hidden = true;
             [boardView layoutComments];
             [self.projectVC drawBoard:boardView];
-            NSLog(@"drawBoard 3 called");
         }
     }];
     

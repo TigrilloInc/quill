@@ -6,6 +6,7 @@
 
 #import "UICollectionView+Draggable.h"
 #import "LSCollectionViewHelper.h"
+#import "ProjectDetailViewController.h"
 #import <objc/runtime.h>
 
 @implementation UICollectionView (Draggable)
@@ -54,6 +55,14 @@
 
     if (point.y < 90) return NO;
     else return YES;
+}
+
+- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event
+{
+    
+    ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    
+    if ([projectVC.editProjectNameTextField isFirstResponder]) [projectVC.editProjectNameTextField resignFirstResponder];
 }
 
 @end
