@@ -7,11 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "IdenticonView.h"
 
 @interface AvatarButton : UIButton
 
 @property (strong, nonatomic) NSString *userID;
 @property (strong, nonatomic) UIImage *userImage;
+@property (strong, nonatomic) IdenticonView *identiconView;
 @property (strong, nonatomic) UIImageView *drawingImage;
 @property (strong, nonatomic) UIImageView *highlightedImage;
 

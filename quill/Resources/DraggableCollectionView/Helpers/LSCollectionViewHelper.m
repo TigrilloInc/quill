@@ -59,7 +59,7 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
         _longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc]
                                        initWithTarget:self
                                        action:@selector(handleLongPressGesture:)];
-        _longPressGestureRecognizer.minimumPressDuration = .2;
+        _longPressGestureRecognizer.minimumPressDuration = .15;
         
         [_collectionView addGestureRecognizer:_longPressGestureRecognizer];
         
@@ -110,8 +110,8 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
     _panPressGestureRecognizer.enabled = canWarp && enabled;
 }
 
-- (UIImage *)imageFromCell:(UICollectionViewCell *)cell {
-    UIGraphicsBeginImageContextWithOptions(cell.bounds.size, cell.isOpaque, 0.0f);
+- (UIImage *)imageFromCell:(BoardCollectionViewCell *)cell {
+    UIGraphicsBeginImageContextWithOptions(cell.gradientImage.frame.size, cell.isOpaque, 0.0f);
     [cell.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
@@ -239,14 +239,14 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
             cell.highlighted = NO;
             cell.deleteButton.hidden = true;
             [mockCell removeFromSuperview];
-            mockCell = [[UIImageView alloc] initWithFrame:cell.frame];
+            mockCell = [[UIImageView alloc] initWithFrame:CGRectMake(cell.frame.origin.x, cell.frame.origin.y, cell.gradientImage.frame.size.width, cell.gradientImage.frame.size.height)];
             mockCell.image = [self imageFromCell:cell];
             mockCenter = mockCell.center;
             [self.collectionView addSubview:mockCell];
             [UIView
-             animateWithDuration:0.3
+             animateWithDuration:0.15
              animations:^{
-                 mockCell.transform = CGAffineTransformMakeScale(1.1f, 1.1f);
+                 mockCell.transform = CGAffineTransformMakeScale(1.2f, 1.2f);
              }
              completion:nil];
             
@@ -284,11 +284,11 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
             
             // Switch mock for cell
             UICollectionViewLayoutAttributes *layoutAttributes = [self.collectionView layoutAttributesForItemAtIndexPath:self.layoutHelper.hideIndexPath];
-            
+
             [UIView
-             animateWithDuration:0.3
+             animateWithDuration:0.15
              animations:^{
-                 mockCell.center = layoutAttributes.center;
+                 mockCell.center = CGPointMake(layoutAttributes.center.x+28.5, layoutAttributes.center.y+28.5);
                  mockCell.transform = CGAffineTransformMakeScale(1.f, 1.f);
              }
              completion:^(BOOL finished) {

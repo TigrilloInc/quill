@@ -33,14 +33,16 @@
         self.boardView.drawable = false;
         CGAffineTransform tr = self.boardView.transform;
         tr = CGAffineTransformScale(tr, .1875, .1875);
-        tr = CGAffineTransformTranslate(tr, -1536, -2348);
+        //tr = CGAffineTransformTranslate(tr, -1536, -2348);
         tr = CGAffineTransformRotate(tr, M_PI_2);
         self.boardView.transform = tr;
+        self.boardView.center = self.center;
         [self.contentView addSubview:self.boardView];
         
-        UIImageView *gradientImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"board7.png"]];
-        gradientImage.transform = tr;
-        [self.contentView addSubview:gradientImage];
+        self.gradientImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"board7.png"]];
+        self.gradientImage.center = self.center;
+        self.gradientImage.transform = tr;
+        [self.contentView addSubview:self.gradientImage];
         
         UIImage *deleteImage = [UIImage imageNamed:@"close.png"];
         self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];

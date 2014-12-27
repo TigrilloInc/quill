@@ -225,7 +225,7 @@ static FirebaseHelper *sharedHelper = nil;
     self.projectVC.chatAvatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
     self.projectVC.chatAvatar.userID = self.uid;
     [self.projectVC.chatAvatar generateIdenticon];
-    self.projectVC.chatAvatar.frame = CGRectMake(-100,-7, self.projectVC.chatAvatar.userImage.size.width, self.projectVC.chatAvatar.userImage.size.height);
+    self.projectVC.chatAvatar.frame = CGRectMake(-100,2, self.projectVC.chatAvatar.userImage.size.width, self.projectVC.chatAvatar.userImage.size.height);
     self.projectVC.chatAvatar.transform = CGAffineTransformMakeScale(.16, .16);
     [self.projectVC.chatView addSubview:self.projectVC.chatAvatar];
     
@@ -275,7 +275,7 @@ static FirebaseHelper *sharedHelper = nil;
             self.projectVC.boardNameLabel.text = snapshot.value;
             [self.projectVC.boardNameLabel sizeToFit];
             self.projectVC.boardNameEditButton.hidden = false;
-            self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.boardNameLabel.frame.size.width+400, self.projectVC.boardNameEditButton.center.y);
+            self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.boardNameLabel.frame.size.width+395, self.projectVC.boardNameLabel.center.y-1);
         }
     }];
     

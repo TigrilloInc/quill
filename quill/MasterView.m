@@ -73,15 +73,16 @@
     return 1;
 }
 
--(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    return @"Projects";
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    return 30.0f;
-}
+//-(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+//{
+//    return @"Projects";
+//}
+//
+//
+//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+//{
+//    return 30.0f;
+//}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -97,13 +98,19 @@
     
     if (indexPath.row == [FirebaseHelper sharedHelper].visibleProjectIDs.count && ![FirebaseHelper sharedHelper].firstLoad) {
         
-        cell.textLabel.text = @" +   NEW PROJECT";
+        cell.imageView.image = [UIImage imageNamed:@"plus2.png"];
+        cell.textLabel.text = @"New Project";
+        cell.textLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:20];
+        cell.textLabel.textColor = self.backgroundColor;
         return cell;
     }
     
     if (self.orderedProjectNames.count > indexPath.row)  {
         
         cell.textLabel.text = self.orderedProjectNames[indexPath.row];
+        cell.textLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
+        cell.textLabel.textColor = [UIColor blackColor];
+        cell.imageView.image = nil;
         
         NSString *projectID;
         

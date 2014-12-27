@@ -7,7 +7,6 @@
 //
 
 #import "AvatarButton.h"
-#import "IdenticonView.h"
 #import "NSString+MD5.h"
 
 @implementation AvatarButton
@@ -22,12 +21,13 @@
         self.drawingImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"drawing.png"]];
         self.drawingImage.hidden = true;
         self.drawingImage.transform = CGAffineTransformMakeScale(.5, .5);
-        self.drawingImage.center = CGPointMake(125.5,116);
+        self.drawingImage.center = CGPointMake(125,117);
         [self addSubview:self.drawingImage];
         
-        self.highlightedImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"userhighlight2.png"]];
+        self.highlightedImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"userhighlight.png"]];
+        self.highlightedImage.transform = CGAffineTransformMakeScale(.5, .5);
         self.highlightedImage.hidden = true;
-        self.highlightedImage.center = CGPointMake(125, 115);
+        self.highlightedImage.center = CGPointMake(125, 118);
         [self addSubview:self.highlightedImage];
     }
     return self;

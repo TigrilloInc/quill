@@ -69,7 +69,6 @@
     [super viewWillDisappear:animated];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
 
@@ -148,14 +147,13 @@
     [self.view sendSubviewToBack:self.chatFadeImage];
     [self.view sendSubviewToBack:self.chatView];
     [self.view sendSubviewToBack:self.backgroundImage];
-
 }
 
 -(void) updateDetails {
     
     self.projectNameLabel.text = self.projectName;
     [self.projectNameLabel sizeToFit];
-    self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+290, self.editButton.center.y);
+    self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+280, self.projectNameLabel.center.y+5);
     
     [self updateMessages];
     [self.chatTable reloadData];
@@ -221,7 +219,7 @@
     if ([self.messages.lastObject isEqualToString:viewedAt] || (!self.activeCommentThreadID && self.chatViewed) || [self.viewedCommentThreadIDs containsObject:self.activeCommentThreadID]) {
         [self.messages removeObject:viewedAt];
         self.chatViewed = true;
-        if (![self.chatTextField isFirstResponder]) [self.chatOpenButton setTitle:@"OPEN" forState:UIControlStateNormal];
+        if (![self.chatTextField isFirstResponder]) [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
     }
     
     for (NSString *messageID in messageKeys) {
@@ -305,16 +303,65 @@
     [self.addUserButton removeFromSuperview];
     self.addUserButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.addUserButton addTarget:self action:@selector(addUserTapped) forControlEvents:UIControlEventTouchUpInside];
-    UIImage *plusImage = [UIImage imageNamed:@"plus.png"];
+    UIImage *plusImage = [UIImage imageNamed:@"plus1.png"];
     [self.addUserButton setImage:plusImage forState:UIControlStateNormal];
     self.addUserButton.frame = CGRectMake(858-(userIDs.count*66), -63, plusImage.size.width, plusImage.size.height);
     self.addUserButton.transform = CGAffineTransformScale(self.addUserButton.transform, .25, .25);
     [self.view insertSubview:self.addUserButton aboveSubview:self.avatarBackgroundImage];
 }
 
--(void) drawBoard:(BoardView *)boardView {
+-(void) createBoard {
     
-    NSLog(@"drawboard called --- undoDict is %@", [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"undo"]);
+    Firebase *boardRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/boards"];
+    
+    NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/boards", [FirebaseHelper sharedHelper].currentProjectID];
+    Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
+    
+    Firebase *commentsRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/comments"];
+    Firebase *commentsRefWithID = [commentsRef childByAutoId];
+    NSString *commentsID = commentsRefWithID.name;
+    
+    NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+    
+    NSMutableDictionary *subpathsDict = [NSMutableDictionary dictionary];
+    
+    for (NSString *userID in self.roles.allKeys) {
+        
+        [subpathsDict setObject:[@{ dateString : @"penUp"} mutableCopy] forKey:userID];
+    }
+    
+    NSString *boardNum = [NSString stringWithFormat:@"%lu", (unsigned long)self.boardIDs.count];
+    NSDictionary *boardDict =  @{ @"name" : @"Untitled",
+                                  @"project" : self.projectName,
+                                  @"number" : boardNum,
+                                  @"commentsID" : commentsID,
+                                  @"subpaths" : subpathsDict,
+                                  @"updatedAt" : dateString,
+                                  @"undo" :  [@{ [FirebaseHelper sharedHelper].uid :
+                                                     [@{ @"currentIndex" : @0,
+                                                         @"currentIndexDate" : dateString,
+                                                         @"total" : @0
+                                                         } mutableCopy]
+                                                 } mutableCopy]
+                                  };
+    
+    Firebase *boardRefWithID = [boardRef childByAutoId];
+    [boardRefWithID updateChildValues:boardDict];
+    
+    [projectRef updateChildValues:@{ boardNum : boardRefWithID.name }];
+    
+    self.activeBoardID = boardRefWithID.name;
+    
+    [self.boardIDs addObject:self.activeBoardID];
+    [[FirebaseHelper sharedHelper].loadedBoardIDs addObject:self.activeBoardID];
+    [[FirebaseHelper sharedHelper].boards setObject:[boardDict mutableCopy] forKey:self.activeBoardID];
+    [[FirebaseHelper sharedHelper].comments setObject:[NSMutableDictionary dictionary] forKey:commentsID];
+    [[[FirebaseHelper sharedHelper].projects objectForKey:@"boards"] setObject:self.activeBoardID forKey:boardNum];
+    
+    [[FirebaseHelper sharedHelper] observeBoardWithID:self.activeBoardID];
+}
+
+-(void) drawBoard:(BoardView *)boardView {
     
     [boardView clear];
     
@@ -438,11 +485,11 @@
                          self.masterView.center = CGPointMake(-105, self.masterView.center.y);
                          
                          self.chatOpenButton.center = CGPointMake(self.view.center.x, self.chatOpenButton.center.y);
-                         self.chatTextField.frame = CGRectMake(52, 102, 880, 30);
-                         self.chatView.frame = CGRectMake(0, 626, 1024, 142);
+                         self.chatTextField.frame = CGRectMake(51, 113, 877, 30);
+                         self.chatView.frame = CGRectMake(0, 616, 1024, 152);
                          self.chatTable.frame = CGRectMake(0, 768-self.chatView.frame.size.height, self.view.frame.size.width, self.chatTable.frame.size.height);
                          self.chatFadeImage.center = CGPointMake(self.view.center.x,self.chatFadeImage.center.y);
-                         self.sendMessageButton.frame = CGRectMake(952, 102, 45, 30);
+                         self.sendMessageButton.frame = CGRectMake(953, 112, 45, 30);
                          
                          boardButton.alpha = 0;
                      }
@@ -552,6 +599,8 @@
         
         self.boardIDs = [self.editBoardIDs mutableCopy];
         
+        if (self.boardIDs.count == 0) [self createBoard];
+        
         [self.carousel reloadData];
     }
 }
@@ -609,12 +658,12 @@
                         
                         float masterWidth = self.masterView.frame.size.width;
                          
-                        self.chatTextField.frame = CGRectMake(52, 102, 622, 30);
-                        self.chatView.frame = CGRectMake(210,626,814,142);
-                        self.sendMessageButton.frame = CGRectMake(709, 102, 45, 30);
-                        self.chatOpenButton.frame = CGRectMake(512, 601, 260, 49);
-                        self.chatFadeImage.frame = CGRectMake(210, 614, 1024, 25);
-                        self.chatTable.frame = CGRectMake(masterWidth, 626, 814, 89);
+                        self.chatTextField.frame = CGRectMake(51, 113, 667, 30);
+                        self.chatView.frame = CGRectMake(210, 616, 814, 152);
+                        self.sendMessageButton.frame = CGRectMake(743, 112, 45, 30);
+                        self.chatOpenButton.center = CGPointMake(self.chatView.center.x, 602);
+                        self.chatFadeImage.frame = CGRectMake(210, 610, 1024, 25);
+                        self.chatTable.frame = CGRectMake(masterWidth, 622, 814, 89);
                         
                          CGAffineTransform tr = CGAffineTransformScale(self.carousel.transform, .5, .5);
                          self.carousel.transform = tr;
@@ -688,6 +737,10 @@
 - (void) clearTapped:(id)sender {
     
     self.currentBoardView.commenting = false;
+    
+    NSDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
+    
+    if ([[undoDict objectForKey:@"total"] integerValue] == [[undoDict objectForKey:@"currentIndex"] integerValue]) return;
     
     [[FirebaseHelper sharedHelper] resetUndo];
     
@@ -766,54 +819,8 @@
 - (IBAction)newBoardTapped:(id)sender {
     
     newBoardCreated = true;
-    
-    Firebase *boardRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/boards"];
-    
-    NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/boards", [FirebaseHelper sharedHelper].currentProjectID];
-    Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
-    
-    Firebase *commentsRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/comments"];
-    Firebase *commentsRefWithID = [commentsRef childByAutoId];
-    NSString *commentsID = commentsRefWithID.name;
-    
-    NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
-    
-    NSMutableDictionary *subpathsDict = [NSMutableDictionary dictionary];
-    
-    for (NSString *userID in self.roles.allKeys) {
-        
-        [subpathsDict setObject:[@{ dateString : @"penUp"} mutableCopy] forKey:userID];
-    }
-    
-    NSString *boardNum = [NSString stringWithFormat:@"%lu", (unsigned long)self.boardIDs.count];
-    NSDictionary *boardDict =  @{ @"name" : @"Untitled",
-                                  @"project" : self.projectName,
-                                  @"number" : boardNum,
-                                  @"commentsID" : commentsID,
-                                  @"subpaths" : subpathsDict,
-                                  @"updatedAt" : dateString,
-                                  @"undo" :  [@{ [FirebaseHelper sharedHelper].uid :
-                                                     [@{ @"currentIndex" : @0,
-                                                         @"currentIndexDate" : dateString,
-                                                         @"total" : @0
-                                                         } mutableCopy]
-                                                 } mutableCopy]
-                                  };
-    
-    Firebase *boardRefWithID = [boardRef childByAutoId];
-    [boardRefWithID updateChildValues:boardDict];
-    
-    [projectRef updateChildValues:@{ boardNum : boardRefWithID.name }];
-    
-    self.activeBoardID = boardRefWithID.name;
-    
-    [self.boardIDs addObject:self.activeBoardID];
-    [[FirebaseHelper sharedHelper].loadedBoardIDs addObject:self.activeBoardID];
-    [[FirebaseHelper sharedHelper].boards setObject:[boardDict mutableCopy] forKey:self.activeBoardID];
-    [[FirebaseHelper sharedHelper].comments setObject:[NSMutableDictionary dictionary] forKey:commentsID];
-    [[[FirebaseHelper sharedHelper].projects objectForKey:@"boards"] setObject:self.activeBoardID forKey:boardNum];
-    
-    [[FirebaseHelper sharedHelper] observeBoardWithID:self.activeBoardID];
+
+    [self createBoard];
     
     [self.carousel reloadData];
     [self.carousel scrollByNumberOfItems:self.carousel.numberOfItems duration:.5];
@@ -826,7 +833,6 @@
     vc.modalPresentationStyle = UIModalPresentationFormSheet;
     vc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     [self presentViewController:vc animated:YES completion:nil];
-    
 }
 
 - (IBAction)openChatTapped:(id)sender {
@@ -869,8 +875,8 @@
     
     commentsOpen = !commentsOpen;
     
-    if (commentsOpen) [self.chatOpenButton setTitle:@"v" forState:UIControlStateNormal];
-    else [self.chatOpenButton setTitle:@"^" forState:UIControlStateNormal];
+    if (commentsOpen) [self.chatOpenButton setImage:[UIImage imageNamed:@"down.png"] forState:UIControlStateNormal];
+    else [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
 }
 
 -(void)keyboardWillShow:(NSNotification *)notification {
@@ -880,7 +886,7 @@
     [self showChat];
     
     CGFloat height = [[notification.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
-    keyboardDiff = 530-height;
+    keyboardDiff = 522-height;
     
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:[notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
@@ -925,11 +931,11 @@
     }
     
     if (!self.activeBoardID) {
-        [self.chatOpenButton setTitle:@"CLOSE" forState:UIControlStateNormal];
+        [self.chatOpenButton setImage:[UIImage imageNamed:@"down.png"] forState:UIControlStateNormal];
         self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y-(height+keyboardDiff));
     }
     else {
-        [self.chatOpenButton setTitle:@"^" forState:UIControlStateNormal];
+        [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
         self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y-height);
     }
     
@@ -946,7 +952,7 @@
     if (![self.chatTextField isFirstResponder]) return;
     
     CGFloat height = [[notification.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
-    keyboardDiff = 530-height;
+    keyboardDiff = 522-height;
     
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:[notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
@@ -1003,7 +1009,7 @@
     
     [UIView commitAnimations];
     
-    [self.chatOpenButton setTitle:@"OPEN" forState:UIControlStateNormal];
+    [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
     
     self.editBoardNameTextField.hidden = true;
 }
@@ -1037,6 +1043,7 @@
         tr = CGAffineTransformScale(tr, .5, .5);
         tr = CGAffineTransformRotate(tr, M_PI_2);
         view.transform = tr;
+        view.alpha = .2;
     }
     
     UIImage *gradientImage = [UIImage imageNamed:@"board7.png"];
@@ -1113,7 +1120,7 @@
     self.boardNameLabel.font = labelFont;
     [self.boardNameLabel sizeToFit];
 
-    self.boardNameEditButton.center = CGPointMake(self.boardNameLabel.frame.size.width+400, self.boardNameEditButton.center.y);
+    self.boardNameEditButton.center = CGPointMake(self.boardNameLabel.frame.size.width+395, self.boardNameLabel.center.y-1);
 }
 
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event
@@ -1167,7 +1174,8 @@
         
         self.boardNameLabel.text = self.editBoardNameTextField.text;
         [self.boardNameLabel sizeToFit];
-        self.boardNameEditButton.center = CGPointMake(self.boardNameLabel.frame.size.width+400, self.boardNameEditButton.center.y);
+        self.boardNameEditButton.center = CGPointMake(self.boardNameLabel.frame.size.width+395, self.boardNameLabel.center.y-1
+                                                      );
         
         self.editBoardNameTextField.text = nil;
         
@@ -1229,6 +1237,7 @@
     BoardCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CollectionCell" forIndexPath:indexPath];
     
     cell.boardView.boardID = self.editBoardIDs[indexPath.row];
+    
     [cell updateSubpathsForBoardID:self.editBoardIDs[indexPath.row]];
     
     return cell;

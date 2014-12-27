@@ -110,7 +110,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
         avatar.userID = userIDs[i];
         [avatar generateIdenticon];
-        avatar.frame = CGRectMake(-71, -12+(i-1)*66, avatar.userImage.size.width, avatar.userImage.size.height);
+        avatar.frame = CGRectMake(-70.5, -12+(i-1)*66, avatar.userImage.size.width, avatar.userImage.size.height);
         CGAffineTransform tr = CGAffineTransformScale(avatar.transform, .25, .25);
         tr = CGAffineTransformRotate(tr, -M_PI_2);
         avatar.transform = tr;

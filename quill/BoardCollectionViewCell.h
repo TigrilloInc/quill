@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) BoardView *boardView;
 @property (nonatomic, strong) UIButton *deleteButton;
+@property (nonatomic, strong) UIImageView *gradientImage;
 
 -(void) updateSubpathsForBoardID:(NSString *)boardID;
 
