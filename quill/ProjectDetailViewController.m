@@ -440,6 +440,11 @@
 
 -(void) boardTapped:(id)sender {
     
+    if([self.editBoardNameTextField isFirstResponder]) {
+        [self.editBoardNameTextField resignFirstResponder];
+        return;
+    }
+    
     if (self.carouselMoving) {
         [self.carousel scrollToItemAtIndex:self.carousel.currentItemIndex animated:YES];
         return;
@@ -470,9 +475,11 @@
     [self hideChat];
     
     [self.view sendSubviewToBack:self.boardNameLabel];
+    [self.view sendSubviewToBack:self.addBoardButton];
+    [self.view sendSubviewToBack:self.addBoardBackgroundImage];
+    [self.view sendSubviewToBack:self.avatarBackgroundImage];
     for (AvatarButton *avatar in self.avatars) [self.view sendSubviewToBack:avatar];
     [self.view sendSubviewToBack:self.addUserButton];
-    [self.view sendSubviewToBack:self.avatarBackgroundImage];
     [self.view sendSubviewToBack:self.backgroundImage];
     
     [UIView animateWithDuration:.25
@@ -506,6 +513,8 @@
 
 - (IBAction)editTapped:(id)sender {
     
+    self.editing = true;
+    
     [self.draggableCollectionView reloadData];
     
     if ([self.chatTextField isFirstResponder]) [self.chatTextField resignFirstResponder];
@@ -521,6 +530,7 @@
     self.draggableCollectionView.hidden = false;
     self.boardNameLabel.hidden = true;
     self.addBoardButton.hidden = true;
+    self.addBoardBackgroundImage.hidden = true;
     
     self.editProjectNameTextField.hidden = false;
     self.editBoardNameTextField.hidden = true;
@@ -589,7 +599,7 @@
         self.masterView.defaultRow = [NSIndexPath indexPathForRow:[self.masterView.orderedProjectNames indexOfObject:newName] inSection:0];
         
         [[ref childByAppendingPath:@"name"] setValue:newName];
-        
+        self.editProjectNameTextField.text = nil;
     }
     
     if (![self.editBoardIDs isEqualToArray:self.boardIDs]) {
@@ -622,6 +632,7 @@
     self.boardNameLabel.hidden = false;
     if (self.editing) self.boardNameEditButton.hidden = false;
     self.addBoardButton.hidden = false;
+    self.addBoardBackgroundImage.hidden = false;
     
     self.editProjectNameTextField.hidden = true;
     self.editBoardNameTextField.hidden = true;
@@ -633,6 +644,8 @@
     self.chatTextField.hidden = false;
     self.chatTable.hidden = false;
     self.chatOpenButton.hidden = false;
+    
+    self.editing = false;
 }
 
 -(void)closeTapped:(id)sender {
@@ -687,6 +700,8 @@
                      completion:^(BOOL finished) {
                          
                          [self showChat];
+                         [self.view bringSubviewToFront:self.addBoardBackgroundImage];
+                         [self.view bringSubviewToFront:self.addBoardButton];
                          
                          [self updateDetails];
                          
@@ -945,12 +960,17 @@
             carouselRect.origin.y -= self.carouselOffset;
             self.carousel.frame = carouselRect;
             
+            CGRect backgroundRect = self.currentBoardView.avatarBackgroundImage.frame;
+            backgroundRect.origin.x += self.carouselOffset;
+            self.currentBoardView.avatarBackgroundImage.frame = backgroundRect;
+            
             for (AvatarButton *avatar in self.currentBoardView.avatarButtons) {
                 
                 CGRect avatarRect = avatar.frame;
                 avatarRect.origin.x += self.carouselOffset;
                 avatar.frame = avatarRect;
             }
+            
         }
         else {
             
@@ -1035,6 +1055,10 @@
             CGRect carouselRect = self.carousel.frame;
             carouselRect.origin.y += self.carouselOffset;
             self.carousel.frame = carouselRect;
+            
+            CGRect backgroundRect = self.currentBoardView.avatarBackgroundImage.frame;
+            backgroundRect.origin.x -= self.carouselOffset;
+            self.currentBoardView.avatarBackgroundImage.frame = backgroundRect;
             
             for (AvatarButton *avatar in self.currentBoardView.avatarButtons) {
                 
@@ -1296,6 +1320,7 @@
     cell.boardView.boardID = self.editBoardIDs[indexPath.row];
     
     [cell updateSubpathsForBoardID:self.editBoardIDs[indexPath.row]];
+    [cell updateBoardNameForBoardID:self.editBoardIDs[indexPath.row]];
     
     return cell;
 }

@@ -238,6 +238,7 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
             
             cell.highlighted = NO;
             cell.deleteButton.hidden = true;
+            cell.boardNameLabel.hidden = true;
             [mockCell removeFromSuperview];
             mockCell = [[UIImageView alloc] initWithFrame:CGRectMake(cell.frame.origin.x, cell.frame.origin.y, cell.gradientImage.frame.size.width, cell.gradientImage.frame.size.height)];
             mockCell.image = [self imageFromCell:cell];
@@ -299,6 +300,7 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
                  [self.collectionView performBatchUpdates:nil completion:^(BOOL finished) {
                      BoardCollectionViewCell *cell = (BoardCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:toIndexPath];
                      cell.deleteButton.hidden = false;
+                     cell.boardNameLabel.hidden = false;
                  }];
              }];
             

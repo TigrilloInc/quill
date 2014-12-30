@@ -44,9 +44,14 @@
         self.gradientImage.transform = tr;
         [self.contentView addSubview:self.gradientImage];
         
+        self.boardNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 1024, 20)];
+        self.boardNameLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:18];
+        [self.contentView addSubview:self.boardNameLabel];
+        
         UIImage *deleteImage = [UIImage imageNamed:@"close.png"];
         self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.deleteButton.frame = CGRectMake(-deleteImage.size.width/2, -deleteImage.size.height/2, deleteImage.size.width, deleteImage.size.height);
+        self.deleteButton.transform = CGAffineTransformMakeScale(.1, .1);
         [self.deleteButton setImage:deleteImage forState:UIControlStateNormal];
         [self.deleteButton addTarget:self action:@selector(deleteTapped) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.deleteButton];
@@ -114,6 +119,14 @@
         NSDictionary *subpathDict = [subpathsToDraw objectForKey:allOrderedKeys[i]];
         [self.boardView drawSubpath:subpathDict];
     }
+}
+
+-(void) updateBoardNameForBoardID:(NSString *)boardID {
+    
+    self.boardNameLabel.text = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"name"];
+    [self.boardNameLabel sizeToFit];
+    self.boardNameLabel.center = CGPointMake(self.contentView.center.x,160);
+    
 }
 
 -(void)deleteTapped {

@@ -35,7 +35,7 @@
         self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.deleteButton.frame = CGRectMake(-deleteImage.size.width/2, -deleteImage.size.height/2, deleteImage.size.width, deleteImage.size.height);
         [self.deleteButton setImage:deleteImage forState:UIControlStateNormal];
-        self.deleteButton.transform = CGAffineTransformMakeScale(4, 4);
+        self.deleteButton.transform = CGAffineTransformMakeScale(.4, .4);
         [self.deleteButton addTarget:self action:@selector(deleteTapped) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.deleteButton];
         [self bringSubviewToFront:self.deleteButton];

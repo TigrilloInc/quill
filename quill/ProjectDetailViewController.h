@@ -56,6 +56,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *projectNameLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImage;
 @property (strong, nonatomic) UIImageView *avatarBackgroundImage;
+@property (weak, nonatomic) IBOutlet UIImageView *addBoardBackgroundImage;
+
 @property (weak, nonatomic) BoardView *currentBoardView;
 
 @property (weak, nonatomic) IBOutlet UIButton *addBoardButton;

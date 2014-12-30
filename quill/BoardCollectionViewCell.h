@@ -14,7 +14,9 @@
 @property (nonatomic, strong) BoardView *boardView;
 @property (nonatomic, strong) UIButton *deleteButton;
 @property (nonatomic, strong) UIImageView *gradientImage;
+@property (nonatomic, strong) UILabel *boardNameLabel;
 
 -(void) updateSubpathsForBoardID:(NSString *)boardID;
+-(void) updateBoardNameForBoardID:(NSString *)boardID;
 
 @end

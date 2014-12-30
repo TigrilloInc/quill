@@ -52,14 +52,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         _empty = YES;
         self.activeUserIDs = [NSMutableArray array];
         self.loadingView = nil;
-
-//        self.highlighterView = [[DrawView alloc] initWithFrame:frame];
-//        self.highlighterView.alpha = 0.5;
-//        [self addSubview:self.highlighterView];
-//        
-//        self.penView = [[DrawView alloc] initWithFrame:frame];
-//        [self addSubview:self.penView];
-
+        
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;;
         
         if (projectVC.userRole > 0) self.drawable = true;
@@ -739,6 +732,10 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         carouselRect.origin.y += (oldOffset - projectVC.carouselOffset);
         projectVC.carousel.frame = carouselRect;
         
+        CGRect backgroundRect = self.avatarBackgroundImage.frame;
+        backgroundRect.origin.x -= (oldOffset - projectVC.carouselOffset);
+        self.avatarBackgroundImage.frame = backgroundRect;
+
         for (AvatarButton *avatar in self.avatarButtons) {
             
             CGRect avatarRect = avatar.frame;

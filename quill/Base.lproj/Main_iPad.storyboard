@@ -493,18 +493,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="N38-cw-Ht6">
-                                <rect key="frame" x="717" y="541" width="213" height="40"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="23"/>
-                                <state key="normal" title="+ new board">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="newBoardTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="fvw-jL-Sw1"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" alpha="0.20000000000000001" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="fby-KJ-NQF">
+                            <button hidden="YES" opaque="NO" alpha="0.20000000000000001" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="fby-KJ-NQF">
                                 <rect key="frame" x="561" y="39" width="30" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="gear1.png">
@@ -514,7 +503,7 @@
                                     <action selector="editTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="ayf-LH-cI2"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" alpha="0.20000000000000001" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="vuw-ek-kay">
+                            <button hidden="YES" opaque="NO" alpha="0.20000000000000001" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="vuw-ek-kay">
                                 <rect key="frame" x="390" y="364" width="20" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="edit.png">
@@ -524,7 +513,7 @@
                                     <action selector="boardNameEditTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="MvK-lu-d4w"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Project Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="7VA-hg-eFW">
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Project Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="7VA-hg-eFW">
                                 <rect key="frame" x="254" y="26" width="392" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="SourceSansPro-Light" family="Source Sans Pro" pointSize="50"/>
@@ -539,6 +528,20 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="HZI-dR-56J"/>
                                 </connections>
                             </view>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="newboardbutton.png" id="1n7-6k-4XC">
+                                <rect key="frame" x="844" y="493" width="70" height="70"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="N38-cw-Ht6">
+                                <rect key="frame" x="850" y="499" width="58" height="58"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="plus1.png">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="newBoardTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="fvw-jL-Sw1"/>
+                                </connections>
+                            </button>
                             <view contentMode="scaleToFill" id="kDh-qU-DmB">
                                 <rect key="frame" x="210" y="616" width="814" height="152"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -595,7 +598,7 @@
                                 <rect key="frame" x="210" y="607" width="1024" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" borderStyle="roundedRect" placeholder="Change project name..." clearsOnBeginEditing="YES" adjustsFontSizeToFit="NO" minimumFontSize="50" id="mem-TG-8ys">
+                            <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" borderStyle="roundedRect" placeholder="Change project name..." clearsOnBeginEditing="YES" adjustsFontSizeToFit="NO" minimumFontSize="50" id="mem-TG-8ys">
                                 <rect key="frame" x="254" y="33" width="394" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -625,7 +628,7 @@
                                     <action selector="cancelTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="4VV-Ce-1ig"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Board Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Hbm-ZL-EhN">
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Board Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Hbm-ZL-EhN">
                                 <rect key="frame" x="364" y="98" width="509" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="32"/>
@@ -749,6 +752,7 @@
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
+                        <outlet property="addBoardBackgroundImage" destination="1n7-6k-4XC" id="Nim-q3-roT"/>
                         <outlet property="addBoardButton" destination="N38-cw-Ht6" id="nP1-3w-pCv"/>
                         <outlet property="applyChangesButton" destination="x1v-BJ-G8Z" id="Prx-JS-tnX"/>
                         <outlet property="backgroundImage" destination="m3y-wV-D63" id="AiC-UF-2tu"/>
@@ -780,6 +784,8 @@
         <image name="chatfade2.png" width="2048" height="60"/>
         <image name="edit.png" width="378" height="378"/>
         <image name="gear1.png" width="324" height="323"/>
+        <image name="newboardbutton.png" width="280" height="280"/>
+        <image name="plus1.png" width="232" height="231"/>
         <image name="projectsshadow.png" width="210" height="70"/>
         <image name="up.png" width="145" height="80"/>
     </resources>
