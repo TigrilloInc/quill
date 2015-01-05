@@ -491,6 +491,15 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [projectVC showDrawMenu];
     projectVC.carouselOffset = 0;
     
+    for (int i=5; i<=8; i++) {
+        
+        if (i==7) continue;
+        
+        UIView *button = [projectVC.view viewWithTag:i];
+        if (i==5) [button viewWithTag:50].hidden = false;
+        else [button viewWithTag:50].hidden = true;
+    }
+    
     for (CommentButton *commentButton in self.commentButtons) {
         
         commentButton.commentImage.hidden = false;
@@ -691,6 +700,16 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     CommentButton *comment = (CommentButton *)sender;
     
     [projectVC.viewedCommentThreadIDs addObject:comment.commentThreadID];
+    projectVC.erasing = false;
+    
+    for (int i=5; i<=8; i++) {
+        
+        if (i==7) continue;
+        
+        UIView *button = [projectVC.view viewWithTag:i];
+        if (i==8) [button viewWithTag:50].hidden = false;
+        else [button viewWithTag:50].hidden = true;
+    }
     
     for (CommentButton *commentButton in self.commentButtons) {
         

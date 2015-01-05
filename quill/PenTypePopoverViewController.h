@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PenTypePopoverViewController : UIViewController
+@interface PenTypePopoverViewController : UIViewController {
+    
+    NSArray *pens;
+}
 
 @end

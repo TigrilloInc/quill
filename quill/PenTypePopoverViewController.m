@@ -15,41 +15,34 @@
 -(void)viewDidLoad {
     [super viewDidLoad];
     
-    NSArray *imageNames = @[ @"pen.png",
-                             @"marker.png",
-                             @"highlighter.png"
-                            ];
+    pens = @[ @"pen.png",
+              @"marker.png",
+              @"highlighter.png"
+            ];
     
     for (int i=0; i<3; i++) {
         
         UIButton *penButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        UIImage *penImage = [UIImage imageNamed:imageNames[i]];
-        [penButton setImage:penImage forState:UIControlStateNormal];
-        penButton.frame = CGRectMake(0, 0, penImage.size.width, penImage.size.height);
-        penButton.transform = CGAffineTransformMakeScale(.1, .1);
-        penButton.center = CGPointMake(40, 43+i*80);
-        [penButton addTarget:self action:@selector(widthTapped:) forControlEvents:UIControlEventTouchUpInside];
+        [penButton setImage:[UIImage imageNamed:pens[i]] forState:UIControlStateNormal];
+        penButton.frame = CGRectMake(15, 18+i*70, 50, 50);
+        [penButton addTarget:self action:@selector(penTapped:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:penButton];
         penButton.tag = i+1;
     }
     
-    self.preferredContentSize = CGSizeMake(80, 250);
+    self.preferredContentSize = CGSizeMake(80, 18+pens.count*70);
 }
 
--(void)widthTapped:(id)sender {
+-(void)penTapped:(id)sender {
     
     UIButton *penButton = (UIButton *)sender;
     
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
-    NSString *imageName = [NSString string];
-    
-    if (penButton.tag == 1) imageName = @"penselected.png";
-    if (penButton.tag == 2) imageName = @"markerselected.png";
-    if (penButton.tag == 3) imageName = @"highlighterselected.png";
+    NSString *imageName = pens[penButton.tag-1];
     
     projectVC.currentBoardView.penType = penButton.tag;
-    [(UIButton *)[projectVC.view viewWithTag:7] setImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
+    [(UIButton *)[projectVC.view viewWithTag:5] setBackgroundImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
     
     [self dismissViewControllerAnimated:NO completion:nil];
 }

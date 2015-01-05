@@ -86,20 +86,28 @@
     drawButtons = @[ @"undo",
                      @"redo",
                      @"clear",
+                     @"pen",
                      @"erase",
                      @"color",
-                     @"pen",
                      @"comment"
                     ];
     
-    for (int i = 0; i<drawButtons.count; i++) {
+    for (int i=0; i<drawButtons.count; i++) {
         
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        UIImage *buttonImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@.png",drawButtons[i]]];
-        if (i == 5) buttonImage = [UIImage imageNamed:@"penselected.png"];
-        button.frame = CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height);
-        [button setImage:buttonImage forState:UIControlStateNormal];
-        button.transform = CGAffineTransformMakeScale(.1, .1);
+        NSString *imageName;
+        if (i==5) imageName = @"black.png";
+        else imageName = [NSString stringWithFormat:@"%@.png",drawButtons[i]];
+        UIImage *buttonImage = [UIImage imageNamed:imageName];
+        if (i>2 && i!=5) {
+            UIImageView *selectedImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"selected.png"]];
+            selectedImage.frame = CGRectMake(-12.5, -12.5, 75, 75);
+            selectedImage.tag = 50;
+            [button addSubview:selectedImage];
+            if (i!=3) selectedImage.hidden = true;
+        }
+        button.frame = CGRectMake(0, 0, 50, 50);
+        [button setBackgroundImage:buttonImage forState:UIControlStateNormal];
         button.center = CGPointMake(272+i*80, 720);
         [button addTarget:self action:NSSelectorFromString([NSString stringWithFormat:@"%@Tapped:", drawButtons[i]]) forControlEvents:UIControlEventTouchUpInside];
         button.hidden = true;
@@ -129,8 +137,6 @@
         UIButton *button = (UIButton *)[self.view viewWithTag:i+2];
         button.hidden = true;
     }
-    
-    [(UIButton *)[self.view viewWithTag:7] setImage:[UIImage imageNamed:@"penselected.png"] forState:UIControlStateNormal];
 }
 
 -(void) showChat {
@@ -477,9 +483,9 @@
     [self.view sendSubviewToBack:self.boardNameLabel];
     [self.view sendSubviewToBack:self.addBoardButton];
     [self.view sendSubviewToBack:self.addBoardBackgroundImage];
-    [self.view sendSubviewToBack:self.avatarBackgroundImage];
     for (AvatarButton *avatar in self.avatars) [self.view sendSubviewToBack:avatar];
     [self.view sendSubviewToBack:self.addUserButton];
+    [self.view sendSubviewToBack:self.avatarBackgroundImage];
     [self.view sendSubviewToBack:self.backgroundImage];
     
     [UIView animateWithDuration:.25
@@ -654,6 +660,10 @@
     self.currentBoardView.commenting = false;
     commentsOpen = false;
     
+    self.currentBoardView.lineColorNumber = @0;
+    [(UIButton *)[self.view viewWithTag:7] setBackgroundImage:[UIImage imageNamed:@"black.png"] forState:UIControlStateNormal];
+    self.currentBoardView.penType = 0;
+    [(UIButton *)[self.view viewWithTag:5] setBackgroundImage:[UIImage imageNamed:@"pen.png"] forState:UIControlStateNormal];
     [self hideDrawMenu];
     
     UIButton *closeButton = (UIButton *)[self.view viewWithTag:100];
@@ -788,20 +798,21 @@
     self.currentBoardView.commenting = false;
     self.erasing = true;
     
-    UIButton *eraseButton = (UIButton *)[self.view viewWithTag:5];
-    CGPoint centerPoint = eraseButton.center;
-    UIImage *buttonImage = [UIImage imageNamed:@"eraseselected.png"];
-    
-    [eraseButton setImage:buttonImage forState:UIControlStateNormal];
-    eraseButton.frame = CGRectMake(0, 0, buttonImage.size.width*.1, buttonImage.size.height*.1);
-    eraseButton.center = centerPoint;
-
+    for (int i=5; i<8; i++) {
+        
+        if (i==7) continue;
+        
+        UIView *button = [self.view viewWithTag:i];
+        if (i==6) [button viewWithTag:50].hidden = false;
+        else [button viewWithTag:50].hidden = true;
+    }
 }
 
 -(void) colorTapped:(id)sender {
     
     self.currentBoardView.commenting = false;
     self.erasing = false;
+    
     
     UIButton *colorButton = (UIButton *)sender;
     
@@ -821,23 +832,45 @@
 -(void) penTapped:(id)sender {
     
     self.erasing = false;
+    self.currentBoardView.commenting = false;
     
-    UIButton *widthButton = (UIButton *)sender;
+    UIButton *penButton = (UIButton *)sender;
+
+    if (![penButton viewWithTag:50].hidden) {
+        
+        PenTypePopoverViewController *penTypePopover = [[PenTypePopoverViewController alloc] init];
+        
+        [penTypePopover setModalPresentationStyle:UIModalPresentationPopover];
+        
+        UIPopoverPresentationController *popover = [penTypePopover popoverPresentationController];
+        popover.sourceView = penButton;
+        popover.sourceRect = penButton.bounds;
+        popover.backgroundColor = nil;
+        popover.permittedArrowDirections = UIPopoverArrowDirectionDown;
+        
+        [self presentViewController:penTypePopover animated:NO completion:nil];
+    }
     
-    PenTypePopoverViewController *penTypePopover = [[PenTypePopoverViewController alloc] init];
-    
-    [penTypePopover setModalPresentationStyle:UIModalPresentationPopover];
-    
-    UIPopoverPresentationController *popover = [penTypePopover popoverPresentationController];
-    popover.sourceView = widthButton;
-    popover.sourceRect = widthButton.bounds;
-    popover.backgroundColor = nil;
-    popover.permittedArrowDirections = UIPopoverArrowDirectionDown;
-    
-    [self presentViewController:penTypePopover animated:NO completion:nil];
+    for (int i=5; i<=8; i++) {
+        
+        if (i==7) continue;
+        
+        UIView *button = [self.view viewWithTag:i];
+        if (i==5) [button viewWithTag:50].hidden = false;
+        else [button viewWithTag:50].hidden = true;
+    }
 }
 
 -(void) commentTapped:(id)sender {
+    
+    for (int i=5; i<=8; i++) {
+        
+        if (i==7) continue;
+        
+        UIView *button = [self.view viewWithTag:i];
+        if (i==8) [button viewWithTag:50].hidden = false;
+        else [button viewWithTag:50].hidden = true;
+    }
     
     self.currentBoardView.commenting = true;
 }
@@ -908,22 +941,6 @@
 }
 
 -(void)keyboardWillShow:(NSNotification *)notification {
-    
-//    if ([self.editBoardNameTextField isFirstResponder]) {
-//        
-//        self.boardNameEditButton.hidden = true;
-//        //self.boardNameLabel.hidden = true;
-//        
-//        [UIView beginAnimations:nil context:NULL];
-//        [UIView setAnimationDuration:[notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
-//        [UIView setAnimationCurve:[notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] doubleValue]];
-//        [UIView setAnimationBeginsFromCurrentState:YES];
-//        
-//        self.boardNameLabel.center = CGPointMake(self.boardNameLabel.center.x, 110);
-//        self.editBoardNameTextField.center = CGPointMake(self.editBoardNameTextField.center.x, 110);
-//        
-//        [UIView commitAnimations];
-//    }
     
     if ([self.chatTextField isFirstResponder]) {
     
@@ -1084,7 +1101,6 @@
         [UIView commitAnimations];
         
         [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
-        
     }
 }
 

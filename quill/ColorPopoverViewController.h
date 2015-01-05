@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ColorPopoverViewController : UIViewController
+@interface ColorPopoverViewController : UIViewController {
+    
+    NSArray *colors;
+}
 
 @end

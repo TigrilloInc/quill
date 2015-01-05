@@ -19,6 +19,12 @@
 		1230ABC719709E7B00EB2389 /* FirebaseHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1230ABC619709E7B00EB2389 /* FirebaseHelper.m */; };
 		1230ABCA1972093300EB2389 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1230ABC81972093300EB2389 /* Main_iPad.storyboard */; };
 		123D1FF71A52567C004D5743 /* newboardbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D1FF61A52567C004D5743 /* newboardbutton.png */; };
+		123D1FFF1A5385C2004D5743 /* selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D1FFE1A5385C2004D5743 /* selected.png */; };
+		123D20021A5A5028004D5743 /* color.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D20001A5A5027004D5743 /* color.png */; };
+		123D20061A5A5359004D5743 /* black.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D20041A5A5359004D5743 /* black.png */; };
+		123D20071A5A5359004D5743 /* blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D20051A5A5359004D5743 /* blue.png */; };
+		123D200A1A5A5365004D5743 /* green.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D20081A5A5365004D5743 /* green.png */; };
+		123D200B1A5A5365004D5743 /* red.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D20091A5A5365004D5743 /* red.png */; };
 		12423D241A02A611005F6D1A /* usercommenthighlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 12423D231A02A611005F6D1A /* usercommenthighlight.png */; };
 		1243AFB319FF0A900029B976 /* userhighlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 1243AFB219FF0A900029B976 /* userhighlight.png */; };
 		1243AFB919FF2CD20029B976 /* usercomment.png in Resources */ = {isa = PBXBuildFile; fileRef = 1243AFB819FF2CD20029B976 /* usercomment.png */; };
@@ -205,6 +211,12 @@
 		1230ABC619709E7B00EB2389 /* FirebaseHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FirebaseHelper.m; sourceTree = "<group>"; };
 		1230ABC91972093300EB2389 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
 		123D1FF61A52567C004D5743 /* newboardbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = newboardbutton.png; path = Resources/newboardbutton.png; sourceTree = "<group>"; };
+		123D1FFE1A5385C2004D5743 /* selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = selected.png; path = Resources/selected.png; sourceTree = "<group>"; };
+		123D20001A5A5027004D5743 /* color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = color.png; path = Resources/color.png; sourceTree = "<group>"; };
+		123D20041A5A5359004D5743 /* black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = black.png; path = Resources/black.png; sourceTree = "<group>"; };
+		123D20051A5A5359004D5743 /* blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blue.png; path = Resources/blue.png; sourceTree = "<group>"; };
+		123D20081A5A5365004D5743 /* green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = green.png; path = Resources/green.png; sourceTree = "<group>"; };
+		123D20091A5A5365004D5743 /* red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = red.png; path = Resources/red.png; sourceTree = "<group>"; };
 		12423D231A02A611005F6D1A /* usercommenthighlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = usercommenthighlight.png; path = Resources/usercommenthighlight.png; sourceTree = "<group>"; };
 		1243AFB219FF0A900029B976 /* userhighlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userhighlight.png; path = Resources/userhighlight.png; sourceTree = "<group>"; };
 		1243AFB819FF2CD20029B976 /* usercomment.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = usercomment.png; path = Resources/usercomment.png; sourceTree = "<group>"; };
@@ -503,7 +515,13 @@
 				12C4E4D21A3B781600DB0E23 /* board5.png */,
 				12C4E4D41A3B83A800DB0E23 /* board6.png */,
 				12C4E4D81A3B8AD400DB0E23 /* board7.png */,
+				123D20041A5A5359004D5743 /* black.png */,
+				123D20051A5A5359004D5743 /* blue.png */,
+				123D20081A5A5365004D5743 /* green.png */,
+				123D20091A5A5365004D5743 /* red.png */,
+				123D1FFE1A5385C2004D5743 /* selected.png */,
 				12860FD51A43CEE60074B452 /* clear.png */,
+				123D20001A5A5027004D5743 /* color.png */,
 				12AA5FB219EC44F400F6D552 /* drawing.png */,
 				12860FD31A43CECD0074B452 /* edit.png */,
 				12860FD11A43CEC50074B452 /* erase.png */,
@@ -746,9 +764,11 @@
 				12860FCA1A420AF20074B452 /* usercommenthighlight3.png in Resources */,
 				129E129519648A2C00ED9D42 /* Images.xcassets in Resources */,
 				12860FBE1A40C8CD0074B452 /* userbutton2.png in Resources */,
+				123D20021A5A5028004D5743 /* color.png in Resources */,
 				12860FC21A40C8CD0074B452 /* userbutton6.png in Resources */,
 				12D5DBA11A48F173003727AC /* pen.png in Resources */,
 				12860FDA1A43CFA30074B452 /* undo.png in Resources */,
+				123D1FFF1A5385C2004D5743 /* selected.png in Resources */,
 				12C4E4E51A3B9E2E00DB0E23 /* carouselfaderight.png in Resources */,
 				12860FD21A43CEC50074B452 /* erase.png in Resources */,
 				1225C432199B194F0061027B /* close.png in Resources */,
@@ -759,6 +779,7 @@
 				1243AFB319FF0A900029B976 /* userhighlight.png in Resources */,
 				1201F4981A4ABFAD00186C13 /* up.png in Resources */,
 				123D1FF71A52567C004D5743 /* newboardbutton.png in Resources */,
+				123D200A1A5A5365004D5743 /* green.png in Resources */,
 				12D5DBA81A4A7432003727AC /* plus2.png in Resources */,
 				12860F9B1A3E62870074B452 /* SourceSansPro-ExtraLight.otf in Resources */,
 				12860FD41A43CECD0074B452 /* edit.png in Resources */,
@@ -766,11 +787,13 @@
 				12860FC81A414FF70074B452 /* userhighlight2.png in Resources */,
 				12860FC41A41170E0074B452 /* usercomment2.png in Resources */,
 				12860FBF1A40C8CD0074B452 /* userbutton3.png in Resources */,
+				123D20061A5A5359004D5743 /* black.png in Resources */,
 				1230ABCA1972093300EB2389 /* Main_iPad.storyboard in Resources */,
 				12860FEA1A47AF800074B452 /* avatarbackground.png in Resources */,
 				12C4E4D51A3B83A800DB0E23 /* board6.png in Resources */,
 				12899BB21A1AEC3B00AF95BD /* carouselfade.png in Resources */,
 				12D5DBA61A48F20B003727AC /* highlighterselected.png in Resources */,
+				123D20071A5A5359004D5743 /* blue.png in Resources */,
 				129E128B19648A2C00ED9D42 /* Main_iPhone.storyboard in Resources */,
 				12D5DBA51A48F20B003727AC /* highlighter.png in Resources */,
 				1216D98D19A262A80095DBD8 /* chatfade.png in Resources */,
@@ -797,6 +820,7 @@
 				12860FC01A40C8CD0074B452 /* userbutton4.png in Resources */,
 				1225C434199D4AB30061027B /* board2.png in Resources */,
 				12860FD61A43CEE60074B452 /* clear.png in Resources */,
+				123D200B1A5A5365004D5743 /* red.png in Resources */,
 				12D5DBAA1A4A8619003727AC /* gear1.png in Resources */,
 				12D5DB971A48F167003727AC /* marker.png in Resources */,
 			);
