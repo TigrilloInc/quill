@@ -23,6 +23,8 @@
     UIButton *boardButton;
     UIImageView *carouselFadeLeft;
     UIImageView *carouselFadeRight;
+    UIImageView *editFadeLeft;
+    UIImageView *editFadeRight;
     
     MasterViewController *masterVC;
     

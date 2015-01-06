@@ -644,7 +644,7 @@
                                 </connections>
                             </textField>
                             <collectionView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="Gdt-c0-HVM">
-                                <rect key="frame" x="218" y="0.0" width="780" height="644"/>
+                                <rect key="frame" x="210" y="0.0" width="814" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="30" minimumInteritemSpacing="10" id="aGu-lt-bXA" userLabel="Draggable Collection View Flow Layout" customClass="DraggableCollectionViewFlowLayout">
@@ -738,7 +738,7 @@
                                 </connections>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" id="ibt-KP-kYl">
-                                <rect key="frame" x="590" y="585" width="55" height="28"/>
+                                <rect key="frame" x="592" y="585" width="51" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="up.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>

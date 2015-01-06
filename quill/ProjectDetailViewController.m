@@ -40,6 +40,14 @@
     [self.carousel addSubview:carouselFadeRight];
     carouselFadeRight.frame = CGRectMake(764, -5, 50, 400);
     
+    editFadeLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"editfadeleft.png"]];
+    [self.view addSubview:editFadeLeft];
+    editFadeLeft.frame = CGRectMake(210, 0, 21, 768);
+
+    editFadeRight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"editfaderight.png"]];
+    [self.view addSubview:editFadeRight];
+    editFadeRight.frame = CGRectMake(1003, 0, 21, 768);
+    
     self.projectNameLabel.font = [UIFont fontWithName:@"SourceSansPro-ExtraLight" size:48];
     self.editProjectNameTextField.frame = CGRectMake(self.projectNameLabel.frame.origin.x-8, self.projectNameLabel.frame.origin.y-3, 500, 65);
     self.chatTextField.font = [UIFont fontWithName:@"SourceSansPro-ExtraLight" size:20];
@@ -78,6 +86,7 @@
     UIButton *closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
     closeButton.frame = CGRectMake(10, 20, 60, 30);
     [closeButton setTitle:@"< Back" forState:UIControlStateNormal];
+    closeButton.titleLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:20];
     [closeButton addTarget:self action:@selector(closeTapped:) forControlEvents:UIControlEventTouchUpInside];
     closeButton.hidden = true;
     [self.view addSubview:closeButton];
@@ -150,8 +159,8 @@
 -(void) hideChat {
     
     [self.view sendSubviewToBack:self.chatOpenButton];
-    [self.view sendSubviewToBack:self.chatTable];
     [self.view sendSubviewToBack:self.chatFadeImage];
+    [self.view sendSubviewToBack:self.chatTable];
     [self.view sendSubviewToBack:self.chatView];
     [self.view sendSubviewToBack:self.backgroundImage];
 }
@@ -226,7 +235,12 @@
     if ([self.messages.lastObject isEqualToString:viewedAt] || (!self.activeCommentThreadID && self.chatViewed) || [self.viewedCommentThreadIDs containsObject:self.activeCommentThreadID]) {
         [self.messages removeObject:viewedAt];
         self.chatViewed = true;
-        if (![self.chatTextField isFirstResponder]) [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
+        if (![self.chatTextField isFirstResponder]) {
+            CGPoint chatCenter = self.chatOpenButton.center;
+            self.chatOpenButton.frame = CGRectMake(0, 0, 51, 28);
+            self.chatOpenButton.center = chatCenter;
+            [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
+        }
     }
     
     for (NSString *messageID in messageKeys) {
@@ -243,7 +257,12 @@
         for (int i=0; i<self.messages.count; i++) {
             
             if ([viewedAt isEqualToString:self.messages[i]]) { [self.messages replaceObjectAtIndex:i withObject:@"---------------------------------------<NEW MESSAGES>---------------------------------------"];
-                if (!self.chatViewed && ![self.chatTextField isFirstResponder]) [self.chatOpenButton setTitle:@"NEW MESSAGES!" forState:UIControlStateNormal];
+                if (!self.chatViewed && ![self.chatTextField isFirstResponder]) {
+                    CGPoint chatCenter = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y+3);
+                    self.chatOpenButton.frame = CGRectMake(0, 0, 150, 31);
+                    self.chatOpenButton.center = chatCenter;
+                    [self.chatOpenButton setImage:[UIImage imageNamed:@"newmessages.png"] forState:UIControlStateNormal];
+                }
             }
             
             else if ([date isEqualToString:self.messages[i]]) {
@@ -289,7 +308,7 @@
     self.avatarBackgroundImage = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:imageRef]];
     self.avatarBackgroundImage.transform = CGAffineTransformScale(self.avatarBackgroundImage.transform, .25, .25);
     self.avatarBackgroundImage.frame = CGRectMake(1024-self.avatarBackgroundImage.frame.size.width, 18, self.avatarBackgroundImage.frame.size.width, self.avatarBackgroundImage.frame.size.height);
-    [self.view insertSubview:self.avatarBackgroundImage aboveSubview:self.backgroundImage];
+    [self.view addSubview:self.avatarBackgroundImage];
     
     for (int i=0; i<userIDs.count; i++) {
         
@@ -499,12 +518,12 @@
                          
                          self.masterView.center = CGPointMake(-105, self.masterView.center.y);
                          
-                         self.chatOpenButton.center = CGPointMake(self.view.center.x, self.chatOpenButton.center.y);
                          self.chatTextField.frame = CGRectMake(51, 113, 877, 30);
                          self.chatView.frame = CGRectMake(0, 616, 1024, 152);
                          self.chatTable.frame = CGRectMake(0, 616, self.view.frame.size.width, 103);
-                         self.chatFadeImage.center = CGPointMake(self.view.center.x,self.chatFadeImage.center.y);
                          self.sendMessageButton.frame = CGRectMake(936, 112, 80, 30);
+                         self.chatOpenButton.center = CGPointMake(self.view.center.x, self.chatOpenButton.center.y);
+                         self.chatFadeImage.frame = CGRectMake(0, 607, 1024, 25);
                          
                          boardButton.alpha = 0;
                      }
@@ -516,6 +535,76 @@
                      }
      ];
 }
+
+-(void)closeTapped:(id)sender {
+    
+    boardButton.hidden = false;
+    self.currentBoardView.commenting = false;
+    commentsOpen = false;
+    
+    self.currentBoardView.lineColorNumber = @0;
+    [(UIButton *)[self.view viewWithTag:7] setBackgroundImage:[UIImage imageNamed:@"black.png"] forState:UIControlStateNormal];
+    self.currentBoardView.penType = 0;
+    [(UIButton *)[self.view viewWithTag:5] setBackgroundImage:[UIImage imageNamed:@"pen.png"] forState:UIControlStateNormal];
+    [self hideDrawMenu];
+    
+    UIButton *closeButton = (UIButton *)[self.view viewWithTag:100];
+    closeButton.hidden = true;
+    
+    self.activeBoardID = nil;
+    self.activeCommentThreadID = nil;
+    
+    [[FirebaseHelper sharedHelper] setInBoard:@"none"];
+    
+    [self.currentBoardView.activeUserIDs removeObject:[FirebaseHelper sharedHelper].uid];
+    [self.currentBoardView layoutAvatars];
+    self.currentBoardView.selectedAvatarUserID = nil;
+    [self drawBoard:self.currentBoardView];
+    self.currentBoardView = nil;
+    
+    [self.view bringSubviewToFront:self.masterView];
+    
+    if ([self.chatTextField isFirstResponder]) [self.chatTextField resignFirstResponder];
+    
+    [UIView animateWithDuration:.25
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionBeginFromCurrentState
+                     animations:^{
+                         
+                         float masterWidth = self.masterView.frame.size.width;
+                         
+                         self.chatTextField.frame = CGRectMake(51, 113, 667, 30);
+                         self.chatTable.frame = CGRectMake(masterWidth, 616, self.view.frame.size.width, 103);
+                         self.chatView.frame = CGRectMake(masterWidth, 616, 814, 152);
+                         self.sendMessageButton.frame = CGRectMake(726, 112, 80, 30);
+                         self.chatOpenButton.center = CGPointMake(self.chatView.center.x, 599);
+                         self.chatFadeImage.frame = CGRectMake(210, 607, 1024, 25);
+                         
+                         
+                         CGAffineTransform tr = CGAffineTransformScale(self.carousel.transform, .5, .5);
+                         self.carousel.transform = tr;
+                         self.carousel.center = CGPointMake(self.view.center.x+masterWidth/2, self.view.frame.size.height/2-56);
+                         
+                         self.masterView.center = CGPointMake(masterWidth/2, self.masterView.center.y);
+                         
+                         boardButton.alpha = 1;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         [self showChat];
+                         [self.view bringSubviewToFront:self.addBoardBackgroundImage];
+                         [self.view bringSubviewToFront:self.addBoardButton];
+                         
+                         [self updateDetails];
+                         
+                         [self.carousel setScrollEnabled:YES];
+                         
+                         [self.masterView.projectsTable reloadData];
+                         [self.masterView.projectsTable selectRowAtIndexPath:self.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
+                     }
+     ];
+}
+
 
 - (IBAction)editTapped:(id)sender {
     
@@ -529,6 +618,9 @@
     self.editBoardIDs = [self.boardIDs mutableCopy];
     
     self.editProjectNameTextField.placeholder = self.projectName;
+    
+    editFadeLeft.hidden = false;
+    editFadeRight.hidden = false;
     
     self.projectNameLabel.hidden = true;
     self.editButton.hidden = true;
@@ -631,6 +723,9 @@
 
 - (IBAction)cancelTapped:(id)sender {
     
+    editFadeLeft.hidden = true;
+    editFadeRight.hidden = true;
+    
     self.projectNameLabel.hidden = false;
     self.editButton.hidden = false;
     self.carousel.hidden = false;
@@ -652,75 +747,6 @@
     self.chatOpenButton.hidden = false;
     
     self.editing = false;
-}
-
--(void)closeTapped:(id)sender {
-    
-    boardButton.hidden = false;
-    self.currentBoardView.commenting = false;
-    commentsOpen = false;
-    
-    self.currentBoardView.lineColorNumber = @0;
-    [(UIButton *)[self.view viewWithTag:7] setBackgroundImage:[UIImage imageNamed:@"black.png"] forState:UIControlStateNormal];
-    self.currentBoardView.penType = 0;
-    [(UIButton *)[self.view viewWithTag:5] setBackgroundImage:[UIImage imageNamed:@"pen.png"] forState:UIControlStateNormal];
-    [self hideDrawMenu];
-    
-    UIButton *closeButton = (UIButton *)[self.view viewWithTag:100];
-    closeButton.hidden = true;
-
-    self.activeBoardID = nil;
-    self.activeCommentThreadID = nil;
-    
-    [[FirebaseHelper sharedHelper] setInBoard:@"none"];
-    
-    [self.currentBoardView.activeUserIDs removeObject:[FirebaseHelper sharedHelper].uid];
-    [self.currentBoardView layoutAvatars];
-    self.currentBoardView.selectedAvatarUserID = nil;
-    [self drawBoard:self.currentBoardView];
-    self.currentBoardView = nil;
-    
-    [self.view bringSubviewToFront:self.masterView];
-    
-    if ([self.chatTextField isFirstResponder]) [self.chatTextField resignFirstResponder];
-    
-    [UIView animateWithDuration:.25
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionBeginFromCurrentState
-                     animations:^{
-                        
-                        float masterWidth = self.masterView.frame.size.width;
-                         
-                        self.chatTextField.frame = CGRectMake(51, 113, 667, 30);
-                        self.chatTable.frame = CGRectMake(masterWidth, 616, self.view.frame.size.width, 103);
-                        self.chatView.frame = CGRectMake(masterWidth, 616, 814, 152);
-                        self.sendMessageButton.frame = CGRectMake(726, 112, 80, 30);
-                        self.chatOpenButton.center = CGPointMake(self.chatView.center.x, 602);
-                        self.chatFadeImage.frame = CGRectMake(210, 610, 1024, 25);
-                        
-                        
-                        CGAffineTransform tr = CGAffineTransformScale(self.carousel.transform, .5, .5);
-                        self.carousel.transform = tr;
-                        self.carousel.center = CGPointMake(self.view.center.x+masterWidth/2, self.view.frame.size.height/2-56);
-                        
-                        self.masterView.center = CGPointMake(masterWidth/2, self.masterView.center.y);
-
-                        boardButton.alpha = 1;
-                     }
-                     completion:^(BOOL finished) {
-                         
-                         [self showChat];
-                         [self.view bringSubviewToFront:self.addBoardBackgroundImage];
-                         [self.view bringSubviewToFront:self.addBoardButton];
-                         
-                         [self updateDetails];
-                         
-                         [self.carousel setScrollEnabled:YES];
-                         
-                         [self.masterView.projectsTable reloadData];
-                         [self.masterView.projectsTable selectRowAtIndexPath:self.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
-                     }
-     ];
 }
 
 - (void) undoTapped:(id)sender {
@@ -898,6 +924,10 @@
 
 - (IBAction)openChatTapped:(id)sender {
     
+    CGPoint chatCenter = self.chatOpenButton.center;
+    self.chatOpenButton.frame = CGRectMake(0, 0, 51, 28);
+    self.chatOpenButton.center = chatCenter;
+    
     if (!self.activeBoardID) {
         
         if ([self.chatTextField isFirstResponder]) [self.chatTextField resignFirstResponder];
@@ -947,7 +977,7 @@
         [self showChat];
         
         CGFloat height = [[notification.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
-        keyboardDiff = 522-height;
+        keyboardDiff = 517-height;
         
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:[notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
@@ -996,13 +1026,15 @@
             self.masterView.projectsTable.frame = projectsTableRect;
         }
         
+        self.chatOpenButton.frame = CGRectMake(592, 585, 51, 28);
+        
         if (!self.activeBoardID) {
             [self.chatOpenButton setImage:[UIImage imageNamed:@"down.png"] forState:UIControlStateNormal];
             self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y-(height+keyboardDiff));
         }
         else {
             [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
-            self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y-height);
+            self.chatOpenButton.center = CGPointMake(self.view.center.x, self.chatOpenButton.center.y-height);
         }
         
         [self.view bringSubviewToFront:self.chatOpenButton];
@@ -1020,26 +1052,10 @@
         self.boardNameEditButton.hidden = false;
     }
     
-//    if ([self.editBoardNameTextField isFirstResponder]) {
-//        
-//        self.boardNameEditButton.hidden = false;
-//        self.editBoardNameTextField.hidden = true;
-//        
-//        [UIView beginAnimations:nil context:NULL];
-//        [UIView setAnimationDuration:[notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
-//        [UIView setAnimationCurve:[notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] doubleValue]];
-//        [UIView setAnimationBeginsFromCurrentState:YES];
-//        
-//        self.boardNameLabel.center = CGPointMake(self.carousel.center.x, 540);
-//        self.editBoardNameTextField.center = CGPointMake(self.editBoardNameTextField.center.x, 540);
-//        
-//        [UIView commitAnimations];
-//    }
-    
     if ([self.chatTextField isFirstResponder]) {
     
         CGFloat height = [[notification.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
-        keyboardDiff = 522-height;
+        keyboardDiff = 517-height;
         
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:[notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
@@ -1091,7 +1107,7 @@
             self.masterView.projectsTable.frame = projectsTableRect;
         }
         
-        if (self.activeBoardID) self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y+height);
+        if (self.activeBoardID) self.chatOpenButton.center = CGPointMake(self.view.center.x, self.chatOpenButton.center.y+height);
         else self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y+(height+keyboardDiff));
         
         if (commentsOpen) [self openComments];
@@ -1100,6 +1116,9 @@
         
         [UIView commitAnimations];
         
+        CGPoint chatCenter = self.chatOpenButton.center;
+        self.chatOpenButton.frame = CGRectMake(0, 0, 51, 28);
+        self.chatOpenButton.center = chatCenter;
         [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
     }
 }
@@ -1306,6 +1325,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ChatTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ChatCell" forIndexPath:indexPath];
+    cell.textLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
     
     if (self.messages.count > indexPath.row) {
         

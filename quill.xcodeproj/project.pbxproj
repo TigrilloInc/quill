@@ -25,6 +25,9 @@
 		123D20071A5A5359004D5743 /* blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D20051A5A5359004D5743 /* blue.png */; };
 		123D200A1A5A5365004D5743 /* green.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D20081A5A5365004D5743 /* green.png */; };
 		123D200B1A5A5365004D5743 /* red.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D20091A5A5365004D5743 /* red.png */; };
+		123D200D1A5B2B6B004D5743 /* newmessages.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D200C1A5B2B6B004D5743 /* newmessages.png */; };
+		123D20101A5B4EDB004D5743 /* editfadeleft.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D200E1A5B4EDB004D5743 /* editfadeleft.png */; };
+		123D20111A5B4EDB004D5743 /* editfaderight.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D200F1A5B4EDB004D5743 /* editfaderight.png */; };
 		12423D241A02A611005F6D1A /* usercommenthighlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 12423D231A02A611005F6D1A /* usercommenthighlight.png */; };
 		1243AFB319FF0A900029B976 /* userhighlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 1243AFB219FF0A900029B976 /* userhighlight.png */; };
 		1243AFB919FF2CD20029B976 /* usercomment.png in Resources */ = {isa = PBXBuildFile; fileRef = 1243AFB819FF2CD20029B976 /* usercomment.png */; };
@@ -217,6 +220,9 @@
 		123D20051A5A5359004D5743 /* blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blue.png; path = Resources/blue.png; sourceTree = "<group>"; };
 		123D20081A5A5365004D5743 /* green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = green.png; path = Resources/green.png; sourceTree = "<group>"; };
 		123D20091A5A5365004D5743 /* red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = red.png; path = Resources/red.png; sourceTree = "<group>"; };
+		123D200C1A5B2B6B004D5743 /* newmessages.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = newmessages.png; path = Resources/newmessages.png; sourceTree = "<group>"; };
+		123D200E1A5B4EDB004D5743 /* editfadeleft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = editfadeleft.png; path = Resources/editfadeleft.png; sourceTree = "<group>"; };
+		123D200F1A5B4EDB004D5743 /* editfaderight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = editfaderight.png; path = Resources/editfaderight.png; sourceTree = "<group>"; };
 		12423D231A02A611005F6D1A /* usercommenthighlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = usercommenthighlight.png; path = Resources/usercommenthighlight.png; sourceTree = "<group>"; };
 		1243AFB219FF0A900029B976 /* userhighlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userhighlight.png; path = Resources/userhighlight.png; sourceTree = "<group>"; };
 		1243AFB819FF2CD20029B976 /* usercomment.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = usercomment.png; path = Resources/usercomment.png; sourceTree = "<group>"; };
@@ -531,6 +537,7 @@
 				12D5DB951A48F167003727AC /* marker.png */,
 				12D5DB961A48F167003727AC /* markerselected.png */,
 				123D1FF61A52567C004D5743 /* newboardbutton.png */,
+				123D200C1A5B2B6B004D5743 /* newmessages.png */,
 				12D5DBA31A48F20B003727AC /* highlighter.png */,
 				12D5DBA41A48F20B003727AC /* highlighterselected.png */,
 				12860FD91A43CFA30074B452 /* undo.png */,
@@ -565,6 +572,8 @@
 				12899BB11A1AEC3A00AF95BD /* carouselfade.png */,
 				12C4E4E21A3B9DA800DB0E23 /* carouselfadeleft.png */,
 				12C4E4E41A3B9E2E00DB0E23 /* carouselfaderight.png */,
+				123D200E1A5B4EDB004D5743 /* editfadeleft.png */,
+				123D200F1A5B4EDB004D5743 /* editfaderight.png */,
 				1225C431199B194F0061027B /* close.png */,
 				129E129419648A2C00ED9D42 /* Images.xcassets */,
 				12860F9A1A3E62870074B452 /* SourceSansPro-ExtraLight.otf */,
@@ -759,6 +768,7 @@
 			files = (
 				12C4E4C71A3B5B3100DB0E23 /* background.png in Resources */,
 				12860FDE1A44D21B0074B452 /* comment.png in Resources */,
+				123D200D1A5B2B6B004D5743 /* newmessages.png in Resources */,
 				12C4E4D71A3B88D400DB0E23 /* background2.png in Resources */,
 				12860F931A3E29410074B452 /* background5.png in Resources */,
 				12860FCA1A420AF20074B452 /* usercommenthighlight3.png in Resources */,
@@ -781,6 +791,7 @@
 				123D1FF71A52567C004D5743 /* newboardbutton.png in Resources */,
 				123D200A1A5A5365004D5743 /* green.png in Resources */,
 				12D5DBA81A4A7432003727AC /* plus2.png in Resources */,
+				123D20111A5B4EDB004D5743 /* editfaderight.png in Resources */,
 				12860F9B1A3E62870074B452 /* SourceSansPro-ExtraLight.otf in Resources */,
 				12860FD41A43CECD0074B452 /* edit.png in Resources */,
 				12C4E4CF1A3B6CD300DB0E23 /* board3.png in Resources */,
@@ -788,6 +799,7 @@
 				12860FC41A41170E0074B452 /* usercomment2.png in Resources */,
 				12860FBF1A40C8CD0074B452 /* userbutton3.png in Resources */,
 				123D20061A5A5359004D5743 /* black.png in Resources */,
+				123D20101A5B4EDB004D5743 /* editfadeleft.png in Resources */,
 				1230ABCA1972093300EB2389 /* Main_iPad.storyboard in Resources */,
 				12860FEA1A47AF800074B452 /* avatarbackground.png in Resources */,
 				12C4E4D51A3B83A800DB0E23 /* board6.png in Resources */,
