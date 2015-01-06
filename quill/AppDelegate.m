@@ -16,15 +16,27 @@
 
 @implementation AppDelegate
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+-(BOOL) application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [FirebaseHelper sharedHelper];
     [NSDate serverDate];
-    [self checkAuthStatus];
     
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
+    [self checkAuthStatus];
+    
     return YES;
+}
+
+void uncaughtExceptionHandler(NSException *exception) {
+    
+    if (![FirebaseHelper sharedHelper].uid) return;
+    
+    NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/", [FirebaseHelper sharedHelper].uid];
+    Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
+    [[userRef childByAppendingPath:@"inProject"] setValue:@"none"];
+    [[userRef childByAppendingPath:@"inBoard"] setValue:@"none"];
+    [[userRef childByAppendingPath:@"isDrawing"] setValue:@0];
 }
 
 -(void) checkAuthStatus {
@@ -56,13 +68,12 @@
             
             [FirebaseHelper sharedHelper].uid = user.uid;
             [[FirebaseHelper sharedHelper] observeLocalUser];
-            
         }
     }];
 }
 
 -(void) removeUserPresence {
-    
+     
     [[FirebaseHelper sharedHelper] setInBoard:@"none"];
     [[FirebaseHelper sharedHelper] setInProject:@"none"];
     NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@", [FirebaseHelper sharedHelper].uid];
@@ -74,15 +85,6 @@
     
     if ([FirebaseHelper sharedHelper].currentProjectID) [[FirebaseHelper sharedHelper] setInProject:[FirebaseHelper sharedHelper].currentProjectID];
     if ([FirebaseHelper sharedHelper].projectVC.activeBoardID) [[FirebaseHelper sharedHelper] setInBoard:[FirebaseHelper sharedHelper].projectVC.activeBoardID];
-}
-
-void uncaughtExceptionHandler(NSException *exception) {
-    
-    [[FirebaseHelper sharedHelper] setInBoard:@"none"];
-    [[FirebaseHelper sharedHelper] setInProject:@"none"];
-    NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@", [FirebaseHelper sharedHelper].uid];
-    Firebase *ref = [[Firebase alloc] initWithUrl:teamString];
-    [[ref childByAppendingPath:@"isDrawing"] setValue:@0];
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {

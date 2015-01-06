@@ -219,7 +219,7 @@ static FirebaseHelper *sharedHelper = nil;
     [self.projectVC.masterView.avatarButton addTarget:self.projectVC.masterView action:@selector(settingsTapped:) forControlEvents:UIControlEventTouchUpInside];
     self.projectVC.masterView.avatarButton.userID = self.uid;
     [self.projectVC.masterView.avatarButton generateIdenticon];
-    self.projectVC.masterView.avatarButton.frame = CGRectMake(-87, -25, self.projectVC.masterView.avatarButton.userImage.size.width, self.projectVC.masterView.avatarButton.userImage.size.height);
+    self.projectVC.masterView.avatarButton.frame = CGRectMake(-87, -16, self.projectVC.masterView.avatarButton.userImage.size.width, self.projectVC.masterView.avatarButton.userImage.size.height);
     self.projectVC.masterView.avatarButton.transform = CGAffineTransformMakeScale(.25, .25);
     [self.projectVC.masterView addSubview:self.projectVC.masterView.avatarButton];
     
@@ -641,6 +641,9 @@ static FirebaseHelper *sharedHelper = nil;
 }
 
 - (void) clearData {
+    
+    [self setInBoard:@"none"];
+    [self setInProject:@"none"];
     
     self.uid = nil;
     self.email = nil;

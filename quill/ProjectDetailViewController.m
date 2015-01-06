@@ -28,7 +28,7 @@
     self.chatTextField.delegate = self;
     self.editBoardNameTextField.delegate = self;
     self.carousel.delegate = self;
-    
+
     self.carousel.type = iCarouselTypeCoverFlow2;
     self.carousel.bounceDistance = 0.1f;
     
@@ -166,6 +166,9 @@
 }
 
 -(void) updateDetails {
+    
+    self.chatTextField.hidden = false;
+    self.sendMessageButton.hidden = false;
     
     self.projectNameLabel.text = self.projectName;
     [self.projectNameLabel sizeToFit];
@@ -583,7 +586,7 @@
                          
                          CGAffineTransform tr = CGAffineTransformScale(self.carousel.transform, .5, .5);
                          self.carousel.transform = tr;
-                         self.carousel.center = CGPointMake(self.view.center.x+masterWidth/2, self.view.frame.size.height/2-56);
+                         self.carousel.center = CGPointMake(self.view.center.x+masterWidth/2, self.view.frame.size.height/2-44);
                          
                          self.masterView.center = CGPointMake(masterWidth/2, self.masterView.center.y);
                          
@@ -1045,7 +1048,7 @@
 
 -(void)keyboardWillHide:(NSNotification *)notification {
 
-    if ([self.boardNameEditButton isFirstResponder]) {
+    if (!self.editing) {
         
         self.editBoardNameTextField.hidden = true;
         self.boardNameLabel.hidden = false;

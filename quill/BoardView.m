@@ -416,8 +416,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
             alpha = 1.0f;
         }
         if (penType == 3) {
-            lineWidth = 30.0f;
-            alpha = 0.5f;
+            lineWidth = 40.0f;
+            alpha = 0.4f;
         }
         
         int colorNumber = [[subpathValues objectForKey:@"color"] intValue];
@@ -436,8 +436,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
             else lineColor = [UIColor colorWithRed:1.0f green:0.0f blue:0.0f alpha:alpha];
         }
         if (colorNumber == 4) {
-            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(230.0f/255.0f) green:1.0f blue:(200.0f/255.0f) alpha:1.0f];
-            else lineColor = [UIColor colorWithRed:(60.0f/255.0f) green:1.0f blue:0.0f alpha:1.0f];
+            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(230.0f/255.0f) green:1.0f blue:(200.0f/255.0f) alpha:alpha];
+            else lineColor = [UIColor colorWithRed:(60.0f/255.0f) green:1.0f blue:0.0f alpha:alpha];
         }
         
         if ([subpathValues isEqual:self.paths.lastObject]) {

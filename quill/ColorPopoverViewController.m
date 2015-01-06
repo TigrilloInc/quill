@@ -45,7 +45,7 @@
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     projectVC.currentBoardView.lineColorNumber = @(colorButton.tag);
     
-    for (int i=5; i<8; i++) {
+    for (int i=5; i<=8; i++) {
         
         if (i==7) continue;
         
