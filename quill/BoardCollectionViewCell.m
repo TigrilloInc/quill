@@ -80,6 +80,8 @@
         [userOrderedKeys sortUsingDescriptors:@[descendingSorter]];
         
         BOOL undone = false;
+        BOOL cleared = false;
+        int undoCount = [[[undoDict objectForKey:uid] objectForKey:@"currentIndex"] intValue];
         
         for (int i=0; i<userOrderedKeys.count; i++) {
             
@@ -87,25 +89,26 @@
             
             if ([subpathValues respondsToSelector:@selector(objectForKey:)]){
                 
-                if (!undone) [subpathsToDraw setObject:subpathValues forKey:userOrderedKeys[i]];
+                if (!undone && !cleared) [subpathsToDraw setObject:subpathValues forKey:userOrderedKeys[i]];
                 
-            } else {
+            }
+            
+            else if ([[uidDict objectForKey:userOrderedKeys[i]] respondsToSelector:@selector(isEqualToString:)]) {
                 
-                int undoCount = [(NSNumber *)[[undoDict objectForKey:uid] objectForKey:@"currentIndex"] intValue];
-                
-                if (undoCount > 0) {
+                if ([[uidDict objectForKey:userOrderedKeys[i]] isEqualToString:@"penUp"]) {
                     
-                    undone = true;
-                    undoCount--;
-
-                    [[undoDict objectForKey:uid] setObject:@(undoCount) forKey:@"currentIndex"];
+                    [subpathsToDraw setObject:@{userOrderedKeys[i] : @"penUp"} forKey:userOrderedKeys[i]];
                     
-                } else {
+                    if (undoCount > 0) {
+                        
+                        undone = true;
+                        undoCount--;
+                    }
+                    else undone = false;
                     
-                    ////THERE'S SOME MISSING LOGIC THAT SHOULD GO HERE
-                    
-                    undone = false;
                 }
+                
+                else if ([[uidDict objectForKey:userOrderedKeys[i]] isEqualToString:@"clear"] && !undone) cleared = true;
             }
         }
     }

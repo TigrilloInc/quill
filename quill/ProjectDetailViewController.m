@@ -210,7 +210,7 @@
     
     UIButton *projectNameButton = (UIButton *)[self.view viewWithTag:101];
     [projectNameButton setTitle:self.projectName forState:UIControlStateNormal];
-    projectNameButton.frame = CGRectMake(29, 30, self.projectNameLabel.frame.size.width/2.27, 25.5);
+    projectNameButton.frame = CGRectMake(29, 30, self.projectNameLabel.frame.size.width/2.2, 25.5);
     
     [self updateMessages];
     [self.chatTable reloadData];
@@ -500,8 +500,8 @@
 
 - (IBAction)sendTapped:(id)sender {
     
-    [self textFieldShouldReturn:self.chatTextField];
-    
+    if (![self.chatTextField isFirstResponder]) [self.chatTextField becomeFirstResponder];
+    else [self textFieldShouldReturn:self.chatTextField];
 }
 
 -(void) boardTapped:(id)sender {
@@ -1443,6 +1443,11 @@
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (![self.chatTextField isFirstResponder]) [self.chatTextField becomeFirstResponder];
+        
+}
 
 #pragma mark -
 #pragma mark UICollectionView

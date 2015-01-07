@@ -76,7 +76,7 @@
         if ([emailTest evaluateWithObject:textField.text] == true) {
             
             NSString *token = [self generateToken];
-            NSString *tokenURL = [NSString stringWithFormat:@"chalk://%@", token];
+            NSString *tokenURL = [NSString stringWithFormat:@"quill://%@", token];
             [ref updateChildValues:@{ token : [FirebaseHelper sharedHelper].teamName}];
             
             MCOMessageBuilder *builder = [[MCOMessageBuilder alloc] init];
