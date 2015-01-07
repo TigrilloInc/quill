@@ -60,6 +60,7 @@
     for (NSString *projectID in [FirebaseHelper sharedHelper].visibleProjectIDs) {
         
         NSString *projectName = [(NSDictionary *)[[FirebaseHelper sharedHelper].projects objectForKey:projectID] objectForKey:@"name"];
+        
         [projectNames addObject:projectName];
     }
     

@@ -608,8 +608,8 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="WdP-0G-bAN"/>
                                 </connections>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="x1v-BJ-G8Z">
-                                <rect key="frame" x="314" y="691" width="166" height="40"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="x1v-BJ-G8Z">
+                                <rect key="frame" x="264" y="689" width="117" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Apply Changes">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -619,13 +619,23 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="PVv-oK-WDb">
-                                <rect key="frame" x="471" y="691" width="166" height="40"/>
+                                <rect key="frame" x="469" y="689" width="69" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Cancel">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="cancelTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="4VV-Ce-1ig"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="WPV-YU-0TX">
+                                <rect key="frame" x="865" y="689" width="110" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Delete Project">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="deleteProjectTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="Xhj-Xp-cxc"/>
                                 </connections>
                             </button>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Board Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Hbm-ZL-EhN">
@@ -737,7 +747,7 @@
                                     <outlet property="teamButton" destination="vkO-BG-XlA" id="cch-l4-Znj"/>
                                 </connections>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" id="ibt-KP-kYl">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" id="ibt-KP-kYl">
                                 <rect key="frame" x="592" y="585" width="51" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="up.png">
@@ -765,6 +775,7 @@
                         <outlet property="chatTable" destination="LFa-KC-mAX" id="c8w-RF-FKm"/>
                         <outlet property="chatTextField" destination="ljg-T3-hgU" id="7HR-iO-iaL"/>
                         <outlet property="chatView" destination="kDh-qU-DmB" id="T8e-RO-Tbs"/>
+                        <outlet property="deleteProjectButton" destination="WPV-YU-0TX" id="7ci-wy-2bd"/>
                         <outlet property="draggableCollectionView" destination="Gdt-c0-HVM" id="1zK-54-rIS"/>
                         <outlet property="editBoardNameTextField" destination="wFY-iY-Scc" id="i5M-9j-PZn"/>
                         <outlet property="editButton" destination="fby-KJ-NQF" id="6Mz-77-2Yo"/>
@@ -776,7 +787,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4fj-nZ-uv7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-7449" y="-3157"/>
+            <point key="canvasLocation" x="-7365" y="-2952"/>
         </scene>
     </scenes>
     <resources>

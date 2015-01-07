@@ -85,6 +85,7 @@
 @property (weak, nonatomic) IBOutlet UICollectionView *draggableCollectionView;
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 @property (weak, nonatomic) IBOutlet UIButton *applyChangesButton;
+@property (weak, nonatomic) IBOutlet UIButton *deleteProjectButton;
 
 -(void) updateDetails;
 -(void) drawBoard:(BoardView *)boardView;

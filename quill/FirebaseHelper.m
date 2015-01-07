@@ -155,6 +155,8 @@ static FirebaseHelper *sharedHelper = nil;
     
     [[ref childByAppendingPath:@"info"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
+        if (snapshot.value == [NSNull null]) return;
+        
         NSMutableDictionary *projectDict;
         
         if ([self.projects objectForKey:projectID]) projectDict = [self.projects objectForKey:projectID];
@@ -197,6 +199,8 @@ static FirebaseHelper *sharedHelper = nil;
     
     [[ref childByAppendingPath:@"updatedAt"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
+        if (snapshot.value == [NSNull null]) return;
+        
         [[self.projects objectForKey:projectID] setObject:snapshot.value forKey:@"updatedAt"];
         if (!self.firstLoad) {
             [self.projectVC.masterView.projectsTable reloadData];
@@ -230,11 +234,12 @@ static FirebaseHelper *sharedHelper = nil;
     self.projectVC.chatAvatar.frame = CGRectMake(-100,4, self.projectVC.chatAvatar.userImage.size.width, self.projectVC.chatAvatar.userImage.size.height);
     self.projectVC.chatAvatar.transform = CGAffineTransformMakeScale(.16, .16);
     [self.projectVC.chatView addSubview:self.projectVC.chatAvatar];
+    self.projectVC.chatAvatar.hidden = true;
     
     [self.projectVC.masterView.projectsTable reloadData];
     
-    [self.projectVC.masterView tableView:self.projectVC.masterView.projectsTable didSelectRowAtIndexPath:self.projectVC.masterView.defaultRow];
-    
+    if (self.projectVC.masterView.defaultRow.row != [FirebaseHelper sharedHelper].visibleProjectIDs.count)
+        [self.projectVC.masterView tableView:self.projectVC.masterView.projectsTable didSelectRowAtIndexPath:self.projectVC.masterView.defaultRow];
 }
 
 -(void) observeTeam {
@@ -270,6 +275,8 @@ static FirebaseHelper *sharedHelper = nil;
     }];
     
     [[ref childByAppendingPath:@"name"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+        
+        if (snapshot.value == [NSNull null]) return;
         
         [[self.boards objectForKey:boardID] setObject:snapshot.value forKey:@"name"];
 

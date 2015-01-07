@@ -84,13 +84,28 @@
 -(void) setUpDrawMenu {
     
     UIButton *closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    closeButton.frame = CGRectMake(10, 20, 60, 30);
-    [closeButton setTitle:@"< Back" forState:UIControlStateNormal];
-    closeButton.titleLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:20];
+    closeButton.frame = CGRectMake(15, 34, 10, 18);
+    [closeButton setImage:[UIImage imageNamed:@"back.png"] forState:UIControlStateNormal];
+    closeButton.adjustsImageWhenHighlighted = NO;
     [closeButton addTarget:self action:@selector(closeTapped:) forControlEvents:UIControlEventTouchUpInside];
     closeButton.hidden = true;
     [self.view addSubview:closeButton];
     closeButton.tag = 100;
+    
+    UIButton *projectNameButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    projectNameButton.titleLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:20];
+    [projectNameButton.titleLabel setTextColor:[UIColor blackColor]];
+    projectNameButton.adjustsImageWhenHighlighted = NO;
+    [projectNameButton addTarget:self action:@selector(closeTapped:) forControlEvents:UIControlEventTouchUpInside];
+    projectNameButton.hidden = true;
+    [self.view addSubview:projectNameButton];
+    projectNameButton.tag = 101;
+    
+    UILabel *boardNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+    boardNameLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
+    boardNameLabel.hidden = true;
+    [self.view addSubview:boardNameLabel];
+    boardNameLabel.tag = 102;
     
     drawButtons = @[ @"undo",
                      @"redo",
@@ -131,6 +146,14 @@
     closeButton.hidden = false;
     [self.view bringSubviewToFront:closeButton];
     
+    UIButton *projectNameButton = (UIButton *)[self.view viewWithTag:101];
+    projectNameButton.hidden = false;
+    [self.view bringSubviewToFront:projectNameButton];
+    
+    UILabel *boardNameLabel = (UILabel *)[self.view viewWithTag:102];
+    boardNameLabel.hidden = false;
+    [self.view bringSubviewToFront:boardNameLabel];
+    
     for (int i=0; i<drawButtons.count; i++) {
         
         UIButton *button = (UIButton *)[self.view viewWithTag:i+2];
@@ -140,6 +163,15 @@
 }
 
 -(void) hideDrawMenu {
+    
+    UIButton *closeButton = (UIButton *)[self.view viewWithTag:100];
+    closeButton.hidden = true;
+    
+    UIButton *projectNameButton = (UIButton *)[self.view viewWithTag:101];
+    projectNameButton.hidden = true;
+    
+    UILabel *boardNameLabel = (UILabel *)[self.view viewWithTag:102];
+    boardNameLabel.hidden = true;
     
     for (int i=0; i<=drawButtons.count; i++) {
         
@@ -169,16 +201,21 @@
     
     self.chatTextField.hidden = false;
     self.sendMessageButton.hidden = false;
+    self.chatAvatar.hidden = false;
+    self.chatOpenButton.hidden = false;
     
     self.projectNameLabel.text = self.projectName;
     [self.projectNameLabel sizeToFit];
     self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+280, self.projectNameLabel.center.y+5);
     
+    UIButton *projectNameButton = (UIButton *)[self.view viewWithTag:101];
+    [projectNameButton setTitle:self.projectName forState:UIControlStateNormal];
+    projectNameButton.frame = CGRectMake(29, 30, self.projectNameLabel.frame.size.width/2.27, 25.5);
+    
     [self updateMessages];
     [self.chatTable reloadData];
     [self.carousel reloadData];
     [self.draggableCollectionView reloadData];
-
     
     [self layoutAvatars];
     
@@ -306,6 +343,7 @@
     NSArray *userIDs = [self.roles.allKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     
     [self.avatarBackgroundImage removeFromSuperview];
+    self.avatarBackgroundImage.hidden = false;
     CGRect imageRect = CGRectMake(0, 0, 345+userIDs.count*(66*4), 280);
     CGImageRef imageRef = CGImageCreateWithImageInRect([[UIImage imageNamed:@"avatarbackground.png"] CGImage], imageRect);
     self.avatarBackgroundImage = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:imageRef]];
@@ -498,6 +536,14 @@
     [self.currentBoardView.activeUserIDs addObject:[FirebaseHelper sharedHelper].uid];
     [self.currentBoardView layoutAvatars];
     
+    NSString *boardName = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"name"];
+    NSString *labelString = [NSString stringWithFormat:@"|  %@", boardName];
+    UILabel *boardNameLabel = (UILabel *)[self.view viewWithTag:102];
+    boardNameLabel.text = labelString;
+    [boardNameLabel sizeToFit];
+    CGRect projectNameRect = [self.view viewWithTag:101].frame;
+    boardNameLabel.frame = CGRectMake(projectNameRect.size.width+36, projectNameRect.origin.y, boardNameLabel.frame.size.width, boardNameLabel.frame.size.height);
+    
     self.chatTextField.placeholder = @"Leave a comment...";
 
     [self hideChat];
@@ -638,6 +684,7 @@
     self.boardNameEditButton.hidden = true;
     self.applyChangesButton.hidden = false;
     self.cancelButton.hidden = false;
+    self.deleteProjectButton.hidden = false;
     
     self.chatFadeImage.hidden = true;
     self.chatView.hidden = true;
@@ -651,6 +698,7 @@
     
     [self.view bringSubviewToFront:self.applyChangesButton];
     [self.view bringSubviewToFront:self.cancelButton];
+    [self.view bringSubviewToFront:self.deleteProjectButton];
 }
 
 - (IBAction)boardNameEditTapped:(id)sender {
@@ -687,7 +735,7 @@
     [self cancelTapped:nil];
     
     NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info", [FirebaseHelper sharedHelper].currentProjectID];
-    Firebase *ref = [[Firebase alloc] initWithUrl:projectString];
+    Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
     
     if (self.editProjectNameTextField.text.length > 0) {
         
@@ -699,7 +747,7 @@
         [self.masterView updateProjects];        
         self.masterView.defaultRow = [NSIndexPath indexPathForRow:[self.masterView.orderedProjectNames indexOfObject:newName] inSection:0];
         
-        [[ref childByAppendingPath:@"name"] setValue:newName];
+        [[projectRef childByAppendingPath:@"name"] setValue:newName];
         self.editProjectNameTextField.text = nil;
     }
     
@@ -707,14 +755,24 @@
         
         NSMutableDictionary *boardsDict = [NSMutableDictionary dictionary];
         
-        for (int i=0; i<self.editBoardIDs.count; i++) {
-            
-            [boardsDict setObject:self.editBoardIDs[i] forKey:[@(i) stringValue]];
-        }
+        for (int i=0; i<self.editBoardIDs.count; i++) [boardsDict setObject:self.editBoardIDs[i] forKey:[@(i) stringValue]];
         
-        [[ref childByAppendingPath:@"boards"] setValue:boardsDict];
+        [[projectRef childByAppendingPath:@"boards"] setValue:boardsDict];
         
         [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] setObject:boardsDict forKey:@"boards"];
+        
+        for (NSString *boardID in self.boardIDs) {
+            
+            if (![self.editBoardIDs containsObject:boardID]) {
+                
+                NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
+                Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
+                
+                [boardRef removeValue];
+                
+                [[FirebaseHelper sharedHelper].boards removeObjectForKey:boardID];
+            }
+        }
         
         self.boardIDs = [self.editBoardIDs mutableCopy];
         
@@ -742,6 +800,7 @@
     self.editBoardNameTextField.hidden = true;
     self.applyChangesButton.hidden = true;
     self.cancelButton.hidden = true;
+    self.deleteProjectButton.hidden = true;
     
     self.chatFadeImage.hidden = false;
     self.chatView.hidden = false;
@@ -750,6 +809,52 @@
     self.chatOpenButton.hidden = false;
     
     self.editing = false;
+}
+
+- (IBAction)deleteProjectTapped:(id)sender {
+    
+    [[FirebaseHelper sharedHelper].projects removeObjectForKey:[FirebaseHelper sharedHelper].currentProjectID];
+    [[FirebaseHelper sharedHelper].visibleProjectIDs removeObject:[FirebaseHelper sharedHelper].currentProjectID];
+    [[[FirebaseHelper sharedHelper].team objectForKey:@"projects"] removeObjectForKey:[FirebaseHelper sharedHelper].currentProjectID];
+    
+    NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/", [FirebaseHelper sharedHelper].currentProjectID];
+    Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
+    [projectRef removeValue];
+    
+    NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@/projects/%@", [FirebaseHelper sharedHelper].teamName, [FirebaseHelper sharedHelper].currentProjectID];
+    Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
+    [teamRef removeValue];
+    
+    for (NSString *boardID in self.boardIDs) {
+        
+        [[FirebaseHelper sharedHelper].boards removeObjectForKey:boardID];
+        [[FirebaseHelper sharedHelper].loadedBoardIDs removeObject:boardID];
+        
+        NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
+        Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
+        [boardRef removeValue];
+    }
+    
+    NSIndexPath *mostRecent = [[FirebaseHelper sharedHelper] getLastViewedProjectIndexPath];
+    [self.masterView.projectsTable reloadData];
+    [self.masterView tableView:self.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
+    
+    if ([FirebaseHelper sharedHelper].visibleProjectIDs.count == 0) {
+        
+        self.draggableCollectionView.hidden = true;
+        self.applyChangesButton.hidden = true;
+        self.cancelButton.hidden = true;
+        self.deleteProjectButton.hidden = true;
+        self.editProjectNameTextField.hidden = true;
+        
+        for (AvatarButton *avatar in self.avatars) avatar.hidden = true;
+        self.avatarBackgroundImage.hidden = true;
+        self.addUserButton.hidden = true;
+        
+        self.chatView.hidden = false;
+        self.sendMessageButton.hidden = true;
+        self.chatFadeImage.hidden = false;
+    }
 }
 
 - (void) undoTapped:(id)sender {
@@ -827,7 +932,7 @@
     self.currentBoardView.commenting = false;
     self.erasing = true;
     
-    for (int i=5; i<8; i++) {
+    for (int i=5; i<=8; i++) {
         
         if (i==7) continue;
         
