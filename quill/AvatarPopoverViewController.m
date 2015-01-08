@@ -80,7 +80,7 @@
             UIButton *removeButton = [UIButton buttonWithType:UIButtonTypeSystem];
             [removeButton setBackgroundImage:[UIImage imageNamed:@"remove.png"] forState:UIControlStateNormal];
             removeButton.alpha = .5;
-            [removeButton addTarget:self action:@selector(setRole:) forControlEvents:UIControlEventTouchUpInside];
+            [removeButton addTarget:self action:@selector(removeUser) forControlEvents:UIControlEventTouchUpInside];
             removeButton.frame = CGRectMake(20, 25+(40*buttonCount), 180, 20);
             [self.view addSubview:removeButton];
         }
@@ -92,7 +92,7 @@
         UIButton *leaveButton = [UIButton buttonWithType:UIButtonTypeSystem];
         [leaveButton setBackgroundImage:[UIImage imageNamed:@"leave.png"] forState:UIControlStateNormal];
         leaveButton.alpha = .5;
-        [leaveButton addTarget:self action:@selector(setRole:) forControlEvents:UIControlEventTouchUpInside];
+        [leaveButton addTarget:self action:@selector(removeUser) forControlEvents:UIControlEventTouchUpInside];
         leaveButton.frame = CGRectMake(20, 25+(40*buttonCount), 126, 20);
         [self.view addSubview:leaveButton];
     }
@@ -115,11 +115,25 @@
 
 -(void) removeUser {
     
+    [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"roles"] removeObjectForKey:self.userID];
+    
     NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].currentProjectID, self.userID];
     Firebase *ref = [[Firebase alloc] initWithUrl:projectString];
-    
     [ref removeValue];
     
+    ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    
+    if ([self.userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
+    
+        [[FirebaseHelper sharedHelper].projects removeObjectForKey:[FirebaseHelper sharedHelper].currentProjectID];
+        [[FirebaseHelper sharedHelper].visibleProjectIDs removeObject:[FirebaseHelper sharedHelper].currentProjectID];
+        
+        NSIndexPath *mostRecent = [[FirebaseHelper sharedHelper] getLastViewedProjectIndexPath];
+        [projectVC.masterView.projectsTable reloadData];
+        [projectVC.masterView tableView:projectVC.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
+    }
+    else [projectVC layoutAvatars];
+        
     [self dismissViewControllerAnimated:NO completion:nil];
 }
 
