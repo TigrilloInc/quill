@@ -317,12 +317,9 @@ static FirebaseHelper *sharedHelper = nil;
     NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", boardID, userID];
     Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
     
-    [ref observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot){
-
+    [ref observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot) {
+        
         NSMutableDictionary *subpathsDict = [[[self.boards objectForKey:boardID] objectForKey:@"subpaths"] objectForKey:userID];
-        [subpathsDict setObject:snapshot.value forKey:snapshot.name];
-
-        [[[[self.boards objectForKey:boardID] objectForKey:@"undo"] objectForKey:userID] setObject:snapshot.name forKey:@"currentIndexDate"];
         
         NSMutableArray *orderedKeys = [NSMutableArray arrayWithArray:subpathsDict.allKeys];
         NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
@@ -336,7 +333,13 @@ static FirebaseHelper *sharedHelper = nil;
         NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
         NSArray *dateStrings = [[[[self.boards objectForKey:boardID] objectForKey:@"subpaths"] objectForKey:userID] allKeys];
         
+        NSLog(@"CONTAINS BOARD ID %@? %i", boardID, [boardIDs containsObject:boardID]);
+        NSLog(@"CONTAINS DATE %@? %i", snapshot.name, [dateStrings containsObject:snapshot.name]);
+        
         if ([boardIDs containsObject:boardID] && ![dateStrings containsObject:snapshot.name]) {
+            
+            [subpathsDict setObject:snapshot.value forKey:snapshot.name];
+            [[[[self.boards objectForKey:boardID] objectForKey:@"undo"] objectForKey:userID] setObject:snapshot.name forKey:@"currentIndexDate"];
             
             NSInteger boardIndex = [boardIDs indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
