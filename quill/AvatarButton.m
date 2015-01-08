@@ -33,7 +33,7 @@
     return self;
 }
 
-- (void) generateIdenticon {
+- (void) generateIdenticonWithShadow:(BOOL)shadow {
     
     NSMutableArray *tileValues = [NSMutableArray array];
     
@@ -50,7 +50,6 @@
                              ];
     int userImageNum = 0;
     CIColor *tileColor;
-    
     
     for (int i=0; i<17; i++) {
         
@@ -123,11 +122,11 @@
         }
         if (i==15) {
             userImageNum = hexValue%6;
-            NSString *imageString = [NSString stringWithFormat:@"userbutton%i.png", userImageNum+1];
+            NSString *imageString;
+            if (shadow) imageString = [NSString stringWithFormat:@"userbutton%ishadow.png", userImageNum+1];
+            else imageString = [NSString stringWithFormat:@"userbutton%i.png", userImageNum+1];
             self.userImage = [UIImage imageNamed:imageString];
             [self setImage:self.userImage forState:UIControlStateNormal];
-            
-            NSLog(@"imageString is %@", imageString);
         }
         if (i==16) {
             if (userImageNum == hexValue%6) {
@@ -144,9 +143,7 @@
     identicon.tileColor = tileColor;
     [self addSubview:identicon];
     identicon.center = CGPointMake(self.userImage.size.width/2,115);
-    
-    NSLog(@"identicon is %@", identicon);
-    
+
     [self bringSubviewToFront:self.drawingImage];
 }
 

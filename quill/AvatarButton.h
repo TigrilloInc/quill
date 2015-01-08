@@ -17,6 +17,6 @@
 @property (strong, nonatomic) UIImageView *drawingImage;
 @property (strong, nonatomic) UIImageView *highlightedImage;
 
--(void) generateIdenticon;
+-(void) generateIdenticonWithShadow:(BOOL)shadow;
 
 @end

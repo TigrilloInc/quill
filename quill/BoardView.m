@@ -67,6 +67,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
 - (void) layoutAvatars {
     
     for (AvatarButton *avatar in self.avatarButtons) [avatar removeFromSuperview];
+    [self.avatarBackgroundImage removeFromSuperview];
     
     self.avatarButtons = [NSMutableArray array];
     
@@ -83,8 +84,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     }
     
     NSArray *userIDs = [unsortedUserIDs sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    
-    [self.avatarBackgroundImage removeFromSuperview];
 
     if (userIDs.count > 0) {
         
@@ -102,7 +101,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
         avatar.userID = userIDs[i];
-        [avatar generateIdenticon];
+        [avatar generateIdenticonWithShadow:true];
         avatar.frame = CGRectMake(-70.5, -12+(i-1)*66, avatar.userImage.size.width, avatar.userImage.size.height);
         CGAffineTransform tr = CGAffineTransformScale(avatar.transform, .25, .25);
         tr = CGAffineTransformRotate(tr, -M_PI_2);
@@ -331,7 +330,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     if ([projectVC.chatTextField isFirstResponder]) {
         
-        [self hideChat];
+        [projectVC.chatTextField resignFirstResponder];
         return;
     }
     
@@ -486,7 +485,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 
 -(void) hideChat {
     
-    [projectVC.chatTextField resignFirstResponder];
     [projectVC.view bringSubviewToFront:projectVC.carousel];
     [projectVC showDrawMenu];
     projectVC.carouselOffset = 0;

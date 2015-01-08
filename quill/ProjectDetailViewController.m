@@ -197,6 +197,14 @@
     [self.view sendSubviewToBack:self.backgroundImage];
 }
 
+-(void) hideAvatars {
+    
+    for (AvatarButton *avatar in self.avatars) [self.view sendSubviewToBack:avatar];
+    [self.view sendSubviewToBack:self.addUserButton];
+    [self.view sendSubviewToBack:self.avatarBackgroundImage];
+    [self.view sendSubviewToBack:self.backgroundImage];
+}
+
 -(void) updateDetails {
     
     self.chatTextField.hidden = false;
@@ -355,7 +363,7 @@
         
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
         avatar.userID = userIDs[i];
-        [avatar generateIdenticon];
+        [avatar generateIdenticonWithShadow:true];
         avatar.frame = CGRectMake(850-(i*66), -70, avatar.userImage.size.width, avatar.userImage.size.height);
         [avatar addTarget:self action:@selector(avatarTapped:) forControlEvents:UIControlEventTouchUpInside];
         avatar.transform = CGAffineTransformScale(avatar.transform, .25, .25);
@@ -375,6 +383,8 @@
     self.addUserButton.frame = CGRectMake(858-(userIDs.count*66), -63, plusImage.size.width, plusImage.size.height);
     self.addUserButton.transform = CGAffineTransformScale(self.addUserButton.transform, .25, .25);
     [self.view insertSubview:self.addUserButton aboveSubview:self.avatarBackgroundImage];
+    
+    if (self.activeBoardID) [self hideAvatars];
 }
 
 -(void) createBoard {
@@ -545,14 +555,10 @@
     boardNameLabel.frame = CGRectMake(projectNameRect.size.width+36, projectNameRect.origin.y+5.5, boardNameLabel.frame.size.width, boardNameLabel.frame.size.height);
     
     [self hideChat];
-    
-    [self.view sendSubviewToBack:self.boardNameLabel];
+    //    [self.view sendSubviewToBack:self.boardNameLabel];
     [self.view sendSubviewToBack:self.addBoardButton];
     [self.view sendSubviewToBack:self.addBoardBackgroundImage];
-    for (AvatarButton *avatar in self.avatars) [self.view sendSubviewToBack:avatar];
-    [self.view sendSubviewToBack:self.addUserButton];
-    [self.view sendSubviewToBack:self.avatarBackgroundImage];
-    [self.view sendSubviewToBack:self.backgroundImage];
+    [self hideAvatars];
     
     [UIView animateWithDuration:.25
                           delay:0.0
@@ -1159,7 +1165,7 @@
     }
     
     if ([self.chatTextField isFirstResponder]) {
-    
+        
         CGFloat height = [[notification.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
         keyboardDiff = 517-height;
         
@@ -1226,6 +1232,8 @@
         self.chatOpenButton.frame = CGRectMake(0, 0, 51, 28);
         self.chatOpenButton.center = chatCenter;
         [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
+        
+        if (self.activeBoardID) [self.currentBoardView hideChat];
     }
 }
 

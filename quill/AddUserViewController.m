@@ -156,7 +156,7 @@
     
     AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
     avatar.userID = userID;
-    [avatar generateIdenticon];
+    [avatar generateIdenticonWithShadow:false];
     avatar.frame = CGRectMake(-95, -90, avatar.userImage.size.width, avatar.userImage.size.height);
     avatar.transform = CGAffineTransformMakeScale(.25, .25);
     avatar.tag = 1;

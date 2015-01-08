@@ -24,8 +24,6 @@
     
     int roleNum = [[[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"roles"] objectForKey:self.userID] intValue];
     
-    NSLog(@"roleNum is %@", [[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID]);
-    
     NSString *roleString;
     
     if (roleNum == 2) roleString = @"(Owner)";
