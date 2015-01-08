@@ -56,7 +56,7 @@
         
         NSString *subString = [idString substringWithRange:NSMakeRange(i, 1)];
         
-        int hexValue;
+        NSInteger hexValue;
         
         if ([subString isEqualToString:@"a"]) hexValue = 10;
         else if ([subString isEqualToString:@"b"]) hexValue = 11;
@@ -126,6 +126,8 @@
             NSString *imageString = [NSString stringWithFormat:@"userbutton%i.png", userImageNum+1];
             self.userImage = [UIImage imageNamed:imageString];
             [self setImage:self.userImage forState:UIControlStateNormal];
+            
+            NSLog(@"imageString is %@", imageString);
         }
         if (i==16) {
             if (userImageNum == hexValue%6) {
@@ -142,6 +144,8 @@
     identicon.tileColor = tileColor;
     [self addSubview:identicon];
     identicon.center = CGPointMake(self.userImage.size.width/2,115);
+    
+    NSLog(@"identicon is %@", identicon);
     
     [self bringSubviewToFront:self.drawingImage];
 }

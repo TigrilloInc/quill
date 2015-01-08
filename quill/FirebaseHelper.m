@@ -106,7 +106,7 @@ static FirebaseHelper *sharedHelper = nil;
         
         if ([currentProjectBoardIDs containsObject:boardID]){
             
-            int boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
+            NSInteger boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
             
             if (inBoard && ![boardView.activeUserIDs containsObject:userID]) [boardView.activeUserIDs addObject:userID];
@@ -118,7 +118,7 @@ static FirebaseHelper *sharedHelper = nil;
             
             if ([userIDs containsObject:userID]) {
                 
-                int avatarIndex = [userIDs indexOfObject:userID];
+                NSInteger avatarIndex = [userIDs indexOfObject:userID];
                 AvatarButton *avatar = (AvatarButton *)boardView.avatarButtons[avatarIndex];
                 
                 if ([[newUserDict objectForKey:@"isDrawing"] integerValue] > 0 ) avatar.drawingImage.hidden = false;
@@ -338,7 +338,7 @@ static FirebaseHelper *sharedHelper = nil;
         
         if ([boardIDs containsObject:boardID] && ![dateStrings containsObject:snapshot.name]) {
             
-            int boardIndex = [boardIDs indexOfObject:boardID];
+            NSInteger boardIndex = [boardIDs indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
 
             if([snapshot.value respondsToSelector:@selector(objectForKey:)]) [boardView drawSubpath:snapshot.value];
@@ -354,6 +354,8 @@ static FirebaseHelper *sharedHelper = nil;
     
     [ref observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
+        if (snapshot.value == [NSNull null]) return;
+        
         NSMutableDictionary *oldSubpathsDict = [[[self.boards objectForKey:boardID] objectForKey:@"subpaths"] objectForKey:userID];
         NSMutableArray *oldOrderedKeys = [NSMutableArray arrayWithArray:oldSubpathsDict.allKeys];
         NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
@@ -367,7 +369,7 @@ static FirebaseHelper *sharedHelper = nil;
         
         [undoDict setObject:[snapshot.value mutableCopy] forKey:userID];
         
-        int newIndex = [[snapshot.value objectForKey:@"currentIndex"] integerValue];
+        NSInteger newIndex = [[snapshot.value objectForKey:@"currentIndex"] integerValue];
         double newIndexDate = [[snapshot.value objectForKey:@"currentIndexDate"] doubleValue];
         
         NSMutableDictionary *newSubpathsDict = [[[self.boards objectForKey:boardID] objectForKey:@"subpaths"] objectForKey:userID];
@@ -642,7 +644,7 @@ static FirebaseHelper *sharedHelper = nil;
     }
     
     NSArray *orderedProjectNames = [projectNames sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    int projectIndex = [orderedProjectNames indexOfObject:defaultProjectName];
+    NSInteger projectIndex = [orderedProjectNames indexOfObject:defaultProjectName];
 
     return [NSIndexPath indexPathForItem:projectIndex inSection:0];
 }

@@ -66,7 +66,7 @@
 {
     [super viewWillAppear:animated];
 
-    self.chatTextField.placeholder = @"Send a message...";
+    self.chatTextField.placeholder = @"Leave a comment...";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     
@@ -95,9 +95,9 @@
     UIButton *projectNameButton = [UIButton buttonWithType:UIButtonTypeSystem];
     projectNameButton.titleLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:20];
     [projectNameButton.titleLabel setTextColor:[UIColor blackColor]];
-    projectNameButton.adjustsImageWhenHighlighted = NO;
     [projectNameButton addTarget:self action:@selector(closeTapped:) forControlEvents:UIControlEventTouchUpInside];
     projectNameButton.hidden = true;
+    projectNameButton.frame = CGRectMake(30, 24, 0, 0);
     [self.view addSubview:projectNameButton];
     projectNameButton.tag = 101;
     
@@ -210,7 +210,7 @@
     
     UIButton *projectNameButton = (UIButton *)[self.view viewWithTag:101];
     [projectNameButton setTitle:self.projectName forState:UIControlStateNormal];
-    projectNameButton.frame = CGRectMake(29, 30, self.projectNameLabel.frame.size.width/2.2, 25.5);
+    [projectNameButton sizeToFit];
     
     [self updateMessages];
     [self.chatTable reloadData];
@@ -542,10 +542,8 @@
     boardNameLabel.text = labelString;
     [boardNameLabel sizeToFit];
     CGRect projectNameRect = [self.view viewWithTag:101].frame;
-    boardNameLabel.frame = CGRectMake(projectNameRect.size.width+36, projectNameRect.origin.y, boardNameLabel.frame.size.width, boardNameLabel.frame.size.height);
+    boardNameLabel.frame = CGRectMake(projectNameRect.size.width+36, projectNameRect.origin.y+5.5, boardNameLabel.frame.size.width, boardNameLabel.frame.size.height);
     
-    self.chatTextField.placeholder = @"Leave a comment...";
-
     [self hideChat];
     
     [self.view sendSubviewToBack:self.boardNameLabel];
@@ -732,8 +730,6 @@
 
 -(IBAction) applyChangesTapped:(id)sender {
     
-    [self cancelTapped:nil];
-    
     NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info", [FirebaseHelper sharedHelper].currentProjectID];
     Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
     
@@ -780,6 +776,8 @@
         
         [self.carousel reloadData];
     }
+    
+    [self cancelTapped:nil];
 }
 
 - (IBAction)cancelTapped:(id)sender {
@@ -1351,6 +1349,7 @@
     }
     if ([self.editBoardNameTextField isFirstResponder]) {
         [self.editBoardNameTextField resignFirstResponder];
+        self.editBoardNameTextField.text = nil;
     }
     if ([self.editProjectNameTextField isFirstResponder]) {
         [self.editProjectNameTextField resignFirstResponder];
@@ -1405,6 +1404,8 @@
         
         [self cancelTapped:nil];
     }
+    
+    if ([textField isEqual:self.editProjectNameTextField]) [textField resignFirstResponder];
     
     return NO;
 }

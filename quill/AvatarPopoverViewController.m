@@ -28,16 +28,21 @@
     
     NSString *roleString;
     
-    if (roleNum == 2) roleString = @"Owner";
-    else if (roleNum == 1) roleString = @"Collaborator";
-    else roleString = @"Viewer";
-    
-    NSString *titleString = [NSString stringWithFormat:@"%@ (%@)", userName, roleString];
-    
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 20, 100, 20)];
-    [titleLabel setText:titleString];
+    if (roleNum == 2) roleString = @"(Owner)";
+    else if (roleNum == 1) roleString = @"(Collaborator)";
+    else roleString = @"(Viewer)";
+
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 20, 0, 0)];
+    titleLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
+    [titleLabel setText:userName];
     [titleLabel sizeToFit];
     [self.view addSubview:titleLabel];
+    
+    UILabel *roleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabel.frame.size.width+25, 20, 0, 0)];
+    roleLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
+    [roleLabel setText:roleString];
+    [roleLabel sizeToFit];
+    [self.view addSubview:roleLabel];
     
     int buttonCount = 0;
     
@@ -48,11 +53,11 @@
             buttonCount++;
             
             UIButton *collabButton = [UIButton buttonWithType:UIButtonTypeSystem];
-            [collabButton setTitle:@"Make Collaborator" forState:UIControlStateNormal];
+            [collabButton setBackgroundImage:[UIImage imageNamed:@"collaborator.png"] forState:UIControlStateNormal];
             collabButton.tag = 1;
+            collabButton.alpha = .5;
             [collabButton addTarget:self action:@selector(setRole:) forControlEvents:UIControlEventTouchUpInside];
-            [collabButton sizeToFit];
-            collabButton.frame = CGRectMake(40, 20+(40*buttonCount), collabButton.frame.size.width, collabButton.frame.size.height);
+            collabButton.frame = CGRectMake(20, 25+(40*buttonCount), 160, 20);
             [self.view addSubview:collabButton];
             
         }
@@ -60,13 +65,13 @@
             
             buttonCount++;
             
-            UIButton *collabButton = [UIButton buttonWithType:UIButtonTypeSystem];
-            [collabButton setTitle:@"Make Viewer" forState:UIControlStateNormal];
-            collabButton.tag = 0;
-            [collabButton addTarget:self action:@selector(setRole:) forControlEvents:UIControlEventTouchUpInside];
-            [collabButton sizeToFit];
-            collabButton.frame = CGRectMake(40, 20+(40*buttonCount), collabButton.frame.size.width, collabButton.frame.size.height);
-            [self.view addSubview:collabButton];
+            UIButton *viewerButton = [UIButton buttonWithType:UIButtonTypeSystem];
+            [viewerButton setBackgroundImage:[UIImage imageNamed:@"viewer.png"] forState:UIControlStateNormal];
+            viewerButton.tag = 0;
+            viewerButton.alpha = .5;
+            [viewerButton addTarget:self action:@selector(setRole:) forControlEvents:UIControlEventTouchUpInside];
+            viewerButton.frame = CGRectMake(20, 25+(40*buttonCount), 126, 20);
+            [self.view addSubview:viewerButton];
 
         }
         
@@ -74,26 +79,24 @@
             
             buttonCount++;
             
-            UIButton *collabButton = [UIButton buttonWithType:UIButtonTypeSystem];
-            [collabButton setTitle:@"Remove from project" forState:UIControlStateNormal];
-            [collabButton addTarget:self action:@selector(removeUser) forControlEvents:UIControlEventTouchUpInside];
-            [collabButton sizeToFit];
-            collabButton.frame = CGRectMake(40, 20+(40*buttonCount), collabButton.frame.size.width, collabButton.frame.size.height);
-            [self.view addSubview:collabButton];
-
+            UIButton *removeButton = [UIButton buttonWithType:UIButtonTypeSystem];
+            [removeButton setBackgroundImage:[UIImage imageNamed:@"remove.png"] forState:UIControlStateNormal];
+            removeButton.alpha = .5;
+            [removeButton addTarget:self action:@selector(setRole:) forControlEvents:UIControlEventTouchUpInside];
+            removeButton.frame = CGRectMake(20, 25+(40*buttonCount), 180, 20);
+            [self.view addSubview:removeButton];
         }
     }
     else {
         
         buttonCount++;
         
-        UIButton *collabButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        [collabButton setTitle:@"Leave project" forState:UIControlStateNormal];
-        [collabButton addTarget:self action:@selector(removeUser) forControlEvents:UIControlEventTouchUpInside];
-        [collabButton sizeToFit];
-        collabButton.frame = CGRectMake(40, 20+(40*buttonCount), collabButton.frame.size.width, collabButton.frame.size.height);
-        [self.view addSubview:collabButton];
-
+        UIButton *leaveButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        [leaveButton setBackgroundImage:[UIImage imageNamed:@"leave.png"] forState:UIControlStateNormal];
+        leaveButton.alpha = .5;
+        [leaveButton addTarget:self action:@selector(setRole:) forControlEvents:UIControlEventTouchUpInside];
+        leaveButton.frame = CGRectMake(20, 25+(40*buttonCount), 126, 20);
+        [self.view addSubview:leaveButton];
     }
     
     self.preferredContentSize = CGSizeMake(260, 70+(buttonCount*40));

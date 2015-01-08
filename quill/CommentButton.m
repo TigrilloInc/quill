@@ -86,7 +86,7 @@
         
         NSString *subString = [idString substringWithRange:NSMakeRange(i, 1)];
         
-        int hexValue;
+        NSInteger hexValue;
         
         if ([subString isEqualToString:@"a"]) hexValue = 10;
         else if ([subString isEqualToString:@"b"]) hexValue = 11;

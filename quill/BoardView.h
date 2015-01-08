@@ -14,7 +14,7 @@
 }
 
 @property (nonatomic, strong) NSNumber *lineColorNumber;
-@property (nonatomic, assign) int penType;
+@property (nonatomic, assign) NSInteger penType;
 @property (nonatomic, assign) BOOL empty;
 @property (nonatomic, assign) BOOL drawable;
 @property (nonatomic, assign) BOOL commenting;

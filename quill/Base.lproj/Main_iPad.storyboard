@@ -608,30 +608,30 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="WdP-0G-bAN"/>
                                 </connections>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="x1v-BJ-G8Z">
-                                <rect key="frame" x="264" y="689" width="117" height="40"/>
+                            <button opaque="NO" alpha="0.40000000000000002" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="x1v-BJ-G8Z">
+                                <rect key="frame" x="691" y="696" width="116" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Apply Changes">
+                                <state key="normal" image="apply.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="applyChangesTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="rEK-RL-SHS"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="PVv-oK-WDb">
-                                <rect key="frame" x="469" y="689" width="69" height="40"/>
+                            <button opaque="NO" alpha="0.40000000000000002" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="PVv-oK-WDb">
+                                <rect key="frame" x="855" y="696" width="116" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Cancel">
+                                <state key="normal" image="cancel.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="cancelTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="4VV-Ce-1ig"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="WPV-YU-0TX">
-                                <rect key="frame" x="865" y="689" width="110" height="40"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="WPV-YU-0TX">
+                                <rect key="frame" x="255" y="696" width="189" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Delete Project">
+                                <state key="normal" image="delete.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -791,8 +791,11 @@
         </scene>
     </scenes>
     <resources>
+        <image name="apply.png" width="378" height="100"/>
         <image name="background5.png" width="1024" height="768"/>
+        <image name="cancel.png" width="378" height="100"/>
         <image name="chatfade2.png" width="2048" height="60"/>
+        <image name="delete.png" width="630" height="100"/>
         <image name="edit.png" width="378" height="378"/>
         <image name="gear1.png" width="324" height="323"/>
         <image name="newboardbutton.png" width="280" height="280"/>
