@@ -299,6 +299,8 @@ static FirebaseHelper *sharedHelper = nil;
     
     [[ref childByAppendingPath:@"subpaths"] observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
        
+//        NSLog(@"SUBPATHS DICT 1 IS %@", [[self.boards objectForKey:boardID] objectForKey:@"subpaths"]);
+        
         for (NSString *userID in [snapshot.value allKeys]) {
             
             if ([userID isEqualToString:self.uid]) continue;
@@ -324,22 +326,20 @@ static FirebaseHelper *sharedHelper = nil;
         NSMutableArray *orderedKeys = [NSMutableArray arrayWithArray:subpathsDict.allKeys];
         NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
         [orderedKeys sortUsingDescriptors:@[sorter]];
-
-        for (NSString *dateString in orderedKeys) {
-
-            if ([dateString doubleValue] > [snapshot.name doubleValue]) [subpathsDict removeObjectForKey:dateString];
-        }
         
         NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
-        NSArray *dateStrings = [[[[self.boards objectForKey:boardID] objectForKey:@"subpaths"] objectForKey:userID] allKeys];
-        
-        NSLog(@"CONTAINS BOARD ID %@? %i", boardID, [boardIDs containsObject:boardID]);
-        NSLog(@"CONTAINS DATE %@? %i", snapshot.name, [dateStrings containsObject:snapshot.name]);
-        
-        if ([boardIDs containsObject:boardID] && ![dateStrings containsObject:snapshot.name]) {
+
+//      NSLog(@"SUBPATHS DICT 2 IS %@", [[self.boards objectForKey:boardID] objectForKey:@"subpaths"]);
+
+        if ([boardIDs containsObject:boardID] && ![orderedKeys containsObject:snapshot.name]) {
             
             [subpathsDict setObject:snapshot.value forKey:snapshot.name];
             [[[[self.boards objectForKey:boardID] objectForKey:@"undo"] objectForKey:userID] setObject:snapshot.name forKey:@"currentIndexDate"];
+            
+            for (NSString *dateString in orderedKeys) {
+
+                if ([dateString doubleValue] > [snapshot.name doubleValue]) [subpathsDict removeObjectForKey:dateString];
+            }
             
             NSInteger boardIndex = [boardIDs indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
@@ -358,7 +358,7 @@ static FirebaseHelper *sharedHelper = nil;
     [ref observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         if (snapshot.value == [NSNull null]) return;
-        
+
         NSMutableDictionary *oldSubpathsDict = [[[self.boards objectForKey:boardID] objectForKey:@"subpaths"] objectForKey:userID];
         NSMutableArray *oldOrderedKeys = [NSMutableArray arrayWithArray:oldSubpathsDict.allKeys];
         NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
@@ -382,6 +382,14 @@ static FirebaseHelper *sharedHelper = nil;
         for (NSString *dateString in newOrderedKeys) {
             
             if (oldIndexDate > 0 && [dateString doubleValue] > oldIndexDate && newIndex == 0 && oldLastSubpathDate != newIndexDate) [newSubpathsDict removeObjectForKey:dateString];
+        }
+        
+        NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
+        if ([boardIDs containsObject:boardID]) {
+            
+            int boardIndex = [boardIDs indexOfObject:boardID];
+            BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
+            [self.projectVC drawBoard:boardView];
         }
         
         if ([userID isEqualToString:self.uid]) [ref removeAllObservers];
@@ -462,7 +470,7 @@ static FirebaseHelper *sharedHelper = nil;
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
             boardView.loadingView.hidden = true;
             [boardView layoutComments];
-            [self.projectVC drawBoard:boardView];
+            //[self.projectVC drawBoard:boardView];
         }
     }];
     

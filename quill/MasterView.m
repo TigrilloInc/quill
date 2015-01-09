@@ -46,7 +46,7 @@
     if (self) {
         
         self.defaultRow = [NSIndexPath indexPathForRow:0 inSection:0];
-        
+
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     }
     

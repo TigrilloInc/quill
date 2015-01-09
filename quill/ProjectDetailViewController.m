@@ -55,15 +55,15 @@
     [self showChat];
     
     self.masterView.projectsTable.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"projectsshadow.png"]];
-    
+
     self.editBoardNameTextField.hidden = true;
     self.viewedCommentThreadIDs = [NSMutableArray array];
     
     [self setUpDrawMenu];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
+    
     [super viewWillAppear:animated];
 
     self.chatTextField.placeholder = @"Leave a comment...";
@@ -345,7 +345,7 @@
 -(void) layoutAvatars {
 
     for (AvatarButton *avatar in self.avatars) [avatar removeFromSuperview];
-    
+
     self.avatars = [NSMutableArray array];
     
     NSArray *userIDs = [self.roles.allKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
@@ -442,6 +442,8 @@
     
     [boardView clear];
     
+    //NSLog(@"DRAWING BOARD %@", boardView.boardID);
+    
     NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"subpaths"];
     
     NSDictionary *dictRef = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"undo"];
@@ -462,6 +464,8 @@
         int undoCount = [[[undoDict objectForKey:uid] objectForKey:@"currentIndex"] intValue];
         
         for (int i=0; i<userOrderedKeys.count; i++) {
+            
+            //NSLog(@"ORDERED KEY IS %@", userOrderedKeys[i]);
             
             NSMutableDictionary *subpathValues = [[uidDict objectForKey:userOrderedKeys[i]] mutableCopy];
             

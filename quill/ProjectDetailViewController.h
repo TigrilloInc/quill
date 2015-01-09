@@ -70,7 +70,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *boardNameEditButton;
 @property (weak, nonatomic) IBOutlet UILabel *boardNameLabel;
 
-@property (weak, nonatomic) UIButton *addUserButton;
+@property (strong, nonatomic) UIButton *addUserButton;
 @property (strong, nonatomic) NSMutableArray *avatars;
 
 @property (weak, nonatomic) IBOutlet UIView *chatView;
@@ -78,7 +78,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *chatTable;
 @property (weak, nonatomic) IBOutlet UIButton *chatOpenButton;
 @property (weak, nonatomic) IBOutlet UIImageView *chatFadeImage;
-@property (weak, nonatomic) AvatarButton *chatAvatar;
+@property (strong, nonatomic) AvatarButton *chatAvatar;
 
 @property (weak, nonatomic) IBOutlet UITextField *editProjectNameTextField;
 @property (weak, nonatomic) IBOutlet UITextField *editBoardNameTextField;

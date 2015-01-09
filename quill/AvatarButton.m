@@ -15,7 +15,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        
+
         self.adjustsImageWhenHighlighted = NO;
         
         self.drawingImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"drawing.png"]];
