@@ -26,7 +26,7 @@
         self.commentImage.center = CGPointMake(125, 136);
         [self addSubview:self.commentImage];
         
-        self.highlightedImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"usercommenthighlight3.png"]];
+        self.highlightedImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"usercommenthighlight4.png"]];
         self.highlightedImage.center = CGPointMake(125, 136);
         self.highlightedImage.hidden = true;
         [self addSubview:self.highlightedImage];

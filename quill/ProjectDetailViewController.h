@@ -57,8 +57,8 @@
 @property (weak, nonatomic) IBOutlet iCarousel *carousel;
 @property (weak, nonatomic) IBOutlet UILabel *projectNameLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImage;
-@property (strong, nonatomic) UIImageView *avatarBackgroundImage;
 @property (weak, nonatomic) IBOutlet UIImageView *addBoardBackgroundImage;
+@property (strong, nonatomic) UIImageView *avatarBackgroundImage;
 
 @property (weak, nonatomic) BoardView *currentBoardView;
 
@@ -86,6 +86,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 @property (weak, nonatomic) IBOutlet UIButton *applyChangesButton;
 @property (weak, nonatomic) IBOutlet UIButton *deleteProjectButton;
+
+@property (strong, nonatomic) UIImageView *eraserCursor;
 
 -(void) updateDetails;
 -(void) drawBoard:(BoardView *)boardView;

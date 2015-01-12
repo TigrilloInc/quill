@@ -194,6 +194,12 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         return;
     }
     
+    if (projectVC.erasing) {
+        
+        projectVC.eraserCursor.hidden = false;
+        projectVC.eraserCursor.center = [touch locationInView:projectVC.view];
+    }
+    
     if (projectVC.userRole > 0) [self addUserDrawing];
     
     // initializes our point records to current location
@@ -212,7 +218,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     if (projectVC.erasing) {
         penType = @(0);
         lineColorNumber = @(0);
-        lineWidth = 120.0f;
+        lineWidth = 60.0f;
     }
     else {
         penType = @(self.penType);
@@ -258,6 +264,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     CGPoint point = [touch locationInView:self];
     
+    if (projectVC.erasing) projectVC.eraserCursor.center = [touch locationInView:projectVC.view];
+    
     // if the finger has moved less than the min dist ...
     CGFloat dx = point.x - self.currentPoint.x;
     CGFloat dy = point.y - self.currentPoint.y;
@@ -278,7 +286,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     if (projectVC.erasing) {
         penType = @(0);
         lineColorNumber = @(0);
-        lineWidth = 120.0f;
+        lineWidth = 60.0f;
     }
     else {
         penType = @(self.penType);
@@ -321,6 +329,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 -(void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     
     if (!self.drawable) return;
+    
+    projectVC.eraserCursor.hidden = true;
     
     if (self.commenting) {
         
@@ -403,7 +413,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         CGFloat alpha = 1;
         
         if (penType == 0) {
-            lineWidth = 120.0f;
+            lineWidth = 60.0f;
             alpha = 1.0f;
         }
         if (penType == 1) {

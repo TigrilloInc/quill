@@ -87,7 +87,8 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [FirebaseHelper sharedHelper].visibleProjectIDs.count+1;
+    if ([FirebaseHelper sharedHelper].loggedIn) return [FirebaseHelper sharedHelper].visibleProjectIDs.count+1;
+    else return [FirebaseHelper sharedHelper].visibleProjectIDs.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

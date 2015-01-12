@@ -214,9 +214,15 @@ static FirebaseHelper *sharedHelper = nil;
     NSLog(@"masterView updated");
     
     self.firstLoad = false;
-
+    
+    [UIView setAnimationsEnabled:NO];
     [self.projectVC.masterView.nameButton setTitle:self.userName forState:UIControlStateNormal];
     [self.projectVC.masterView.teamButton setTitle:self.teamName forState:UIControlStateNormal];
+    [self.projectVC.masterView.nameButton layoutIfNeeded];
+    [self.projectVC.masterView.teamButton layoutIfNeeded];
+    self.projectVC.masterView.nameButton.hidden = false;
+    self.projectVC.masterView.teamButton.hidden = false;
+    [UIView setAnimationsEnabled:YES];
     
     [self.projectVC.masterView.avatarButton removeFromSuperview];
     self.projectVC.masterView.avatarButton = [AvatarButton buttonWithType:UIButtonTypeCustom];
@@ -328,8 +334,6 @@ static FirebaseHelper *sharedHelper = nil;
         [orderedKeys sortUsingDescriptors:@[sorter]];
         
         NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
-
-//      NSLog(@"SUBPATHS DICT 2 IS %@", [[self.boards objectForKey:boardID] objectForKey:@"subpaths"]);
 
         if ([boardIDs containsObject:boardID] && ![orderedKeys containsObject:snapshot.name]) {
             
@@ -470,7 +474,7 @@ static FirebaseHelper *sharedHelper = nil;
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
             boardView.loadingView.hidden = true;
             [boardView layoutComments];
-            //[self.projectVC drawBoard:boardView];
+            [self.projectVC drawBoard:boardView];
         }
     }];
     
@@ -669,11 +673,15 @@ static FirebaseHelper *sharedHelper = nil;
     self.email = nil;
     self.userName = nil;
     self.teamName = nil;
-    self.team = nil;
-    self.projects = nil;
-
+    self.team = [NSMutableDictionary dictionary];
+    self.projects = [NSMutableDictionary dictionary];
+    self.visibleProjectIDs = [NSMutableArray array];
+    self.comments = [NSMutableDictionary dictionary];
+    self.chats = [NSMutableDictionary dictionary];
+    
     [self.projectVC.masterView.projectsTable reloadData];
-
+    self.projectVC.messages = [NSMutableArray array];
+    [self.projectVC.chatTable reloadData];
 }
 
 @end

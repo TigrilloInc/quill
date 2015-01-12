@@ -61,11 +61,12 @@ void uncaughtExceptionHandler(NSException *exception) {
             nav.modalPresentationStyle = UIModalPresentationFormSheet;
             nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
             [self.window.rootViewController presentViewController:nav animated:YES completion:nil];
-            
-        } else {
+        }
+        else {
             
             NSLog(@"User logged in as %@", user.uid);
             
+            [FirebaseHelper sharedHelper].loggedIn = true;
             [FirebaseHelper sharedHelper].uid = user.uid;
             [[FirebaseHelper sharedHelper] observeLocalUser];
         }
@@ -102,7 +103,6 @@ void uncaughtExceptionHandler(NSException *exception) {
         for (FDataSnapshot* child in snapshot.children) {
             
             if ([child.name isEqualToString:token]) [FirebaseHelper sharedHelper].teamName = child.value;
-            
         }
         
         SignUpFromInviteViewController *vc = [self.window.rootViewController.storyboard instantiateViewControllerWithIdentifier:@"SignUpFromInvite"];

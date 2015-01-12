@@ -11,10 +11,8 @@
 #import <FirebaseSimpleLogin/FirebaseSimpleLogin.h>
 #import "FirebaseHelper.h"
 #import "AvatarButton.h"
+#import "SignInViewController.h"
 
-@interface SettingsViewController ()
-
-@end
 
 @implementation SettingsViewController
 
@@ -45,16 +43,44 @@
 }
 
 - (IBAction)signOutTapped:(id)sender {
-
+    
+    ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    projectVC.masterView.teamButton.hidden = true;
+    projectVC.masterView.nameButton.hidden = true;
+    projectVC.masterView.avatarButton.hidden = true;
+    projectVC.projectNameLabel.hidden = true;
+    projectVC.editButton.hidden = true;
+    projectVC.carousel.hidden = true;
+    projectVC.chatAvatar.hidden = true;
+    projectVC.sendMessageButton.hidden = true;
+    projectVC.boardNameLabel.hidden = true;
+    projectVC.boardNameEditButton.hidden = true;
+    projectVC.editBoardNameTextField.hidden = true;
+    for (AvatarButton *avatar in projectVC.avatars) avatar.hidden = true;
+    projectVC.avatarBackgroundImage.hidden = true;
+    projectVC.addUserButton.hidden = true;
+    projectVC.chatTextField.hidden = true;
+    projectVC.addBoardBackgroundImage.hidden = true;
+    projectVC.addBoardButton.hidden = true;
+    projectVC.chatOpenButton.hidden = true;
+    
     Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
     FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
     
     [authClient logout];
+    [FirebaseHelper sharedHelper].loggedIn = false;
     
     [[FirebaseHelper sharedHelper] clearData];
     
     [self dismissViewControllerAnimated:YES completion:nil];
     [self.view.window removeGestureRecognizer:outsideTapRecognizer];
+    
+    SignInViewController *vc = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignIn"];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    
+    nav.modalPresentationStyle = UIModalPresentationFormSheet;
+    nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    [projectVC presentViewController:nav animated:YES completion:nil];
 }
 
 - (IBAction)doneTapped:(id)sender {

@@ -63,6 +63,7 @@
                            
                        } else {
                            
+                           [FirebaseHelper sharedHelper].loggedIn = true;
                            [FirebaseHelper sharedHelper].uid = user.uid;
                            [[FirebaseHelper sharedHelper] observeLocalUser];
                            
@@ -92,12 +93,13 @@
                                    
                             [self.signInLabel setText:@"Hmm, shit's jacked up."];
                             NSLog(@"%@", error);
-                            
+                
                         } else {
+                            
+                            [FirebaseHelper sharedHelper].loggedIn = true;
                             
                             NewTeamViewController *newTeamVC = [self.storyboard instantiateViewControllerWithIdentifier:@"NewTeam"];
                             [self.navigationController pushViewController:newTeamVC animated:YES];
-
                         }
                     }];
                 }

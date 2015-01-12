@@ -30,6 +30,7 @@
 @property (strong, nonatomic) NSMutableArray *visibleProjectIDs;
 @property (strong, nonatomic) NSMutableArray *loadedBoardIDs;
 @property BOOL firstLoad;
+@property BOOL loggedIn;
 
 + (FirebaseHelper *)sharedHelper;
 - (void) observeLocalUser;

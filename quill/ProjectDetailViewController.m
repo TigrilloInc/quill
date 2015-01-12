@@ -51,13 +51,22 @@
     self.projectNameLabel.font = [UIFont fontWithName:@"SourceSansPro-ExtraLight" size:48];
     self.editProjectNameTextField.frame = CGRectMake(self.projectNameLabel.frame.origin.x-8, self.projectNameLabel.frame.origin.y-3, 500, 65);
     self.chatTextField.font = [UIFont fontWithName:@"SourceSansPro-ExtraLight" size:20];
+    self.chatTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
     self.chatTable.transform = CGAffineTransformMakeRotation(M_PI);
     [self showChat];
     
     self.masterView.projectsTable.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"projectsshadow.png"]];
 
+    self.editProjectNameTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
+    self.editProjectNameTextField.clearsOnBeginEditing = false;
+    self.editBoardNameTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
     self.editBoardNameTextField.hidden = true;
     self.viewedCommentThreadIDs = [NSMutableArray array];
+    
+    self.eraserCursor = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"eraser.png"]];
+    self.eraserCursor.hidden = true;
+    self.eraserCursor.frame = CGRectMake(0, 0, 62, 62);
+    [self.view addSubview:self.eraserCursor];
     
     [self setUpDrawMenu];
 }
@@ -214,7 +223,7 @@
     
     self.projectNameLabel.text = self.projectName;
     [self.projectNameLabel sizeToFit];
-    self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+280, self.projectNameLabel.center.y+5);
+    self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+280, self.projectNameLabel.center.y+4);
     
     UIButton *projectNameButton = (UIButton *)[self.view viewWithTag:101];
     [projectNameButton setTitle:self.projectName forState:UIControlStateNormal];
@@ -241,7 +250,6 @@
     }
     
     [self carouselCurrentItemIndexDidChange:self.carousel];
-    
 }
 
 -(void) updateMessages {
@@ -674,7 +682,7 @@
     
     self.editBoardIDs = [self.boardIDs mutableCopy];
     
-    self.editProjectNameTextField.placeholder = self.projectName;
+    self.editProjectNameTextField.text = self.projectName;
     
     editFadeLeft.hidden = false;
     editFadeRight.hidden = false;
@@ -715,7 +723,10 @@
     self.boardNameLabel.hidden = true;
     self.boardNameEditButton.hidden = true;
     
-    self.editBoardNameTextField.placeholder = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"name"];
+    NSString *boardName = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"name"];
+    
+    if ([boardName isEqualToString:@"Untitled"]) self.editBoardNameTextField.text = nil;
+    else self.editBoardNameTextField.text = boardName;
     
     [self.editBoardNameTextField becomeFirstResponder];
     
@@ -746,15 +757,20 @@
     if (self.editProjectNameTextField.text.length > 0) {
         
         NSString *newName = self.editProjectNameTextField.text;
-        self.projectNameLabel.text = newName;
+        [self.projectNameLabel setText:newName];
+        [self.projectNameLabel sizeToFit];
+        self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+280, self.projectNameLabel.center.y+4);
         
         [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] setObject:newName forKey:@"name"];
         
         [self.masterView updateProjects];        
         self.masterView.defaultRow = [NSIndexPath indexPathForRow:[self.masterView.orderedProjectNames indexOfObject:newName] inSection:0];
-        
+        [self.masterView.projectsTable reloadData];
+        [self.masterView tableView:self.masterView.projectsTable didSelectRowAtIndexPath:self.masterView.defaultRow];
+     
         [[projectRef childByAppendingPath:@"name"] setValue:newName];
-        self.editProjectNameTextField.text = nil;
+        
+        [self cancelTapped:nil];
     }
     
     if (![self.editBoardIDs isEqualToArray:self.boardIDs]) {
@@ -785,9 +801,9 @@
         if (self.boardIDs.count == 0) [self createBoard];
         
         [self.carousel reloadData];
+        
+        [self cancelTapped:nil];
     }
-    
-    [self cancelTapped:nil];
 }
 
 - (IBAction)cancelTapped:(id)sender {
@@ -1161,7 +1177,7 @@
 
 -(void)keyboardWillHide:(NSNotification *)notification {
 
-    if (!self.editing) {
+    if (!self.editing && self.boardNameLabel.text.length > 0) {
         
         self.editBoardNameTextField.hidden = true;
         self.boardNameLabel.hidden = false;
@@ -1169,6 +1185,8 @@
     }
     
     if ([self.chatTextField isFirstResponder]) {
+        
+        self.chatTextField.text = nil;
         
         CGFloat height = [[notification.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
         keyboardDiff = 517-height;
@@ -1373,7 +1391,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField*)textField
 {
     
-    if ([textField isEqual:self.chatTextField]) {
+    if ([textField isEqual:self.chatTextField] && textField.text.length > 0) {
         
         NSString *chatString;
         
