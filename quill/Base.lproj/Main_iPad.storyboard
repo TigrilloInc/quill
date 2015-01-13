@@ -5,12 +5,15 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
     </dependencies>
     <customFonts key="customFonts">
+        <mutableArray key="SourceSansPro-ExtraLight.otf">
+            <string>SourceSansPro-ExtraLight</string>
+            <string>SourceSansPro-ExtraLight</string>
+        </mutableArray>
         <mutableArray key="SourceSansPro-Light.otf">
-            <string>SourceSansPro-Light</string>
-            <string>SourceSansPro-Light</string>
             <string>SourceSansPro-Light</string>
         </mutableArray>
         <mutableArray key="SourceSansPro-Regular.ttf">
+            <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
         </mutableArray>
@@ -493,6 +496,16 @@
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
+                            <button hidden="YES" opaque="NO" alpha="0.20000000000000001" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="BtQ-po-KEj">
+                                <rect key="frame" x="561" y="39" width="30" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="edit.png">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="projectNameEditTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="ZzQ-f3-6zX"/>
+                                </connections>
+                            </button>
                             <button hidden="YES" opaque="NO" alpha="0.20000000000000001" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="fby-KJ-NQF">
                                 <rect key="frame" x="561" y="39" width="30" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -516,20 +529,20 @@
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Project Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="7VA-hg-eFW">
                                 <rect key="frame" x="257" y="29" width="392" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="SourceSansPro-Light" family="Source Sans Pro" pointSize="50"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-ExtraLight" family="Source Sans Pro" pointSize="48"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Board Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Hbm-ZL-EhN">
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Hbm-ZL-EhN">
                                 <rect key="frame" x="364" y="109" width="509" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="32"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="wFY-iY-Scc">
-                                <rect key="frame" x="360" y="108" width="513" height="30"/>
+                            <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Board Name" textAlignment="center" minimumFontSize="17" id="wFY-iY-Scc">
+                                <rect key="frame" x="210" y="111" width="814" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="SourceSansPro-Light" family="Source Sans Pro" pointSize="14"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-Light" family="Source Sans Pro" pointSize="24"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="3Yb-Sn-Nyj"/>
@@ -565,7 +578,7 @@
                                         <rect key="frame" x="51" y="113" width="667" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="20"/>
                                         <textInputTraits key="textInputTraits"/>
                                         <connections>
                                             <outlet property="delegate" destination="u5o-7l-ZfK" id="9nA-iC-awf"/>
@@ -613,11 +626,10 @@
                                 <rect key="frame" x="210" y="607" width="1024" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" borderStyle="roundedRect" clearsOnBeginEditing="YES" adjustsFontSizeToFit="NO" minimumFontSize="50" id="mem-TG-8ys">
-                                <rect key="frame" x="254" y="33" width="394" height="30"/>
+                            <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Project Name" adjustsFontSizeToFit="NO" minimumFontSize="50" id="mem-TG-8ys">
+                                <rect key="frame" x="257" y="28" width="517" height="64"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <fontDescription key="fontDescription" name="SourceSansPro-Light" family="Source Sans Pro" pointSize="50"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-ExtraLight" family="Source Sans Pro" pointSize="48"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="WdP-0G-bAN"/>
@@ -657,7 +669,7 @@
                                 <rect key="frame" x="210" y="0.0" width="814" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="30" minimumInteritemSpacing="10" id="aGu-lt-bXA" userLabel="Draggable Collection View Flow Layout" customClass="DraggableCollectionViewFlowLayout">
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="60" minimumInteritemSpacing="10" id="aGu-lt-bXA" userLabel="Draggable Collection View Flow Layout" customClass="DraggableCollectionViewFlowLayout">
                                     <size key="itemSize" width="192" height="144"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -781,6 +793,7 @@
                         <outlet property="editButton" destination="fby-KJ-NQF" id="6Mz-77-2Yo"/>
                         <outlet property="editProjectNameTextField" destination="mem-TG-8ys" id="3jX-E3-iqV"/>
                         <outlet property="masterView" destination="r9C-xd-JPc" id="akP-PK-hhf"/>
+                        <outlet property="projectNameEditButton" destination="BtQ-po-KEj" id="qVS-Wn-a4G"/>
                         <outlet property="projectNameLabel" destination="7VA-hg-eFW" id="l8V-jU-Oxv"/>
                         <outlet property="sendMessageButton" destination="Q79-Vz-pZV" id="tD9-nF-8V2"/>
                     </connections>

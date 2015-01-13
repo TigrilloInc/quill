@@ -67,6 +67,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *sendMessageButton;
 
 @property (weak, nonatomic) IBOutlet UIButton *editButton;
+@property (weak, nonatomic) IBOutlet UIButton *projectNameEditButton;
 @property (weak, nonatomic) IBOutlet UIButton *boardNameEditButton;
 @property (weak, nonatomic) IBOutlet UILabel *boardNameLabel;
 

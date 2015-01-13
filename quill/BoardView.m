@@ -186,7 +186,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         [projectVC drawBoard:self];
     }
     
-    if ([projectVC.chatTextField isFirstResponder]) return;
+    if ([projectVC.chatTextField isFirstResponder] || [[projectVC.view viewWithTag:104] isFirstResponder]) return;
     
     if (self.commenting) {
         
@@ -258,7 +258,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     NSArray *allTouches = [[event allTouches] allObjects];
     
-    if (allTouches.count > 1 || !self.drawable || self.commenting || [projectVC.chatTextField isFirstResponder] || self.selectedAvatarUserID) return;
+    if (allTouches.count > 1 || !self.drawable || self.commenting || [projectVC.chatTextField isFirstResponder] || [[projectVC.view viewWithTag:104] isFirstResponder] || self.selectedAvatarUserID) return;
     
     UITouch *touch = [touches anyObject];
     
@@ -343,6 +343,13 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         [projectVC.chatTextField resignFirstResponder];
         return;
     }
+    
+    if ([[projectVC.view viewWithTag:104] isFirstResponder]) {
+        
+        [[projectVC.view viewWithTag:104] resignFirstResponder];
+        return;
+    }
+    
     
     [self performSelector:@selector(removeUserDrawing) withObject:nil afterDelay:1.0];
     

@@ -60,7 +60,7 @@
     
     [self removeFromSuperview];
     
-    [boardView hideChat];
+    if ([projectVC.chatTextField isFirstResponder]) [projectVC.chatTextField resignFirstResponder];
 }
 
 - (void) generateIdenticon {
