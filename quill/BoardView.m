@@ -350,7 +350,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         return;
     }
     
-    
     [self performSelector:@selector(removeUserDrawing) withObject:nil afterDelay:1.0];
     
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
@@ -444,16 +443,20 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
             else lineColor = [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:alpha];
         }
         if (colorNumber == 2) {
-            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(200.0f/255.0f) green:(230.0f/255.0f) blue:1.0f alpha:alpha];
-            else lineColor = [UIColor colorWithRed:0.0f green:(60.0f/255.0f) blue:1.0f alpha:alpha];
+            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(183.0f/255.0f) green:(206.0f/255.0f) blue:(234.0f/255.0f) alpha:alpha];
+            else lineColor = [UIColor colorWithRed:(12.0f/255.0f) green:(111.0f/255.0f) blue:(234.0f/255.0f) alpha:alpha];
         }
         if (colorNumber == 3) {
-            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:1.0f green:(200.0f/255.0f) blue:(200.0f/255.0f) alpha:alpha];
-            else lineColor = [UIColor colorWithRed:1.0f green:0.0f blue:0.0f alpha:alpha];
+            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(213.0f/255.0f) green:(166.0f/255.0f) blue:(166.0f/255.0f) alpha:alpha];
+            else lineColor = [UIColor colorWithRed:(213.0f/255.0f) green:(54.0f/255.0f) blue:(54.0f/255.0f) alpha:alpha];
         }
         if (colorNumber == 4) {
-            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(230.0f/255.0f) green:1.0f blue:(200.0f/255.0f) alpha:alpha];
-            else lineColor = [UIColor colorWithRed:(60.0f/255.0f) green:1.0f blue:0.0f alpha:alpha];
+            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(194.0f/255.0f) green:(228.0f/255.0f) blue:(176.0f/255.0f) alpha:alpha];
+            else lineColor = [UIColor colorWithRed:(117.0f/255.0f) green:(228.0f/255.0f) blue:(117.0f/255.0f) alpha:alpha];
+        }
+        if (colorNumber == 5) {
+            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(255.0f/255.0f) green:(253.0f/255.0f) blue:(197.0f/255.0f) alpha:alpha];
+            else lineColor = [UIColor colorWithRed:(255.0f/255.0f) green:(246.0f/255.0f) blue:0.0f alpha:alpha];
         }
         
         if ([subpathValues isEqual:self.paths.lastObject]) {

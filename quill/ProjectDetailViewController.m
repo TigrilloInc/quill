@@ -177,8 +177,9 @@
     [self.view bringSubviewToFront:boardNameLabel];
     
     UIButton *editBoardNameButton = (UIButton *)[self.view viewWithTag:103];
-    editBoardNameButton.frame = CGRectMake(boardNameLabel.frame.origin.x+boardNameLabel.frame.size.width+7, boardNameLabel.frame.origin.y+4, 17, 17);
+    editBoardNameButton.frame = CGRectMake(boardNameLabel.frame.origin.x+boardNameLabel.frame.size.width+6, boardNameLabel.frame.origin.y+4, 17, 17);
     editBoardNameButton.hidden = false;
+    [self.view bringSubviewToFront:editBoardNameButton];
     
     for (int i=0; i<drawButtons.count; i++) {
         
@@ -198,6 +199,12 @@
     
     UILabel *boardNameLabel = (UILabel *)[self.view viewWithTag:102];
     boardNameLabel.hidden = true;
+    
+    UIButton *editBoardNameButton = (UIButton *)[self.view viewWithTag:103];
+    editBoardNameButton.hidden = true;
+    
+    UITextField *editBoardNameTextField = (UITextField *)[self.view viewWithTag:104];
+    editBoardNameTextField.hidden = true;
     
     for (int i=0; i<=drawButtons.count; i++) {
         
@@ -258,7 +265,7 @@
     
     self.projectNameLabel.text = self.projectName;
     [self.projectNameLabel sizeToFit];
-    self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+280, self.projectNameLabel.center.y+4);
+    self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+292, self.projectNameLabel.center.y+3);
     self.projectNameEditButton.center = self.editButton.center;
     
     UIButton *projectNameButton = (UIButton *)[self.view viewWithTag:101];
@@ -579,7 +586,6 @@
     
     if (![[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.currentBoardView.boardID]) return;
     
-    newBoardCreated = false;
     [self.carousel setScrollEnabled:NO];
     self.carouselOffset = 0;
     NSString *boardID = self.currentBoardView.boardID;
@@ -632,6 +638,12 @@
                          boardButton.hidden = true;
                          
                          if (self.userRole > 0) [self showDrawMenu];
+                         
+                         if (newBoardCreated) {
+                             
+                             [self showEditBoardName];
+                             newBoardCreated = false;
+                         }
                      }
      ];
 }
@@ -647,15 +659,6 @@
     self.currentBoardView.penType = 0;
     [(UIButton *)[self.view viewWithTag:5] setBackgroundImage:[UIImage imageNamed:@"pen.png"] forState:UIControlStateNormal];
     [self hideDrawMenu];
-    
-    UIButton *closeButton = (UIButton *)[self.view viewWithTag:100];
-    closeButton.hidden = true;
-    
-    UIButton *editBoardNameButton = (UIButton *)[self.view viewWithTag:103];
-    editBoardNameButton.hidden = true;
-    
-    UITextField *editBoardNameTextField = (UITextField *)[self.view viewWithTag:104];
-    editBoardNameTextField.hidden = true;
     
     self.activeBoardID = nil;
     self.activeCommentThreadID = nil;
@@ -811,7 +814,7 @@
         NSString *newName = self.editProjectNameTextField.text;
         [self.projectNameLabel setText:newName];
         [self.projectNameLabel sizeToFit];
-        self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+280, self.projectNameLabel.center.y+4);
+        self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+292, self.projectNameLabel.center.y+3);
         
         [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] setObject:newName forKey:@"name"];
         
@@ -1009,6 +1012,8 @@
 
     self.currentBoardView.commenting = false;
     self.erasing = true;
+    
+    [self.view bringSubviewToFront:self.eraserCursor];
     
     for (int i=5; i<=8; i++) {
         
@@ -1244,7 +1249,7 @@
         
         CGFloat height = [[notification.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
         keyboardDiff = 517-height;
-        
+
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:[notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
         [UIView setAnimationCurve:[notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] doubleValue]];
@@ -1257,7 +1262,7 @@
         CGRect projectsTableRect = self.masterView.projectsTable.frame;
         projectsTableRect.size.height += (height-keyboardDiff);
         self.masterView.projectsTable.frame = projectsTableRect;
-        
+
         CGRect fadeRect = self.chatFadeImage.frame;
         if(self.activeBoardID == nil) fadeRect.origin.y += (height+keyboardDiff);
         else fadeRect.origin.y += height;
@@ -1270,7 +1275,7 @@
         }
         else chatTableRect.origin.y += height;
         self.chatTable.frame = chatTableRect;
-        
+
         if (self.activeBoardID && self.carouselOffset > 0) {
             
             CGRect carouselRect = self.carousel.frame;
@@ -1294,12 +1299,12 @@
             projectsTableRect.size.height += (height-keyboardDiff);
             self.masterView.projectsTable.frame = projectsTableRect;
         }
-        
+
         if (self.activeBoardID) self.chatOpenButton.center = CGPointMake(self.view.center.x, self.chatOpenButton.center.y+height);
         else self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y+(height+keyboardDiff));
         
         if (commentsOpen) [self openComments];
-        
+
         [self.view bringSubviewToFront:self.chatOpenButton];
         
         [UIView commitAnimations];
@@ -1308,7 +1313,7 @@
         self.chatOpenButton.frame = CGRectMake(0, 0, 51, 28);
         self.chatOpenButton.center = chatCenter;
         [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
-        
+
         if (self.activeBoardID) [self.currentBoardView hideChat];
     }
     
@@ -1451,7 +1456,7 @@
     [self.boardNameLabel sizeToFit];
     self.boardNameLabel.center = CGPointMake(self.carousel.center.x, self.boardNameLabel.center.y);
 
-    self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+20, self.boardNameLabel.center.y);
+    self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+17, self.boardNameLabel.center.y);
 }
 
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event
@@ -1511,7 +1516,7 @@
         [self.boardNameLabel sizeToFit];
         self.boardNameLabel.center = CGPointMake(self.carousel.center.x, self.boardNameLabel.center.y);
         
-        self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+20, self.boardNameLabel.center.y);
+        self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+17, self.boardNameLabel.center.y);
 
         [self cancelTapped:nil];
     }
@@ -1532,10 +1537,10 @@
         self.boardNameLabel.text = editBoardNameTextField.text;
         [self.boardNameLabel sizeToFit];
         self.boardNameLabel.center = CGPointMake(self.carousel.center.x+105, self.boardNameLabel.center.y);
-        self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+125, self.boardNameLabel.center.y);
+        self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+122, self.boardNameLabel.center.y);
         
         UIButton *editBoardNameButton = (UIButton *)[self.view viewWithTag:103];
-        editBoardNameButton.frame = CGRectMake(boardNameLabel.frame.origin.x+boardNameLabel.frame.size.width+7, boardNameLabel.frame.origin.y+4, 17, 17);
+        editBoardNameButton.frame = CGRectMake(boardNameLabel.frame.origin.x+boardNameLabel.frame.size.width+6, boardNameLabel.frame.origin.y+4, 17, 17);
         editBoardNameButton.hidden = false;
         
         NSString *boardNameRefString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/name", self.boardIDs[self.carousel.currentItemIndex]];
@@ -1549,7 +1554,7 @@
         [UIView setAnimationsEnabled:NO];
         self.projectNameLabel.text = self.editProjectNameTextField.text;
         [self.projectNameLabel sizeToFit];
-        self.projectNameEditButton.center = CGPointMake(self.projectNameLabel.frame.size.width+280, self.projectNameLabel.center.y+4);
+        self.projectNameEditButton.center = CGPointMake(self.projectNameLabel.frame.size.width+292, self.projectNameLabel.center.y+3);
         [UIView setAnimationsEnabled:YES];
         
         [textField resignFirstResponder];

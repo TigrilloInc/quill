@@ -299,15 +299,15 @@ static FirebaseHelper *sharedHelper = nil;
                 [boardLevelNameLabel sizeToFit];
                 
                 UIButton *editBoardNameButton = (UIButton *)[self.projectVC.view viewWithTag:103];
-                editBoardNameButton.frame = CGRectMake(boardLevelNameLabel.frame.origin.x+boardLevelNameLabel.frame.size.width+7, boardLevelNameLabel.frame.origin.y+4, 17, 17);
+                editBoardNameButton.frame = CGRectMake(boardLevelNameLabel.frame.origin.x+boardLevelNameLabel.frame.size.width+6, boardLevelNameLabel.frame.origin.y+4, 17, 17);
                 
                 self.projectVC.boardNameLabel.center = CGPointMake(self.projectVC.carousel.center.x+105, self.projectVC.boardNameLabel.center.y);
-                self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.carousel.center.x+self.projectVC.boardNameLabel.frame.size.width/2+125, self.projectVC.boardNameLabel.center.y);
+                self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.carousel.center.x+self.projectVC.boardNameLabel.frame.size.width/2+122, self.projectVC.boardNameLabel.center.y);
                 self.projectVC.boardNameEditButton.hidden = false;
             }
             else {
                 self.projectVC.boardNameLabel.center = CGPointMake(self.projectVC.carousel.center.x, self.projectVC.boardNameLabel.center.y);
-                self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.carousel.center.x+self.projectVC.boardNameLabel.frame.size.width/2+20, self.projectVC.boardNameLabel.center.y);
+                self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.carousel.center.x+self.projectVC.boardNameLabel.frame.size.width/2+17, self.projectVC.boardNameLabel.center.y);
                 self.projectVC.boardNameEditButton.hidden = false;
             }
         }

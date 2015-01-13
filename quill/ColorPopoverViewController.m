@@ -23,6 +23,7 @@
                 @"blue.png",
                 @"red.png",
                 @"green.png",
+                @"yellow.png"
                 ];
     
     for (int i=0; i<colors.count; i++) {
