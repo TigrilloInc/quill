@@ -93,8 +93,9 @@ void uncaughtExceptionHandler(NSException *exception) {
     Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/tokens"];
     FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
     
-    [authClient logout];
+    [[FirebaseHelper sharedHelper] removeAllObservers];
     [[FirebaseHelper sharedHelper] clearData];
+    [authClient logout];
     
     [ref observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         

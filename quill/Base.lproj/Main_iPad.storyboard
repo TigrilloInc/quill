@@ -11,6 +11,7 @@
         </mutableArray>
         <mutableArray key="SourceSansPro-Light.otf">
             <string>SourceSansPro-Light</string>
+            <string>SourceSansPro-Light</string>
         </mutableArray>
         <mutableArray key="SourceSansPro-Regular.ttf">
             <string>SourceSansPro-Regular</string>
@@ -578,7 +579,7 @@
                                         <rect key="frame" x="51" y="113" width="667" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                        <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="20"/>
+                                        <fontDescription key="fontDescription" name="SourceSansPro-Light" family="Source Sans Pro" pointSize="20"/>
                                         <textInputTraits key="textInputTraits"/>
                                         <connections>
                                             <outlet property="delegate" destination="u5o-7l-ZfK" id="9nA-iC-awf"/>
@@ -622,7 +623,7 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="8G4-cC-Yw4"/>
                                 </connections>
                             </tableView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chatfade2.png" id="bA4-HW-Iwl">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chatfade1.png" id="bA4-HW-Iwl">
                                 <rect key="frame" x="210" y="607" width="1024" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
@@ -769,6 +770,25 @@
                                     <action selector="openChatTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="Zuo-d6-Jqg"/>
                                 </connections>
                             </button>
+                            <view hidden="YES" contentMode="scaleToFill" id="ZYT-PY-718">
+                                <rect key="frame" x="210" y="613" width="1024" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="commenttitle.png" id="5gE-kn-S2Q">
+                                        <rect key="frame" x="0.0" y="0.0" width="1024" height="40"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Add a title..." minimumFontSize="17" id="xTW-nI-pbt">
+                                        <rect key="frame" x="14" y="0.0" width="1008" height="40"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="26"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="u5o-7l-ZfK" id="Tzj-2j-oiB"/>
+                                        </connections>
+                                    </textField>
+                                </subviews>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
@@ -787,6 +807,8 @@
                         <outlet property="chatTable" destination="LFa-KC-mAX" id="c8w-RF-FKm"/>
                         <outlet property="chatTextField" destination="ljg-T3-hgU" id="7HR-iO-iaL"/>
                         <outlet property="chatView" destination="kDh-qU-DmB" id="T8e-RO-Tbs"/>
+                        <outlet property="commentTitleTextField" destination="xTW-nI-pbt" id="iOn-pP-mkU"/>
+                        <outlet property="commentTitleView" destination="ZYT-PY-718" id="FBM-zS-sXD"/>
                         <outlet property="deleteProjectButton" destination="WPV-YU-0TX" id="7ci-wy-2bd"/>
                         <outlet property="draggableCollectionView" destination="Gdt-c0-HVM" id="1zK-54-rIS"/>
                         <outlet property="editBoardNameTextField" destination="wFY-iY-Scc" id="i5M-9j-PZn"/>
@@ -807,7 +829,8 @@
         <image name="apply.png" width="378" height="100"/>
         <image name="background5.png" width="1024" height="768"/>
         <image name="cancel.png" width="378" height="100"/>
-        <image name="chatfade2.png" width="2048" height="60"/>
+        <image name="chatfade1.png" width="2048" height="60"/>
+        <image name="commenttitle.png" width="1024" height="40"/>
         <image name="delete.png" width="630" height="100"/>
         <image name="edit.png" width="378" height="378"/>
         <image name="gear1.png" width="324" height="323"/>

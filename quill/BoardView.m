@@ -121,7 +121,9 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"commentsID"];
     NSDictionary *commentDict = [[FirebaseHelper sharedHelper].comments objectForKey:commentsID];
-
+    
+    NSLog(@"commentDict is %@", [FirebaseHelper sharedHelper].comments);
+    
     if (!commentDict) return;
     
     for (NSString *commentThreadID in commentDict.allKeys) {
@@ -186,7 +188,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         [projectVC drawBoard:self];
     }
     
-    if ([projectVC.chatTextField isFirstResponder] || [[projectVC.view viewWithTag:104] isFirstResponder]) return;
+    if ([projectVC.chatTextField isFirstResponder] || [[projectVC.view viewWithTag:104] isFirstResponder] || [projectVC.commentTitleTextField isFirstResponder]) return;
     
     if (self.commenting) {
         
@@ -258,7 +260,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     NSArray *allTouches = [[event allTouches] allObjects];
     
-    if (allTouches.count > 1 || !self.drawable || self.commenting || [projectVC.chatTextField isFirstResponder] || [[projectVC.view viewWithTag:104] isFirstResponder] || self.selectedAvatarUserID) return;
+    if (allTouches.count > 1 || !self.drawable || self.commenting || [projectVC.chatTextField isFirstResponder] || [[projectVC.view viewWithTag:104] isFirstResponder] || [projectVC.commentTitleTextField isFirstResponder] || self.selectedAvatarUserID) return;
     
     UITouch *touch = [touches anyObject];
     
@@ -347,6 +349,12 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     if ([[projectVC.view viewWithTag:104] isFirstResponder]) {
         
         [[projectVC.view viewWithTag:104] resignFirstResponder];
+        return;
+    }
+    
+    if ([projectVC.commentTitleTextField isFirstResponder]) {
+        
+        [projectVC.commentTitleTextField resignFirstResponder];
         return;
     }
     
@@ -447,8 +455,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
             else lineColor = [UIColor colorWithRed:(12.0f/255.0f) green:(111.0f/255.0f) blue:(234.0f/255.0f) alpha:alpha];
         }
         if (colorNumber == 3) {
-            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(213.0f/255.0f) green:(166.0f/255.0f) blue:(166.0f/255.0f) alpha:alpha];
-            else lineColor = [UIColor colorWithRed:(213.0f/255.0f) green:(54.0f/255.0f) blue:(54.0f/255.0f) alpha:alpha];
+            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(225.0f/255.0f) green:(175.0f/255.0f) blue:(175.0f/255.0f) alpha:alpha];
+            else lineColor = [UIColor colorWithRed:(225.0f/255.0f) green:(34.0f/255.0f) blue:(34.0f/255.0f) alpha:alpha];
         }
         if (colorNumber == 4) {
             if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(194.0f/255.0f) green:(228.0f/255.0f) blue:(176.0f/255.0f) alpha:alpha];
@@ -533,7 +541,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     NSDictionary *commentDict = @{ @"location" : [@{ @"x" : @(point.x),
                                                     @"y" : @(point.y)
                                                     } mutableCopy],
-                                   @"owner" : [FirebaseHelper sharedHelper].uid
+                                   @"owner" : [FirebaseHelper sharedHelper].uid,
+                                   @"title" : @""
                                    };
     
     NSString *commentThreadString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
@@ -739,18 +748,35 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [self updateCarouselOffsetWithPoint:comment.point];
     
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"commentsID"];
-    NSString *ownerID = [[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:comment.commentThreadID] objectForKey:@"owner"];
+    NSDictionary *commentDict = [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:comment.commentThreadID];
+    NSString *ownerID = [commentDict objectForKey:@"owner"];
+    NSString *title = [commentDict objectForKey:@"title"];
+    NSDictionary *messages = [commentDict objectForKey:@"messages"];
     
-    if ([ownerID isEqualToString:[FirebaseHelper sharedHelper].uid]) comment.deleteButton.hidden = false;
+    if ([ownerID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
+        comment.deleteButton.hidden = false;
+        projectVC.commentTitleView.userInteractionEnabled = true;
+    }
+    else projectVC.commentTitleView.userInteractionEnabled = false;
+
     comment.commentImage.hidden = true;
     comment.highlightedImage.hidden = false;
     
     projectVC.activeCommentThreadID = comment.commentThreadID;
     
+    if (title.length == 0 && ![[FirebaseHelper sharedHelper].uid isEqualToString:ownerID]) projectVC.commentTitleView.hidden = true;
+    else projectVC.commentTitleView.hidden = false;
+    
+    projectVC.commentTitleTextField.text = title;
+    
+    NSLog(@"title is %@", projectVC.commentTitleTextField.text);
+    
+    //projectVC.commentTitleLabel.text = title;
     [projectVC updateMessages];
     [projectVC.chatTable reloadData];
     
-    [projectVC.chatTextField becomeFirstResponder];
+    if (title.length == 0 && messages.allKeys.count == 0) [projectVC.commentTitleTextField becomeFirstResponder];
+    else [projectVC.chatTextField becomeFirstResponder];
 }
 
 -(void) updateCarouselOffsetWithPoint:(CGPoint)point {

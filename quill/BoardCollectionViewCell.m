@@ -127,6 +127,8 @@
 -(void) updateBoardNameForBoardID:(NSString *)boardID {
     
     self.boardNameLabel.text = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"name"];
+    if ([self.boardNameLabel.text isEqualToString:@"Untitled"]) self.boardNameLabel.alpha = .2;
+    else self.boardNameLabel.alpha = 1;
     [self.boardNameLabel sizeToFit];
     self.boardNameLabel.center = CGPointMake(self.contentView.center.x,160);
     

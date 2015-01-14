@@ -34,7 +34,6 @@
 
 + (FirebaseHelper *)sharedHelper;
 - (void) observeLocalUser;
-- (void) clearData;
 - (void) observeCurrentProjectBoards;
 - (void) observeProjectWithID:(NSString *)projectID;
 - (void) observeBoardWithID:(NSString *)boardID;
@@ -48,6 +47,8 @@
 - (void) setActiveBoardUpdatedAt;
 - (void) resetUndo;
 - (NSIndexPath *) getLastViewedProjectIndexPath;
+- (void) removeAllObservers;
+- (void) clearData;
 
 @end
 
