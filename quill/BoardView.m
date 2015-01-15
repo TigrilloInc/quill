@@ -122,8 +122,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"commentsID"];
     NSDictionary *commentDict = [[FirebaseHelper sharedHelper].comments objectForKey:commentsID];
     
-    NSLog(@"commentDict is %@", [FirebaseHelper sharedHelper].comments);
-    
     if (!commentDict) return;
     
     for (NSString *commentThreadID in commentDict.allKeys) {
@@ -769,9 +767,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     projectVC.commentTitleTextField.text = title;
     
-    NSLog(@"title is %@", projectVC.commentTitleTextField.text);
-    
-    //projectVC.commentTitleLabel.text = title;
     [projectVC updateMessages];
     [projectVC.chatTable reloadData];
     
@@ -784,7 +779,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     float oldOffset = projectVC.carouselOffset;
     projectVC.carouselOffset = (point.x*.75)-70;
     
-    if ([projectVC.chatTextField isFirstResponder] && projectVC.carouselOffset > 0) {
+    if (projectVC.activeCommentThreadID && projectVC.carouselOffset > 0) {
         
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:.25];

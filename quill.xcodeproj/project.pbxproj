@@ -14,6 +14,7 @@
 		1213D7AA1A65BF51001FDEA9 /* yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = 1213D7A91A65BF51001FDEA9 /* yellow.png */; };
 		1213D7AC1A65EE22001FDEA9 /* chatfade2.png in Resources */ = {isa = PBXBuildFile; fileRef = 1213D7AB1A65EE22001FDEA9 /* chatfade2.png */; };
 		1213D7AE1A664FB6001FDEA9 /* commenttitle.png in Resources */ = {isa = PBXBuildFile; fileRef = 1213D7AD1A664FB5001FDEA9 /* commenttitle.png */; };
+		1213D7B01A67535A001FDEA9 /* chatfade3.png in Resources */ = {isa = PBXBuildFile; fileRef = 1213D7AF1A67535A001FDEA9 /* chatfade3.png */; };
 		1216D99B19A275980095DBD8 /* LSCollectionViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1216D99119A275980095DBD8 /* LSCollectionViewHelper.m */; };
 		1216D99C19A275980095DBD8 /* LSCollectionViewLayoutHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1216D99319A275980095DBD8 /* LSCollectionViewLayoutHelper.m */; };
 		1216D99D19A275980095DBD8 /* DraggableCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 1216D99619A275980095DBD8 /* DraggableCollectionViewFlowLayout.m */; };
@@ -227,6 +228,7 @@
 		1213D7A91A65BF51001FDEA9 /* yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = yellow.png; path = Resources/yellow.png; sourceTree = "<group>"; };
 		1213D7AB1A65EE22001FDEA9 /* chatfade2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = chatfade2.png; path = Resources/chatfade2.png; sourceTree = "<group>"; };
 		1213D7AD1A664FB5001FDEA9 /* commenttitle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = commenttitle.png; path = Resources/commenttitle.png; sourceTree = "<group>"; };
+		1213D7AF1A67535A001FDEA9 /* chatfade3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = chatfade3.png; path = Resources/chatfade3.png; sourceTree = "<group>"; };
 		1216D99019A275980095DBD8 /* LSCollectionViewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSCollectionViewHelper.h; sourceTree = "<group>"; };
 		1216D99119A275980095DBD8 /* LSCollectionViewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LSCollectionViewHelper.m; sourceTree = "<group>"; };
 		1216D99219A275980095DBD8 /* LSCollectionViewLayoutHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSCollectionViewLayoutHelper.h; sourceTree = "<group>"; };
@@ -646,6 +648,7 @@
 				12860F921A3E29410074B452 /* background5.png */,
 				12A9485619F814330042A036 /* chatfade1.png */,
 				1213D7AB1A65EE22001FDEA9 /* chatfade2.png */,
+				1213D7AF1A67535A001FDEA9 /* chatfade3.png */,
 				1213D7AD1A664FB5001FDEA9 /* commenttitle.png */,
 				12899BB11A1AEC3A00AF95BD /* carouselfade.png */,
 				12C4E4E21A3B9DA800DB0E23 /* carouselfadeleft.png */,
@@ -911,6 +914,7 @@
 				123D20131A5C9B7C004D5743 /* back.png in Resources */,
 				12AA5FB319EC44F400F6D552 /* drawing.png in Resources */,
 				12860F9D1A3E64A60074B452 /* SourceSansPro-Light.otf in Resources */,
+				1213D7B01A67535A001FDEA9 /* chatfade3.png in Resources */,
 				12ABCE841A5E0A3700C4C7DC /* Icon76.png in Resources */,
 				12860FAA1A3FBE750074B452 /* SourceSansPro-Semibold.ttf in Resources */,
 				12C4E4D91A3B8AD400DB0E23 /* board7.png in Resources */,

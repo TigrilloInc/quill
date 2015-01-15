@@ -623,8 +623,8 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="8G4-cC-Yw4"/>
                                 </connections>
                             </tableView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chatfade1.png" id="bA4-HW-Iwl">
-                                <rect key="frame" x="210" y="607" width="1024" height="25"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chatfade3.png" id="bA4-HW-Iwl">
+                                <rect key="frame" x="210" y="604" width="1024" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Project Name" adjustsFontSizeToFit="NO" minimumFontSize="50" id="mem-TG-8ys">
@@ -829,10 +829,10 @@
         <image name="apply.png" width="378" height="100"/>
         <image name="background5.png" width="1024" height="768"/>
         <image name="cancel.png" width="378" height="100"/>
-        <image name="chatfade1.png" width="2048" height="60"/>
+        <image name="chatfade3.png" width="1528" height="60"/>
         <image name="commenttitle.png" width="1024" height="40"/>
         <image name="delete.png" width="630" height="100"/>
-        <image name="edit.png" width="378" height="378"/>
+        <image name="edit.png" width="300" height="300"/>
         <image name="gear1.png" width="324" height="323"/>
         <image name="newboardbutton.png" width="280" height="280"/>
         <image name="plus1.png" width="232" height="231"/>

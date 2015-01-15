@@ -83,8 +83,6 @@
 
 @property (weak, nonatomic) IBOutlet UIView *commentTitleView;
 @property (weak, nonatomic) IBOutlet UITextField *commentTitleTextField;
-//@property (weak, nonatomic) IBOutlet UIButton *commentTitleEditButton;
-//@property (weak, nonatomic) IBOutlet UILabel *commentTitleLabel;
 
 @property (weak, nonatomic) IBOutlet UITextField *editProjectNameTextField;
 @property (weak, nonatomic) IBOutlet UITextField *editBoardNameTextField;

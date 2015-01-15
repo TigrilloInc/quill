@@ -55,7 +55,6 @@
     self.masterView.projectsTable.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"projectsshadow.png"]];
 
     self.editProjectNameTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
-    //self.editProjectNameTextField.clearsOnBeginEditing = false;
     self.editBoardNameTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
     self.editBoardNameTextField.hidden = true;
     self.viewedCommentThreadIDs = [NSMutableArray array];
@@ -357,7 +356,11 @@
         
         for (int i=0; i<self.messages.count; i++) {
             
-            if ([viewedAt isEqualToString:self.messages[i]]) { [self.messages replaceObjectAtIndex:i withObject:@"---------------------------------------<NEW MESSAGES>---------------------------------------"];
+            if ([viewedAt isEqualToString:self.messages[i]]) {
+                
+                NSDictionary *messageDict = @{@"message" : @"---------------------------------------<NEW MESSAGES>---------------------------------------"};
+                
+                [self.messages replaceObjectAtIndex:i withObject:messageDict];
                 if (!self.chatViewed && ![self.chatTextField isFirstResponder]) {
                     CGPoint chatCenter = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y+3);
                     self.chatOpenButton.frame = CGRectMake(0, 0, 150, 31);
@@ -368,28 +371,16 @@
             
             else if ([date isEqualToString:self.messages[i]]) {
                 
-                NSString *text;
-                NSString *name;
+                NSDictionary *messageDict;
                 
                 if (self.activeCommentThreadID) {
                     
                     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"commentsID"];
-                    NSDictionary *messageDict = [[[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] objectForKey:@"messages"] objectForKey:messageID];
-                    
-                    text = [messageDict objectForKey:@"message"];
-                    name = [messageDict objectForKey:@"name"];
+                    messageDict = [[[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] objectForKey:@"messages"] objectForKey:messageID];
                 }
-                else {
-                    
-                    NSDictionary *messageDict = [[[FirebaseHelper sharedHelper].chats objectForKey:self.chatID] objectForKey:messageID];
-                    
-                    text = [messageDict objectForKey:@"message"];
-                    name = [messageDict objectForKey:@"name"];
-                }
+                else messageDict = [[[FirebaseHelper sharedHelper].chats objectForKey:self.chatID] objectForKey:messageID];
                 
-                NSString *messageString = [NSString stringWithFormat:@"%@: %@", name, text];
-                
-                [self.messages replaceObjectAtIndex:i withObject:messageString];
+                [self.messages replaceObjectAtIndex:i withObject:messageDict];
             }
         }
     }
@@ -517,9 +508,7 @@
         int undoCount = [[[undoDict objectForKey:uid] objectForKey:@"currentIndex"] intValue];
         
         for (int i=0; i<userOrderedKeys.count; i++) {
-            
-            //NSLog(@"ORDERED KEY IS %@", userOrderedKeys[i]);
-            
+
             NSMutableDictionary *subpathValues = [[uidDict objectForKey:userOrderedKeys[i]] mutableCopy];
             
             if ([subpathValues respondsToSelector:@selector(objectForKey:)]){
@@ -592,6 +581,8 @@
     self.carouselOffset = 0;
     NSString *boardID = self.currentBoardView.boardID;
     self.boardNameLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:24];
+    [self.boardNameLabel sizeToFit];
+    self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+17, self.boardNameLabel.center.y);
     [self.viewedBoardIDs addObject:boardID];
     boardButton = button;
     self.activeBoardID = boardID;
@@ -633,7 +624,7 @@
                          self.chatTable.frame = CGRectMake(0, 616, self.view.frame.size.width, 103);
                          self.sendMessageButton.frame = CGRectMake(936, 112, 80, 30);
                          self.chatOpenButton.center = CGPointMake(self.view.center.x, self.chatOpenButton.center.y);
-                         self.chatFadeImage.frame = CGRectMake(0, 607, 1024, 25);
+                         self.chatFadeImage.frame = CGRectMake(0, 604, 1024, 25);
                          self.commentTitleView.frame = CGRectMake(0, 613, 1024, 50);
                          
                          boardButton.alpha = 0;
@@ -698,7 +689,7 @@
                          self.chatView.frame = CGRectMake(masterWidth, 616, 814, 152);
                          self.sendMessageButton.frame = CGRectMake(726, 112, 80, 30);
                          self.chatOpenButton.center = CGPointMake(self.chatView.center.x, 599);
-                         self.chatFadeImage.frame = CGRectMake(210, 607, 1024, 25);
+                         self.chatFadeImage.frame = CGRectMake(210, 604, 1024, 25);
                          self.commentTitleView.frame = CGRectMake(210, 613, 1024, 50);
                          
                          CGAffineTransform tr = CGAffineTransformScale(self.carousel.transform, .5, .5);
@@ -796,18 +787,6 @@
     [self.editBoardNameTextField becomeFirstResponder];
     
 }
-
-//- (IBAction)commentTitleEditTapped:(id)sender {
-//    
-//    self.commentTitleEditButton.hidden = true;
-//    self.commentTitleTextField.hidden = false;
-//    self.commentTitleLabel.hidden = true;
-//    
-//    self.commentTitleTextField.text = self.commentTitleLabel.text;
-//    
-//    [self.commentTitleTextField becomeFirstResponder];
-//}
-
 
 -(void) avatarTapped:(id)sender {
     
@@ -1182,7 +1161,7 @@
     [UIView commitAnimations];
     
     commentsOpen = !commentsOpen;
-    
+
     if (commentsOpen) [self.chatOpenButton setImage:[UIImage imageNamed:@"down.png"] forState:UIControlStateNormal];
     else [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
 }
@@ -1275,6 +1254,7 @@
     if ([self.chatTextField isFirstResponder] || [self.commentTitleTextField isFirstResponder]) {
         
         self.chatTextField.text = nil;
+        self.activeCommentThreadID = nil;
         
         CGFloat height = [[notification.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
         keyboardDiff = 517-height;
@@ -1349,12 +1329,6 @@
 
         if (self.activeBoardID) [self.currentBoardView hideChat];
         
-//        if (self.commentTitleTextField.text.length > 0) {
-//            
-//            self.commentTitleLabel.hidden = false;
-//            self.commentTitleEditButton.hidden = false;
-//            self.commentTitleTextField.hidden = true;
-//        }
     }
     
     if ([[self.view viewWithTag:104] isFirstResponder]) {
@@ -1527,7 +1501,6 @@
     if ([textField isEqual:self.chatTextField]) {
         
         NSString *chatString;
-        
         NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
         
         if (self.activeCommentThreadID) {
@@ -1537,7 +1510,7 @@
         else chatString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/chats/%@", self.chatID];
         
         Firebase *chatRef = [[Firebase alloc] initWithUrl:chatString];
-        NSDictionary *messageDict = @{ @"name" : [FirebaseHelper sharedHelper].userName ,
+        NSDictionary *messageDict = @{ @"user" : [FirebaseHelper sharedHelper].uid ,
                                        @"message" : textField.text,
                                        @"sentAt" : dateString
                                        };
@@ -1615,22 +1588,10 @@
         
         NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"commentsID"];
         [[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] setObject:self.commentTitleTextField.text forKey:@"title"];
-        
-        NSLog(@"COMMENT TITLE SET TO %@", [[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] objectForKey:@"title"]);
-        
+
         NSString *titleString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@/%@/info/title", commentsID, self.activeCommentThreadID];
         Firebase *titleRef = [[Firebase alloc] initWithUrl:titleString];
         [titleRef setValue:self.commentTitleTextField.text];
-        
-//        [UIView setAnimationsEnabled:NO];
-//        self.commentTitleLabel.text = self.commentTitleTextField.text;
-//        [self.commentTitleLabel sizeToFit];
-//        self.commentTitleEditButton.center = CGPointMake(self.commentTitleLabel.frame.size.width+30, self.commentTitleLabel.center.y+1);
-//        [UIView setAnimationsEnabled:YES];
-//        
-//        self.commentTitleLabel.hidden = false;
-//        self.commentTitleEditButton.hidden = false;
-//        self.commentTitleTextField.hidden = true;
         
         [self.chatTextField becomeFirstResponder];
     }
@@ -1652,21 +1613,103 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSString *messageString = self.messages[self.messages.count-(indexPath.row+1)];
+    NSDictionary *messageDict = self.messages[self.messages.count-(indexPath.row+1)];
+    NSString *message = [messageDict objectForKey:@"message"];
+
+    CGRect messageRect = [message boundingRectWithSize:CGSizeMake(-64+self.chatTable.frame.size.width,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Light" size:20]} context:nil];
     
-    CGRect labelRect = [messageString boundingRectWithSize:CGSizeMake(self.chatTable.frame.size.width,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Light" size:20]} context:nil];
-    
-    return labelRect.size.height+20;
+    return messageRect.size.height+32;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     ChatTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ChatCell" forIndexPath:indexPath];
-    cell.textLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
     
     if (self.messages.count > indexPath.row) {
         
-        cell.textLabel.text = self.messages[self.messages.count-(indexPath.row+1)];
+        [UIView setAnimationsEnabled:NO];
+        [CATransaction setDisableActions:YES];
+        
+        NSDictionary *messageDict = self.messages[self.messages.count-(indexPath.row+1)];
+        NSString *userID = [messageDict objectForKey:@"user"];
+        NSString *message = [messageDict objectForKey:@"message"];
+        NSString *name = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"name"];
+
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setAMSymbol:@"am"];
+        [dateFormatter setPMSymbol:@"pm"];
+        [dateFormatter setDateFormat:@"MMM d, H:mma"];
+        double dateDouble = [[messageDict objectForKey:@"sentAt"] doubleValue]/100000000;
+        NSDate *date = [NSDate dateWithTimeIntervalSince1970:dateDouble];
+        NSString *dateString = [dateFormatter stringFromDate:date];
+
+        AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
+        avatar.userID = userID;
+        [avatar generateIdenticonWithShadow:false];
+        avatar.frame = CGRectMake(-100, -101, avatar.userImage.size.width, avatar.userImage.size.height);
+        avatar.transform = CGAffineTransformMakeScale(.16, .16);
+        avatar.userInteractionEnabled = false;
+        if ([cell.contentView viewWithTag:1]) [[cell.contentView viewWithTag:1] removeFromSuperview];
+        avatar.tag = 1;
+        [cell.contentView addSubview:avatar];
+
+        UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        nameLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:15];
+        nameLabel.text = name;
+        [nameLabel sizeToFit];
+        nameLabel.frame = CGRectMake(57, 0, nameLabel.frame.size.width, nameLabel.frame.size.height);
+        if ([cell.contentView viewWithTag:2]) [[cell.contentView viewWithTag:2] removeFromSuperview];
+        nameLabel.tag = 2;
+        [cell.contentView addSubview:nameLabel];
+        
+        UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        dateLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:12];
+        dateLabel.textColor = [UIColor grayColor];
+        dateLabel.text = dateString;
+        [dateLabel sizeToFit];
+        dateLabel.frame = CGRectMake(nameLabel.frame.size.width+60, 3, dateLabel.frame.size.width, dateLabel.frame.size.height);
+        if ([cell.contentView viewWithTag:3]) [[cell.contentView viewWithTag:3] removeFromSuperview];
+        dateLabel.tag = 3;
+        [cell.contentView addSubview:dateLabel];
+
+        UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        messageLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
+        messageLabel.text = message;
+        messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        messageLabel.numberOfLines = 0;
+        CGRect messageRect = [message boundingRectWithSize:CGSizeMake(-64+self.chatTable.frame.size.width,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Light" size:20]} context:nil];
+        messageLabel.frame = CGRectMake(57, 18, messageRect.size.width, messageRect.size.height);
+        if ([cell.contentView viewWithTag:4]) [[cell.contentView viewWithTag:4] removeFromSuperview];
+        messageLabel.tag = 4;
+        [cell.contentView addSubview:messageLabel];
+        
+//        NSDictionary *messageDict = self.messages[self.messages.count-(indexPath.row+1)];
+//        NSString *userID = [messageDict objectForKey:@"user"];
+//        NSString *message = [messageDict objectForKey:@"message"];
+//        NSString *name = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"name"];
+//        
+//        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+//        [dateFormatter setDateFormat:@"MMM dd, HH:mm:ss"];
+//        double dateDouble = [[messageDict objectForKey:@"sentAt"] doubleValue]/100000000;
+//        NSDate *date = [NSDate dateWithTimeIntervalSince1970:dateDouble];
+//        NSString *dateString = [dateFormatter stringFromDate:date];
+//        
+//        cell.avatar.userID = userID;
+//        [cell.avatar generateIdenticonWithShadow:false];
+//        cell.avatar.frame = CGRectMake(0, 0, cell.avatar.userImage.size.width, cell.avatar.userImage.size.height);
+//        
+//        cell.nameLabel.text = name;
+//        [cell.nameLabel sizeToFit];
+//        cell.nameLabel.frame = CGRectMake(5, 0, cell.nameLabel.frame.size.width, cell.nameLabel.frame.size.height);
+//        
+//        cell.dateLabel.text = dateString;
+//        [cell.dateLabel sizeToFit];
+//        cell.dateLabel.frame = CGRectMake(cell.nameLabel.frame.size.width+8, 0, cell.dateLabel.frame.size.width, cell.dateLabel.frame.size.height);
+
+        
+        [UIView setAnimationsEnabled:YES];
+        [CATransaction setDisableActions:NO];
+        
     }
         
     return cell;

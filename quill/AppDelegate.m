@@ -22,6 +22,12 @@
     [NSDate serverDate];
     
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+    signal(SIGABRT, signalHandler);
+    signal(SIGILL, signalHandler);
+    signal(SIGSEGV, signalHandler);
+    signal(SIGFPE, signalHandler);
+    signal(SIGBUS, signalHandler);
+    signal(SIGPIPE, signalHandler);
     
     [self checkAuthStatus];
     
@@ -29,6 +35,17 @@
 }
 
 void uncaughtExceptionHandler(NSException *exception) {
+    
+    if (![FirebaseHelper sharedHelper].uid) return;
+    
+    NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/", [FirebaseHelper sharedHelper].uid];
+    Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
+    [[userRef childByAppendingPath:@"inProject"] setValue:@"none"];
+    [[userRef childByAppendingPath:@"inBoard"] setValue:@"none"];
+    [[userRef childByAppendingPath:@"isDrawing"] setValue:@0];
+}
+
+void signalHandler(int signal) {
     
     if (![FirebaseHelper sharedHelper].uid) return;
     
@@ -74,7 +91,9 @@ void uncaughtExceptionHandler(NSException *exception) {
 }
 
 -(void) removeUserPresence {
-     
+
+    if (![FirebaseHelper sharedHelper].uid) return;
+    
     [[FirebaseHelper sharedHelper] setInBoard:@"none"];
     [[FirebaseHelper sharedHelper] setInProject:@"none"];
     NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@", [FirebaseHelper sharedHelper].uid];

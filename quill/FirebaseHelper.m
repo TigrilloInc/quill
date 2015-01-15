@@ -617,6 +617,8 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void) setInProject:(NSString *)projectID {
     
+    if (!self.uid) return;
+    
     if (self.currentProjectID) [[[self.team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:self.currentProjectID forKey:@"inProject"];
     
     NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/inProject", self.uid];
@@ -625,6 +627,8 @@ static FirebaseHelper *sharedHelper = nil;
 }
 
 -(void) setInBoard:(NSString *)boardID {
+    
+    if (!self.uid) return;
     
     [[[self.team objectForKey:@"users"] objectForKey:self.uid] setObject:boardID forKey:@"inBoard"];
     
