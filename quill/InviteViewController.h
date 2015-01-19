@@ -11,13 +11,10 @@
 @interface InviteViewController : UIViewController <UIGestureRecognizerDelegate> {
     
     UITapGestureRecognizer *outsideTapRecognizer;
-    NSArray *inviteFields;
 }
 
-@property (weak, nonatomic) IBOutlet UILabel *inviteLabel;
-@property (weak, nonatomic) IBOutlet UITextField *inviteField1;
-@property (weak, nonatomic) IBOutlet UITextField *inviteField2;
-@property (weak, nonatomic) IBOutlet UITextField *inviteField3;
-@property (weak, nonatomic) IBOutlet UITextField *inviteField4;
+@property (strong, nonatomic) NSMutableArray *inviteEmails;
+@property (strong, nonatomic) IBOutlet UILabel *inviteLabel;
+@property (strong, nonatomic) IBOutlet UITableView *invitesTable;
 
 @end

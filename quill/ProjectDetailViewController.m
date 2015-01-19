@@ -18,6 +18,7 @@
 #import "AvatarPopoverViewController.h"
 #import "ColorPopoverViewController.h"
 #import "PenTypePopoverViewController.h"
+#import "CommentPopoverViewController.h"
 
 @implementation ProjectDetailViewController
 
@@ -48,14 +49,11 @@
     [self.view addSubview:editFadeRight];
     editFadeRight.frame = CGRectMake(1003, 0, 21, 768);
     
-    self.chatTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
     self.chatTable.transform = CGAffineTransformMakeRotation(M_PI);
     [self showChat];
     
     self.masterView.projectsTable.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"projectsshadow.png"]];
 
-    self.editProjectNameTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
-    self.editBoardNameTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
     self.editBoardNameTextField.hidden = true;
     self.viewedCommentThreadIDs = [NSMutableArray array];
     
@@ -71,10 +69,7 @@
     
     [super viewWillAppear:animated];
 
-    self.chatTextField.placeholder = @"Leave a comment...";
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
@@ -358,9 +353,7 @@
             
             if ([viewedAt isEqualToString:self.messages[i]]) {
                 
-                NSDictionary *messageDict = @{@"message" : @"---------------------------------------<NEW MESSAGES>---------------------------------------"};
-                
-                [self.messages replaceObjectAtIndex:i withObject:messageDict];
+                [self.messages replaceObjectAtIndex:i withObject:@"new messages"];
                 if (!self.chatViewed && ![self.chatTextField isFirstResponder]) {
                     CGPoint chatCenter = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y+3);
                     self.chatOpenButton.frame = CGRectMake(0, 0, 150, 31);
@@ -603,6 +596,8 @@
     CGRect projectNameRect = [self.view viewWithTag:101].frame;
     boardNameLabel.frame = CGRectMake(projectNameRect.size.width+36, projectNameRect.origin.y+5.5, boardNameLabel.frame.size.width, boardNameLabel.frame.size.height);
     
+    self.messages = [NSMutableArray array];
+    [self.chatTable reloadData];
     [self hideChat];
     [self.view sendSubviewToBack:self.addBoardButton];
     [self.view sendSubviewToBack:self.addBoardBackgroundImage];
@@ -624,7 +619,7 @@
                          self.chatTable.frame = CGRectMake(0, 616, self.view.frame.size.width, 103);
                          self.sendMessageButton.frame = CGRectMake(936, 112, 80, 30);
                          self.chatOpenButton.center = CGPointMake(self.view.center.x, self.chatOpenButton.center.y);
-                         self.chatFadeImage.frame = CGRectMake(0, 604, 1024, 25);
+                         self.chatFadeImage.frame = CGRectMake(0, 603, 1024, 25);
                          self.commentTitleView.frame = CGRectMake(0, 613, 1024, 50);
                          
                          boardButton.alpha = 0;
@@ -674,7 +669,7 @@
     if ([self.commentTitleTextField isFirstResponder]) [self.commentTitleTextField resignFirstResponder];
     
     self.commentTitleView.hidden = true;
-    [self updateMessages];
+    self.messages = [NSMutableArray array];
     [self.chatTable reloadData];
     
     [UIView animateWithDuration:.25
@@ -685,11 +680,11 @@
                          float masterWidth = self.masterView.frame.size.width;
                          
                          self.chatTextField.frame = CGRectMake(51, 113, 667, 30);
-                         self.chatTable.frame = CGRectMake(masterWidth, 616, self.view.frame.size.width, 103);
+                         self.chatTable.frame = CGRectMake(masterWidth, 612, self.view.frame.size.width-masterWidth, 107);
                          self.chatView.frame = CGRectMake(masterWidth, 616, 814, 152);
                          self.sendMessageButton.frame = CGRectMake(726, 112, 80, 30);
-                         self.chatOpenButton.center = CGPointMake(self.chatView.center.x, 599);
-                         self.chatFadeImage.frame = CGRectMake(210, 604, 1024, 25);
+                         self.chatOpenButton.center = CGPointMake(self.chatView.center.x, 598);
+                         self.chatFadeImage.frame = CGRectMake(210, 603, 1024, 25);
                          self.commentTitleView.frame = CGRectMake(210, 613, 1024, 50);
                          
                          CGAffineTransform tr = CGAffineTransformScale(self.carousel.transform, .5, .5);
@@ -1081,16 +1076,19 @@
 
 -(void) commentTapped:(id)sender {
     
-    for (int i=5; i<=8; i++) {
-        
-        if (i==7) continue;
-        
-        UIView *button = [self.view viewWithTag:i];
-        if (i==8) [button viewWithTag:50].hidden = false;
-        else [button viewWithTag:50].hidden = true;
-    }
+    UIButton *commentButton = (UIButton *)sender;
     
-    self.currentBoardView.commenting = true;
+    CommentPopoverViewController *commentPopover = [[CommentPopoverViewController alloc] init];
+    
+    [commentPopover setModalPresentationStyle:UIModalPresentationPopover];
+    
+    UIPopoverPresentationController *popover = [commentPopover popoverPresentationController];
+    popover.sourceView = commentButton;
+    popover.sourceRect = commentButton.bounds;
+    popover.backgroundColor = nil;
+    popover.permittedArrowDirections = UIPopoverArrowDirectionDown;
+    
+    [self presentViewController:commentPopover animated:NO completion:nil];
 }
 
 - (IBAction)newBoardTapped:(id)sender {
@@ -1225,7 +1223,7 @@
             self.masterView.projectsTable.frame = projectsTableRect;
         }
         
-        self.chatOpenButton.frame = CGRectMake(592, 585, 51, 28);
+        self.chatOpenButton.frame = CGRectMake(592, 584, 51, 28);
         
         if (!self.activeBoardID) {
             [self.chatOpenButton setImage:[UIImage imageNamed:@"down.png"] forState:UIControlStateNormal];
@@ -1614,16 +1612,25 @@
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     NSDictionary *messageDict = self.messages[self.messages.count-(indexPath.row+1)];
-    NSString *message = [messageDict objectForKey:@"message"];
-
-    CGRect messageRect = [message boundingRectWithSize:CGSizeMake(-64+self.chatTable.frame.size.width,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Light" size:20]} context:nil];
     
-    return messageRect.size.height+32;
+    if ([messageDict respondsToSelector:@selector(isEqualToString:)]) return 20;
+    else {
+        
+        NSString *message = [messageDict objectForKey:@"message"];
+        CGRect messageRect = [message boundingRectWithSize:CGSizeMake(-66+self.chatTable.frame.size.width,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Light" size:20]} context:nil];
+        
+        return messageRect.size.height+25;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     ChatTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ChatCell" forIndexPath:indexPath];
+    
+    for (int i=1; i<7; i++) {
+        
+        if ([cell.contentView viewWithTag:200+i]) [[cell.contentView viewWithTag:200+i] removeFromSuperview];
+    }
     
     if (self.messages.count > indexPath.row) {
         
@@ -1631,85 +1638,76 @@
         [CATransaction setDisableActions:YES];
         
         NSDictionary *messageDict = self.messages[self.messages.count-(indexPath.row+1)];
-        NSString *userID = [messageDict objectForKey:@"user"];
-        NSString *message = [messageDict objectForKey:@"message"];
-        NSString *name = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"name"];
-
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setAMSymbol:@"am"];
-        [dateFormatter setPMSymbol:@"pm"];
-        [dateFormatter setDateFormat:@"MMM d, H:mma"];
-        double dateDouble = [[messageDict objectForKey:@"sentAt"] doubleValue]/100000000;
-        NSDate *date = [NSDate dateWithTimeIntervalSince1970:dateDouble];
-        NSString *dateString = [dateFormatter stringFromDate:date];
-
-        AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
-        avatar.userID = userID;
-        [avatar generateIdenticonWithShadow:false];
-        avatar.frame = CGRectMake(-100, -101, avatar.userImage.size.width, avatar.userImage.size.height);
-        avatar.transform = CGAffineTransformMakeScale(.16, .16);
-        avatar.userInteractionEnabled = false;
-        if ([cell.contentView viewWithTag:1]) [[cell.contentView viewWithTag:1] removeFromSuperview];
-        avatar.tag = 1;
-        [cell.contentView addSubview:avatar];
-
-        UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        nameLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:15];
-        nameLabel.text = name;
-        [nameLabel sizeToFit];
-        nameLabel.frame = CGRectMake(57, 0, nameLabel.frame.size.width, nameLabel.frame.size.height);
-        if ([cell.contentView viewWithTag:2]) [[cell.contentView viewWithTag:2] removeFromSuperview];
-        nameLabel.tag = 2;
-        [cell.contentView addSubview:nameLabel];
         
-        UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        dateLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:12];
-        dateLabel.textColor = [UIColor grayColor];
-        dateLabel.text = dateString;
-        [dateLabel sizeToFit];
-        dateLabel.frame = CGRectMake(nameLabel.frame.size.width+60, 3, dateLabel.frame.size.width, dateLabel.frame.size.height);
-        if ([cell.contentView viewWithTag:3]) [[cell.contentView viewWithTag:3] removeFromSuperview];
-        dateLabel.tag = 3;
-        [cell.contentView addSubview:dateLabel];
+        if ([messageDict respondsToSelector:@selector(isEqualToString:)]) {
+         
+            UILabel *newMessagesLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+            newMessagesLabel.text = @"New Messages";
+            newMessagesLabel.textColor = [UIColor grayColor];
+            newMessagesLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:16];
+            [newMessagesLabel sizeToFit];
+            newMessagesLabel.center = CGPointMake(cell.frame.size.width/2, newMessagesLabel.center.y);
+            newMessagesLabel.tag = 205;
+            [cell.contentView addSubview:newMessagesLabel];
+            
+            UIImageView *dividerImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"newmessagesdivider.png"]];
+            if ([cell.contentView viewWithTag:206]) [[cell.contentView viewWithTag:206] removeFromSuperview];
+            dividerImage.tag = 206;
+            [cell.contentView addSubview:dividerImage];
+        }
+        else {
+            
+            NSString *userID = [messageDict objectForKey:@"user"];
+            NSString *message = [messageDict objectForKey:@"message"];
+            NSString *name = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"name"];
 
-        UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        messageLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
-        messageLabel.text = message;
-        messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        messageLabel.numberOfLines = 0;
-        CGRect messageRect = [message boundingRectWithSize:CGSizeMake(-64+self.chatTable.frame.size.width,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Light" size:20]} context:nil];
-        messageLabel.frame = CGRectMake(57, 18, messageRect.size.width, messageRect.size.height);
-        if ([cell.contentView viewWithTag:4]) [[cell.contentView viewWithTag:4] removeFromSuperview];
-        messageLabel.tag = 4;
-        [cell.contentView addSubview:messageLabel];
-        
-//        NSDictionary *messageDict = self.messages[self.messages.count-(indexPath.row+1)];
-//        NSString *userID = [messageDict objectForKey:@"user"];
-//        NSString *message = [messageDict objectForKey:@"message"];
-//        NSString *name = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"name"];
-//        
-//        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-//        [dateFormatter setDateFormat:@"MMM dd, HH:mm:ss"];
-//        double dateDouble = [[messageDict objectForKey:@"sentAt"] doubleValue]/100000000;
-//        NSDate *date = [NSDate dateWithTimeIntervalSince1970:dateDouble];
-//        NSString *dateString = [dateFormatter stringFromDate:date];
-//        
-//        cell.avatar.userID = userID;
-//        [cell.avatar generateIdenticonWithShadow:false];
-//        cell.avatar.frame = CGRectMake(0, 0, cell.avatar.userImage.size.width, cell.avatar.userImage.size.height);
-//        
-//        cell.nameLabel.text = name;
-//        [cell.nameLabel sizeToFit];
-//        cell.nameLabel.frame = CGRectMake(5, 0, cell.nameLabel.frame.size.width, cell.nameLabel.frame.size.height);
-//        
-//        cell.dateLabel.text = dateString;
-//        [cell.dateLabel sizeToFit];
-//        cell.dateLabel.frame = CGRectMake(cell.nameLabel.frame.size.width+8, 0, cell.dateLabel.frame.size.width, cell.dateLabel.frame.size.height);
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setAMSymbol:@"am"];
+            [dateFormatter setPMSymbol:@"pm"];
+            [dateFormatter setDateFormat:@"MMM d, h:mma"];
+            double dateDouble = [[messageDict objectForKey:@"sentAt"] doubleValue]/100000000;
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970:dateDouble];
+            NSString *dateString = [dateFormatter stringFromDate:date];
 
+            AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
+            avatar.userID = userID;
+            [avatar generateIdenticonWithShadow:false];
+            avatar.frame = CGRectMake(-100, -101, avatar.userImage.size.width, avatar.userImage.size.height);
+            avatar.transform = CGAffineTransformMakeScale(.16, .16);
+            avatar.userInteractionEnabled = false;
+            avatar.tag = 201;
+            [cell.contentView addSubview:avatar];
+
+            UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+            nameLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:15];
+            nameLabel.text = name;
+            [nameLabel sizeToFit];
+            nameLabel.frame = CGRectMake(57, 2, nameLabel.frame.size.width, nameLabel.frame.size.height);
+            nameLabel.tag = 202;
+            [cell.contentView addSubview:nameLabel];
+            
+            UILabel *dateLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+            dateLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:12];
+            dateLabel.textColor = [UIColor grayColor];
+            dateLabel.text = dateString;
+            [dateLabel sizeToFit];
+            dateLabel.frame = CGRectMake(nameLabel.frame.size.width+60, 5, dateLabel.frame.size.width, dateLabel.frame.size.height);
+            dateLabel.tag = 203;
+            [cell.contentView addSubview:dateLabel];
+
+            UILabel *messageLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+            messageLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:18];
+            messageLabel.text = message;
+            messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            messageLabel.numberOfLines = 0;
+            CGRect messageRect = [message boundingRectWithSize:CGSizeMake(-66+self.chatTable.frame.size.width,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Light" size:20]} context:nil];
+            messageLabel.frame = CGRectMake(57, 18, messageRect.size.width, messageRect.size.height);
+            messageLabel.tag = 204;
+            [cell.contentView addSubview:messageLabel];
+        }
         
         [UIView setAnimationsEnabled:YES];
         [CATransaction setDisableActions:NO];
-        
     }
         
     return cell;

@@ -52,6 +52,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         _empty = YES;
         self.activeUserIDs = [NSMutableArray array];
         self.loadingView = nil;
+        self.hideComments = true;
         
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;;
         

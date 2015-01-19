@@ -18,6 +18,7 @@
 @property (nonatomic, assign) BOOL empty;
 @property (nonatomic, assign) BOOL drawable;
 @property (nonatomic, assign) BOOL commenting;
+@property (nonatomic, assign) BOOL hideComments;
 @property (nonatomic, assign) NSString *boardID;
 @property (nonatomic, assign) NSString *selectedAvatarUserID;
 @property (nonatomic, strong) NSMutableDictionary *subpaths;

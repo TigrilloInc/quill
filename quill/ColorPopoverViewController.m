@@ -28,7 +28,7 @@
     
     for (int i=0; i<colors.count; i++) {
         
-        UIButton *colorButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        UIButton *colorButton = [UIButton buttonWithType:UIButtonTypeCustom];
         colorButton.frame = CGRectMake(15, 18+i*70, 50, 50);
         [colorButton setBackgroundImage:[UIImage imageNamed:colors[i]] forState:UIControlStateNormal];
         [colorButton addTarget:self action:@selector(colorTapped:) forControlEvents:UIControlEventTouchUpInside];

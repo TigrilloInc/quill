@@ -19,8 +19,6 @@
 {
     [super viewDidLoad];
     
-    self.emailField.placeholder = @"email";
-    self.passwordField.placeholder = @"password";
     self.passwordField.secureTextEntry = true;
     
     self.emailField.delegate = self;
@@ -48,6 +46,9 @@
     
     NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
+ 
+//    NewTeamViewController *newTeamVC = [self.storyboard instantiateViewControllerWithIdentifier:@"NewTeam"];
+//    [self.navigationController pushViewController:newTeamVC animated:YES];
     
     if ([emailTest evaluateWithObject:self.emailField.text] == true && self.passwordField.text.length > 0) {
         

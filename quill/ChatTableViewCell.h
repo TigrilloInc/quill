@@ -11,10 +11,6 @@
 
 @interface ChatTableViewCell : UITableViewCell
 
-//@property (strong, nonatomic) UILabel *nameLabel;
-//@property (strong, nonatomic) UILabel *dateLabel;
-//@property (strong, nonatomic) UILabel *messageLabel;
-//@property (strong, nonatomic) AvatarButton *avatar;
 
 
 @end

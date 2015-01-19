@@ -10,36 +10,19 @@
 #import <Firebase/Firebase.h>
 #import "FirebaseHelper.h"
 #import <MailCore/mailcore.h>
-
-@interface InviteViewController ()
-
-@end
+#import "InviteTableViewCell.h"
 
 @implementation InviteViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        
-    }
-    return self;
-}
-
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+    
     [super viewDidLoad];
     
-    inviteFields = @[self.inviteField1,self.inviteField2,self.inviteField3,self.inviteField4];
-    
-    for (UITextField *field in inviteFields) {
-        field.placeholder = @"email";
-    }
-    
+    self.inviteEmails = [NSMutableArray array];
+    [self.inviteEmails addObject:@""];
 }
 
-- (void) viewDidAppear:(BOOL)animated
-{
+- (void) viewDidAppear:(BOOL)animated {
     
     outsideTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside)];
     
@@ -49,14 +32,12 @@
     [self.view.window addGestureRecognizer:outsideTapRecognizer];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+-(void) addInviteTapped {
+    
+    
 }
 
-- (IBAction)sendTapped:(id)sender
-{
+- (IBAction)sendTapped:(id)sender {
     
     Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/tokens"];
     
@@ -71,9 +52,11 @@
     NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
     
-    for (UITextField *textField in inviteFields) {
+    for (InviteTableViewCell *cell in self.invitesTable.visibleCells) {
      
-        if ([emailTest evaluateWithObject:textField.text] == true) {
+        NSString *emailString = ((UITextField *)[cell.contentView viewWithTag:301]).text;
+        
+        if ([emailTest evaluateWithObject:emailString] == true) {
             
             NSString *token = [self generateToken];
             NSString *tokenURL = [NSString stringWithFormat:@"quill://%@", token];
@@ -81,7 +64,7 @@
             
             MCOMessageBuilder *builder = [[MCOMessageBuilder alloc] init];
             MCOAddress *from = [MCOAddress addressWithDisplayName:@"Quill" mailbox:@"cos@tigrillo.co"];
-            MCOAddress *to = [MCOAddress addressWithDisplayName:nil mailbox:textField.text];
+            MCOAddress *to = [MCOAddress addressWithDisplayName:nil mailbox:emailString];
             [[builder header] setFrom:from];
             [[builder header] setTo:@[to]];
             
@@ -121,8 +104,8 @@
 
 -(void) tappedOutside {
     
-    if (outsideTapRecognizer.state == UIGestureRecognizerStateEnded)
-    {
+    if (outsideTapRecognizer.state == UIGestureRecognizerStateEnded) {
+        
         CGPoint location = [outsideTapRecognizer locationInView:nil];
         CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
         
@@ -133,6 +116,153 @@
             [self dismissViewControllerAnimated:YES completion:nil];
         }
     }
+}
+
+-(void) deleteTapped:(id)sender {
+    
+    self.inviteEmails = [NSMutableArray array];
+    
+    for (int i=0; i<self.invitesTable.visibleCells.count-1; i++) {
+        
+        InviteTableViewCell *cell = (InviteTableViewCell *)self.invitesTable.visibleCells[i];
+        
+        if ([cell.contentView viewWithTag:301]) {
+            
+            UITextField *textField = (UITextField *)[cell.contentView viewWithTag:301];
+            
+            if (textField.text.length == 0) [self.inviteEmails addObject:@""];
+            else [self.inviteEmails addObject:textField.text];
+        }
+    }
+    
+    UIButton *deleteButton = (UIButton *)sender;
+    NSString *emailString = ((UITextField *)[deleteButton.superview viewWithTag:301]).text;
+    
+    [self.inviteEmails removeObject:emailString];
+    [self.invitesTable reloadData];
+}
+
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    return self.inviteEmails.count+1;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    InviteTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"InviteCell" forIndexPath:indexPath];
+
+    for (int i=1; i<5; i++) {
+        
+        if ([cell.contentView viewWithTag:300+i]) [[cell.contentView viewWithTag:300+i] removeFromSuperview];
+    }
+    
+    if (indexPath.row == self.inviteEmails.count) {
+        
+        cell.textLabel.hidden = false;
+        
+//        cell.textLabel.hidden = false;
+//        cell.inviteField.hidden = true;
+//        cell.readOnlyLabel.hidden = true;
+//        cell.readOnlySwitch.hidden = true;
+//        cell.deleteButton.hidden = true;
+    }
+    else {
+        
+        cell.textLabel.hidden = true;
+        
+        UITextField *inviteTextField = [[UITextField alloc] initWithFrame:CGRectMake(15, 2, 189, 42)];
+        inviteTextField.placeholder = @"Enter Email";
+        inviteTextField.tag = 301;
+        inviteTextField.text = self.inviteEmails[indexPath.row];
+        [cell.contentView addSubview:inviteTextField];
+
+        UILabel *readOnlyLabel = [[UILabel alloc] initWithFrame:CGRectMake(212, 11, 82, 21)];
+        readOnlyLabel.text = @"Read-Only";
+        readOnlyLabel.tag = 302;
+        [cell.contentView addSubview:readOnlyLabel];
+        
+        UISwitch *readOnlySwitch = [[UISwitch alloc] initWithFrame:CGRectMake(302, 6, 51, 31)];
+        readOnlySwitch.tag = 303;
+        [cell.contentView addSubview:readOnlySwitch];
+        
+        UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        deleteButton.titleLabel.text = @"-";
+        deleteButton.frame = CGRectMake(369, 7, 30, 30);
+        [deleteButton addTarget:self action:@selector(deleteTapped:) forControlEvents:UIControlEventTouchUpInside];
+        deleteButton.tag = 304;
+        [cell.contentView addSubview:deleteButton];
+        
+//        cell.textLabel.hidden = true;
+//        cell.inviteField.hidden = false;
+//        cell.readOnlyLabel.hidden = false;
+//        cell.readOnlySwitch.hidden = false;
+//        cell.deleteButton.hidden = false;
+    }
+    
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.row == self.inviteEmails.count) {
+        
+        BOOL emptyCell = false;
+        self.inviteEmails = [NSMutableArray array];
+        
+        for (InviteTableViewCell *cell in self.invitesTable.visibleCells) {
+            
+            if ([cell.contentView viewWithTag:301]) {
+            
+                UITextField *textField = (UITextField *)[cell.contentView viewWithTag:301];
+                
+                if ([textField isFirstResponder]) [textField resignFirstResponder];
+                
+                if (textField.text.length == 0) {
+                    emptyCell = true;
+                    [self.inviteEmails addObject:@""];
+                }
+                else [self.inviteEmails addObject:textField.text];
+            }
+        }
+        
+        if (!emptyCell) {
+            
+            [self.inviteEmails addObject:@""];
+            [self.invitesTable reloadData];
+        
+            InviteTableViewCell *newCell = (InviteTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+            [(UITextField *)[newCell.contentView viewWithTag:301] becomeFirstResponder];
+        }
+        
+//        BOOL emptyCell = false;
+//        
+//        for (int i=0; i<self.invitesTable.visibleCells.count-1; i++) {
+//            
+//            InviteTableViewCell *cell = (InviteTableViewCell *)self.invitesTable.visibleCells[i];
+//            
+//            if ([cell.inviteField isFirstResponder]) [cell.inviteField resignFirstResponder];
+//            
+//            NSLog(@"cell length is %i", cell.inviteField.text.length);
+//            if (cell.inviteField.text.length == 0) emptyCell = true;
+//        }
+//
+//        if (!emptyCell) {
+//            
+//            [self.inviteEmails insertObject:@"" atIndex:0];
+//            [self.invitesTable reloadData];
+//            
+//            InviteTableViewCell *cell = (InviteTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"InviteCell" forIndexPath:indexPath];
+//            [cell.inviteField becomeFirstResponder];
+//        }
+    }
+    
 }
 
 #pragma mark - UIGestureRecognizer Delegate

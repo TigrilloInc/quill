@@ -15,6 +15,10 @@
 		1213D7AC1A65EE22001FDEA9 /* chatfade2.png in Resources */ = {isa = PBXBuildFile; fileRef = 1213D7AB1A65EE22001FDEA9 /* chatfade2.png */; };
 		1213D7AE1A664FB6001FDEA9 /* commenttitle.png in Resources */ = {isa = PBXBuildFile; fileRef = 1213D7AD1A664FB5001FDEA9 /* commenttitle.png */; };
 		1213D7B01A67535A001FDEA9 /* chatfade3.png in Resources */ = {isa = PBXBuildFile; fileRef = 1213D7AF1A67535A001FDEA9 /* chatfade3.png */; };
+		1213D7B21A67ABF2001FDEA9 /* chatfade4.png in Resources */ = {isa = PBXBuildFile; fileRef = 1213D7B11A67ABF2001FDEA9 /* chatfade4.png */; };
+		1213D7B41A681915001FDEA9 /* chatfade5.png in Resources */ = {isa = PBXBuildFile; fileRef = 1213D7B31A681915001FDEA9 /* chatfade5.png */; };
+		1213D7B71A6849B7001FDEA9 /* CommentPopoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1213D7B61A6849B7001FDEA9 /* CommentPopoverViewController.m */; };
+		1213D7B91A6B1538001FDEA9 /* newmessagesdivider.png in Resources */ = {isa = PBXBuildFile; fileRef = 1213D7B81A6B1538001FDEA9 /* newmessagesdivider.png */; };
 		1216D99B19A275980095DBD8 /* LSCollectionViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1216D99119A275980095DBD8 /* LSCollectionViewHelper.m */; };
 		1216D99C19A275980095DBD8 /* LSCollectionViewLayoutHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1216D99319A275980095DBD8 /* LSCollectionViewLayoutHelper.m */; };
 		1216D99D19A275980095DBD8 /* DraggableCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 1216D99619A275980095DBD8 /* DraggableCollectionViewFlowLayout.m */; };
@@ -24,6 +28,7 @@
 		1225C434199D4AB30061027B /* board2.png in Resources */ = {isa = PBXBuildFile; fileRef = 1225C433199D4AB30061027B /* board2.png */; };
 		1230ABC719709E7B00EB2389 /* FirebaseHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1230ABC619709E7B00EB2389 /* FirebaseHelper.m */; };
 		1230ABCA1972093300EB2389 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1230ABC81972093300EB2389 /* Main_iPad.storyboard */; };
+		1231BEB01A6CD06100E09914 /* InviteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1231BEAF1A6CD06100E09914 /* InviteTableViewCell.m */; };
 		123D1FF71A52567C004D5743 /* newboardbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D1FF61A52567C004D5743 /* newboardbutton.png */; };
 		123D1FFF1A5385C2004D5743 /* selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D1FFE1A5385C2004D5743 /* selected.png */; };
 		123D20021A5A5028004D5743 /* color.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D20001A5A5027004D5743 /* color.png */; };
@@ -124,6 +129,8 @@
 		12ABCEA01A5F214C00C4C7DC /* userbutton4.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ABCE9A1A5F214C00C4C7DC /* userbutton4.png */; };
 		12ABCEA11A5F214C00C4C7DC /* userbutton5.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ABCE9B1A5F214C00C4C7DC /* userbutton5.png */; };
 		12ABCEA21A5F214C00C4C7DC /* userbutton6.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ABCE9C1A5F214C00C4C7DC /* userbutton6.png */; };
+		12ACFBAF1A6C9262004C298B /* formsheetbackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ACFBAE1A6C9262004C298B /* formsheetbackground.png */; };
+		12ACFBB71A6C98E8004C298B /* Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ACFBB61A6C98E8004C298B /* Logo.png */; };
 		12BCAF5B1A4C0EA500FC327E /* down.png in Resources */ = {isa = PBXBuildFile; fileRef = 12BCAF5A1A4C0EA500FC327E /* down.png */; };
 		12BE8D1D196A616000503F84 /* SignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BE8D1C196A616000503F84 /* SignInViewController.m */; };
 		12BE8D68196BA1B100503F84 /* NewTeamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BE8D67196BA1B100503F84 /* NewTeamViewController.m */; };
@@ -229,6 +236,11 @@
 		1213D7AB1A65EE22001FDEA9 /* chatfade2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = chatfade2.png; path = Resources/chatfade2.png; sourceTree = "<group>"; };
 		1213D7AD1A664FB5001FDEA9 /* commenttitle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = commenttitle.png; path = Resources/commenttitle.png; sourceTree = "<group>"; };
 		1213D7AF1A67535A001FDEA9 /* chatfade3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = chatfade3.png; path = Resources/chatfade3.png; sourceTree = "<group>"; };
+		1213D7B11A67ABF2001FDEA9 /* chatfade4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = chatfade4.png; path = Resources/chatfade4.png; sourceTree = "<group>"; };
+		1213D7B31A681915001FDEA9 /* chatfade5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = chatfade5.png; path = Resources/chatfade5.png; sourceTree = "<group>"; };
+		1213D7B51A6849B7001FDEA9 /* CommentPopoverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentPopoverViewController.h; sourceTree = "<group>"; };
+		1213D7B61A6849B7001FDEA9 /* CommentPopoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentPopoverViewController.m; sourceTree = "<group>"; };
+		1213D7B81A6B1538001FDEA9 /* newmessagesdivider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = newmessagesdivider.png; path = Resources/newmessagesdivider.png; sourceTree = "<group>"; };
 		1216D99019A275980095DBD8 /* LSCollectionViewHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSCollectionViewHelper.h; sourceTree = "<group>"; };
 		1216D99119A275980095DBD8 /* LSCollectionViewHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LSCollectionViewHelper.m; sourceTree = "<group>"; };
 		1216D99219A275980095DBD8 /* LSCollectionViewLayoutHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSCollectionViewLayoutHelper.h; sourceTree = "<group>"; };
@@ -246,6 +258,8 @@
 		1230ABC519709E7B00EB2389 /* FirebaseHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FirebaseHelper.h; sourceTree = "<group>"; };
 		1230ABC619709E7B00EB2389 /* FirebaseHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FirebaseHelper.m; sourceTree = "<group>"; };
 		1230ABC91972093300EB2389 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
+		1231BEAE1A6CD06100E09914 /* InviteTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteTableViewCell.h; sourceTree = "<group>"; };
+		1231BEAF1A6CD06100E09914 /* InviteTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteTableViewCell.m; sourceTree = "<group>"; };
 		123D1FF61A52567C004D5743 /* newboardbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = newboardbutton.png; path = Resources/newboardbutton.png; sourceTree = "<group>"; };
 		123D1FFE1A5385C2004D5743 /* selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = selected.png; path = Resources/selected.png; sourceTree = "<group>"; };
 		123D20001A5A5027004D5743 /* color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = color.png; path = Resources/color.png; sourceTree = "<group>"; };
@@ -367,6 +381,8 @@
 		12ABCE9A1A5F214C00C4C7DC /* userbutton4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userbutton4.png; path = Resources/userbutton4.png; sourceTree = "<group>"; };
 		12ABCE9B1A5F214C00C4C7DC /* userbutton5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userbutton5.png; path = Resources/userbutton5.png; sourceTree = "<group>"; };
 		12ABCE9C1A5F214C00C4C7DC /* userbutton6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userbutton6.png; path = Resources/userbutton6.png; sourceTree = "<group>"; };
+		12ACFBAE1A6C9262004C298B /* formsheetbackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = formsheetbackground.png; path = Resources/formsheetbackground.png; sourceTree = "<group>"; };
+		12ACFBB61A6C98E8004C298B /* Logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Logo.png; path = Resources/Logo.png; sourceTree = "<group>"; };
 		12BCAF5A1A4C0EA500FC327E /* down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = down.png; path = Resources/down.png; sourceTree = "<group>"; };
 		12BE8D1B196A616000503F84 /* SignInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignInViewController.h; sourceTree = "<group>"; };
 		12BE8D1C196A616000503F84 /* SignInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignInViewController.m; sourceTree = "<group>"; };
@@ -545,12 +561,16 @@
 				12860FCC1A423EDA0074B452 /* PenTypePopoverViewController.m */,
 				12860FCE1A423F000074B452 /* ColorPopoverViewController.h */,
 				12860FCF1A423F000074B452 /* ColorPopoverViewController.m */,
+				1213D7B51A6849B7001FDEA9 /* CommentPopoverViewController.h */,
+				1213D7B61A6849B7001FDEA9 /* CommentPopoverViewController.m */,
 				1216D99F19A3DBED0095DBD8 /* BoardCollectionViewCell.h */,
 				1216D9A019A3DBED0095DBD8 /* BoardCollectionViewCell.m */,
 				12AA5FA919E7904700F6D552 /* AddUserViewController.h */,
 				12AA5FAA19E7904700F6D552 /* AddUserViewController.m */,
 				12A3FA141979BDD900E03E9E /* InviteViewController.h */,
 				12A3FA151979BDD900E03E9E /* InviteViewController.m */,
+				1231BEAE1A6CD06100E09914 /* InviteTableViewCell.h */,
+				1231BEAF1A6CD06100E09914 /* InviteTableViewCell.m */,
 				12A310E5197F5AC900E03E9E /* NameFromInviteViewController.h */,
 				12A310E6197F5AC900E03E9E /* NameFromInviteViewController.m */,
 				12BE8D66196BA1B100503F84 /* NewTeamViewController.h */,
@@ -601,6 +621,7 @@
 				12D5DB961A48F167003727AC /* markerselected.png */,
 				123D1FF61A52567C004D5743 /* newboardbutton.png */,
 				123D200C1A5B2B6B004D5743 /* newmessages.png */,
+				1213D7B81A6B1538001FDEA9 /* newmessagesdivider.png */,
 				12D5DBA31A48F20B003727AC /* highlighter.png */,
 				12D5DBA41A48F20B003727AC /* highlighterselected.png */,
 				12860FD91A43CFA30074B452 /* undo.png */,
@@ -632,6 +653,7 @@
 				12860FC91A420AF20074B452 /* usercommenthighlight.png */,
 				12860F9E1A3E9A1B0074B452 /* projectsshadow.png */,
 				123D20121A5C9B7C004D5743 /* back.png */,
+				12ACFBB61A6C98E8004C298B /* Logo.png */,
 				12ABCE711A5E044400C4C7DC /* Icon.png */,
 				12ABCE791A5E0A3600C4C7DC /* Icon29.png */,
 				12ABCE7A1A5E0A3700C4C7DC /* Icon40.png */,
@@ -649,12 +671,15 @@
 				12A9485619F814330042A036 /* chatfade1.png */,
 				1213D7AB1A65EE22001FDEA9 /* chatfade2.png */,
 				1213D7AF1A67535A001FDEA9 /* chatfade3.png */,
+				1213D7B11A67ABF2001FDEA9 /* chatfade4.png */,
+				1213D7B31A681915001FDEA9 /* chatfade5.png */,
 				1213D7AD1A664FB5001FDEA9 /* commenttitle.png */,
 				12899BB11A1AEC3A00AF95BD /* carouselfade.png */,
 				12C4E4E21A3B9DA800DB0E23 /* carouselfadeleft.png */,
 				12C4E4E41A3B9E2E00DB0E23 /* carouselfaderight.png */,
 				123D200E1A5B4EDB004D5743 /* editfadeleft.png */,
 				123D200F1A5B4EDB004D5743 /* editfaderight.png */,
+				12ACFBAE1A6C9262004C298B /* formsheetbackground.png */,
 				1225C431199B194F0061027B /* close.png */,
 				129E129419648A2C00ED9D42 /* Images.xcassets */,
 				12860F9A1A3E62870074B452 /* SourceSansPro-ExtraLight.otf */,
@@ -856,6 +881,7 @@
 				12860FCA1A420AF20074B452 /* usercommenthighlight.png in Resources */,
 				12ABCE861A5E0A3700C4C7DC /* Icon120.png in Resources */,
 				129E129519648A2C00ED9D42 /* Images.xcassets in Resources */,
+				1213D7B21A67ABF2001FDEA9 /* chatfade4.png in Resources */,
 				12860FBE1A40C8CD0074B452 /* userbutton2shadow.png in Resources */,
 				123D20021A5A5028004D5743 /* color.png in Resources */,
 				12860FC21A40C8CD0074B452 /* userbutton6shadow.png in Resources */,
@@ -879,10 +905,12 @@
 				123D1FF71A52567C004D5743 /* newboardbutton.png in Resources */,
 				123D200A1A5A5365004D5743 /* green.png in Resources */,
 				12ABCEA21A5F214C00C4C7DC /* userbutton6.png in Resources */,
+				12ACFBB71A6C98E8004C298B /* Logo.png in Resources */,
 				12D5DBA81A4A7432003727AC /* plus2.png in Resources */,
 				123D20111A5B4EDB004D5743 /* editfaderight.png in Resources */,
 				12ABCE871A5E0A3700C4C7DC /* Icon152.png in Resources */,
 				12860F9B1A3E62870074B452 /* SourceSansPro-ExtraLight.otf in Resources */,
+				1213D7B41A681915001FDEA9 /* chatfade5.png in Resources */,
 				12860FD41A43CECD0074B452 /* edit.png in Resources */,
 				12C4E4CF1A3B6CD300DB0E23 /* board3.png in Resources */,
 				12860FC81A414FF70074B452 /* userhighlight2.png in Resources */,
@@ -915,6 +943,7 @@
 				12AA5FB319EC44F400F6D552 /* drawing.png in Resources */,
 				12860F9D1A3E64A60074B452 /* SourceSansPro-Light.otf in Resources */,
 				1213D7B01A67535A001FDEA9 /* chatfade3.png in Resources */,
+				1213D7B91A6B1538001FDEA9 /* newmessagesdivider.png in Resources */,
 				12ABCE841A5E0A3700C4C7DC /* Icon76.png in Resources */,
 				12860FAA1A3FBE750074B452 /* SourceSansPro-Semibold.ttf in Resources */,
 				12C4E4D91A3B8AD400DB0E23 /* board7.png in Resources */,
@@ -923,6 +952,7 @@
 				12860FEC1A47C3170074B452 /* plus1.png in Resources */,
 				12C4E4D31A3B781600DB0E23 /* board5.png in Resources */,
 				12C4E4E11A3B98B300DB0E23 /* background4.png in Resources */,
+				12ACFBAF1A6C9262004C298B /* formsheetbackground.png in Resources */,
 				1213D7AE1A664FB6001FDEA9 /* commenttitle.png in Resources */,
 				12BCAF5B1A4C0EA500FC327E /* down.png in Resources */,
 				12ABCE9E1A5F214C00C4C7DC /* userbutton2.png in Resources */,
@@ -963,6 +993,7 @@
 			files = (
 				1216D99E19A275980095DBD8 /* UICollectionView+Draggable.m in Sources */,
 				12BE8D74196CF04D00503F84 /* NewProjectViewController.m in Sources */,
+				1231BEB01A6CD06100E09914 /* InviteTableViewCell.m in Sources */,
 				124E5CF619AE83CB00442963 /* NSDate+ServerDate.m in Sources */,
 				12A310E4197DC65B00E03E9E /* SignUpFromInviteViewController.m in Sources */,
 				12860FD01A423F000074B452 /* ColorPopoverViewController.m in Sources */,
@@ -980,6 +1011,7 @@
 				12BE8D1D196A616000503F84 /* SignInViewController.m in Sources */,
 				1230ABC719709E7B00EB2389 /* FirebaseHelper.m in Sources */,
 				1216D99C19A275980095DBD8 /* LSCollectionViewLayoutHelper.m in Sources */,
+				1213D7B71A6849B7001FDEA9 /* CommentPopoverViewController.m in Sources */,
 				1216D99B19A275980095DBD8 /* LSCollectionViewHelper.m in Sources */,
 				12A3FA101979861800E03E9E /* ProjectDetailViewController.m in Sources */,
 				12AA5FAB19E7904700F6D552 /* AddUserViewController.m in Sources */,
