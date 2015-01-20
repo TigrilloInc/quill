@@ -29,6 +29,12 @@
 		1230ABC719709E7B00EB2389 /* FirebaseHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1230ABC619709E7B00EB2389 /* FirebaseHelper.m */; };
 		1230ABCA1972093300EB2389 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1230ABC81972093300EB2389 /* Main_iPad.storyboard */; };
 		1231BEB01A6CD06100E09914 /* InviteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1231BEAF1A6CD06100E09914 /* InviteTableViewCell.m */; };
+		1231BEB91A6D8D2B00E09914 /* minus1.png in Resources */ = {isa = PBXBuildFile; fileRef = 1231BEB71A6D8D2B00E09914 /* minus1.png */; };
+		1231BEBA1A6D8D2B00E09914 /* plus3.png in Resources */ = {isa = PBXBuildFile; fileRef = 1231BEB81A6D8D2B00E09914 /* plus3.png */; };
+		1231BEBC1A6D97A200E09914 /* minus2.png in Resources */ = {isa = PBXBuildFile; fileRef = 1231BEBB1A6D97A200E09914 /* minus2.png */; };
+		1231BEBE1A6DC52C00E09914 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = 1231BEBD1A6DC52C00E09914 /* checked.png */; };
+		1231BEC01A6DC53A00E09914 /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = 1231BEBF1A6DC53A00E09914 /* unchecked.png */; };
+		1231BEC21A6DFAB400E09914 /* mail.png in Resources */ = {isa = PBXBuildFile; fileRef = 1231BEC11A6DFAB400E09914 /* mail.png */; };
 		123D1FF71A52567C004D5743 /* newboardbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D1FF61A52567C004D5743 /* newboardbutton.png */; };
 		123D1FFF1A5385C2004D5743 /* selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D1FFE1A5385C2004D5743 /* selected.png */; };
 		123D20021A5A5028004D5743 /* color.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D20001A5A5027004D5743 /* color.png */; };
@@ -260,6 +266,12 @@
 		1230ABC91972093300EB2389 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
 		1231BEAE1A6CD06100E09914 /* InviteTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteTableViewCell.h; sourceTree = "<group>"; };
 		1231BEAF1A6CD06100E09914 /* InviteTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteTableViewCell.m; sourceTree = "<group>"; };
+		1231BEB71A6D8D2B00E09914 /* minus1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = minus1.png; path = Resources/minus1.png; sourceTree = "<group>"; };
+		1231BEB81A6D8D2B00E09914 /* plus3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = plus3.png; path = Resources/plus3.png; sourceTree = "<group>"; };
+		1231BEBB1A6D97A200E09914 /* minus2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = minus2.png; path = Resources/minus2.png; sourceTree = "<group>"; };
+		1231BEBD1A6DC52C00E09914 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checked.png; path = Resources/checked.png; sourceTree = "<group>"; };
+		1231BEBF1A6DC53A00E09914 /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = unchecked.png; path = Resources/unchecked.png; sourceTree = "<group>"; };
+		1231BEC11A6DFAB400E09914 /* mail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mail.png; path = Resources/mail.png; sourceTree = "<group>"; };
 		123D1FF61A52567C004D5743 /* newboardbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = newboardbutton.png; path = Resources/newboardbutton.png; sourceTree = "<group>"; };
 		123D1FFE1A5385C2004D5743 /* selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = selected.png; path = Resources/selected.png; sourceTree = "<group>"; };
 		123D20001A5A5027004D5743 /* color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = color.png; path = Resources/color.png; sourceTree = "<group>"; };
@@ -629,8 +641,14 @@
 				1201F4971A4ABFAD00186C13 /* up.png */,
 				12BCAF5A1A4C0EA500FC327E /* down.png */,
 				12860FDD1A44D21A0074B452 /* comment.png */,
+				1231BEBD1A6DC52C00E09914 /* checked.png */,
+				1231BEBF1A6DC53A00E09914 /* unchecked.png */,
+				1231BEC11A6DFAB400E09914 /* mail.png */,
+				1231BEB71A6D8D2B00E09914 /* minus1.png */,
+				1231BEBB1A6D97A200E09914 /* minus2.png */,
 				12860FEB1A47C3170074B452 /* plus1.png */,
 				12D5DBA71A4A7432003727AC /* plus2.png */,
+				1231BEB81A6D8D2B00E09914 /* plus3.png */,
 				12860FE91A47AF800074B452 /* avatarbackground.png */,
 				12ABCE971A5F214C00C4C7DC /* userbutton1.png */,
 				12ABCE981A5F214C00C4C7DC /* userbutton2.png */,
@@ -883,8 +901,10 @@
 				129E129519648A2C00ED9D42 /* Images.xcassets in Resources */,
 				1213D7B21A67ABF2001FDEA9 /* chatfade4.png in Resources */,
 				12860FBE1A40C8CD0074B452 /* userbutton2shadow.png in Resources */,
+				1231BEBC1A6D97A200E09914 /* minus2.png in Resources */,
 				123D20021A5A5028004D5743 /* color.png in Resources */,
 				12860FC21A40C8CD0074B452 /* userbutton6shadow.png in Resources */,
+				1231BEC01A6DC53A00E09914 /* unchecked.png in Resources */,
 				12D5DBA11A48F173003727AC /* pen.png in Resources */,
 				12860FDA1A43CFA30074B452 /* undo.png in Resources */,
 				123D1FFF1A5385C2004D5743 /* selected.png in Resources */,
@@ -894,6 +914,7 @@
 				1225C432199B194F0061027B /* close.png in Resources */,
 				12A9485719F814330042A036 /* chatfade1.png in Resources */,
 				12ABCE941A5F159600C4C7DC /* leave.png in Resources */,
+				1231BEB91A6D8D2B00E09914 /* minus1.png in Resources */,
 				12ABCE9F1A5F214C00C4C7DC /* userbutton3.png in Resources */,
 				12860FBD1A40C8CD0074B452 /* userbutton1shadow.png in Resources */,
 				12860F9F1A3E9A1B0074B452 /* projectsshadow.png in Resources */,
@@ -901,6 +922,7 @@
 				12D5DB981A48F167003727AC /* markerselected.png in Resources */,
 				1243AFB319FF0A900029B976 /* userhighlight.png in Resources */,
 				1201F4981A4ABFAD00186C13 /* up.png in Resources */,
+				1231BEBA1A6D8D2B00E09914 /* plus3.png in Resources */,
 				12ABCE901A5F0D8400C4C7DC /* viewer.png in Resources */,
 				123D1FF71A52567C004D5743 /* newboardbutton.png in Resources */,
 				123D200A1A5A5365004D5743 /* green.png in Resources */,
@@ -929,10 +951,12 @@
 				12ABCE961A5F17D500C4C7DC /* remove.png in Resources */,
 				12899BB21A1AEC3B00AF95BD /* carouselfade.png in Resources */,
 				12ABCEA11A5F214C00C4C7DC /* userbutton5.png in Resources */,
+				1231BEBE1A6DC52C00E09914 /* checked.png in Resources */,
 				12D5DBA61A48F20B003727AC /* highlighterselected.png in Resources */,
 				1213D7A61A646D5D001FDEA9 /* usercomment2.png in Resources */,
 				123D20071A5A5359004D5743 /* blue.png in Resources */,
 				1213D7AA1A65BF51001FDEA9 /* yellow.png in Resources */,
+				1231BEC21A6DFAB400E09914 /* mail.png in Resources */,
 				129E128B19648A2C00ED9D42 /* Main_iPhone.storyboard in Resources */,
 				12D5DBA51A48F20B003727AC /* highlighter.png in Resources */,
 				1213D7AC1A65EE22001FDEA9 /* chatfade2.png in Resources */,

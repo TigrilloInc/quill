@@ -79,7 +79,7 @@
                 if(error) {
                     NSLog(@"Error sending email: %@", error);
                 } else {
-                    self.inviteLabel.text = @"Invites sent!";
+ //                   self.inviteLabel.text = @"Invites sent!";
                     NSLog(@"Successfully sent email!");
                 }
             }];
@@ -139,6 +139,7 @@
     NSString *emailString = ((UITextField *)[deleteButton.superview viewWithTag:301]).text;
     
     [self.inviteEmails removeObject:emailString];
+    if (self.inviteEmails.count == 0) [self.inviteEmails addObject:@""];
     [self.invitesTable reloadData];
 }
 
@@ -158,7 +159,7 @@
 
     InviteTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"InviteCell" forIndexPath:indexPath];
 
-    for (int i=1; i<5; i++) {
+    for (int i=1; i<6; i++) {
         
         if ([cell.contentView viewWithTag:300+i]) [[cell.contentView viewWithTag:300+i] removeFromSuperview];
     }
@@ -166,6 +167,12 @@
     if (indexPath.row == self.inviteEmails.count) {
         
         cell.textLabel.hidden = false;
+
+        
+        UIImageView *plusImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"plus3.png"]];
+        plusImage.frame = CGRectMake(14, 7, 30, 30);
+        plusImage.tag = 305;
+        [cell.contentView addSubview:plusImage];
         
 //        cell.textLabel.hidden = false;
 //        cell.inviteField.hidden = true;
@@ -177,24 +184,24 @@
         
         cell.textLabel.hidden = true;
         
-        UITextField *inviteTextField = [[UITextField alloc] initWithFrame:CGRectMake(15, 2, 189, 42)];
+        UITextField *inviteTextField = [[UITextField alloc] initWithFrame:CGRectMake(15, 2, 248, 42)];
         inviteTextField.placeholder = @"Enter Email";
         inviteTextField.tag = 301;
         inviteTextField.text = self.inviteEmails[indexPath.row];
         [cell.contentView addSubview:inviteTextField];
 
-        UILabel *readOnlyLabel = [[UILabel alloc] initWithFrame:CGRectMake(212, 11, 82, 21)];
+        UILabel *readOnlyLabel = [[UILabel alloc] initWithFrame:CGRectMake(320, 11, 82, 21)];
         readOnlyLabel.text = @"Read-Only";
         readOnlyLabel.tag = 302;
         [cell.contentView addSubview:readOnlyLabel];
         
-        UISwitch *readOnlySwitch = [[UISwitch alloc] initWithFrame:CGRectMake(302, 6, 51, 31)];
+        UISwitch *readOnlySwitch = [[UISwitch alloc] initWithFrame:CGRectMake(410, 6, 51, 31)];
         readOnlySwitch.tag = 303;
         [cell.contentView addSubview:readOnlySwitch];
         
         UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        deleteButton.titleLabel.text = @"-";
-        deleteButton.frame = CGRectMake(369, 7, 30, 30);
+        [deleteButton setBackgroundImage:[UIImage imageNamed:@"minus2.png"] forState:UIControlStateNormal];
+        deleteButton.frame = CGRectMake(485, 7, 30, 30);
         [deleteButton addTarget:self action:@selector(deleteTapped:) forControlEvents:UIControlEventTouchUpInside];
         deleteButton.tag = 304;
         [cell.contentView addSubview:deleteButton];

@@ -385,7 +385,14 @@
 
     self.avatars = [NSMutableArray array];
     
-    NSArray *userIDs = [self.roles.allKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    NSMutableArray *users = [self.roles.allKeys mutableCopy];
+    
+    for (NSString *user in users) {
+        
+        if ([user containsString:@"@"]) [users removeObject:user];
+    }
+    
+    NSArray *userIDs = [users sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     
     [self.avatarBackgroundImage removeFromSuperview];
     self.avatarBackgroundImage.hidden = false;
@@ -439,7 +446,14 @@
     
     NSMutableDictionary *subpathsDict = [NSMutableDictionary dictionary];
     
-    for (NSString *userID in self.roles.allKeys) {
+    NSMutableArray *userIDs = [self.roles.allKeys mutableCopy];
+    
+    for (NSString *user in userIDs) {
+        
+        if ([user containsString:@"@"]) [userIDs removeObject:user];
+    }
+
+    for (NSString *userID in userIDs) {
         
         [subpathsDict setObject:[@{ dateString : @"penUp"} mutableCopy] forKey:userID];
     }

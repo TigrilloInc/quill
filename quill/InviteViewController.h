@@ -14,7 +14,6 @@
 }
 
 @property (strong, nonatomic) NSMutableArray *inviteEmails;
-@property (strong, nonatomic) IBOutlet UILabel *inviteLabel;
 @property (strong, nonatomic) IBOutlet UITableView *invitesTable;
 
 @end

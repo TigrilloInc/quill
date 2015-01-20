@@ -12,5 +12,4 @@
 @interface ChatTableViewCell : UITableViewCell
 
 
-
 @end
