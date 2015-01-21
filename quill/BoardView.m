@@ -94,7 +94,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         CGAffineTransform bgtr = CGAffineTransformScale(self.avatarBackgroundImage.transform, .25, .25);
         bgtr = CGAffineTransformRotate(bgtr, -M_PI_2);
         self.avatarBackgroundImage.transform = bgtr;
-        self.avatarBackgroundImage.frame = CGRectMake(18, self.avatarBackgroundImage.frame.size.width-70, self.avatarBackgroundImage.frame.size.width, self.avatarBackgroundImage.frame.size.height);
+        self.avatarBackgroundImage.frame = CGRectMake(18+projectVC.carouselOffset, self.avatarBackgroundImage.frame.size.width-70, self.avatarBackgroundImage.frame.size.width, self.avatarBackgroundImage.frame.size.height);
         [self addSubview:self.avatarBackgroundImage];
     }
 
@@ -103,7 +103,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
         avatar.userID = userIDs[i];
         [avatar generateIdenticonWithShadow:true];
-        avatar.frame = CGRectMake(-70.5, -12+(i-1)*66, avatar.userImage.size.width, avatar.userImage.size.height);
+        avatar.frame = CGRectMake(-70.5+projectVC.carouselOffset, -12+(i-1)*66, avatar.userImage.size.width, avatar.userImage.size.height);
         CGAffineTransform tr = CGAffineTransformScale(avatar.transform, .25, .25);
         tr = CGAffineTransformRotate(tr, -M_PI_2);
         avatar.transform = tr;
@@ -122,7 +122,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"commentsID"];
     NSDictionary *commentDict = [[FirebaseHelper sharedHelper].comments objectForKey:commentsID];
-    
+
     if (!commentDict) return;
     
     for (NSString *commentThreadID in commentDict.allKeys) {

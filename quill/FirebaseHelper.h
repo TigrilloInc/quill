@@ -42,6 +42,7 @@
 - (void) observeBoardWithID:(NSString *)boardID;
 - (void) observeSubpathsForUser:(NSString *)userID onBoard:(NSString *)boardID;
 - (void) observeUndoForUser:(NSString *)userID onBoard:(NSString *)boardID;
+- (void) observeCommentsOnBoardWithID:(NSString *)boardID;
 - (void) observeCommentThreadWithID:(NSString *)commentThreadID boardID:(NSString *)boardID;
 - (void) setInProject:(NSString *)projectID;
 - (void) setInBoard:(NSString *)boardID;

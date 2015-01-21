@@ -180,6 +180,8 @@
             
             NSString *userID = self.availableUsersDict.allKeys[i];
             
+            NSLog(@"userID is %@", userID);
+            
             if ([self.selectedUsers containsObject:userID]) {
                     
                 UISegmentedControl *roleControl = (UISegmentedControl *)[cell.contentView viewWithTag:403];
@@ -191,7 +193,7 @@
          
             UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
             
-            if (textField.text > 0) {
+            if (textField.text.length > 0) {
                 
                 UISegmentedControl *roleControl = (UISegmentedControl *)[cell.contentView viewWithTag:403];
                 [userEmails setObject:@(roleControl.selectedSegmentIndex) forKey:textField.text];
@@ -209,7 +211,7 @@
         UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
         NSString *emailString = textField.text;
 
-        if (![emailTest evaluateWithObject:emailString]) [errorEmails addObject:emailString];
+        if (![emailTest evaluateWithObject:emailString] && textField.text.length > 0) [errorEmails addObject:emailString];
     }
     
     if (errorEmails.count == 0) {
@@ -220,7 +222,7 @@
         NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles", [FirebaseHelper sharedHelper].currentProjectID];
         Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
         [projectRef updateChildValues:projectVC.roles];
-        
+
         for (NSString *userID in userIDs) {
             
             for (NSString *boardID in projectVC.boardIDs) {
@@ -298,12 +300,8 @@
     }
     else {
 
-        
-        
-        
-        
-        
-        
+        [projectVC updateDetails];
+        [self invitesSent];
     }
 
 }
@@ -448,8 +446,7 @@
 
             NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
             NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
-
-            
+           
             UITextField *inviteTextField = [[UITextField alloc] initWithFrame:CGRectMake(64, 3, 240, 42)];
             inviteTextField.placeholder = @"Enter Email";
             inviteTextField.tag = 401;

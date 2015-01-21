@@ -388,12 +388,7 @@
     self.avatars = [NSMutableArray array];
     
     NSMutableArray *users = [self.roles.allKeys mutableCopy];
-    
-    for (NSString *user in users) {
-        
-        if ([user containsString:@"@"]) [users removeObject:user];
-    }
-    
+
     NSArray *userIDs = [users sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     
     [self.avatarBackgroundImage removeFromSuperview];
@@ -415,7 +410,9 @@
         avatar.transform = CGAffineTransformScale(avatar.transform, .25, .25);
         [self.view insertSubview:avatar aboveSubview:self.avatarBackgroundImage];
         
-        if (![[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"inProject"] isEqualToString:[FirebaseHelper sharedHelper].currentProjectID] && ![avatar.userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
+        NSString *inProjectID = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"inProject"];
+
+        if (![inProjectID isEqualToString:[FirebaseHelper sharedHelper].currentProjectID] && ![avatar.userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
             avatar.alpha = 0.5;
         }
         [self.avatars addObject:avatar];
@@ -449,11 +446,6 @@
     NSMutableDictionary *subpathsDict = [NSMutableDictionary dictionary];
     
     NSMutableArray *userIDs = [self.roles.allKeys mutableCopy];
-    
-    for (NSString *user in userIDs) {
-        
-        if ([user containsString:@"@"]) [userIDs removeObject:user];
-    }
 
     for (NSString *userID in userIDs) {
         
@@ -713,6 +705,7 @@
                      }
                      completion:^(BOOL finished) {
                          
+                         [self.carousel reloadData];
                          [self updateDetails];
                          
                          [self showChat];

@@ -94,12 +94,15 @@
                                                 } mutableCopy]
                                 };
     
-    [[FirebaseHelper sharedHelper].projects setObject:[localProjectDict mutableCopy] forKey:projectRefWithID.name];
-    [[FirebaseHelper sharedHelper].comments setObject:[NSMutableDictionary dictionary] forKey:commentsID];
     [[FirebaseHelper sharedHelper].boards setObject:[boardDict mutableCopy] forKey:boardRefWithID.name];
+    [[FirebaseHelper sharedHelper].loadedBoardIDs addObject:boardRefWithID.name];
+    
+    [[FirebaseHelper sharedHelper].comments setObject:[NSMutableDictionary dictionary] forKey:commentsID];
+    [[FirebaseHelper sharedHelper] observeCommentsOnBoardWithID:boardID];
+    
+    [[FirebaseHelper sharedHelper].projects setObject:[localProjectDict mutableCopy] forKey:projectRefWithID.name];
     [FirebaseHelper sharedHelper].currentProjectID = projectID;
     [[FirebaseHelper sharedHelper].visibleProjectIDs addObject:projectID];
-    [[FirebaseHelper sharedHelper].loadedBoardIDs addObject:boardRefWithID.name];
     [[FirebaseHelper sharedHelper] observeProjectWithID:projectID];
     
     [projectRefWithID updateChildValues:projectDict];

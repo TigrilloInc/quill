@@ -139,7 +139,7 @@ static FirebaseHelper *sharedHelper = nil;
         
         NSString *newProjectID = [newUserDict objectForKey:@"inProject"];
         NSString *oldProjectID = [oldUserDict objectForKey:@"inProject"];
-        
+
         if ([self.currentProjectID isEqualToString:newProjectID] || [self.currentProjectID isEqualToString:oldProjectID]) [self.projectVC layoutAvatars];
         else return;
         
@@ -240,6 +240,8 @@ static FirebaseHelper *sharedHelper = nil;
                     
                     if (![self.boards objectForKey:boardID]) {
                         
+                        NSLog(@"NEW BOARD %@", boardID);
+                        
                         [self.boards setObject:[NSMutableDictionary dictionary] forKey:boardID];
                         if (self.projectVC.activeBoardID == nil && [self.currentProjectID isEqualToString:projectID]) { [self.projectVC.carousel reloadData];
                         }
@@ -336,7 +338,7 @@ static FirebaseHelper *sharedHelper = nil;
 
     NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
     Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
-
+    
     [[ref childByAppendingPath:@"commentsID"] observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         [[self.boards objectForKey:boardID] setObject:snapshot.value forKey:@"commentsID"];
