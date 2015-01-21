@@ -8,18 +8,14 @@
 
 #import "AppDelegate.h"
 #import <Firebase/Firebase.h>
-#import <FirebaseSimpleLogin/FirebaseSimpleLogin.h>
 #import "FirebaseHelper.h"
-#import "SignInViewController.h"
 #import "SignUpFromInviteViewController.h"
-#import "NSDate+ServerDate.h"
 
 @implementation AppDelegate
 
 -(BOOL) application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [FirebaseHelper sharedHelper];
-    [NSDate serverDate];
     
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     signal(SIGABRT, signalHandler);
@@ -29,7 +25,7 @@
     signal(SIGBUS, signalHandler);
     signal(SIGPIPE, signalHandler);
     
-    [self checkAuthStatus];
+    [[FirebaseHelper sharedHelper] testConnection];
     
     return YES;
 }
@@ -56,39 +52,7 @@ void signalHandler(int signal) {
     [[userRef childByAppendingPath:@"isDrawing"] setValue:@0];
 }
 
--(void) checkAuthStatus {
-    
-    Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
-    FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
-    
-    [authClient checkAuthStatusWithBlock:^(NSError *error, FAUser *user) {
-        
-        if (error != nil) {
-            NSLog(@"%@", error);
-            [authClient logout];
-            [self checkAuthStatus];
-        }
-        
-        else if (user == nil) {
-            
-            SignInViewController *vc = [self.window.rootViewController.storyboard instantiateViewControllerWithIdentifier:@"SignIn"];
-            
-            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
-            
-            nav.modalPresentationStyle = UIModalPresentationFormSheet;
-            nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-            [self.window.rootViewController presentViewController:nav animated:YES completion:nil];
-        }
-        else {
-            
-            NSLog(@"User logged in as %@", user.uid);
-            
-            [FirebaseHelper sharedHelper].loggedIn = true;
-            [FirebaseHelper sharedHelper].uid = user.uid;
-            [[FirebaseHelper sharedHelper] observeLocalUser];
-        }
-    }];
-}
+
 
 -(void) removeUserPresence {
 

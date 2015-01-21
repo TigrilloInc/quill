@@ -19,7 +19,7 @@
 @property (strong, nonatomic) NSDictionary *availableUsersDict;
 @property (strong, nonatomic) NSMutableArray *selectedUsers;
 @property (strong, nonatomic) NSMutableArray *inviteEmails;
-@property (strong, nonatomic) NSMutableArray *errorEmails;
+@property (weak, nonatomic) IBOutlet UIButton *inviteButton;
 
 
 @end

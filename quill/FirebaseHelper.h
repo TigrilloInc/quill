@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <Firebase/Firebase.h>
+#import <FirebaseSimpleLogin/FirebaseSimpleLogin.h>
 #import "ProjectDetailViewController.h"
 #import "MasterView.h"
 
@@ -29,10 +30,12 @@
 @property (strong, nonatomic) NSString *currentProjectID;
 @property (strong, nonatomic) NSMutableArray *visibleProjectIDs;
 @property (strong, nonatomic) NSMutableArray *loadedBoardIDs;
+@property BOOL connected;
 @property BOOL firstLoad;
 @property BOOL loggedIn;
 
 + (FirebaseHelper *)sharedHelper;
+- (void) testConnection;
 - (void) observeLocalUser;
 - (void) observeCurrentProjectBoards;
 - (void) observeProjectWithID:(NSString *)projectID;

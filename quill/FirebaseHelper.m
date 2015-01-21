@@ -11,9 +11,11 @@
 #import "FirebaseHelper.h"
 #import "MasterViewController.h"
 #import "ProjectDetailViewController.h"
+#import "SignInViewController.h"
 #import "BoardView.h"
 #import "NSDate+ServerDate.h"
 #import "AvatarButton.h"
+#import "Reachability.h"
 
 @implementation FirebaseHelper
 
@@ -37,7 +39,71 @@ static FirebaseHelper *sharedHelper = nil;
     return sharedHelper;
 }
 
-- (void) observeLocalUser {
+-(void) testConnection {
+ 
+    Reachability *reachability = [Reachability reachabilityWithHostname:@"www.google.com"];
+    
+    __unsafe_unretained typeof(self) weakSelf = self;
+    
+    reachability.reachableBlock = ^(Reachability*reach) {
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            weakSelf.connected = true;
+            [NSDate serverDate];
+            if (!self.loggedIn) [self checkAuthStatus];
+            
+            NSLog(@"Yayyy, we have the interwebs!");
+        });
+    };
+    
+    reachability.unreachableBlock = ^(Reachability*reach) {
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            weakSelf.connected = false;
+            NSLog(@"Someone broke the internet :(");
+        });
+    };
+    
+    [reachability startNotifier];
+}
+
+-(void) checkAuthStatus {
+    
+    Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
+    FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
+    
+    [authClient checkAuthStatusWithBlock:^(NSError *error, FAUser *user) {
+        
+        if (error != nil) {
+            NSLog(@"%@", error);
+            [authClient logout];
+            [self checkAuthStatus];
+        }
+        
+        else if (user == nil) {
+            
+            SignInViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignIn"];
+            
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+            
+            nav.modalPresentationStyle = UIModalPresentationFormSheet;
+            nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            [self.projectVC presentViewController:nav animated:YES completion:nil];
+        }
+        else {
+            
+            NSLog(@"User logged in as %@", user.uid);
+            
+            [FirebaseHelper sharedHelper].loggedIn = true;
+            [FirebaseHelper sharedHelper].uid = user.uid;
+            [[FirebaseHelper sharedHelper] observeLocalUser];
+        }
+    }];
+}
+
+-(void) observeLocalUser {
 
     NSString *uidString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@", self.uid];
     Firebase *ref = [[Firebase alloc] initWithUrl:uidString];

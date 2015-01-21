@@ -87,6 +87,7 @@
     closeButton.frame = CGRectMake(15, 34, 20, 18);
     [closeButton setImage:[UIImage imageNamed:@"back.png"] forState:UIControlStateNormal];
     closeButton.adjustsImageWhenHighlighted = NO;
+    closeButton.tintColor = [UIColor blackColor];
     [closeButton addTarget:self action:@selector(closeTapped:) forControlEvents:UIControlEventTouchUpInside];
     closeButton.hidden = true;
     [self.view addSubview:closeButton];
@@ -95,6 +96,7 @@
     UIButton *projectNameButton = [UIButton buttonWithType:UIButtonTypeSystem];
     projectNameButton.titleLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:20];
     [projectNameButton addTarget:self action:@selector(closeTapped:) forControlEvents:UIControlEventTouchUpInside];
+    projectNameButton.tintColor = [UIColor blackColor];
     projectNameButton.hidden = true;
     projectNameButton.frame = CGRectMake(30, 24, 0, 0);
     [self.view addSubview:projectNameButton];

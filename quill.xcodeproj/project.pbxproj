@@ -35,6 +35,7 @@
 		1231BEBE1A6DC52C00E09914 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = 1231BEBD1A6DC52C00E09914 /* checked.png */; };
 		1231BEC01A6DC53A00E09914 /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = 1231BEBF1A6DC53A00E09914 /* unchecked.png */; };
 		1231BEC21A6DFAB400E09914 /* mail.png in Resources */ = {isa = PBXBuildFile; fileRef = 1231BEC11A6DFAB400E09914 /* mail.png */; };
+		1231BEC51A6EE2F200E09914 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 1231BEC41A6EE2F200E09914 /* Reachability.m */; };
 		123D1FF71A52567C004D5743 /* newboardbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D1FF61A52567C004D5743 /* newboardbutton.png */; };
 		123D1FFF1A5385C2004D5743 /* selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D1FFE1A5385C2004D5743 /* selected.png */; };
 		123D20021A5A5028004D5743 /* color.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D20001A5A5027004D5743 /* color.png */; };
@@ -272,6 +273,8 @@
 		1231BEBD1A6DC52C00E09914 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checked.png; path = Resources/checked.png; sourceTree = "<group>"; };
 		1231BEBF1A6DC53A00E09914 /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = unchecked.png; path = Resources/unchecked.png; sourceTree = "<group>"; };
 		1231BEC11A6DFAB400E09914 /* mail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mail.png; path = Resources/mail.png; sourceTree = "<group>"; };
+		1231BEC31A6EE2F200E09914 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reachability.h; path = Resources/Reachability/Reachability.h; sourceTree = "<group>"; };
+		1231BEC41A6EE2F200E09914 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Reachability.m; path = Resources/Reachability/Reachability.m; sourceTree = "<group>"; };
 		123D1FF61A52567C004D5743 /* newboardbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = newboardbutton.png; path = Resources/newboardbutton.png; sourceTree = "<group>"; };
 		123D1FFE1A5385C2004D5743 /* selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = selected.png; path = Resources/selected.png; sourceTree = "<group>"; };
 		123D20001A5A5027004D5743 /* color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = color.png; path = Resources/color.png; sourceTree = "<group>"; };
@@ -599,6 +602,8 @@
 				124E5CF519AE83CB00442963 /* NSDate+ServerDate.m */,
 				12860FB11A4024910074B452 /* NSString+MD5.h */,
 				12860FB21A4024920074B452 /* NSString+MD5.m */,
+				1231BEC31A6EE2F200E09914 /* Reachability.h */,
+				1231BEC41A6EE2F200E09914 /* Reachability.m */,
 				1216D98E19A275980095DBD8 /* DraggableCollectionView */,
 				1265B18B1984533500349817 /* board.png */,
 				1225C433199D4AB30061027B /* board2.png */,
@@ -1040,6 +1045,7 @@
 				12A3FA101979861800E03E9E /* ProjectDetailViewController.m in Sources */,
 				12AA5FAB19E7904700F6D552 /* AddUserViewController.m in Sources */,
 				128DC3071A1E8C7000FF6076 /* ChatTableViewCell.m in Sources */,
+				1231BEC51A6EE2F200E09914 /* Reachability.m in Sources */,
 				129E128419648A2C00ED9D42 /* main.m in Sources */,
 				12860FB31A4024920074B452 /* NSString+MD5.m in Sources */,
 				12A3FA0D1977420400E03E9E /* SettingsViewController.m in Sources */,
