@@ -29,7 +29,8 @@
     }
     self.availableUsersDict = usersDict;
     
-    [self.inviteEmails addObject:@""];
+    //if (self.availableUsersDict.allKeys.count == 0)
+        [self.inviteEmails addObject:@""];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -40,9 +41,7 @@
     [outsideTapRecognizer setNumberOfTapsRequired:1];
     outsideTapRecognizer.cancelsTouchesInView = NO;
     [self.view.window addGestureRecognizer:outsideTapRecognizer];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -51,49 +50,7 @@
     
     [outsideTapRecognizer setDelegate:nil];
     [self.view.window removeGestureRecognizer:outsideTapRecognizer];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-}
 
--(void)keyboardWillShow:(NSNotification *)notification {
-
-    
-//    [UIView beginAnimations:nil context:NULL];
-//    [UIView setAnimationDuration:[notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
-//    [UIView setAnimationCurve:[notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] doubleValue]];
-//    [UIView setAnimationBeginsFromCurrentState:YES];
-
-//    [self.usersTable setFrame:CGRectMake(0, 44, 540, 200)];
-    
-//    UIEdgeInsets insets = self.usersTable.contentInset;
-//    insets.bottom += 200;
-//    self.usersTable.contentInset = insets;
-//
-//    self.inviteButton.center = CGPointMake(self.inviteButton.center.x, 310);
-//    
-//    [UIView commitAnimations];
-}
-
--(void)keyboardWillHide:(NSNotification *)notification {
-
-//    [UIView beginAnimations:nil context:NULL];
-//    [UIView setAnimationDuration:[notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
-//    [UIView setAnimationCurve:[notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] doubleValue]];
-//    [UIView setAnimationBeginsFromCurrentState:YES];
-    
-    
-    //[self.usersTable setFrame:CGRectMake(0, 44, 540, 400)];
-
-    
-//    UIEdgeInsets insets = self.usersTable.contentInset;
-//    insets.bottom -= 200;
-//    self.usersTable.contentInset = insets;
-
-    
-//    self.inviteButton.center = CGPointMake(self.inviteButton.center.x, 540);
-    
-//    [UIView commitAnimations];
 }
 
 - (NSString *) generateToken {
@@ -113,42 +70,23 @@
 
 -(void) updateInviteEmails {
     
-    self.inviteEmails = [NSMutableArray array];
+    int cellCount = self.availableUsersDict.allKeys.count+self.inviteEmails.count;
     
-    for (int i=self.availableUsersDict.allKeys.count; i<self.usersTable.visibleCells.count-1; i++) {
+    for (NSString *emailString in self.inviteEmails) {
+        if (emailString.length == 0) [self.inviteEmails removeObject:emailString];
+    }
+    
+    for (int i=self.availableUsersDict.allKeys.count; i<cellCount; i++) {
         
-        UITableViewCell *cell = self.usersTable.visibleCells[i];
+        UITableViewCell *cell = [self.usersTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
         
         if ([cell.contentView viewWithTag:401]) {
             
             UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
-            
-            if (textField.text.length == 0) [self.inviteEmails addObject:@""];
-            else [self.inviteEmails addObject:textField.text];
+
+            if (![self.inviteEmails containsObject:textField.text] && textField.text.length > 0) [self.inviteEmails addObject:textField.text];
         }
     }
-}
-
--(void) updateErrorEmails {
-    
-//    self.errorEmails = [NSMutableArray array];
-//    
-//    NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
-//    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
-//    
-//    for (int i=self.availableUsersDict.allKeys.count; i<self.usersTable.visibleCells.count-1; i++) {
-//        
-//        UITableViewCell *cell = self.usersTable.visibleCells[i];
-//        
-//        UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
-//        NSString *emailString = textField.text;
-//        
-//        if (![emailTest evaluateWithObject:emailString]) {
-//            
-//            [self.errorEmails addObject:emailString];
-//            textField.textColor = [UIColor redColor];
-//        }
-//    }
 }
 
 -(void) invitesSent {
@@ -172,15 +110,15 @@
     NSMutableDictionary *userEmails = [NSMutableDictionary dictionary];
     NSMutableArray *errorEmails = [NSMutableArray array];
     
-    for (int i=0; i<self.usersTable.visibleCells.count-1; i++) {
+    int cellCount = self.availableUsersDict.allKeys.count+self.inviteEmails.count;
+    
+    for (int i=0; i<cellCount-1; i++) {
         
-        UITableViewCell *cell = self.usersTable.visibleCells[i];
+        UITableViewCell *cell = [self.usersTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
         
         if (i<self.availableUsersDict.allKeys.count) {
             
             NSString *userID = self.availableUsersDict.allKeys[i];
-            
-            NSLog(@"userID is %@", userID);
             
             if ([self.selectedUsers containsObject:userID]) {
                     
@@ -204,9 +142,9 @@
     NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
 
-    for (int i=self.availableUsersDict.allKeys.count; i<self.usersTable.visibleCells.count-1; i++) {
+    for (int i=self.availableUsersDict.allKeys.count; i<cellCount-1; i++) {
 
-        UITableViewCell *cell = self.usersTable.visibleCells[i];
+        UITableViewCell *cell = [self.usersTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
 
         UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
         NSString *emailString = textField.text;
@@ -300,8 +238,8 @@
     }
     else {
 
-        [projectVC updateDetails];
-        [self invitesSent];
+        
+        NSLog(@"FIX YOUR SHIT!");
     }
 
 }
@@ -314,7 +252,6 @@
     NSString *emailString = ((UITextField *)[deleteButton.superview viewWithTag:401]).text;
     
     [self.inviteEmails removeObject:emailString];
-    if (self.usersTable.visibleCells.count == 2) [self.inviteEmails addObject:@""];
     [self.usersTable reloadData];
     
 }
@@ -333,16 +270,38 @@
 #pragma mark - Text field handling
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-    
+
     NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
     
-    if (![emailTest evaluateWithObject:textField.text] && textField.text.length > 0) textField.textColor = [UIColor redColor];
+    UITableViewCell *cell = (UITableViewCell *)textField.superview.superview;
+    UISegmentedControl *roleControl = (UISegmentedControl *)[cell.contentView viewWithTag:403];
+    UIButton *deleteButton = (UIButton *)[cell.contentView viewWithTag:404];
+    
+    if (textField.text.length > 0) {
+        
+        roleControl.hidden = false;
+        deleteButton.hidden = false;
+        if (![emailTest evaluateWithObject:textField.text]) textField.textColor = [UIColor redColor];
+    }
+    else {
+        roleControl.hidden = true;
+        deleteButton.hidden = true;
+    }
 }
 
 -(void)textFieldDidBeginEditing:(UITextField *)textField {
     
     textField.textColor = [UIColor blackColor];
+    
+    UITableViewCell *cell = (UITableViewCell *)textField.superview.superview;
+    NSIndexPath *indexPath = [self.usersTable indexPathForCell:cell];
+    UISegmentedControl *roleControl = (UISegmentedControl *)[cell.contentView viewWithTag:403];
+    UIButton *deleteButton = (UIButton *)[cell.contentView viewWithTag:404];
+    roleControl.hidden = false;
+    deleteButton.hidden = false;
+    
+    [self.usersTable scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField*)textField {
@@ -377,9 +336,8 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"UserCell" forIndexPath:indexPath];
-    cell.textLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:20];
     
-    for (int i=1; i<8; i++) {
+    for (int i=1; i<10; i++) {
         
         if ([cell.contentView viewWithTag:400+i]) [[cell.contentView viewWithTag:400+i] removeFromSuperview];
     }
@@ -387,7 +345,12 @@
     if (indexPath.row < self.availableUsersDict.allKeys.count) {
         
         NSString *userID = self.availableUsersDict.allKeys[indexPath.row];
-        cell.textLabel.text = [[self.availableUsersDict objectForKey:userID] objectForKey:@"name"];
+        UILabel *userNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 10, 0, 0)];
+        userNameLabel.text = [[self.availableUsersDict objectForKey:userID] objectForKey:@"name"];
+        userNameLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:20];
+        [userNameLabel sizeToFit];
+        userNameLabel.tag = 408;
+        [cell.contentView addSubview:userNameLabel];
         
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
         avatar.userID = userID;
@@ -429,10 +392,14 @@
     else {
         
         if (indexPath.row == self.inviteEmails.count+self.availableUsersDict.allKeys.count) {
-            
-            cell.textLabel.hidden = false;
-            cell.textLabel.alpha = .3;
-            cell.textLabel.text = @"Add new user to invite by email";
+
+            UILabel *addUserLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 10, 0, 0)];
+            addUserLabel.text = @"Add new user to invite by email";
+            addUserLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:20];
+            addUserLabel.alpha = .3;
+            [addUserLabel sizeToFit];
+            addUserLabel.tag = 409;
+            [cell.contentView addSubview:addUserLabel];
             
             UIImageView *plusImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"plus3.png"]];
             plusImage.frame = CGRectMake(14, 6, 35, 35);
@@ -446,7 +413,7 @@
 
             NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
             NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
-           
+
             UITextField *inviteTextField = [[UITextField alloc] initWithFrame:CGRectMake(64, 3, 240, 42)];
             inviteTextField.placeholder = @"Enter Email";
             inviteTextField.tag = 401;
@@ -476,6 +443,15 @@
             [deleteButton addTarget:self action:@selector(deleteTapped:) forControlEvents:UIControlEventTouchUpInside];
             deleteButton.tag = 404;
             [cell.contentView addSubview:deleteButton];
+            
+            if (inviteTextField.text.length > 0) {
+                deleteButton.hidden = false;
+                roleControl.hidden = false;
+            }
+            else {
+                deleteButton.hidden = true;
+                roleControl.hidden = true;
+            }
         }
     }
 
@@ -483,12 +459,14 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+
     [UIView setAnimationsEnabled:NO];
     
-    [self updateInviteEmails];
-    
+    int cellCount = self.availableUsersDict.allKeys.count+self.inviteEmails.count;
+
     if (indexPath.row < self.availableUsersDict.allKeys.count) {
+        
+        [UIView setAnimationsEnabled:YES];
         
         NSString *userID = self.availableUsersDict.allKeys[indexPath.row];
         
@@ -497,38 +475,19 @@
         
         [self.usersTable reloadData];
     }
-    else if (indexPath.row == self.inviteEmails.count+self.availableUsersDict.allKeys.count) {
+    else if (indexPath.row >= cellCount) {
         
-        BOOL emptyCell = false;
+        [self updateInviteEmails];
+        [self.inviteEmails addObject:@""];
+        [self.usersTable reloadData];
+
+        int newCellRow;
         
-        self.inviteEmails = [NSMutableArray array];
+        if (indexPath.row == cellCount) newCellRow = cellCount;
+        else newCellRow = cellCount-1;
         
-        for (int i=self.availableUsersDict.allKeys.count; i<self.usersTable.visibleCells.count-1; i++) {
-            
-            UITableViewCell *cell = self.usersTable.visibleCells[i];
-            
-            if ([cell.contentView viewWithTag:401]) {
-                
-                UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
-                
-                if ([textField isFirstResponder]) [textField resignFirstResponder];
-                
-                if (textField.text.length == 0) {
-                    emptyCell = true;
-                    [self.inviteEmails addObject:@""];
-                }
-                else [self.inviteEmails addObject:textField.text];
-            }
-        }
-        
-        if (!emptyCell) {
-            
-            [self.inviteEmails addObject:@""];
-            [self.usersTable reloadData];
-            UITableViewCell *newCell = self.usersTable.visibleCells[self.usersTable.visibleCells.count-2];
-            [(UITextField *)[newCell.contentView viewWithTag:401] becomeFirstResponder];
-            
-        }
+        UITableViewCell *newCell = [self.usersTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:newCellRow inSection:0]];
+        [(UITextField *)[newCell.contentView viewWithTag:401] becomeFirstResponder];
     }
     
     [UIView setAnimationsEnabled:YES];

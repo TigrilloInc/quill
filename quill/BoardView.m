@@ -73,7 +73,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     self.avatarButtons = [NSMutableArray array];
     
     NSMutableArray *unsortedUserIDs = [self.activeUserIDs mutableCopy];
-    
+
     if ([projectVC.activeBoardID isEqualToString:self.boardID]) {
         
         NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"];

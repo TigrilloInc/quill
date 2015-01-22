@@ -1652,8 +1652,8 @@
          
             UILabel *newMessagesLabel = [[UILabel alloc] initWithFrame:CGRectZero];
             newMessagesLabel.text = @"New Messages";
-            newMessagesLabel.textColor = [UIColor grayColor];
-            newMessagesLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:16];
+            newMessagesLabel.alpha = .2;
+            newMessagesLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:16];
             [newMessagesLabel sizeToFit];
             newMessagesLabel.center = CGPointMake(cell.frame.size.width/2, newMessagesLabel.center.y);
             newMessagesLabel.tag = 205;
@@ -1661,6 +1661,7 @@
             
             UIImageView *dividerImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"newmessagesdivider.png"]];
             if ([cell.contentView viewWithTag:206]) [[cell.contentView viewWithTag:206] removeFromSuperview];
+            dividerImage.alpha = .1;
             dividerImage.tag = 206;
             [cell.contentView addSubview:dividerImage];
         }

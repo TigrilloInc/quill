@@ -239,9 +239,7 @@ static FirebaseHelper *sharedHelper = nil;
                 for (NSString *boardID in child.value) {
                     
                     if (![self.boards objectForKey:boardID]) {
-                        
-                        NSLog(@"NEW BOARD %@", boardID);
-                        
+
                         [self.boards setObject:[NSMutableDictionary dictionary] forKey:boardID];
                         if (self.projectVC.activeBoardID == nil && [self.currentProjectID isEqualToString:projectID]) { [self.projectVC.carousel reloadData];
                         }
@@ -562,6 +560,12 @@ static FirebaseHelper *sharedHelper = nil;
             boardView.loadingView.hidden = true;
             [boardView layoutComments];
             [self.projectVC drawBoard:boardView];
+            
+            for (NSString *userID in [[self.team objectForKey:@"users"] allKeys]) {
+                
+                if ([[[[self.team objectForKey:@"users"] objectForKey:userID] objectForKey:@"inBoard"] isEqualToString:boardID] && ![boardView.activeUserIDs containsObject:userID]) [boardView.activeUserIDs addObject:userID];
+            }
+            [boardView layoutAvatars];
         }
     }];
     

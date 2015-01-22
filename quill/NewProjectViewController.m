@@ -18,8 +18,6 @@
 {
     [super viewDidLoad];
     
-    self.nameField.placeholder = @"Project Name";
-    
     projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
 }
 

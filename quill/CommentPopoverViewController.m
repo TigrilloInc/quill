@@ -53,6 +53,9 @@
             else [button viewWithTag:50].hidden = true;
         }
         
+        [projectVC.currentBoardView layoutComments];
+        projectVC.currentBoardView.hideComments = true;
+        
         projectVC.currentBoardView.commenting = true;
     }
     
