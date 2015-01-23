@@ -16,7 +16,7 @@
     
     if (self) {
         
-        self.textLabel.text = @"Add user to invite";
+        
         self.indentationLevel = 4;
     }
     

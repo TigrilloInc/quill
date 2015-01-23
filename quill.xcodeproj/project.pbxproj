@@ -808,6 +808,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = chalk;
 				TargetAttributes = {
+					129E126D19648A2C00ED9D42 = {
+						DevelopmentTeam = 6PY9NZMQYQ;
+					};
 					129E129919648A2C00ED9D42 = {
 						TestTargetID = 129E126D19648A2C00ED9D42;
 					};

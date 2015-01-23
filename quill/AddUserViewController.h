@@ -13,12 +13,15 @@
 
     ProjectDetailViewController *projectVC;
     UITapGestureRecognizer *outsideTapRecognizer;
+    
+    NSMutableArray *editedText;
 }
 
 @property (strong, nonatomic) IBOutlet UITableView *usersTable;
 @property (strong, nonatomic) NSDictionary *availableUsersDict;
 @property (strong, nonatomic) NSMutableArray *selectedUsers;
 @property (strong, nonatomic) NSMutableArray *inviteEmails;
+@property (strong, nonatomic) NSMutableDictionary *roles;
 @property (weak, nonatomic) IBOutlet UIButton *inviteButton;
 
 

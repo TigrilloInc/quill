@@ -19,6 +19,9 @@
     
     self.selectedUsers = [NSMutableArray array];
     self.inviteEmails = [NSMutableArray array];
+    self.roles = [NSMutableDictionary dictionary];
+    
+    editedText = [NSMutableArray array];
     
     projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
@@ -29,8 +32,7 @@
     }
     self.availableUsersDict = usersDict;
     
-    //if (self.availableUsersDict.allKeys.count == 0)
-        [self.inviteEmails addObject:@""];
+    //if (self.availableUsersDict.allKeys.count == 0) [self.inviteEmails addObject:@""];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -50,7 +52,6 @@
     
     [outsideTapRecognizer setDelegate:nil];
     [self.view.window removeGestureRecognizer:outsideTapRecognizer];
-
 }
 
 - (NSString *) generateToken {
@@ -76,17 +77,42 @@
         if (emailString.length == 0) [self.inviteEmails removeObject:emailString];
     }
     
-    for (int i=self.availableUsersDict.allKeys.count; i<cellCount; i++) {
+    for (NSString *text in editedText) {
+        [self.inviteEmails removeObject:text];
+        [self.roles removeObjectForKey:text];
+    }
+    editedText = [NSMutableArray array];
+    
+    for (int i=0; i<cellCount; i++) {
         
         UITableViewCell *cell = [self.usersTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
         
-        if ([cell.contentView viewWithTag:401]) {
+        NSString *nameString;
+        
+        if (i<self.availableUsersDict.allKeys.count) {
+            
+            UILabel *nameLabel = (UILabel *)[cell.contentView viewWithTag:408];
+            nameString = nameLabel.text;
+        }
+        else {
             
             UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
+            
+            if (![self.inviteEmails containsObject:textField.text] && textField.text.length > 0) {
+                [self.inviteEmails addObject:textField.text];
+                nameString = textField.text;
+            }
+        }
+        
+        if (nameString.length > 0 && [cell.contentView viewWithTag:403] != nil) {
 
-            if (![self.inviteEmails containsObject:textField.text] && textField.text.length > 0) [self.inviteEmails addObject:textField.text];
+            UISegmentedControl *roleControl = (UISegmentedControl *)[cell.contentView viewWithTag:403];
+            [self.roles setObject:@(roleControl.selectedSegmentIndex) forKey:nameString];
         }
     }
+    
+    NSLog(@"roles is %@", self.roles);
+    //NSLog(@"inviteEmails is %@", self.inviteEmails);
 }
 
 -(void) invitesSent {
@@ -106,62 +132,67 @@
     
     NSDictionary *newSubpathsDict = @{ dateString : @"penUp"};
     
-    NSMutableArray *userIDs = [NSMutableArray array];
-    NSMutableDictionary *userEmails = [NSMutableDictionary dictionary];
-    NSMutableArray *errorEmails = [NSMutableArray array];
+//    NSMutableArray *userIDs = [NSMutableArray array];
+//    NSMutableDictionary *userEmails = [NSMutableDictionary dictionary];
+//    
+//    int cellCount = self.availableUsersDict.allKeys.count+self.inviteEmails.count;
+//    
+//    for (int i=0; i<cellCount-1; i++) {
+//        
+//        UITableViewCell *cell = [self.usersTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+//        
+//        if (i<self.availableUsersDict.allKeys.count) {
+//            
+//            NSString *userID = self.availableUsersDict.allKeys[i];
+//            
+//            if ([self.selectedUsers containsObject:userID]) {
+//                    
+//                UISegmentedControl *roleControl = (UISegmentedControl *)[cell.contentView viewWithTag:403];
+//                [projectVC.roles setObject:@(roleControl.selectedSegmentIndex) forKey:userID];
+//                [userIDs addObject:userID];
+//            }
+//        }
+//        else {
+//         
+//            UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
+//            
+//            if (textField.text.length > 0) {
+//                
+//                UISegmentedControl *roleControl = (UISegmentedControl *)[cell.contentView viewWithTag:403];
+//                [userEmails setObject:@(roleControl.selectedSegmentIndex) forKey:textField.text];
+//            }
+//        }
+//    }
     
-    int cellCount = self.availableUsersDict.allKeys.count+self.inviteEmails.count;
-    
-    for (int i=0; i<cellCount-1; i++) {
-        
-        UITableViewCell *cell = [self.usersTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-        
-        if (i<self.availableUsersDict.allKeys.count) {
-            
-            NSString *userID = self.availableUsersDict.allKeys[i];
-            
-            if ([self.selectedUsers containsObject:userID]) {
-                    
-                UISegmentedControl *roleControl = (UISegmentedControl *)[cell.contentView viewWithTag:403];
-                [projectVC.roles setObject:@(roleControl.selectedSegmentIndex) forKey:userID];
-                [userIDs addObject:userID];
-            }
-        }
-        else {
-         
-            UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
-            
-            if (textField.text.length > 0) {
-                
-                UISegmentedControl *roleControl = (UISegmentedControl *)[cell.contentView viewWithTag:403];
-                [userEmails setObject:@(roleControl.selectedSegmentIndex) forKey:textField.text];
-            }
-        }
-    }
+    [self updateInviteEmails];
     
     NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
-
-    for (int i=self.availableUsersDict.allKeys.count; i<cellCount-1; i++) {
-
-        UITableViewCell *cell = [self.usersTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-
-        UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
-        NSString *emailString = textField.text;
-
-        if (![emailTest evaluateWithObject:emailString] && textField.text.length > 0) [errorEmails addObject:emailString];
+    NSMutableArray *errorEmails = [NSMutableArray array];
+    
+    for (NSString *emailString in self.inviteEmails) {
+        
+        if (![emailTest evaluateWithObject:emailString]) [errorEmails addObject:emailString];
     }
+    
+//    for (int i=self.availableUsersDict.allKeys.count; i<cellCount-1; i++) {
+//
+//        UITableViewCell *cell = [self.usersTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+//
+//        UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
+//        NSString *emailString = textField.text;
+//
+//        if (![emailTest evaluateWithObject:emailString] && textField.text.length > 0) [errorEmails addObject:emailString];
+//    }
     
     if (errorEmails.count == 0) {
         
         [self.inviteButton setTitle:@"Sending invites..." forState:UIControlStateNormal];
         self.inviteButton.userInteractionEnabled = false;
-        
-        NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles", [FirebaseHelper sharedHelper].currentProjectID];
-        Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
-        [projectRef updateChildValues:projectVC.roles];
 
-        for (NSString *userID in userIDs) {
+        for (NSString *userID in self.selectedUsers) {
+            
+            [projectVC.roles setObject:[self.roles objectForKey:userID] forKey:userID];
             
             for (NSString *boardID in projectVC.boardIDs) {
                 
@@ -181,7 +212,11 @@
             }
         }
         
-        if (userEmails.allKeys.count > 0) {
+        NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles", [FirebaseHelper sharedHelper].currentProjectID];
+        Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
+        [projectRef updateChildValues:projectVC.roles];
+        
+        if (self.inviteEmails.count > 0) {
             
             Firebase *tokenRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/tokens"];
 
@@ -193,7 +228,7 @@
             smtpSession.authType = MCOAuthTypeSASLPlain;
             smtpSession.connectionType = MCOConnectionTypeTLS;
             
-            for (NSString *userEmail in userEmails.allKeys) {
+            for (NSString *userEmail in self.inviteEmails) {
                     
                 NSString *token = [self generateToken];
                 NSString *tokenURL = [NSString stringWithFormat:@"quill://%@", token];
@@ -202,7 +237,7 @@
                 NSString *emailString = [NSString stringWithFormat:@"%@/email", token];
                 
                 [[tokenRef childByAppendingPath:teamString] setValue:[FirebaseHelper sharedHelper].teamName];
-                [[tokenRef childByAppendingPath:projectString] setValue:[userEmails objectForKey:userEmail]];
+                [[tokenRef childByAppendingPath:projectString] setValue:[self.roles objectForKey:userEmail]];
                 [[tokenRef childByAppendingPath:emailString] setValue:userEmail];
                 
                 MCOMessageBuilder *builder = [[MCOMessageBuilder alloc] init];
@@ -244,6 +279,27 @@
 
 }
 
+-(void) roleTapped:(id)sender {
+    
+    UISegmentedControl *roleControl = (UISegmentedControl *)sender;
+    UITableViewCell *cell = (UITableViewCell *)roleControl.superview.superview;
+    
+    int cellRow = [self.usersTable indexPathForCell:cell].row;
+    
+    if (cellRow<self.availableUsersDict.allKeys.count) {
+        
+        NSString *userID = self.availableUsersDict.allKeys[cellRow];
+        [self.roles setObject:@(roleControl.selectedSegmentIndex) forKey:userID];
+    }
+    else {
+        
+        UITextField *emailTextField = (UITextField *)[cell.contentView viewWithTag:401];
+        [self.roles setObject:@(roleControl.selectedSegmentIndex) forKey:emailTextField.text];
+    }
+    
+    NSLog(@"roles is %@", self.roles);
+}
+
 -(void) deleteTapped:(id)sender {
 
     [self updateInviteEmails];
@@ -252,6 +308,7 @@
     NSString *emailString = ((UITextField *)[deleteButton.superview viewWithTag:401]).text;
     
     [self.inviteEmails removeObject:emailString];
+    [self.roles removeObjectForKey:emailString];
     [self.usersTable reloadData];
     
 }
@@ -269,8 +326,23 @@
 
 #pragma mark - Text field handling
 
-- (void)textFieldDidEndEditing:(UITextField *)textField {
+-(void)textFieldDidBeginEditing:(UITextField *)textField {
+    
+    textField.textColor = [UIColor blackColor];
+    if (textField.text.length > 0) [editedText addObject:textField.text];
+    
+    UITableViewCell *cell = (UITableViewCell *)textField.superview.superview;
+    NSIndexPath *indexPath = [self.usersTable indexPathForCell:cell];
+    UISegmentedControl *roleControl = (UISegmentedControl *)[cell.contentView viewWithTag:403];
+    UIButton *deleteButton = (UIButton *)[cell.contentView viewWithTag:404];
+    roleControl.hidden = false;
+    deleteButton.hidden = false;
+    
+    [self.usersTable scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+}
 
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    
     NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
     
@@ -288,20 +360,6 @@
         roleControl.hidden = true;
         deleteButton.hidden = true;
     }
-}
-
--(void)textFieldDidBeginEditing:(UITextField *)textField {
-    
-    textField.textColor = [UIColor blackColor];
-    
-    UITableViewCell *cell = (UITableViewCell *)textField.superview.superview;
-    NSIndexPath *indexPath = [self.usersTable indexPathForCell:cell];
-    UISegmentedControl *roleControl = (UISegmentedControl *)[cell.contentView viewWithTag:403];
-    UIButton *deleteButton = (UIButton *)[cell.contentView viewWithTag:404];
-    roleControl.hidden = false;
-    deleteButton.hidden = false;
-    
-    [self.usersTable scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField*)textField {
@@ -335,13 +393,14 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"UserCell" forIndexPath:indexPath];
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"UserCell"];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     for (int i=1; i<10; i++) {
         
-        if ([cell.contentView viewWithTag:400+i]) [[cell.contentView viewWithTag:400+i] removeFromSuperview];
+        if ([cell.contentView viewWithTag:400+i] != nil) [[cell.contentView viewWithTag:400+i] removeFromSuperview];
     }
-    
+
     if (indexPath.row < self.availableUsersDict.allKeys.count) {
         
         NSString *userID = self.availableUsersDict.allKeys[indexPath.row];
@@ -370,12 +429,16 @@
             checkImageView.image = [UIImage imageNamed:@"checked.png"];
             checkImageView.alpha = 1;
             avatar.alpha = 1;
-            cell.textLabel.alpha = 1;
+            userNameLabel.alpha = 1;
             
             UISegmentedControl *roleControl = [[UISegmentedControl alloc] initWithItems:@[@"Viewer", @"Collaborator"]];
             roleControl.center = CGPointMake(400, cell.frame.size.height/2);
             roleControl.tintColor = [UIColor lightGrayColor];
-            roleControl.selectedSegmentIndex = 1;
+            int roleInt;
+            if ([self.roles objectForKey:userNameLabel.text] == nil) roleInt = 1;
+            else roleInt = [[self.roles objectForKey:userNameLabel.text] integerValue];
+            roleControl.selectedSegmentIndex = roleInt;
+            [roleControl addTarget:self action:@selector(roleTapped:) forControlEvents:UIControlEventValueChanged];
             [roleControl setTitleTextAttributes:@{ NSFontAttributeName : [UIFont fontWithName:@"SourceSansPro-Light" size:13]} forState:UIControlStateNormal];
             roleControl.tag = 403;
             [cell.contentView addSubview:roleControl];
@@ -386,7 +449,7 @@
             checkImageView.image = [UIImage imageNamed:@"unchecked.png"];
             checkImageView.alpha = .3;
             avatar.alpha = .3;
-            cell.textLabel.alpha = .3;
+            userNameLabel.alpha = .3;
         }
     }
     else {
@@ -432,8 +495,12 @@
             UISegmentedControl *roleControl = [[UISegmentedControl alloc] initWithItems:@[@"Viewer", @"Collaborator"]];
             roleControl.tintColor = [UIColor lightGrayColor];
             roleControl.center = CGPointMake(398, cell.frame.size.height/2);
-            roleControl.selectedSegmentIndex = 1;
+            int roleInt;
+            if ([self.roles objectForKey:inviteTextField.text] == nil) roleInt = 1;
+            else roleInt = [[self.roles objectForKey:inviteTextField.text] integerValue];
+            roleControl.selectedSegmentIndex = roleInt;
             [roleControl setTitleTextAttributes:@{ NSFontAttributeName : [UIFont fontWithName:@"SourceSansPro-Light" size:13]} forState:UIControlStateNormal];
+            [roleControl addTarget:self action:@selector(roleTapped:) forControlEvents:UIControlEventValueChanged];
             roleControl.tag = 403;
             [cell.contentView addSubview:roleControl];
             
@@ -454,7 +521,7 @@
             }
         }
     }
-
+    
     return cell;
 }
 
@@ -463,7 +530,8 @@
     [UIView setAnimationsEnabled:NO];
     
     int cellCount = self.availableUsersDict.allKeys.count+self.inviteEmails.count;
-
+    [self updateInviteEmails];
+    
     if (indexPath.row < self.availableUsersDict.allKeys.count) {
         
         [UIView setAnimationsEnabled:YES];
@@ -477,7 +545,6 @@
     }
     else if (indexPath.row >= cellCount) {
         
-        [self updateInviteEmails];
         [self.inviteEmails addObject:@""];
         [self.usersTable reloadData];
 
