@@ -46,8 +46,8 @@
 
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewWillDisappear:(BOOL)animated {
+    
     [super viewWillDisappear:animated];
     
     [outsideTapRecognizer setDelegate:nil];
@@ -132,38 +132,6 @@
     
     NSDictionary *newSubpathsDict = @{ dateString : @"penUp"};
     
-//    NSMutableArray *userIDs = [NSMutableArray array];
-//    NSMutableDictionary *userEmails = [NSMutableDictionary dictionary];
-//    
-//    int cellCount = self.availableUsersDict.allKeys.count+self.inviteEmails.count;
-//    
-//    for (int i=0; i<cellCount-1; i++) {
-//        
-//        UITableViewCell *cell = [self.usersTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-//        
-//        if (i<self.availableUsersDict.allKeys.count) {
-//            
-//            NSString *userID = self.availableUsersDict.allKeys[i];
-//            
-//            if ([self.selectedUsers containsObject:userID]) {
-//                    
-//                UISegmentedControl *roleControl = (UISegmentedControl *)[cell.contentView viewWithTag:403];
-//                [projectVC.roles setObject:@(roleControl.selectedSegmentIndex) forKey:userID];
-//                [userIDs addObject:userID];
-//            }
-//        }
-//        else {
-//         
-//            UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
-//            
-//            if (textField.text.length > 0) {
-//                
-//                UISegmentedControl *roleControl = (UISegmentedControl *)[cell.contentView viewWithTag:403];
-//                [userEmails setObject:@(roleControl.selectedSegmentIndex) forKey:textField.text];
-//            }
-//        }
-//    }
-    
     [self updateInviteEmails];
     
     NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
@@ -174,16 +142,6 @@
         
         if (![emailTest evaluateWithObject:emailString]) [errorEmails addObject:emailString];
     }
-    
-//    for (int i=self.availableUsersDict.allKeys.count; i<cellCount-1; i++) {
-//
-//        UITableViewCell *cell = [self.usersTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-//
-//        UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
-//        NSString *emailString = textField.text;
-//
-//        if (![emailTest evaluateWithObject:emailString] && textField.text.length > 0) [errorEmails addObject:emailString];
-//    }
     
     if (errorEmails.count == 0) {
         

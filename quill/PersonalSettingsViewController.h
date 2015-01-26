@@ -1,5 +1,5 @@
 //
-//  SettingsViewController.h
+//  PersonalSettingsViewController.h
 //  Quill
 //
 //  Created by Alex Costantini on 7/16/14.
@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ProjectDetailViewController.h"
 
-@interface SettingsViewController : UIViewController <UIGestureRecognizerDelegate> {
+@interface PersonalSettingsViewController : UIViewController <UIGestureRecognizerDelegate> {
     
     UITapGestureRecognizer *outsideTapRecognizer;
 }

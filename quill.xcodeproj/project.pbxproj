@@ -28,7 +28,6 @@
 		1225C434199D4AB30061027B /* board2.png in Resources */ = {isa = PBXBuildFile; fileRef = 1225C433199D4AB30061027B /* board2.png */; };
 		1230ABC719709E7B00EB2389 /* FirebaseHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1230ABC619709E7B00EB2389 /* FirebaseHelper.m */; };
 		1230ABCA1972093300EB2389 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1230ABC81972093300EB2389 /* Main_iPad.storyboard */; };
-		1231BEB01A6CD06100E09914 /* InviteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1231BEAF1A6CD06100E09914 /* InviteTableViewCell.m */; };
 		1231BEB91A6D8D2B00E09914 /* minus1.png in Resources */ = {isa = PBXBuildFile; fileRef = 1231BEB71A6D8D2B00E09914 /* minus1.png */; };
 		1231BEBA1A6D8D2B00E09914 /* plus3.png in Resources */ = {isa = PBXBuildFile; fileRef = 1231BEB81A6D8D2B00E09914 /* plus3.png */; };
 		1231BEBC1A6D97A200E09914 /* minus2.png in Resources */ = {isa = PBXBuildFile; fileRef = 1231BEBB1A6D97A200E09914 /* minus2.png */; };
@@ -108,9 +107,8 @@
 		12A310E7197F5AC900E03E9E /* NameFromInviteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12A310E6197F5AC900E03E9E /* NameFromInviteViewController.m */; };
 		12A310EA1980BCD400E03E9E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12A310E91980BCD400E03E9E /* QuartzCore.framework */; };
 		12A310ED1980BE4300E03E9E /* iCarousel.m in Sources */ = {isa = PBXBuildFile; fileRef = 12A310EC1980BE4300E03E9E /* iCarousel.m */; };
-		12A3FA0D1977420400E03E9E /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12A3FA0C1977420400E03E9E /* SettingsViewController.m */; };
+		12A3FA0D1977420400E03E9E /* PersonalSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12A3FA0C1977420400E03E9E /* PersonalSettingsViewController.m */; };
 		12A3FA101979861800E03E9E /* ProjectDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12A3FA0F1979861800E03E9E /* ProjectDetailViewController.m */; };
-		12A3FA161979BDD900E03E9E /* InviteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12A3FA151979BDD900E03E9E /* InviteViewController.m */; };
 		12A9485719F814330042A036 /* chatfade1.png in Resources */ = {isa = PBXBuildFile; fileRef = 12A9485619F814330042A036 /* chatfade1.png */; };
 		12AA5FAB19E7904700F6D552 /* AddUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12AA5FAA19E7904700F6D552 /* AddUserViewController.m */; };
 		12AA5FB319EC44F400F6D552 /* drawing.png in Resources */ = {isa = PBXBuildFile; fileRef = 12AA5FB219EC44F400F6D552 /* drawing.png */; };
@@ -155,6 +153,7 @@
 		12C4E4E31A3B9DA800DB0E23 /* carouselfadeleft.png in Resources */ = {isa = PBXBuildFile; fileRef = 12C4E4E21A3B9DA800DB0E23 /* carouselfadeleft.png */; };
 		12C4E4E51A3B9E2E00DB0E23 /* carouselfaderight.png in Resources */ = {isa = PBXBuildFile; fileRef = 12C4E4E41A3B9E2E00DB0E23 /* carouselfaderight.png */; };
 		12CE896A1A70A24F00983FBE /* feather.png in Resources */ = {isa = PBXBuildFile; fileRef = 12CE89691A70A24F00983FBE /* feather.png */; };
+		12CE89771A75E85600983FBE /* TeamSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12CE89761A75E85600983FBE /* TeamSettingsViewController.m */; };
 		12D5DB971A48F167003727AC /* marker.png in Resources */ = {isa = PBXBuildFile; fileRef = 12D5DB951A48F167003727AC /* marker.png */; };
 		12D5DB981A48F167003727AC /* markerselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 12D5DB961A48F167003727AC /* markerselected.png */; };
 		12D5DBA11A48F173003727AC /* pen.png in Resources */ = {isa = PBXBuildFile; fileRef = 12D5DB9F1A48F172003727AC /* pen.png */; };
@@ -266,8 +265,6 @@
 		1230ABC519709E7B00EB2389 /* FirebaseHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FirebaseHelper.h; sourceTree = "<group>"; };
 		1230ABC619709E7B00EB2389 /* FirebaseHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FirebaseHelper.m; sourceTree = "<group>"; };
 		1230ABC91972093300EB2389 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
-		1231BEAE1A6CD06100E09914 /* InviteTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteTableViewCell.h; sourceTree = "<group>"; };
-		1231BEAF1A6CD06100E09914 /* InviteTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteTableViewCell.m; sourceTree = "<group>"; };
 		1231BEB71A6D8D2B00E09914 /* minus1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = minus1.png; path = Resources/minus1.png; sourceTree = "<group>"; };
 		1231BEB81A6D8D2B00E09914 /* plus3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = plus3.png; path = Resources/plus3.png; sourceTree = "<group>"; };
 		1231BEBB1A6D97A200E09914 /* minus2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = minus2.png; path = Resources/minus2.png; sourceTree = "<group>"; };
@@ -365,12 +362,10 @@
 		12A310E91980BCD400E03E9E /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		12A310EB1980BE4300E03E9E /* iCarousel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iCarousel.h; path = Resources/iCarousel/iCarousel.h; sourceTree = "<group>"; };
 		12A310EC1980BE4300E03E9E /* iCarousel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = iCarousel.m; path = Resources/iCarousel/iCarousel.m; sourceTree = "<group>"; };
-		12A3FA0B1977420400E03E9E /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
-		12A3FA0C1977420400E03E9E /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		12A3FA0B1977420400E03E9E /* PersonalSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonalSettingsViewController.h; sourceTree = "<group>"; };
+		12A3FA0C1977420400E03E9E /* PersonalSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonalSettingsViewController.m; sourceTree = "<group>"; };
 		12A3FA0E1979861800E03E9E /* ProjectDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectDetailViewController.h; sourceTree = "<group>"; };
 		12A3FA0F1979861800E03E9E /* ProjectDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ProjectDetailViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		12A3FA141979BDD900E03E9E /* InviteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteViewController.h; sourceTree = "<group>"; };
-		12A3FA151979BDD900E03E9E /* InviteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteViewController.m; sourceTree = "<group>"; };
 		12A9485619F814330042A036 /* chatfade1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = chatfade1.png; path = Resources/chatfade1.png; sourceTree = "<group>"; };
 		12AA5FA919E7904700F6D552 /* AddUserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddUserViewController.h; sourceTree = "<group>"; };
 		12AA5FAA19E7904700F6D552 /* AddUserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddUserViewController.m; sourceTree = "<group>"; };
@@ -420,6 +415,8 @@
 		12C4E4E21A3B9DA800DB0E23 /* carouselfadeleft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = carouselfadeleft.png; path = Resources/carouselfadeleft.png; sourceTree = "<group>"; };
 		12C4E4E41A3B9E2E00DB0E23 /* carouselfaderight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = carouselfaderight.png; path = Resources/carouselfaderight.png; sourceTree = "<group>"; };
 		12CE89691A70A24F00983FBE /* feather.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = feather.png; path = Resources/feather.png; sourceTree = "<group>"; };
+		12CE89751A75E85600983FBE /* TeamSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeamSettingsViewController.h; sourceTree = "<group>"; };
+		12CE89761A75E85600983FBE /* TeamSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeamSettingsViewController.m; sourceTree = "<group>"; };
 		12D5DB951A48F167003727AC /* marker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = marker.png; path = Resources/marker.png; sourceTree = "<group>"; };
 		12D5DB961A48F167003727AC /* markerselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = markerselected.png; path = Resources/markerselected.png; sourceTree = "<group>"; };
 		12D5DB9F1A48F172003727AC /* pen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pen.png; path = Resources/pen.png; sourceTree = "<group>"; };
@@ -572,6 +569,8 @@
 				12860FA11A3EA61F0074B452 /* ProjectsTableViewCell.m */,
 				12BE8D72196CF04D00503F84 /* NewProjectViewController.h */,
 				12BE8D73196CF04D00503F84 /* NewProjectViewController.m */,
+				12CE89751A75E85600983FBE /* TeamSettingsViewController.h */,
+				12CE89761A75E85600983FBE /* TeamSettingsViewController.m */,
 				128DC31E1A22C01800FF6076 /* AvatarPopoverViewController.h */,
 				128DC31F1A22C01800FF6076 /* AvatarPopoverViewController.m */,
 				12860FCB1A423EDA0074B452 /* PenTypePopoverViewController.h */,
@@ -584,16 +583,12 @@
 				1216D9A019A3DBED0095DBD8 /* BoardCollectionViewCell.m */,
 				12AA5FA919E7904700F6D552 /* AddUserViewController.h */,
 				12AA5FAA19E7904700F6D552 /* AddUserViewController.m */,
-				12A3FA141979BDD900E03E9E /* InviteViewController.h */,
-				12A3FA151979BDD900E03E9E /* InviteViewController.m */,
-				1231BEAE1A6CD06100E09914 /* InviteTableViewCell.h */,
-				1231BEAF1A6CD06100E09914 /* InviteTableViewCell.m */,
 				12A310E5197F5AC900E03E9E /* NameFromInviteViewController.h */,
 				12A310E6197F5AC900E03E9E /* NameFromInviteViewController.m */,
 				12BE8D66196BA1B100503F84 /* NewTeamViewController.h */,
 				12BE8D67196BA1B100503F84 /* NewTeamViewController.m */,
-				12A3FA0B1977420400E03E9E /* SettingsViewController.h */,
-				12A3FA0C1977420400E03E9E /* SettingsViewController.m */,
+				12A3FA0B1977420400E03E9E /* PersonalSettingsViewController.h */,
+				12A3FA0C1977420400E03E9E /* PersonalSettingsViewController.m */,
 				12BE8D1B196A616000503F84 /* SignInViewController.h */,
 				12BE8D1C196A616000503F84 /* SignInViewController.m */,
 				12A310E2197DC65B00E03E9E /* SignUpFromInviteViewController.h */,
@@ -1026,7 +1021,6 @@
 			files = (
 				1216D99E19A275980095DBD8 /* UICollectionView+Draggable.m in Sources */,
 				12BE8D74196CF04D00503F84 /* NewProjectViewController.m in Sources */,
-				1231BEB01A6CD06100E09914 /* InviteTableViewCell.m in Sources */,
 				124E5CF619AE83CB00442963 /* NSDate+ServerDate.m in Sources */,
 				12A310E4197DC65B00E03E9E /* SignUpFromInviteViewController.m in Sources */,
 				12860FD01A423F000074B452 /* ColorPopoverViewController.m in Sources */,
@@ -1044,6 +1038,7 @@
 				12BE8D1D196A616000503F84 /* SignInViewController.m in Sources */,
 				1230ABC719709E7B00EB2389 /* FirebaseHelper.m in Sources */,
 				1216D99C19A275980095DBD8 /* LSCollectionViewLayoutHelper.m in Sources */,
+				12CE89771A75E85600983FBE /* TeamSettingsViewController.m in Sources */,
 				1213D7B71A6849B7001FDEA9 /* CommentPopoverViewController.m in Sources */,
 				1216D99B19A275980095DBD8 /* LSCollectionViewHelper.m in Sources */,
 				12A3FA101979861800E03E9E /* ProjectDetailViewController.m in Sources */,
@@ -1052,10 +1047,9 @@
 				1231BEC51A6EE2F200E09914 /* Reachability.m in Sources */,
 				129E128419648A2C00ED9D42 /* main.m in Sources */,
 				12860FB31A4024920074B452 /* NSString+MD5.m in Sources */,
-				12A3FA0D1977420400E03E9E /* SettingsViewController.m in Sources */,
+				12A3FA0D1977420400E03E9E /* PersonalSettingsViewController.m in Sources */,
 				12899BB01A168CA100AF95BD /* MasterView.m in Sources */,
 				12A310E7197F5AC900E03E9E /* NameFromInviteViewController.m in Sources */,
-				12A3FA161979BDD900E03E9E /* InviteViewController.m in Sources */,
 				12E898A719ECC6DA00E29E7B /* AvatarButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

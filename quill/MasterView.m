@@ -13,8 +13,8 @@
 #import "FirebaseHelper.h"
 #import "SignInViewController.h"
 #import "SignUpFromInviteViewController.h"
-#import "SettingsViewController.h"
-#import "InviteViewController.h"
+#import "PersonalSettingsViewController.h"
+#import "TeamSettingsViewController.h"
 #import "NewProjectViewController.h"
 #import "BoardView.h"
 #import "NSDate+ServerDate.h"
@@ -183,12 +183,11 @@
     
     [self.projectsTable reloadData];
     [self.projectsTable selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-    
 }
 
 - (IBAction)settingsTapped:(id)sender {
     
-    SettingsViewController *vc = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"Settings"];
+    PersonalSettingsViewController *vc = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"Settings"];
     
     vc.modalPresentationStyle = UIModalPresentationFormSheet;
     vc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
@@ -197,11 +196,11 @@
 
 - (IBAction)teamTapped:(id)sender {
 
-    InviteViewController *vc = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"Invite"];
+    TeamSettingsViewController *teamVC = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"TeamSettings"];
     
-    vc.modalPresentationStyle = UIModalPresentationFormSheet;
-    vc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    [projectVC presentViewController:vc animated:YES completion:nil];
+    teamVC.modalPresentationStyle = UIModalPresentationFormSheet;
+    teamVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    [projectVC presentViewController:teamVC animated:YES completion:nil];
 }
 
 - (void)newProjectTapped {

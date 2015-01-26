@@ -1,12 +1,12 @@
 //
-//  SettingsViewController.m
+//  PersonalSettingsViewController.m
 //  Quill
 //
 //  Created by Alex Costantini on 7/16/14.
 //  Copyright (c) 2014 Tigrillo. All rights reserved.
 //
 
-#import "SettingsViewController.h"
+#import "PersonalSettingsViewController.h"
 #import <Firebase/Firebase.h>
 #import <FirebaseSimpleLogin/FirebaseSimpleLogin.h>
 #import "FirebaseHelper.h"
@@ -14,7 +14,7 @@
 #import "SignInViewController.h"
 
 
-@implementation SettingsViewController
+@implementation PersonalSettingsViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
