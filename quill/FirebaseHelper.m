@@ -12,6 +12,7 @@
 #import "MasterViewController.h"
 #import "ProjectDetailViewController.h"
 #import "SignInViewController.h"
+#import "SignUpFromInviteViewController.h"
 #import "BoardView.h"
 #import "NSDate+ServerDate.h"
 #import "AvatarButton.h"
@@ -70,6 +71,41 @@ static FirebaseHelper *sharedHelper = nil;
 }
 
 -(void) checkAuthStatus {
+
+//    Firebase *tokenRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/tokens/9BnzrtrWnHYEUli"];
+//    FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:tokenRef];
+//    
+//    [[FirebaseHelper sharedHelper] removeAllObservers];
+//    [[FirebaseHelper sharedHelper] clearData];
+//    
+//    [authClient logout];
+//    
+//    [tokenRef observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+//        
+//        SignUpFromInviteViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignUpFromInvite"];
+//        vc.invitedBy = [snapshot.value objectForKey:@"invitedBy"];
+//        vc.teamName = [snapshot.value objectForKey:@"team"];
+//        vc.email = [snapshot.value objectForKey:@"email"];
+//        
+//        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+//        nav.modalPresentationStyle = UIModalPresentationFormSheet;
+//        nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+//        nav.navigationBar.barTintColor = [UIColor whiteColor];
+//        
+//        
+//        if (self.projectVC.presentedViewController) {
+//            
+//            [self.projectVC dismissViewControllerAnimated:YES completion:^{
+//                [self.projectVC presentViewController:nav animated:YES completion:nil];
+//            }];
+//        }
+//        else {
+//            
+//            [self.projectVC presentViewController:nav animated:YES completion:nil];
+//        }
+//        
+//    }];
+
     
     Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
     FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
@@ -87,10 +123,27 @@ static FirebaseHelper *sharedHelper = nil;
             SignInViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignIn"];
             
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
-            
             nav.modalPresentationStyle = UIModalPresentationFormSheet;
             nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-            [self.projectVC presentViewController:nav animated:YES completion:nil];
+            nav.navigationBar.barTintColor = [UIColor whiteColor];
+            nav.navigationBar.tintColor = [UIColor blackColor];
+            [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"SourceSansPro-Light" size:24.0], NSFontAttributeName, nil]];
+            
+            UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo2.png"]];
+            logoImageView.frame = CGRectMake(155, 2, 35, 35);
+            logoImageView.tag = 800;
+            [nav.navigationBar addSubview:logoImageView];
+            
+            if (self.projectVC.presentedViewController) {
+                
+                [self.projectVC dismissViewControllerAnimated:YES completion:^{
+                    [self.projectVC presentViewController:nav animated:YES completion:nil];
+                }];
+            }
+            else {
+                
+                [self.projectVC presentViewController:nav animated:YES completion:nil];
+            }
         }
         else {
             

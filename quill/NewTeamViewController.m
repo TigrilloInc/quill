@@ -9,7 +9,7 @@
 #import "NewTeamViewController.h"
 #import <Firebase/Firebase.h>
 #import "FirebaseHelper.h"
-
+#import "InviteToTeamViewController.h"
 
 @implementation NewTeamViewController
 
@@ -17,48 +17,88 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.nameField.placeholder = @"Your Name";
-    self.teamField.placeholder = @"Team Name";
-    
-    self.nameField.delegate = self;
-    self.teamField.delegate = self;
 
-}
+    self.navigationItem.title = @"Step 2: Team Name";
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
+    logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
     
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc]
+                                   initWithTitle: @"Team Name"
+                                   style: UIBarButtonItemStyleBordered
+                                   target: nil action: nil];
+    [backButton setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                        [UIFont fontWithName:@"SourceSansPro-Semibold" size:16],NSFontAttributeName,
+                                        nil] forState:UIControlStateNormal];
+    [self.navigationItem setBackBarButtonItem: backButton];
     
+    self.createTeamButton.layer.borderWidth = 1;
+    self.createTeamButton.layer.cornerRadius = 10;
+    self.createTeamButton.layer.borderColor = [UIColor grayColor].CGColor;
+    
+    UIView *spacerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+    [self.teamField setLeftViewMode:UITextFieldViewModeAlways];
+    [self.teamField setLeftView:spacerView];
+    self.teamField.layer.borderColor = [UIColor groupTableViewBackgroundColor].CGColor;
+    self.teamField.layer.borderWidth = 1;
+    self.teamField.layer.cornerRadius = 10;
 }
 
 - (IBAction)createTeamTapped:(id)sender {
     
-    NSString *name = self.nameField.text;
-    NSString *team = self.teamField.text;
+//    Firebase *teamRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/teams"];
+//    
+//    NSDictionary *newTeamValues = @{ teamName :
+//                                         @{ @"users" :
+//                                                @{ [FirebaseHelper sharedHelper].uid : @1 }
+//                                            }
+//                                     };
+//    
+//    [teamRef updateChildValues:newTeamValues];
+//    
+//    NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@", [FirebaseHelper sharedHelper].uid];
+//    Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
+//    
+//    [userRef updateChildValues:@{ @"team" : teamName }];
+//    
+//    [self dismissViewControllerAnimated:YES completion:nil];
+//    
+//    [[FirebaseHelper sharedHelper] observeLocalUser];
+
     
-    if (name.length > 0 && team.length > 0) {
+    if (self.teamField.text.length == 0) return;
+    
+    [FirebaseHelper sharedHelper].teamName = self.teamField.text;
+    
+    logoImage.hidden = true;
+    logoImage.frame = CGRectMake(145, 2, 35, 35);
+    
+    [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
+    
+    InviteToTeamViewController *inviteVC = [self.storyboard instantiateViewControllerWithIdentifier:@"InviteToTeam"];
+    [self.navigationController pushViewController:inviteVC animated:YES];
+    
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+    
+    if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
+
+        logoImage.hidden = true;
+        logoImage.frame = CGRectMake(149, 2, 35, 35);
         
-        Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
-        
-        NSDictionary *newTeamValues = @{ team :
-                                             @{ @"users" :
-                                                    @{ [FirebaseHelper sharedHelper].uid : @1 }
-                                                }
-                                         };
-        
-        [[ref childByAppendingPath:@"teams"] updateChildValues:newTeamValues];
-        
-        NSString *userPath = [NSString stringWithFormat:@"users/%@", [FirebaseHelper sharedHelper].uid];
-        
-        [[ref childByAppendingPath:userPath] updateChildValues:@{ @"name" : name,
-                                                                  @"team" : team  }];
-        
-        [self dismissViewControllerAnimated:YES completion:nil];
-        
-        [[FirebaseHelper sharedHelper] observeLocalUser];
+        [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
     }
+    [super viewWillDisappear:animated];
+}
+
+-(void)showLogo {
+    
+    logoImage.alpha = 0;
+    logoImage.hidden = false;
+
+    [UIView animateWithDuration:.3 animations:^{
+        logoImage.alpha = 1;
+    }];
 }
 
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{

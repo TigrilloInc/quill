@@ -31,11 +31,24 @@
 {
     [super viewDidLoad];
     
-    self.teamLabel.text = [FirebaseHelper sharedHelper].teamName;
+    UIFont *regFont = [UIFont fontWithName:@"SourceSansPro-Light" size:16];
+    UIFont *boldFont = [UIFont fontWithName:@"SourceSansPro-Semibold" size:18];
     
-    self.emailField.placeholder = @"email";
-    self.passwordField.placeholder = @"password";
+    NSDictionary *regAttrs = [NSDictionary dictionaryWithObjectsAndKeys: regFont, NSFontAttributeName, nil];
+    NSDictionary *boldAttrs = [NSDictionary dictionaryWithObjectsAndKeys: boldFont, NSFontAttributeName, nil];
+    NSRange userRange = NSMakeRange(23,self.invitedBy.length);
+    NSRange teamRange = NSMakeRange(32+self.invitedBy.length,self.teamName.length);
     
+    NSString *teamString = [NSString stringWithFormat:@"You've been invited by %@ to join %@.", self.invitedBy, self.teamName];
+    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithString:teamString attributes:regAttrs];
+    [attrString setAttributes:boldAttrs range:userRange];
+    [attrString setAttributes:boldAttrs range:teamRange];
+    
+    [self.teamLabel setAttributedText:attrString];
+    [self.teamLabel sizeToFit];
+    self.teamLabel.center = CGPointMake(self.statusLabel.center.x, self.teamLabel.center.y);
+    
+    self.emailField.text = self.email;
     self.passwordField.secureTextEntry = true;
 }
 

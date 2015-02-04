@@ -162,6 +162,13 @@
 		12D5DBA61A48F20B003727AC /* highlighterselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 12D5DBA41A48F20B003727AC /* highlighterselected.png */; };
 		12D5DBA81A4A7432003727AC /* plus2.png in Resources */ = {isa = PBXBuildFile; fileRef = 12D5DBA71A4A7432003727AC /* plus2.png */; };
 		12D5DBAA1A4A8619003727AC /* gear1.png in Resources */ = {isa = PBXBuildFile; fileRef = 12D5DBA91A4A8619003727AC /* gear1.png */; };
+		12DC978A1A796FEA00CC4616 /* background6.png in Resources */ = {isa = PBXBuildFile; fileRef = 12DC97891A796FEA00CC4616 /* background6.png */; };
+		12DC97921A7AD63E00CC4616 /* welcometoquill.png in Resources */ = {isa = PBXBuildFile; fileRef = 12DC97911A7AD63E00CC4616 /* welcometoquill.png */; };
+		12DC97951A7C0C9200CC4616 /* RoundedButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 12DC97941A7C0C9200CC4616 /* RoundedButton.m */; };
+		12DC97981A7C158900CC4616 /* NewNameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12DC97971A7C158900CC4616 /* NewNameViewController.m */; };
+		12DC979B1A80073100CC4616 /* InviteToTeamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12DC979A1A80073100CC4616 /* InviteToTeamViewController.m */; };
+		12DC979D1A8154E000CC4616 /* Logo2.png in Resources */ = {isa = PBXBuildFile; fileRef = 12DC979C1A8154E000CC4616 /* Logo2.png */; };
+		12DC979F1A8179E300CC4616 /* invitefade.png in Resources */ = {isa = PBXBuildFile; fileRef = 12DC979E1A8179E300CC4616 /* invitefade.png */; };
 		12E898A719ECC6DA00E29E7B /* AvatarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 12E898A619ECC6DA00E29E7B /* AvatarButton.m */; };
 		12FF4C281A1545D7008A6001 /* libMailCore-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 12FF4C1D1A15459D008A6001 /* libMailCore-ios.a */; };
 		F3012917198C3EFB00A596DA /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3012916198C3EFB00A596DA /* Firebase.framework */; };
@@ -425,6 +432,16 @@
 		12D5DBA41A48F20B003727AC /* highlighterselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = highlighterselected.png; path = Resources/highlighterselected.png; sourceTree = "<group>"; };
 		12D5DBA71A4A7432003727AC /* plus2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = plus2.png; path = Resources/plus2.png; sourceTree = "<group>"; };
 		12D5DBA91A4A8619003727AC /* gear1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = gear1.png; path = Resources/gear1.png; sourceTree = "<group>"; };
+		12DC97891A796FEA00CC4616 /* background6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = background6.png; path = Resources/background6.png; sourceTree = "<group>"; };
+		12DC97911A7AD63E00CC4616 /* welcometoquill.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = welcometoquill.png; path = Resources/welcometoquill.png; sourceTree = "<group>"; };
+		12DC97931A7C0C9200CC4616 /* RoundedButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoundedButton.h; sourceTree = "<group>"; };
+		12DC97941A7C0C9200CC4616 /* RoundedButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundedButton.m; sourceTree = "<group>"; };
+		12DC97961A7C158900CC4616 /* NewNameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewNameViewController.h; sourceTree = "<group>"; };
+		12DC97971A7C158900CC4616 /* NewNameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewNameViewController.m; sourceTree = "<group>"; };
+		12DC97991A80073100CC4616 /* InviteToTeamViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteToTeamViewController.h; sourceTree = "<group>"; };
+		12DC979A1A80073100CC4616 /* InviteToTeamViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteToTeamViewController.m; sourceTree = "<group>"; };
+		12DC979C1A8154E000CC4616 /* Logo2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Logo2.png; path = Resources/Logo2.png; sourceTree = "<group>"; };
+		12DC979E1A8179E300CC4616 /* invitefade.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = invitefade.png; path = Resources/invitefade.png; sourceTree = "<group>"; };
 		12E898A519ECC6DA00E29E7B /* AvatarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AvatarButton.h; sourceTree = "<group>"; };
 		12E898A619ECC6DA00E29E7B /* AvatarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AvatarButton.m; sourceTree = "<group>"; };
 		12FF4C101A15459C008A6001 /* mailcore2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = mailcore2.xcodeproj; path = "Resources/mailcore2/build-mac/mailcore2.xcodeproj"; sourceTree = "<group>"; };
@@ -565,6 +582,8 @@
 				12C3780B19FEE9FC000C0DB4 /* CommentButton.m */,
 				128DC3051A1E8C7000FF6076 /* ChatTableViewCell.h */,
 				128DC3061A1E8C7000FF6076 /* ChatTableViewCell.m */,
+				12DC97931A7C0C9200CC4616 /* RoundedButton.h */,
+				12DC97941A7C0C9200CC4616 /* RoundedButton.m */,
 				12860FA01A3EA61F0074B452 /* ProjectsTableViewCell.h */,
 				12860FA11A3EA61F0074B452 /* ProjectsTableViewCell.m */,
 				12BE8D72196CF04D00503F84 /* NewProjectViewController.h */,
@@ -585,8 +604,12 @@
 				12AA5FAA19E7904700F6D552 /* AddUserViewController.m */,
 				12A310E5197F5AC900E03E9E /* NameFromInviteViewController.h */,
 				12A310E6197F5AC900E03E9E /* NameFromInviteViewController.m */,
+				12DC97961A7C158900CC4616 /* NewNameViewController.h */,
+				12DC97971A7C158900CC4616 /* NewNameViewController.m */,
 				12BE8D66196BA1B100503F84 /* NewTeamViewController.h */,
 				12BE8D67196BA1B100503F84 /* NewTeamViewController.m */,
+				12DC97991A80073100CC4616 /* InviteToTeamViewController.h */,
+				12DC979A1A80073100CC4616 /* InviteToTeamViewController.m */,
 				12A3FA0B1977420400E03E9E /* PersonalSettingsViewController.h */,
 				12A3FA0C1977420400E03E9E /* PersonalSettingsViewController.m */,
 				12BE8D1B196A616000503F84 /* SignInViewController.h */,
@@ -675,6 +698,7 @@
 				12860F9E1A3E9A1B0074B452 /* projectsshadow.png */,
 				123D20121A5C9B7C004D5743 /* back.png */,
 				12ACFBB61A6C98E8004C298B /* Logo.png */,
+				12DC979C1A8154E000CC4616 /* Logo2.png */,
 				12ABCE711A5E044400C4C7DC /* Icon.png */,
 				12ABCE791A5E0A3600C4C7DC /* Icon29.png */,
 				12ABCE7A1A5E0A3700C4C7DC /* Icon40.png */,
@@ -684,11 +708,13 @@
 				12ABCE7E1A5E0A3700C4C7DC /* Icon120.png */,
 				12ABCE7F1A5E0A3700C4C7DC /* Icon152.png */,
 				12ABCE801A5E0A3700C4C7DC /* Icon180.png */,
+				12DC979E1A8179E300CC4616 /* invitefade.png */,
 				12C4E4C61A3B5B3100DB0E23 /* background.png */,
 				12C4E4D61A3B88D400DB0E23 /* background2.png */,
 				12C4E4DA1A3B8D3300DB0E23 /* background3.png */,
 				12C4E4E01A3B98B300DB0E23 /* background4.png */,
 				12860F921A3E29410074B452 /* background5.png */,
+				12DC97891A796FEA00CC4616 /* background6.png */,
 				12A9485619F814330042A036 /* chatfade1.png */,
 				1213D7AB1A65EE22001FDEA9 /* chatfade2.png */,
 				1213D7AF1A67535A001FDEA9 /* chatfade3.png */,
@@ -702,6 +728,7 @@
 				123D200F1A5B4EDB004D5743 /* editfaderight.png */,
 				12ACFBAE1A6C9262004C298B /* formsheetbackground.png */,
 				1225C431199B194F0061027B /* close.png */,
+				12DC97911A7AD63E00CC4616 /* welcometoquill.png */,
 				129E129419648A2C00ED9D42 /* Images.xcassets */,
 				12860F9A1A3E62870074B452 /* SourceSansPro-ExtraLight.otf */,
 				12860F9C1A3E64A60074B452 /* SourceSansPro-Light.otf */,
@@ -904,6 +931,7 @@
 				129E129519648A2C00ED9D42 /* Images.xcassets in Resources */,
 				1213D7B21A67ABF2001FDEA9 /* chatfade4.png in Resources */,
 				12860FBE1A40C8CD0074B452 /* userbutton2shadow.png in Resources */,
+				12DC97921A7AD63E00CC4616 /* welcometoquill.png in Resources */,
 				1231BEBC1A6D97A200E09914 /* minus2.png in Resources */,
 				123D20021A5A5028004D5743 /* color.png in Resources */,
 				12860FC21A40C8CD0074B452 /* userbutton6shadow.png in Resources */,
@@ -924,6 +952,8 @@
 				12860F9F1A3E9A1B0074B452 /* projectsshadow.png in Resources */,
 				12ABCE9D1A5F214C00C4C7DC /* userbutton1.png in Resources */,
 				12D5DB981A48F167003727AC /* markerselected.png in Resources */,
+				12DC979F1A8179E300CC4616 /* invitefade.png in Resources */,
+				12DC979D1A8154E000CC4616 /* Logo2.png in Resources */,
 				1243AFB319FF0A900029B976 /* userhighlight.png in Resources */,
 				1201F4981A4ABFAD00186C13 /* up.png in Resources */,
 				1231BEBA1A6D8D2B00E09914 /* plus3.png in Resources */,
@@ -941,6 +971,7 @@
 				12C4E4CF1A3B6CD300DB0E23 /* board3.png in Resources */,
 				12860FC81A414FF70074B452 /* userhighlight2.png in Resources */,
 				12ABCE8B1A5E3F7500C4C7DC /* apply.png in Resources */,
+				12DC978A1A796FEA00CC4616 /* background6.png in Resources */,
 				12860FC41A41170E0074B452 /* usercomment.png in Resources */,
 				12860FBF1A40C8CD0074B452 /* userbutton3shadow.png in Resources */,
 				12ABCEA01A5F214C00C4C7DC /* userbutton4.png in Resources */,
@@ -1022,8 +1053,10 @@
 				1216D99E19A275980095DBD8 /* UICollectionView+Draggable.m in Sources */,
 				12BE8D74196CF04D00503F84 /* NewProjectViewController.m in Sources */,
 				124E5CF619AE83CB00442963 /* NSDate+ServerDate.m in Sources */,
+				12DC979B1A80073100CC4616 /* InviteToTeamViewController.m in Sources */,
 				12A310E4197DC65B00E03E9E /* SignUpFromInviteViewController.m in Sources */,
 				12860FD01A423F000074B452 /* ColorPopoverViewController.m in Sources */,
+				12DC97951A7C0C9200CC4616 /* RoundedButton.m in Sources */,
 				128DC3201A22C01800FF6076 /* AvatarPopoverViewController.m in Sources */,
 				1216D9A119A3DBED0095DBD8 /* BoardCollectionViewCell.m in Sources */,
 				12860FB61A40C58E0074B452 /* IdenticonView.m in Sources */,
@@ -1044,6 +1077,7 @@
 				12A3FA101979861800E03E9E /* ProjectDetailViewController.m in Sources */,
 				12AA5FAB19E7904700F6D552 /* AddUserViewController.m in Sources */,
 				128DC3071A1E8C7000FF6076 /* ChatTableViewCell.m in Sources */,
+				12DC97981A7C158900CC4616 /* NewNameViewController.m in Sources */,
 				1231BEC51A6EE2F200E09914 /* Reachability.m in Sources */,
 				129E128419648A2C00ED9D42 /* main.m in Sources */,
 				12860FB31A4024920074B452 /* NSString+MD5.m in Sources */,

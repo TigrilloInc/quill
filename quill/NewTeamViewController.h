@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface NewTeamViewController : UIViewController <UITextFieldDelegate>
+@interface NewTeamViewController : UIViewController <UITextFieldDelegate> {
+    
+    UIImageView *logoImage;
+}
 
-@property (weak, nonatomic) IBOutlet UITextField *nameField;
 @property (weak, nonatomic) IBOutlet UITextField *teamField;
 @property (weak, nonatomic) IBOutlet UIButton *createTeamButton;
 

@@ -73,23 +73,22 @@ void signalHandler(int signal) {
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     
-    Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/tokens"];
-    FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
+    NSString *tokenString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/tokens/%@", [url.host stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    
+    
+    Firebase *tokenRef = [[Firebase alloc] initWithUrl:tokenString];
+    FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:tokenRef];
     
     [[FirebaseHelper sharedHelper] removeAllObservers];
     [[FirebaseHelper sharedHelper] clearData];
+    
     [authClient logout];
     
-    [ref observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
-        
-        NSString *token = [[url host] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        
-        for (FDataSnapshot* child in snapshot.children) {
-            
-            if ([child.name isEqualToString:token]) [FirebaseHelper sharedHelper].teamName = child.value;
-        }
+    [tokenRef observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         SignUpFromInviteViewController *vc = [self.window.rootViewController.storyboard instantiateViewControllerWithIdentifier:@"SignUpFromInvite"];
+        vc.invitedBy = [snapshot.value objectForKey:@"invitedBy"];
+        vc.teamName = [snapshot.value objectForKey:@"team"];
         
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
         nav.modalPresentationStyle = UIModalPresentationFormSheet;

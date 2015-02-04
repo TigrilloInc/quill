@@ -110,8 +110,7 @@
             [self.roles setObject:@(roleControl.selectedSegmentIndex) forKey:nameString];
         }
     }
-    
-    NSLog(@"roles is %@", self.roles);
+
     //NSLog(@"inviteEmails is %@", self.inviteEmails);
 }
 
@@ -150,7 +149,9 @@
 
         for (NSString *userID in self.selectedUsers) {
             
-            [projectVC.roles setObject:[self.roles objectForKey:userID] forKey:userID];
+            NSString *userName = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"name"];
+            
+            [projectVC.roles setObject:[self.roles objectForKey:userName] forKey:userID];
             
             for (NSString *boardID in projectVC.boardIDs) {
                 
@@ -193,10 +194,12 @@
                 NSString *teamString = [NSString stringWithFormat:@"%@/team", token];
                 NSString *projectString = [NSString stringWithFormat:@"%@/project/%@", token, [FirebaseHelper sharedHelper].currentProjectID];
                 NSString *emailString = [NSString stringWithFormat:@"%@/email", token];
+                NSString *invitedByString = [NSString stringWithFormat:@"%@/invitedBy", token];
                 
                 [[tokenRef childByAppendingPath:teamString] setValue:[FirebaseHelper sharedHelper].teamName];
                 [[tokenRef childByAppendingPath:projectString] setValue:[self.roles objectForKey:userEmail]];
                 [[tokenRef childByAppendingPath:emailString] setValue:userEmail];
+                [[tokenRef childByAppendingPath:invitedByString] setValue:[FirebaseHelper sharedHelper].userName];
                 
                 MCOMessageBuilder *builder = [[MCOMessageBuilder alloc] init];
                 MCOAddress *from = [MCOAddress addressWithDisplayName:@"Quill" mailbox:@"cos@tigrillo.co"];
@@ -241,21 +244,10 @@
     
     UISegmentedControl *roleControl = (UISegmentedControl *)sender;
     UITableViewCell *cell = (UITableViewCell *)roleControl.superview.superview;
-    
-    int cellRow = [self.usersTable indexPathForCell:cell].row;
-    
-    if (cellRow<self.availableUsersDict.allKeys.count) {
-        
-        NSString *userID = self.availableUsersDict.allKeys[cellRow];
-        [self.roles setObject:@(roleControl.selectedSegmentIndex) forKey:userID];
-    }
-    else {
-        
-        UITextField *emailTextField = (UITextField *)[cell.contentView viewWithTag:401];
-        [self.roles setObject:@(roleControl.selectedSegmentIndex) forKey:emailTextField.text];
-    }
-    
-    NSLog(@"roles is %@", self.roles);
+
+    UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
+    [self.roles setObject:@(roleControl.selectedSegmentIndex) forKey:textField.text];
+
 }
 
 -(void) deleteTapped:(id)sender {
@@ -362,7 +354,8 @@
     if (indexPath.row < self.availableUsersDict.allKeys.count) {
         
         NSString *userID = self.availableUsersDict.allKeys[indexPath.row];
-        UILabel *userNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 10, 0, 0)];
+        
+        UILabel *userNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 11, 0, 0)];
         userNameLabel.text = [[self.availableUsersDict objectForKey:userID] objectForKey:@"name"];
         userNameLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:20];
         [userNameLabel sizeToFit];
@@ -372,7 +365,7 @@
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
         avatar.userID = userID;
         [avatar generateIdenticonWithShadow:false];
-        avatar.frame = CGRectMake(-93, -100, avatar.userImage.size.width, avatar.userImage.size.height);
+        avatar.frame = CGRectMake(-93, -99.5, avatar.userImage.size.width, avatar.userImage.size.height);
         avatar.transform = CGAffineTransformMakeScale(.16, .16);
         avatar.tag = 406;
         avatar.userInteractionEnabled = false;

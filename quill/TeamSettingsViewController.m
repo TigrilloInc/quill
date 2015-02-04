@@ -21,7 +21,10 @@
         
         NSMutableDictionary *userDict = [NSMutableDictionary dictionary];
         NSString *userName = (NSString *)[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"name"];
+        NSString *userEmail = (NSString *)[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"email"];
+        
         [userDict setObject:userName forKey:@"name"];
+        [userDict setObject:userEmail forKey:@"email"];
         
         [self.usersDict setObject:userDict forKey:userID];
     }
@@ -104,7 +107,7 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"UserCell"];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    for (int i=1; i<3; i++) {
+    for (int i=1; i<4; i++) {
         
         if ([cell.contentView viewWithTag:500+i] != nil) [[cell.contentView viewWithTag:400+i] removeFromSuperview];
     }
@@ -112,7 +115,8 @@
     if (indexPath.row < self.usersDict.allKeys.count) {
         
         NSString *userID = self.usersDict.allKeys[indexPath.row];
-        UILabel *userNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 10, 0, 0)];
+        
+        UILabel *userNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 11, 0, 0)];
         userNameLabel.text = [[self.usersDict objectForKey:userID] objectForKey:@"name"];
         userNameLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:20];
         [userNameLabel sizeToFit];
@@ -122,11 +126,18 @@
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
         avatar.userID = userID;
         [avatar generateIdenticonWithShadow:false];
-        avatar.frame = CGRectMake(-93, -100, avatar.userImage.size.width, avatar.userImage.size.height);
+        avatar.frame = CGRectMake(-93, -99.5, avatar.userImage.size.width, avatar.userImage.size.height);
         avatar.transform = CGAffineTransformMakeScale(.16, .16);
         avatar.tag = 502;
         avatar.userInteractionEnabled = false;
         [cell.contentView addSubview:avatar];
+        
+        UILabel *emailLabel = [[UILabel alloc] initWithFrame:CGRectMake(185, 11, 0, 0)];
+        emailLabel.text = [[self.usersDict objectForKey:userID] objectForKey:@"email"];
+        emailLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:18];
+        [emailLabel sizeToFit];
+        emailLabel.tag = 503;
+        [cell.contentView addSubview:emailLabel];
         
     }
     else {
