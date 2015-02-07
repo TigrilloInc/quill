@@ -136,52 +136,44 @@
         }
         else {
             
-            ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+            self.signInLabel.text = @"Creating user account...";
             
-            NewNameViewController *newNameVC = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"NewName"];
-            
-            UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
-            logoImage.hidden = true;
-            logoImage.frame = CGRectMake(149, 2, 35, 35);
-            
-            [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
-            [self.navigationController pushViewController:newNameVC animated:YES];
-            
-//            [authClient createUserWithEmail:self.emailField.text password:self.passwordField.text andCompletionBlock:^(NSError* error, FAUser* user) {
-//                
-//                if (error != nil) {
-//                    
-//                    [self.signInLabel setText:@"Something went wrong - try again."];
-//                    
-//                    NSLog(@"%@", error);
-//                    
-//                } else {
-//                    
-//                    [[ref childByAppendingPath:@"users"] updateChildValues:@{ user.uid :
-//                                                                                  @{ @"email" : self.emailField.text}
-//                                                                              }];
-//                    
-//                    [FirebaseHelper sharedHelper].uid = user.uid;
-//                    
-//                    [authClient loginWithEmail:self.emailField.text andPassword:self.passwordField.text
-//                           withCompletionBlock:^(NSError* error, FAUser* user) {
-//                               
-//                        if (error != nil) {
-//                                   
-//                            [self.signInLabel setText:@"Something went wrong - try again."];
-//                            NSLog(@"%@", error);
-//                
-//                        } else {
-//                            
-//                            [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:@"registered"];
-//                            [FirebaseHelper sharedHelper].loggedIn = true;
-//                            
-//                            NewTeamViewController *newTeamVC = [self.storyboard instantiateViewControllerWithIdentifier:@"NewTeam"];
-//                            [self.navigationController pushViewController:newTeamVC animated:YES];
-//                        }
-//                    }];
-//                }
-//            }];
+            [authClient createUserWithEmail:self.emailField.text password:self.passwordField.text andCompletionBlock:^(NSError* error, FAUser* user) {
+                
+                if (error != nil) {
+                    
+                    [self.signInLabel setText:@"Something went wrong - try again."];
+                    
+                    NSLog(@"%@", error);
+                    
+                } else {
+                    
+                    [[ref childByAppendingPath:@"users"] updateChildValues:@{ user.uid :
+                                                                                  @{ @"email" : self.emailField.text}
+                                                                              }];
+                    
+                    [FirebaseHelper sharedHelper].uid = user.uid;
+                    
+                    [authClient loginWithEmail:self.emailField.text andPassword:self.passwordField.text
+                           withCompletionBlock:^(NSError* error, FAUser* user) {
+                               
+                        if (error != nil) {
+                                   
+                            [self.signInLabel setText:@"Something went wrong - try again."];
+                            NSLog(@"%@", error);
+                
+                        } else {
+                            
+                            self.signInLabel.text = @"User account created!";
+                            
+                            [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:@"registered"];
+                            [FirebaseHelper sharedHelper].loggedIn = true;
+                            
+                            [self performSelector:@selector(accountCreated) withObject:nil afterDelay:.5];
+                        }
+                    }];
+                }
+            }];
         }
         
     } else {
@@ -192,6 +184,31 @@
         self.emailField.alpha = 1;
         self.passwordField.alpha = 1;
     }
+}
+
+-(void)showLogo {
+    
+    UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
+    logoImage.alpha = 0;
+    logoImage.hidden = false;
+    
+    [UIView animateWithDuration:.3 animations:^{
+        logoImage.alpha = 1;
+    }];
+}
+
+-(void)accountCreated {
+    
+    ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    
+    NewNameViewController *newNameVC = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"NewName"];
+    
+    UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
+    logoImage.hidden = true;
+    logoImage.frame = CGRectMake(154, 8, 32, 32);
+    
+    [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
+    [self.navigationController pushViewController:newNameVC animated:YES];
 }
 
 - (IBAction)switchTapped:(id)sender {
@@ -205,18 +222,6 @@
 
     [self.view endEditing:YES];
     [super touchesBegan:touches withEvent:event];
-}
-
--(void)showLogo {
-    
-    UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
-    logoImage.alpha = 0;
-    logoImage.hidden = false;
-    
-    [UIView animateWithDuration:.3 animations:^{
-        logoImage.alpha = 1;
-    }];
-    
 }
 
 @end

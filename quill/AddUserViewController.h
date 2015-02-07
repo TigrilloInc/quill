@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "ProjectDetailViewController.h"
+#import "RoundedButton.h"
 
 @interface AddUserViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate> {
 
@@ -22,7 +23,8 @@
 @property (strong, nonatomic) NSMutableArray *selectedUsers;
 @property (strong, nonatomic) NSMutableArray *inviteEmails;
 @property (strong, nonatomic) NSMutableDictionary *roles;
-@property (weak, nonatomic) IBOutlet UIButton *inviteButton;
+@property (weak, nonatomic) IBOutlet RoundedButton *inviteButton;
+@property (weak, nonatomic) IBOutlet UILabel *inviteLabel;
 
 
 @end

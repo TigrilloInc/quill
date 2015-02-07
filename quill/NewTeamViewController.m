@@ -45,32 +45,12 @@
 
 - (IBAction)createTeamTapped:(id)sender {
     
-//    Firebase *teamRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/teams"];
-//    
-//    NSDictionary *newTeamValues = @{ teamName :
-//                                         @{ @"users" :
-//                                                @{ [FirebaseHelper sharedHelper].uid : @1 }
-//                                            }
-//                                     };
-//    
-//    [teamRef updateChildValues:newTeamValues];
-//    
-//    NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@", [FirebaseHelper sharedHelper].uid];
-//    Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
-//    
-//    [userRef updateChildValues:@{ @"team" : teamName }];
-//    
-//    [self dismissViewControllerAnimated:YES completion:nil];
-//    
-//    [[FirebaseHelper sharedHelper] observeLocalUser];
-
-    
     if (self.teamField.text.length == 0) return;
     
     [FirebaseHelper sharedHelper].teamName = self.teamField.text;
     
     logoImage.hidden = true;
-    logoImage.frame = CGRectMake(145, 2, 35, 35);
+    logoImage.frame = CGRectMake(149, 8, 32, 32);
     
     [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
     
@@ -84,7 +64,7 @@
     if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
 
         logoImage.hidden = true;
-        logoImage.frame = CGRectMake(149, 2, 35, 35);
+        logoImage.frame = CGRectMake(154, 8, 32, 32);
         
         [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
     }

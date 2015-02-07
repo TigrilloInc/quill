@@ -110,6 +110,8 @@ static FirebaseHelper *sharedHelper = nil;
     Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
     FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
     
+    //[authClient logout];
+    
     [authClient checkAuthStatusWithBlock:^(NSError *error, FAUser *user) {
         
         if (error != nil) {
@@ -128,9 +130,10 @@ static FirebaseHelper *sharedHelper = nil;
             nav.navigationBar.barTintColor = [UIColor whiteColor];
             nav.navigationBar.tintColor = [UIColor blackColor];
             [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"SourceSansPro-Light" size:24.0], NSFontAttributeName, nil]];
+            [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5 forBarMetrics:UIBarMetricsDefault];
             
-            UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo2.png"]];
-            logoImageView.frame = CGRectMake(155, 2, 35, 35);
+            UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+            logoImageView.frame = CGRectMake(155, 8, 32, 32);
             logoImageView.tag = 800;
             [nav.navigationBar addSubview:logoImageView];
             
@@ -165,8 +168,8 @@ static FirebaseHelper *sharedHelper = nil;
         
         for (FDataSnapshot *child in snapshot.children) {
             
-            if ([child.name isEqualToString:@"name"]) self.userName = child.value;
-            if ([child.name isEqualToString:@"team"]) self.teamName = child.value;
+            if ([child.key isEqualToString:@"name"]) self.userName = child.value;
+            if ([child.key isEqualToString:@"team"]) self.teamName = child.value;
         }
         
         [self.team setObject:[@{self.uid:[snapshot.value mutableCopy]} mutableCopy] forKey:@"users"];
@@ -260,7 +263,7 @@ static FirebaseHelper *sharedHelper = nil;
             
             for (FDataSnapshot *child in snapshot.children) {
                 
-                if (![self.projects.allKeys containsObject:child.name]) [self observeProjectWithID:child.name];
+                if (![self.projects.allKeys containsObject:child.key]) [self observeProjectWithID:child.key];
             }
         }
         else [self updateMasterView];
@@ -285,9 +288,9 @@ static FirebaseHelper *sharedHelper = nil;
         
         for (FDataSnapshot *child in snapshot.children) {
             
-            [projectDict setObject:child.value forKey:child.name];
+            [projectDict setObject:child.value forKey:child.key];
             
-            if ([child.name isEqualToString:@"boards"]) {
+            if ([child.key isEqualToString:@"boards"]) {
                 
                 for (NSString *boardID in child.value) {
                     
@@ -332,8 +335,16 @@ static FirebaseHelper *sharedHelper = nil;
     
     self.firstLoad = false;
     
+    self.projectVC.masterView.nameButton.titleLabel.numberOfLines = 1;
+    self.projectVC.masterView.nameButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+    self.projectVC.masterView.nameButton.titleLabel.lineBreakMode = NSLineBreakByClipping;
+    self.projectVC.masterView.teamButton.titleLabel.numberOfLines = 1;
+    self.projectVC.masterView.teamButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+    self.projectVC.masterView.teamButton.titleLabel.lineBreakMode = NSLineBreakByClipping;
+    
     [UIView setAnimationsEnabled:NO];
     [self.projectVC.masterView.nameButton setTitle:self.userName forState:UIControlStateNormal];
+    self.projectVC.masterView.nameButton.center = CGPointMake(self.projectVC.masterView.nameButton.center.x, 107-60/self.projectVC.masterView.nameButton.titleLabel.font.pointSize);
     [self.projectVC.masterView.teamButton setTitle:self.teamName forState:UIControlStateNormal];
     [self.projectVC.masterView.nameButton layoutIfNeeded];
     [self.projectVC.masterView.teamButton layoutIfNeeded];
@@ -472,21 +483,21 @@ static FirebaseHelper *sharedHelper = nil;
         
         NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
 
-        if ([boardIDs containsObject:boardID] && ![orderedKeys containsObject:snapshot.name]) {
+        if ([boardIDs containsObject:boardID] && ![orderedKeys containsObject:snapshot.key]) {
             
-            [subpathsDict setObject:snapshot.value forKey:snapshot.name];
-            [[[[self.boards objectForKey:boardID] objectForKey:@"undo"] objectForKey:userID] setObject:snapshot.name forKey:@"currentIndexDate"];
+            [subpathsDict setObject:snapshot.value forKey:snapshot.key];
+            [[[[self.boards objectForKey:boardID] objectForKey:@"undo"] objectForKey:userID] setObject:snapshot.key forKey:@"currentIndexDate"];
             
             for (NSString *dateString in orderedKeys) {
 
-                if ([dateString doubleValue] > [snapshot.name doubleValue]) [subpathsDict removeObjectForKey:dateString];
+                if ([dateString doubleValue] > [snapshot.key doubleValue]) [subpathsDict removeObjectForKey:dateString];
             }
             
             NSInteger boardIndex = [boardIDs indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
 
             if([snapshot.value respondsToSelector:@selector(objectForKey:)]) [boardView drawSubpath:snapshot.value];
-            else [boardView drawSubpath:@{snapshot.name : snapshot.value}];
+            else [boardView drawSubpath:@{snapshot.key : snapshot.value}];
         }
     }];
 }
@@ -568,7 +579,7 @@ static FirebaseHelper *sharedHelper = nil;
     [ref observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot) {
         
         NSMutableDictionary *chatDict = [NSMutableDictionary dictionaryWithDictionary:[self.chats objectForKey:chatID]];
-        [chatDict setObject:snapshot.value forKey:snapshot.name];
+        [chatDict setObject:snapshot.value forKey:snapshot.key];
     
         [self.chats setObject:chatDict forKey:chatID];
         
@@ -626,15 +637,15 @@ static FirebaseHelper *sharedHelper = nil;
 
         if ([[[snapshot.value objectForKey:@"info"] objectForKey:@"owner"] isEqualToString:self.uid]) return;
         
-        if (![[self.comments objectForKey:commentsID] objectForKey:snapshot.name]){
+        if (![[self.comments objectForKey:commentsID] objectForKey:snapshot.key]){
             
             NSDictionary *infoDict = [snapshot.value objectForKey:@"info"];
             NSDictionary *commentDict = @{ @"location" : [infoDict objectForKey:@"location"],
                                            @"owner" : [infoDict objectForKey:@"owner"]
                                            };
             
-            [[self.comments objectForKey:commentsID] setObject:[commentDict mutableCopy] forKey:snapshot.name];
-            [self observeCommentThreadWithID:snapshot.name boardID:boardID];
+            [[self.comments objectForKey:commentsID] setObject:[commentDict mutableCopy] forKey:snapshot.key];
+            [self observeCommentThreadWithID:snapshot.key boardID:boardID];
         }
     }];
     
@@ -642,7 +653,7 @@ static FirebaseHelper *sharedHelper = nil;
         
         if ([[[snapshot.value objectForKey:@"info"] objectForKey:@"owner"] isEqualToString:self.uid]) return;
         
-        [[self.comments objectForKey:commentsID] removeObjectForKey:snapshot.name];
+        [[self.comments objectForKey:commentsID] removeObjectForKey:snapshot.key];
         
         NSArray *currentProjectBoardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
         
@@ -653,7 +664,7 @@ static FirebaseHelper *sharedHelper = nil;
             [boardView layoutComments];
         }
         
-        [[ref childByAppendingPath:snapshot.name] removeAllObservers];
+        [[ref childByAppendingPath:snapshot.key] removeAllObservers];
     }];
 }
 
@@ -698,7 +709,7 @@ static FirebaseHelper *sharedHelper = nil;
         
         if(![threadDict objectForKey:@"messages"]) [threadDict setObject:[NSMutableDictionary dictionary] forKey:@"messages"];
         
-        [[threadDict objectForKey:@"messages"] setObject:snapshot.value forKey:snapshot.name];
+        [[threadDict objectForKey:@"messages"] setObject:snapshot.value forKey:snapshot.key];
         
         if ([self.projectVC.activeCommentThreadID isEqualToString:commentThreadID]) {
             [self.projectVC updateMessages];

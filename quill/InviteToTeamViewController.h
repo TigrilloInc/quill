@@ -19,7 +19,6 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *inviteTable;
 @property (strong, nonatomic) NSMutableArray *inviteEmails;
-@property (strong, nonatomic) NSMutableDictionary *roles;
 @property (weak, nonatomic) IBOutlet UILabel *inviteLabel;
 @property (weak, nonatomic) IBOutlet RoundedButton *inviteButton;
 

@@ -143,7 +143,7 @@
     else {
         
         UILabel *addUserLabel = [[UILabel alloc] initWithFrame:CGRectMake(62, 10, 0, 0)];
-        addUserLabel.text = @"Add new user to invite by email";
+        addUserLabel.text = @"Invite new teammates...";
         addUserLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:20];
         addUserLabel.alpha = .3;
         [addUserLabel sizeToFit];
@@ -155,6 +155,7 @@
         plusImage.alpha = .3;
         plusImage.tag = 405;
         [cell.contentView addSubview:plusImage];
+
     }
     
     return cell;

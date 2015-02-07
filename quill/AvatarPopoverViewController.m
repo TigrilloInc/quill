@@ -12,8 +12,8 @@
 @implementation AvatarPopoverViewController
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
     
+    [super viewDidLoad];
 }
 
 -(void)updateMenu {
@@ -30,17 +30,35 @@
     else if (roleNum == 1) roleString = @"(Collaborator)";
     else roleString = @"(Viewer)";
 
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 20, 0, 0)];
-    titleLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
-    [titleLabel setText:userName];
-    [titleLabel sizeToFit];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 20, 228, 25)];
+    titleLabel.numberOfLines = 1;
+    titleLabel.adjustsFontSizeToFitWidth = YES;
+    titleLabel.lineBreakMode = NSLineBreakByClipping;
+    
+    UIFont *nameFont = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
+    UIFont *roleFont = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
+    
+    NSDictionary *nameAttrs = [NSDictionary dictionaryWithObjectsAndKeys: nameFont, NSFontAttributeName, nil];
+    NSDictionary *roleAttrs = [NSDictionary dictionaryWithObjectsAndKeys: roleFont, NSFontAttributeName, nil];
+    NSRange roleRange = NSMakeRange(userName.length+1,roleString.length);
+    
+    NSString *titleString = [NSString stringWithFormat:@"%@ %@", userName, roleString];
+    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithString:titleString attributes:nameAttrs];
+    [attrString setAttributes:roleAttrs range:roleRange];
+    
+    [titleLabel setAttributedText:attrString];
+    
+//    titleLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
+//    [titleLabel setText:userName];
+//    [titleLabel sizeToFit];
+    
     [self.view addSubview:titleLabel];
     
-    UILabel *roleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabel.frame.size.width+25, 20, 0, 0)];
-    roleLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
-    [roleLabel setText:roleString];
-    [roleLabel sizeToFit];
-    [self.view addSubview:roleLabel];
+//    UILabel *roleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabel.frame.size.width+25, 20, 0, 0)];
+//    roleLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
+//    [roleLabel setText:roleString];
+//    [roleLabel sizeToFit];
+//    [self.view addSubview:roleLabel];
     
     int buttonCount = 0;
     

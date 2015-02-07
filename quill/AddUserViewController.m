@@ -20,7 +20,6 @@
     self.selectedUsers = [NSMutableArray array];
     self.inviteEmails = [NSMutableArray array];
     self.roles = [NSMutableDictionary dictionary];
-    
     editedText = [NSMutableArray array];
     
     projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
@@ -31,6 +30,10 @@
         if ([projectVC.roles.allKeys containsObject:userID]) [usersDict removeObjectForKey:userID];
     }
     self.availableUsersDict = usersDict;
+    
+    self.inviteButton.layer.borderWidth = 1;
+    self.inviteButton.layer.cornerRadius = 10;
+    self.inviteButton.layer.borderColor = [UIColor grayColor].CGColor;
     
     //if (self.availableUsersDict.allKeys.count == 0) [self.inviteEmails addObject:@""];
 }
@@ -111,7 +114,8 @@
         }
     }
 
-    //NSLog(@"inviteEmails is %@", self.inviteEmails);
+    if (self.inviteEmails.count+self.selectedUsers.count > 1) [self.inviteButton setTitle:@"Send Invites" forState:UIControlStateNormal];
+    else [self.inviteButton setTitle:@"Send Invite" forState:UIControlStateNormal];
 }
 
 -(void) invitesSent {
@@ -218,7 +222,7 @@
                     if(error) NSLog(@"Error sending email: %@", error);
                     else {
                         
-                        [self.inviteButton setTitle:@"Invites Sent!" forState:UIControlStateNormal];
+                        self.inviteLabel.text = @"Invites Sent!";
                         [projectVC updateDetails];
                         [self performSelector:@selector(invitesSent) withObject:nil afterDelay:0.5];
                     }
@@ -227,15 +231,14 @@
         }
         else {
             
-            [self.inviteButton setTitle:@"Invites Sent!" forState:UIControlStateNormal];
+            self.inviteLabel.text = @"Invites Sent!";
             [projectVC updateDetails];
             [self invitesSent];
         }
     }
     else {
 
-        
-        NSLog(@"FIX YOUR SHIT!");
+        self.inviteLabel.text = @"Please fix the emails in red.";
     }
 
 }
@@ -261,6 +264,8 @@
     [self.roles removeObjectForKey:emailString];
     [self.usersTable reloadData];
     
+    if (self.inviteEmails.count+self.selectedUsers.count > 1) [self.inviteButton setTitle:@"Send Invites" forState:UIControlStateNormal];
+    else [self.inviteButton setTitle:@"Send Invite" forState:UIControlStateNormal];
 }
 
 -(void) tappedOutside {
@@ -332,8 +337,9 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    return 48.0;
+    
+    if (indexPath.row == self.availableUsersDict.allKeys.count+self.inviteEmails.count) return 65.0;
+    else return 48.0;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {

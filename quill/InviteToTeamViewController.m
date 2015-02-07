@@ -22,25 +22,13 @@
     self.inviteButton.layer.cornerRadius = 10;
     self.inviteButton.layer.borderColor = [UIColor grayColor].CGColor;
     
-//    UIBarButtonItem *skipButton = [[UIBarButtonItem alloc]
-//                                   initWithTitle: @"Skip"
-//                                   style: UIBarButtonItemStyleBordered
-//                                   target: nil action: nil];
-//    [skipButton setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-//                                        [UIFont fontWithName:@"SourceSansPro-Semibold" size:16],NSFontAttributeName,
-//                                        nil] forState:UIControlStateNormal];
-//    [self.navigationItem setRightBarButtonItems:@[skipButton] animated:NO];
-    
     self.inviteEmails = [NSMutableArray array];
-    self.roles = [NSMutableDictionary dictionary];
     
     editedText = [NSMutableArray array];
     
     projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
     self.navigationItem.title = @"Step 3: Send Invites";
-    
-    [self.inviteEmails addObject:@""];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -48,7 +36,7 @@
     if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
         
         logoImage.hidden = true;
-        logoImage.frame = CGRectMake(144, 4, 35, 35);
+        logoImage.frame = CGRectMake(149, 8, 32, 32);
         
         [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
     }
@@ -90,8 +78,8 @@
     
     for (NSString *text in editedText) {
         [self.inviteEmails removeObject:text];
-        [self.roles removeObjectForKey:text];
     }
+    
     editedText = [NSMutableArray array];
     
     for (int i=0; i<cellCount; i++) {
@@ -101,22 +89,7 @@
         UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
         
         if (![self.inviteEmails containsObject:textField.text] && textField.text.length > 0) [self.inviteEmails addObject:textField.text];
-
-        if (textField.text.length > 0 && [cell.contentView viewWithTag:403] != nil) {
-            
-            UISegmentedControl *roleControl = (UISegmentedControl *)[cell.contentView viewWithTag:403];
-            [self.roles setObject:@(roleControl.selectedSegmentIndex) forKey:textField.text];
-        }
     }
-}
-
--(void) roleTapped:(id)sender {
-    
-    UISegmentedControl *roleControl = (UISegmentedControl *)sender;
-    UITableViewCell *cell = (UITableViewCell *)roleControl.superview.superview;
-    
-    UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
-    [self.roles setObject:@(roleControl.selectedSegmentIndex) forKey:textField.text];
 }
 
 -(void) deleteTapped:(id)sender {
@@ -127,7 +100,6 @@
     NSString *emailString = ((UITextField *)[deleteButton.superview viewWithTag:401]).text;
     
     [self.inviteEmails removeObject:emailString];
-    [self.roles removeObjectForKey:emailString];
     [self.inviteTable reloadData];
     
 }
@@ -155,11 +127,51 @@
     
     if (errorEmails.count == 0) {
         
-        self.inviteLabel.text =  @"Sending invites...";
         self.inviteButton.userInteractionEnabled = false;
         self.inviteButton.alpha = .5;
+        
+        __block BOOL emailsSent;
+        __block BOOL nameCreated;
+        __block BOOL teamCreated;
+        __block BOOL teamSet;
+        
+        //////////Create Name
+        NSString *nameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/name", [FirebaseHelper sharedHelper].uid];
+        Firebase *nameRef = [[Firebase alloc] initWithUrl:nameString];
+        [nameRef setValue:[FirebaseHelper sharedHelper].userName withCompletionBlock:^(NSError *error, Firebase *ref) {
+            nameCreated = true;
+            if (teamCreated && teamSet && emailsSent) [self invitesSent];
+        }];
+        
+        //////////Create Team
+        Firebase *teamRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/teams"];
+        NSDictionary *newTeamValues = @{ [FirebaseHelper sharedHelper].teamName :
+                                             @{ @"users" :
+                                                    @{ [FirebaseHelper sharedHelper].uid : @1 }
+                                                }
+                                         };
+        [teamRef updateChildValues:newTeamValues withCompletionBlock:^(NSError *error, Firebase *ref) {
+            teamCreated = true;
+            if (nameCreated && teamSet && emailsSent) [self invitesSent];
+        }];
 
-        if (self.inviteEmails.count > 0) {
+        //////////Set Team
+        NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/team", [FirebaseHelper sharedHelper].uid];
+        Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
+        [userRef setValue:[FirebaseHelper sharedHelper].teamName withCompletionBlock:^(NSError *error, Firebase *ref) {
+            teamSet = true;
+            if (nameCreated && teamCreated && emailsSent) [self invitesSent];
+        }];
+        
+        //////////Send Emails
+        if (self.inviteEmails.count == 0) {
+            
+            self.inviteLabel.text = @"Creating team...";
+            emailsSent = true;
+        }
+        else {
+            
+            self.inviteLabel.text = @"Creating team and sending invites...";
             
             Firebase *tokenRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/tokens"];
             
@@ -171,17 +183,17 @@
             smtpSession.authType = MCOAuthTypeSASLPlain;
             smtpSession.connectionType = MCOConnectionTypeTLS;
             
+            __block int emailCount = 0;
+            
             for (NSString *userEmail in self.inviteEmails) {
                 
                 NSString *token = [self generateToken];
                 NSString *tokenURL = [NSString stringWithFormat:@"quill://%@", token];
                 NSString *teamString = [NSString stringWithFormat:@"%@/team", token];
-                NSString *projectString = [NSString stringWithFormat:@"%@/project/%@", token, [FirebaseHelper sharedHelper].currentProjectID];
                 NSString *emailString = [NSString stringWithFormat:@"%@/email", token];
                 NSString *invitedByString = [NSString stringWithFormat:@"%@/invitedBy", token];
                 
                 [[tokenRef childByAppendingPath:teamString] setValue:[FirebaseHelper sharedHelper].teamName];
-                [[tokenRef childByAppendingPath:projectString] setValue:[self.roles objectForKey:userEmail]];
                 [[tokenRef childByAppendingPath:emailString] setValue:userEmail];
                 [[tokenRef childByAppendingPath:invitedByString] setValue:[FirebaseHelper sharedHelper].userName];
                 
@@ -201,17 +213,14 @@
                 [sendOperation start:^(NSError *error) {
                     if(error) NSLog(@"Error sending email: %@", error);
                     else {
-                        
-                        self.inviteLabel.text = @"Invites Sent!";
-                        [self performSelector:@selector(invitesSent) withObject:nil afterDelay:0.5];
+                        emailCount++;
+                        if (emailCount == self.inviteEmails.count) {
+                            emailsSent = true;
+                            if (teamCreated && teamSet && nameCreated) [self invitesSent];
+                        }
                     }
                 }];
             }
-        }
-        else {
-            
-            self.inviteLabel.text = @"Invites Sent!";
-            [self performSelector:@selector(invitesSent) withObject:nil afterDelay:0.5];
         }
     }
     else {
@@ -221,6 +230,16 @@
 }
 
 -(void) invitesSent {
+    
+    if (self.inviteEmails.count == 0) self.inviteLabel.text = @"Team created!";
+    else self.inviteLabel.text = @"Invites sent and team created!";
+    
+    [[FirebaseHelper sharedHelper] observeLocalUser];
+    
+    [self performSelector:@selector(dismiss) withObject:nil afterDelay:.3];
+}
+
+-(void) dismiss {
     
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -234,9 +253,7 @@
     
     UITableViewCell *cell = (UITableViewCell *)textField.superview.superview;
     NSIndexPath *indexPath = [self.inviteTable indexPathForCell:cell];
-    UISegmentedControl *roleControl = (UISegmentedControl *)[cell.contentView viewWithTag:403];
     UIButton *deleteButton = (UIButton *)[cell.contentView viewWithTag:404];
-    roleControl.hidden = false;
     deleteButton.hidden = false;
     
     [self.inviteTable scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
@@ -248,19 +265,14 @@
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
     
     UITableViewCell *cell = (UITableViewCell *)textField.superview.superview;
-    UISegmentedControl *roleControl = (UISegmentedControl *)[cell.contentView viewWithTag:403];
     UIButton *deleteButton = (UIButton *)[cell.contentView viewWithTag:404];
     
     if (textField.text.length > 0) {
         
-        roleControl.hidden = false;
         deleteButton.hidden = false;
         if (![emailTest evaluateWithObject:textField.text]) textField.textColor = [UIColor redColor];
     }
-    else {
-        roleControl.hidden = true;
-        deleteButton.hidden = true;
-    }
+    else deleteButton.hidden = true;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField*)textField {
@@ -341,18 +353,6 @@
         mailImage.tag = 402;
         [cell.contentView addSubview:mailImage];
         
-        UISegmentedControl *roleControl = [[UISegmentedControl alloc] initWithItems:@[@"Viewer", @"Collaborator"]];
-        roleControl.tintColor = [UIColor lightGrayColor];
-        roleControl.center = CGPointMake(398, cell.frame.size.height/2);
-        int roleInt;
-        if ([self.roles objectForKey:inviteTextField.text] == nil) roleInt = 1;
-        else roleInt = [[self.roles objectForKey:inviteTextField.text] integerValue];
-        roleControl.selectedSegmentIndex = roleInt;
-        [roleControl setTitleTextAttributes:@{ NSFontAttributeName : [UIFont fontWithName:@"SourceSansPro-Light" size:13]} forState:UIControlStateNormal];
-        [roleControl addTarget:self action:@selector(roleTapped:) forControlEvents:UIControlEventValueChanged];
-        roleControl.tag = 403;
-        [cell.contentView addSubview:roleControl];
-        
         UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [deleteButton setBackgroundImage:[UIImage imageNamed:@"minus2.png"] forState:UIControlStateNormal];
         deleteButton.frame = CGRectMake(485, 7, 35, 35);
@@ -360,14 +360,9 @@
         deleteButton.tag = 404;
         [cell.contentView addSubview:deleteButton];
         
-        if (inviteTextField.text.length > 0) {
-            deleteButton.hidden = false;
-            roleControl.hidden = false;
-        }
-        else {
-            deleteButton.hidden = true;
-            roleControl.hidden = true;
-        }
+        if (inviteTextField.text.length > 0) deleteButton.hidden = false;
+        else deleteButton.hidden = true;
+
     }
  
     return cell;

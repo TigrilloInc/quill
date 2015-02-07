@@ -33,7 +33,7 @@
     if (self) {
         
         self.defaultRow = [NSIndexPath indexPathForRow:0 inSection:0];
-        
+    
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     }
     
@@ -46,7 +46,7 @@
     if (self) {
         
         self.defaultRow = [NSIndexPath indexPathForRow:0 inSection:0];
-
+        
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     }
     
@@ -189,9 +189,20 @@
     
     PersonalSettingsViewController *vc = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"Settings"];
     
-    vc.modalPresentationStyle = UIModalPresentationFormSheet;
-    vc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    [projectVC presentViewController:vc animated:YES completion:nil];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    nav.modalPresentationStyle = UIModalPresentationFormSheet;
+    nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    nav.navigationBar.barTintColor = [UIColor whiteColor];
+    nav.navigationBar.tintColor = [UIColor blackColor];
+    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"SourceSansPro-Light" size:24.0], NSFontAttributeName, nil]];
+    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5 forBarMetrics:UIBarMetricsDefault];
+    
+    UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+    logoImageView.frame = CGRectMake(156, 8, 32, 32);
+    logoImageView.tag = 800;
+    [nav.navigationBar addSubview:logoImageView];
+    
+    [projectVC presentViewController:nav animated:YES completion:nil];
 }
 
 - (IBAction)teamTapped:(id)sender {

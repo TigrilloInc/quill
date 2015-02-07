@@ -439,7 +439,7 @@
     
     Firebase *commentsRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/comments"];
     Firebase *commentsRefWithID = [commentsRef childByAutoId];
-    NSString *commentsID = commentsRefWithID.name;
+    NSString *commentsID = commentsRefWithID.key;
     
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     
@@ -470,9 +470,9 @@
     Firebase *boardRefWithID = [boardRef childByAutoId];
     [boardRefWithID updateChildValues:boardDict];
     
-    [projectRef updateChildValues:@{ boardNum : boardRefWithID.name }];
+    [projectRef updateChildValues:@{ boardNum : boardRefWithID.key}];
     
-    NSString *boardID = boardRefWithID.name;
+    NSString *boardID = boardRefWithID.key;
     
     [self.boardIDs addObject:boardID];
     [[FirebaseHelper sharedHelper].loadedBoardIDs addObject:boardID];

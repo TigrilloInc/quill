@@ -550,11 +550,11 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     Firebase *commentThreadRefWithID = [commentThreadRef childByAutoId];
     [commentThreadRefWithID setValue:@{ @"info" : commentDict }];
     
-    [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] setObject:[commentDict mutableCopy] forKey:commentThreadRefWithID.name];
-    [[FirebaseHelper sharedHelper] observeCommentThreadWithID:commentThreadRefWithID.name boardID:self.boardID];
+    [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] setObject:[commentDict mutableCopy] forKey:commentThreadRefWithID.key];
+    [[FirebaseHelper sharedHelper] observeCommentThreadWithID:commentThreadRefWithID.key boardID:self.boardID];
     
     CommentButton *button = [CommentButton buttonWithType:UIButtonTypeCustom];
-    button.commentThreadID = commentThreadRefWithID.name;
+    button.commentThreadID = commentThreadRefWithID.key;
     button.point = point;
     button.userID = [FirebaseHelper sharedHelper].uid;
     [button generateIdenticon];

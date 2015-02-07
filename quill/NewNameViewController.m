@@ -46,18 +46,11 @@
     
     if (self.nameTextField.text.length == 0) return;
     
-//    NSString *nameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/name", [FirebaseHelper sharedHelper].uid];
-//    Firebase *nameRef = [[Firebase alloc] initWithUrl:nameString];
-//    
-//    [nameRef setValue:self.nameTextField.text withCompletionBlock:^(NSError *error, Firebase *ref) {
-//
-//    }];
-    
     [FirebaseHelper sharedHelper].userName = self.nameTextField.text;
     
     UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
     logoImage.hidden = true;
-    logoImage.frame = CGRectMake(144, 2, 35, 35);
+    logoImage.frame = CGRectMake(149, 8, 32, 32);
     
     [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
     
@@ -69,7 +62,7 @@
     
     UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
     logoImage.hidden = true;
-    logoImage.frame = CGRectMake(149, 2, 35, 35);
+    logoImage.frame = CGRectMake(154, 8, 32, 32);
     
     [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
 }

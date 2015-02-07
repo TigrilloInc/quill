@@ -41,19 +41,19 @@
     
     Firebase *projectRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/projects"];
     Firebase *projectRefWithID = [projectRef childByAutoId];
-    NSString *projectID = projectRefWithID.name;
+    NSString *projectID = projectRefWithID.key;
     
     Firebase *boardRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/boards"];
     Firebase *boardRefWithID = [boardRef childByAutoId];
-    NSString *boardID = boardRefWithID.name;
+    NSString *boardID = boardRefWithID.key;
     
     Firebase *chatRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/chats"];
     Firebase *chatRefWithID = [chatRef childByAutoId];
-    NSString *chatID = chatRefWithID.name;
+    NSString *chatID = chatRefWithID.key;
     
     Firebase *commentsRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/comments"];
     Firebase *commentsRefWithID = [commentsRef childByAutoId];
-    NSString *commentsID = commentsRefWithID.name;
+    NSString *commentsID = commentsRefWithID.key;
     
     NSString *projectName = self.nameField.text;
     
@@ -92,13 +92,13 @@
                                                 } mutableCopy]
                                 };
     
-    [[FirebaseHelper sharedHelper].boards setObject:[boardDict mutableCopy] forKey:boardRefWithID.name];
-    [[FirebaseHelper sharedHelper].loadedBoardIDs addObject:boardRefWithID.name];
+    [[FirebaseHelper sharedHelper].boards setObject:[boardDict mutableCopy] forKey:boardRefWithID.key];
+    [[FirebaseHelper sharedHelper].loadedBoardIDs addObject:boardRefWithID.key];
     
     [[FirebaseHelper sharedHelper].comments setObject:[NSMutableDictionary dictionary] forKey:commentsID];
     [[FirebaseHelper sharedHelper] observeCommentsOnBoardWithID:boardID];
     
-    [[FirebaseHelper sharedHelper].projects setObject:[localProjectDict mutableCopy] forKey:projectRefWithID.name];
+    [[FirebaseHelper sharedHelper].projects setObject:[localProjectDict mutableCopy] forKey:projectRefWithID.key];
     [FirebaseHelper sharedHelper].currentProjectID = projectID;
     [[FirebaseHelper sharedHelper].visibleProjectIDs addObject:projectID];
     [[FirebaseHelper sharedHelper] observeProjectWithID:projectID];
