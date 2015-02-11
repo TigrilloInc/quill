@@ -10,6 +10,7 @@
 
 @interface ChangePasswordViewController : UIViewController <UITextFieldDelegate, UIGestureRecognizerDelegate> {
     
+    UIImageView *logoImage;
     NSArray *textFieldArray;
     UITapGestureRecognizer *outsideTapRecognizer;
 }

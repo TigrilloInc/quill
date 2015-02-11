@@ -52,12 +52,6 @@
     self.passwordField.secureTextEntry = true;
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 - (IBAction)signUpTapped:(id)sender {
     
     Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
@@ -81,7 +75,7 @@
                                                                           }];
                 
                 NSString *teamString = [NSString stringWithFormat:@"teams/%@/users/", [FirebaseHelper sharedHelper].teamName];
-                [[ref childByAppendingPath:teamString] updateChildValues:@{ user.uid : @1 }];
+                [[ref childByAppendingPath:teamString] updateChildValues:@{ user.uid : @0 }];
                 
                 [authClient loginWithEmail:self.emailField.text andPassword:self.passwordField.text
                        withCompletionBlock:^(NSError* error, FAUser* user) {

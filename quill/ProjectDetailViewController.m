@@ -125,7 +125,7 @@
     editBoardNameTextField.delegate = self;
     [self.view addSubview:editBoardNameTextField];
     
-    drawButtons = @[ @"undo",
+    self.drawButtons = @[ @"undo",
                      @"redo",
                      @"clear",
                      @"pen",
@@ -134,12 +134,12 @@
                      @"comment"
                     ];
     
-    for (int i=0; i<drawButtons.count; i++) {
+    for (int i=0; i<self.drawButtons.count; i++) {
         
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         NSString *imageName;
         if (i==5) imageName = @"black.png";
-        else imageName = [NSString stringWithFormat:@"%@.png",drawButtons[i]];
+        else imageName = [NSString stringWithFormat:@"%@.png",self.drawButtons[i]];
         UIImage *buttonImage = [UIImage imageNamed:imageName];
         if (i>2 && i!=5) {
             UIImageView *selectedImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"selected.png"]];
@@ -151,7 +151,7 @@
         button.frame = CGRectMake(0, 0, 50, 50);
         [button setBackgroundImage:buttonImage forState:UIControlStateNormal];
         button.center = CGPointMake(272+i*80, 720);
-        [button addTarget:self action:NSSelectorFromString([NSString stringWithFormat:@"%@Tapped:", drawButtons[i]]) forControlEvents:UIControlEventTouchUpInside];
+        [button addTarget:self action:NSSelectorFromString([NSString stringWithFormat:@"%@Tapped:", self.drawButtons[i]]) forControlEvents:UIControlEventTouchUpInside];
         button.hidden = true;
         [self.view addSubview:button];
         button.tag = i+2;
@@ -177,7 +177,7 @@
     editBoardNameButton.hidden = false;
     [self.view bringSubviewToFront:editBoardNameButton];
     
-    for (int i=0; i<drawButtons.count; i++) {
+    for (int i=0; i<self.drawButtons.count; i++) {
         
         UIButton *button = (UIButton *)[self.view viewWithTag:i+2];
         button.hidden = false;
@@ -202,7 +202,7 @@
     UITextField *editBoardNameTextField = (UITextField *)[self.view viewWithTag:104];
     editBoardNameTextField.hidden = true;
     
-    for (int i=0; i<=drawButtons.count; i++) {
+    for (int i=0; i<=self.drawButtons.count; i++) {
         
         UIButton *button = (UIButton *)[self.view viewWithTag:i+2];
         button.hidden = true;
@@ -486,9 +486,7 @@
 -(void) drawBoard:(BoardView *)boardView {
     
     [boardView clear];
-    
-    //NSLog(@"DRAWING BOARD %@", boardView.boardID);
-    
+
     NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"subpaths"];
     
     NSDictionary *dictRef = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"undo"];
@@ -509,7 +507,7 @@
         int undoCount = [[[undoDict objectForKey:uid] objectForKey:@"currentIndex"] intValue];
         
         for (int i=0; i<userOrderedKeys.count; i++) {
-
+            
             NSMutableDictionary *subpathValues = [[uidDict objectForKey:userOrderedKeys[i]] mutableCopy];
             
             if ([subpathValues respondsToSelector:@selector(objectForKey:)]){
@@ -552,7 +550,6 @@
         NSDictionary *subpathDict = [subpathsToDraw objectForKey:allOrderedKeys[i]];
         [boardView drawSubpath:subpathDict];
     }
-    
 }
 
 - (IBAction)sendTapped:(id)sender {
@@ -704,15 +701,13 @@
                          boardButton.alpha = 1;
                      }
                      completion:^(BOOL finished) {
-                         
-                         [self.carousel reloadData];
+
+                         [self.carousel setScrollEnabled:YES];
                          [self updateDetails];
                          
                          [self showChat];
                          [self.view bringSubviewToFront:self.addBoardBackgroundImage];
                          [self.view bringSubviewToFront:self.addBoardButton];
-                         
-                         [self.carousel setScrollEnabled:YES];
                          
                          [self.masterView.projectsTable reloadData];
                          [self.masterView.projectsTable selectRowAtIndexPath:self.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
@@ -959,6 +954,8 @@
         
         [self drawBoard:self.currentBoardView];
         
+        [self.currentBoardView addUserDrawing:[FirebaseHelper sharedHelper].uid];
+        
         [undoDict setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
         
         NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@", self.currentBoardView.boardID, [FirebaseHelper sharedHelper].uid];
@@ -981,6 +978,8 @@
         [undoDict setObject:@(undoCount) forKey:@"currentIndex"];
         
         [self drawBoard:self.currentBoardView];
+        
+        [self.currentBoardView addUserDrawing:[FirebaseHelper sharedHelper].uid];
         
         [undoDict setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
         
@@ -1011,6 +1010,8 @@
     
     [self.currentBoardView touchesEnded:nil withEvent:nil];
     [self drawBoard:self.currentBoardView];
+    
+    [self.currentBoardView addUserDrawing:[FirebaseHelper sharedHelper].uid];
 }
 
 -(void) eraseTapped:(id)sender {

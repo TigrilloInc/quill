@@ -21,18 +21,22 @@
 @property (nonatomic, assign) BOOL hideComments;
 @property (nonatomic, assign) NSString *boardID;
 @property (nonatomic, assign) NSString *selectedAvatarUserID;
+@property (nonatomic, assign) NSString *drawingUserID;
 @property (nonatomic, strong) NSMutableDictionary *subpaths;
 @property (nonatomic, strong) NSMutableArray *activeUserIDs;
 @property (nonatomic, strong) NSMutableArray *avatarButtons;
 @property (nonatomic, strong) NSMutableArray *commentButtons;
+@property (strong, nonatomic) NSMutableDictionary *drawingTimers;
 @property (nonatomic, strong) UIActivityIndicatorView *loadingView;
 @property (nonatomic, strong) CommentButton *movingCommentButton;
 @property (strong, nonatomic) UIImageView *avatarBackgroundImage;
 @property (nonatomic, strong) NSMutableArray *paths;
+//@property (nonatomic, strong) NSMutableArray *waitingPaths;
 @property (strong, nonatomic) UIColor *backgroundColor;
 
 -(void)clear;
 -(void)drawSubpath:(NSDictionary *)subpathValues;
+-(void)addUserDrawing:(NSString *)userID;
 -(void)hideChat;
 -(void)layoutAvatars;
 -(void)layoutComments;

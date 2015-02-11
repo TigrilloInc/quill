@@ -10,10 +10,11 @@
 
 @interface TeamSettingsViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate> {
     
+    UIImageView *logoImage;
     UITapGestureRecognizer *outsideTapRecognizer;
 }
 
-@property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
+@property (weak, nonatomic) IBOutlet UITableView *usersTable;
 @property (weak, nonatomic) IBOutlet UIButton *editNameButton;
 @property (weak, nonatomic) IBOutlet UITextField *teamNameTextField;
 

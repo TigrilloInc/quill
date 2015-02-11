@@ -28,7 +28,27 @@
     
     projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
-    self.navigationItem.title = @"Step 3: Send Invites";
+    if (self.creatingTeam) self.navigationItem.title = @"Step 3: Send Invites";
+    else {
+        self.navigationItem.title = @"Send Invites";
+        self.stepLabel.hidden = true;
+        [self.inviteButton setTitle:@"Send" forState:UIControlStateNormal];
+        
+
+    }
+}
+
+-(void) viewDidAppear:(BOOL)animated {
+    
+    if (!self.creatingTeam) {
+        
+        outsideTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside)];
+        
+        [outsideTapRecognizer setDelegate:self];
+        [outsideTapRecognizer setNumberOfTapsRequired:1];
+        outsideTapRecognizer.cancelsTouchesInView = NO;
+        [self.view.window addGestureRecognizer:outsideTapRecognizer];
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -36,10 +56,18 @@
     if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
         
         logoImage.hidden = true;
-        logoImage.frame = CGRectMake(149, 8, 32, 32);
+        if (self.creatingTeam) logoImage.frame = CGRectMake(149, 8, 32, 32);
+        else logoImage.frame = CGRectMake(173, 8, 32, 32);
         
         [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
     }
+    
+    if (!self.creatingTeam) {
+        [outsideTapRecognizer setDelegate:nil];
+        [self.view.window removeGestureRecognizer:outsideTapRecognizer];
+    
+    }
+    
     [super viewWillDisappear:animated];
 }
 
@@ -101,7 +129,6 @@
     
     [self.inviteEmails removeObject:emailString];
     [self.inviteTable reloadData];
-    
 }
 
 - (IBAction)sendTapped:(id)sender {
@@ -134,44 +161,50 @@
         __block BOOL nameCreated;
         __block BOOL teamCreated;
         __block BOOL teamSet;
-        
-        //////////Create Name
-        NSString *nameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/name", [FirebaseHelper sharedHelper].uid];
-        Firebase *nameRef = [[Firebase alloc] initWithUrl:nameString];
-        [nameRef setValue:[FirebaseHelper sharedHelper].userName withCompletionBlock:^(NSError *error, Firebase *ref) {
-            nameCreated = true;
-            if (teamCreated && teamSet && emailsSent) [self invitesSent];
-        }];
-        
-        //////////Create Team
-        Firebase *teamRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/teams"];
-        NSDictionary *newTeamValues = @{ [FirebaseHelper sharedHelper].teamName :
-                                             @{ @"users" :
-                                                    @{ [FirebaseHelper sharedHelper].uid : @1 }
-                                                }
-                                         };
-        [teamRef updateChildValues:newTeamValues withCompletionBlock:^(NSError *error, Firebase *ref) {
-            teamCreated = true;
-            if (nameCreated && teamSet && emailsSent) [self invitesSent];
-        }];
 
-        //////////Set Team
-        NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/team", [FirebaseHelper sharedHelper].uid];
-        Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
-        [userRef setValue:[FirebaseHelper sharedHelper].teamName withCompletionBlock:^(NSError *error, Firebase *ref) {
-            teamSet = true;
-            if (nameCreated && teamCreated && emailsSent) [self invitesSent];
-        }];
-        
+        if (self.creatingTeam) {
+            
+            //////////Create Name
+            NSString *nameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/name", [FirebaseHelper sharedHelper].uid];
+            Firebase *nameRef = [[Firebase alloc] initWithUrl:nameString];
+            [nameRef setValue:[FirebaseHelper sharedHelper].userName withCompletionBlock:^(NSError *error, Firebase *ref) {
+                nameCreated = true;
+                if (teamCreated && teamSet && emailsSent) [self invitesSent];
+            }];
+            
+            //////////Create Team
+            Firebase *teamRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/teams"];
+            NSDictionary *newTeamValues = @{ [FirebaseHelper sharedHelper].teamName :
+                                                 @{ @"users" :
+                                                        @{ [FirebaseHelper sharedHelper].uid : @1 }
+                                                    }
+                                             };
+            [teamRef updateChildValues:newTeamValues withCompletionBlock:^(NSError *error, Firebase *ref) {
+                teamCreated = true;
+                if (nameCreated && teamSet && emailsSent) [self invitesSent];
+            }];
+
+            //////////Set Team
+            NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/team", [FirebaseHelper sharedHelper].uid];
+            Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
+            [userRef setValue:[FirebaseHelper sharedHelper].teamName withCompletionBlock:^(NSError *error, Firebase *ref) {
+                teamSet = true;
+                if (nameCreated && teamCreated && emailsSent) [self invitesSent];
+            }];
+        }
+            
         //////////Send Emails
-        if (self.inviteEmails.count == 0) {
+        if (self.inviteEmails.count == 0 && self.creatingTeam) {
             
             self.inviteLabel.text = @"Creating team...";
             emailsSent = true;
         }
         else {
             
-            self.inviteLabel.text = @"Creating team and sending invites...";
+            if (self.creatingTeam)
+                self.inviteLabel.text = @"Creating team and sending invites...";
+            else
+                self.inviteLabel.text = @"Sending invites...";
             
             Firebase *tokenRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/tokens"];
             
@@ -216,7 +249,7 @@
                         emailCount++;
                         if (emailCount == self.inviteEmails.count) {
                             emailsSent = true;
-                            if (teamCreated && teamSet && nameCreated) [self invitesSent];
+                            if ((teamCreated && teamSet && nameCreated) || !self.creatingTeam) [self invitesSent];
                         }
                     }
                 }];
@@ -231,9 +264,13 @@
 
 -(void) invitesSent {
     
-    if (self.inviteEmails.count == 0) self.inviteLabel.text = @"Team created!";
-    else self.inviteLabel.text = @"Invites sent and team created!";
-    
+    if (self.creatingTeam) {
+        
+        if (self.inviteEmails.count == 0) self.inviteLabel.text = @"Team created!";
+        else self.inviteLabel.text = @"Invites sent and team created!";
+    }
+    else self.inviteLabel.text = @"Invites sent!";
+        
     [[FirebaseHelper sharedHelper] observeLocalUser];
     
     [self performSelector:@selector(dismiss) withObject:nil afterDelay:.3];
@@ -242,6 +279,17 @@
 -(void) dismiss {
     
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)tappedOutside {
+    
+    if (outsideTapRecognizer.state == UIGestureRecognizerStateEnded) {
+        
+        CGPoint location = [outsideTapRecognizer locationInView:nil];
+        CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
+        
+        if (!CGRectContainsPoint(self.view.frame, converted)) [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 #pragma mark - Text field handling

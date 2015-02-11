@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "MasterViewController.h"
 #import "ProjectDetailViewController.h"
+#import "RoundedButton.h"
 
 @interface NewProjectViewController : UIViewController <UIGestureRecognizerDelegate> {
 
@@ -21,6 +22,7 @@
     ProjectDetailViewController *projectVC;
 }
 
+@property (weak, nonatomic) IBOutlet RoundedButton *createButton;
 @property (weak, nonatomic) IBOutlet UITextField *nameField;
 
 @end

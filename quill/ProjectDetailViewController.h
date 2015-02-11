@@ -19,7 +19,6 @@
     
     BOOL newBoardCreated;
     BOOL commentsOpen;
-    NSArray *drawButtons;
     UIButton *boardButton;
     UIImageView *carouselFadeLeft;
     UIImageView *carouselFadeRight;
@@ -38,6 +37,7 @@
 @property (strong, nonatomic) NSString *activeBoardID;
 @property (strong, nonatomic) NSString *activeCommentThreadID;
 @property (strong, nonatomic) NSString *activeBoardUndoIndexDate;
+@property (strong, nonatomic) NSArray *drawButtons;
 @property (strong, nonatomic) NSMutableArray *boardIDs;
 @property (strong, nonatomic) NSMutableArray *editBoardIDs;
 @property (strong, nonatomic) NSMutableArray *viewedBoardIDs;

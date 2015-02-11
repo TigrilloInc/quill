@@ -38,7 +38,6 @@ void uncaughtExceptionHandler(NSException *exception) {
     Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
     [[userRef childByAppendingPath:@"inProject"] setValue:@"none"];
     [[userRef childByAppendingPath:@"inBoard"] setValue:@"none"];
-    [[userRef childByAppendingPath:@"isDrawing"] setValue:@0];
 }
 
 void signalHandler(int signal) {
@@ -49,10 +48,7 @@ void signalHandler(int signal) {
     Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
     [[userRef childByAppendingPath:@"inProject"] setValue:@"none"];
     [[userRef childByAppendingPath:@"inBoard"] setValue:@"none"];
-    [[userRef childByAppendingPath:@"isDrawing"] setValue:@0];
 }
-
-
 
 -(void) removeUserPresence {
 
@@ -60,9 +56,6 @@ void signalHandler(int signal) {
     
     [[FirebaseHelper sharedHelper] setInBoard:@"none"];
     [[FirebaseHelper sharedHelper] setInProject:@"none"];
-    NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@", [FirebaseHelper sharedHelper].uid];
-    Firebase *ref = [[Firebase alloc] initWithUrl:teamString];
-    [[ref childByAppendingPath:@"isDrawing"] setValue:@0];
 }
 
 -(void) addUserPresence {

@@ -33,7 +33,6 @@
     if (self) {
         
         self.defaultRow = [NSIndexPath indexPathForRow:0 inSection:0];
-    
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     }
     
@@ -46,7 +45,6 @@
     if (self) {
         
         self.defaultRow = [NSIndexPath indexPathForRow:0 inSection:0];
-        
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     }
     
@@ -208,10 +206,21 @@
 - (IBAction)teamTapped:(id)sender {
 
     TeamSettingsViewController *teamVC = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"TeamSettings"];
+
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:teamVC];
+    nav.modalPresentationStyle = UIModalPresentationFormSheet;
+    nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    nav.navigationBar.barTintColor = [UIColor whiteColor];
+    nav.navigationBar.tintColor = [UIColor blackColor];
+    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"SourceSansPro-Light" size:24.0], NSFontAttributeName, nil]];
+    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5 forBarMetrics:UIBarMetricsDefault];
     
-    teamVC.modalPresentationStyle = UIModalPresentationFormSheet;
-    teamVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    [projectVC presentViewController:teamVC animated:YES completion:nil];
+    UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+    logoImageView.frame = CGRectMake(173, 8, 32, 32);
+    logoImageView.tag = 800;
+    [nav.navigationBar addSubview:logoImageView];
+    
+    [projectVC presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)newProjectTapped {

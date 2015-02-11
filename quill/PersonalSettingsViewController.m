@@ -23,6 +23,8 @@
     
     self.navigationItem.title = @"Personal Settings";
     
+    logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
+    
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc]
                                    initWithTitle: @"Settings"
                                    style: UIBarButtonItemStyleBordered
@@ -109,6 +111,7 @@
     
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     projectVC.masterView.teamButton.hidden = true;
+    projectVC.masterView.teamMenuButton.hidden = true;
     projectVC.masterView.nameButton.hidden = true;
     projectVC.masterView.avatarButton.hidden = true;
     projectVC.projectNameLabel.hidden = true;
@@ -169,7 +172,6 @@
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     ChangePasswordViewController *vc = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"ChangePassword"];
     
-    UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
     logoImage.hidden = true;
     logoImage.frame = CGRectMake(155, 8, 32, 32);
     
@@ -299,7 +301,6 @@
 
 -(void)showLogo {
     
-    UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
     logoImage.alpha = 0;
     logoImage.hidden = false;
     

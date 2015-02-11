@@ -17,7 +17,8 @@
     self.navigationItem.title = @"Change Password";
     
     textFieldArray = @[self.passwordTextField, self.confirmTextField, self.currentTextField];
-
+    logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
+    
     for (UITextField *textField in textFieldArray) {
     
         textField.secureTextEntry = true;
@@ -51,7 +52,6 @@
     
     if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
         
-        UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
         logoImage.hidden = true;
         logoImage.frame = CGRectMake(155, 8, 32, 32);
         
@@ -95,7 +95,6 @@
 
 -(void)showLogo {
     
-    UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
     logoImage.alpha = 0;
     logoImage.hidden = false;
     

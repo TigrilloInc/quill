@@ -19,6 +19,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *projectsTable;
 @property (weak, nonatomic) IBOutlet UIButton *nameButton;
 @property (weak, nonatomic) IBOutlet UIButton *teamButton;
+@property (weak, nonatomic) IBOutlet UIButton *teamMenuButton;
 @property (strong, nonatomic) AvatarButton *avatarButton;
 @property (strong, nonatomic) NSIndexPath *defaultRow;
 @property (strong, nonatomic) NSArray *orderedProjectNames;

@@ -1280,7 +1280,7 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
 }
 
 - (void)reloadData
-{    
+{
     //remove old views
     for (UIView *view in [_itemViews allValues])
     {

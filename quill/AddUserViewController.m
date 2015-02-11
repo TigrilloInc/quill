@@ -247,9 +247,15 @@
     
     UISegmentedControl *roleControl = (UISegmentedControl *)sender;
     UITableViewCell *cell = (UITableViewCell *)roleControl.superview.superview;
-
-    UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
-    [self.roles setObject:@(roleControl.selectedSegmentIndex) forKey:textField.text];
+    
+    NSString *userString;
+    
+    if ([cell.contentView viewWithTag:401]) userString = ((UITextField *)[cell.contentView viewWithTag:401]).text;
+    else userString = ((UILabel *)[cell.contentView viewWithTag:408]).text;
+    
+    [self.roles setObject:@(roleControl.selectedSegmentIndex) forKey:userString];
+    
+    NSLog(@"roles is %@", self.roles);
 
 }
 

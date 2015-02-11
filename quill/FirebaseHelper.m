@@ -189,7 +189,10 @@ static FirebaseHelper *sharedHelper = nil;
         NSDictionary *oldUserDict = CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)[[self.team objectForKey:@"users"] objectForKey:userID], kCFPropertyListMutableContainers));
         NSMutableDictionary *newUserDict = snapshot.value;
         
-        [[self.team objectForKey:@"users"] setObject:newUserDict forKey:userID];
+        for (NSString *key in newUserDict.allKeys) {
+            
+            [[[self.team objectForKey:@"users"] objectForKey:userID] setObject:[newUserDict objectForKey:key] forKey:key];
+        }
         
         if ([userID isEqualToString:self.uid]) return;
         
@@ -236,16 +239,6 @@ static FirebaseHelper *sharedHelper = nil;
             
             [boardView layoutAvatars];
             
-            NSArray *userIDs = [boardView.activeUserIDs sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-            
-            if ([userIDs containsObject:userID]) {
-                
-                NSInteger avatarIndex = [userIDs indexOfObject:userID];
-                AvatarButton *avatar = (AvatarButton *)boardView.avatarButtons[avatarIndex];
-                
-                if ([[newUserDict objectForKey:@"isDrawing"] integerValue] > 0 ) avatar.drawingImage.hidden = false;
-                else avatar.drawingImage.hidden = true;
-            }
         }
     }];
 }
@@ -296,8 +289,12 @@ static FirebaseHelper *sharedHelper = nil;
                     
                     if (![self.boards objectForKey:boardID]) {
 
-                        [self.boards setObject:[NSMutableDictionary dictionary] forKey:boardID];
-                        if (self.projectVC.activeBoardID == nil && [self.currentProjectID isEqualToString:projectID]) { [self.projectVC.carousel reloadData];
+                        [self loadBoardWithID:boardID];
+
+                        if ([self.currentProjectID isEqualToString:projectID]) {
+                            
+                            if (![self.projectVC.boardIDs containsObject:boardID]) [self.projectVC.boardIDs addObject:boardID];
+                            if (self.projectVC.activeBoardID == nil) [self.projectVC.carousel reloadData];
                         }
                     }
                 }
@@ -348,8 +345,11 @@ static FirebaseHelper *sharedHelper = nil;
     [self.projectVC.masterView.teamButton setTitle:self.teamName forState:UIControlStateNormal];
     [self.projectVC.masterView.nameButton layoutIfNeeded];
     [self.projectVC.masterView.teamButton layoutIfNeeded];
+    CGRect teamRect = [self.teamName boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: self.projectVC.masterView.teamMenuButton.titleLabel.font} context:nil];
+    self.projectVC.masterView.teamMenuButton.center = CGPointMake(MIN(teamRect.size.width+40,185), self.projectVC.masterView.teamMenuButton.center.y);
     self.projectVC.masterView.nameButton.hidden = false;
     self.projectVC.masterView.teamButton.hidden = false;
+    self.projectVC.masterView.teamMenuButton.hidden = false;
     [UIView setAnimationsEnabled:YES];
     
     [self.projectVC.masterView.avatarButton removeFromSuperview];
@@ -391,6 +391,9 @@ static FirebaseHelper *sharedHelper = nil;
         for (NSString *userID in [[snapshot.value objectForKey:@"users"] allKeys]) {
             
             if (![userID isEqualToString:self.uid]) [[self.team objectForKey:@"users"] setObject:[NSMutableDictionary dictionary] forKey:userID];
+            
+            [[[self.team objectForKey:@"users"] objectForKey:userID] setObject:[[snapshot.value objectForKey:@"users"] objectForKey:userID] forKey:@"teamOwner"];
+            
             [self observeUserWithID:userID];
         }
     }];
@@ -496,8 +499,21 @@ static FirebaseHelper *sharedHelper = nil;
             NSInteger boardIndex = [boardIDs indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
 
-            if([snapshot.value respondsToSelector:@selector(objectForKey:)]) [boardView drawSubpath:snapshot.value];
-            else [boardView drawSubpath:@{snapshot.key : snapshot.value}];
+            if (boardView.drawingUserID && ![boardView.drawingUserID isEqualToString:userID]) {
+               
+//                if([snapshot.value respondsToSelector:@selector(objectForKey:)]) [boardView.waitingPaths addObject:snapshot.value];
+//                else [boardView.waitingPaths addObject:@{snapshot.key : snapshot.value}];
+                
+//                if (![boardView.waitingPaths objectForKey:userID]) [boardView.waitingPaths setObject:[NSMutableDictionary dictionary] forKey:userID];
+//                [[boardView.waitingPaths objectForKey:userID] setObject:snapshot.value forKey:snapshot.key];
+            }
+            else {
+                
+                if([snapshot.value respondsToSelector:@selector(objectForKey:)]) [boardView drawSubpath:snapshot.value];
+                else [boardView drawSubpath:@{snapshot.key : snapshot.value}];
+                
+                [boardView addUserDrawing:userID];
+            }
         }
     }];
 }

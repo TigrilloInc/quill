@@ -19,6 +19,17 @@
     [super viewDidLoad];
     
     projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    
+    UIView *spacerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+    [self.nameField setLeftViewMode:UITextFieldViewModeAlways];
+    [self.nameField setLeftView:spacerView];
+    self.nameField.layer.borderColor = [UIColor groupTableViewBackgroundColor].CGColor;
+    self.nameField.layer.borderWidth = 1;
+    self.nameField.layer.cornerRadius = 10;
+
+    self.createButton.layer.borderWidth = 1;
+    self.createButton.layer.cornerRadius = 10;
+    self.createButton.layer.borderColor = [UIColor grayColor].CGColor;
 }
 
 - (void) viewDidAppear:(BOOL)animated

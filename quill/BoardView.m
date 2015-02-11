@@ -45,8 +45,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     self = [super initWithFrame:frame];
     
     if (self) {
+        
         self.backgroundColor = DEFAULT_BACKGROUND_COLOR;
-        //self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.0];
         self.penType = 1;
         self.lineColorNumber = @1;
         _empty = YES;
@@ -60,6 +60,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         else self.drawable = false;
         
         self.selectedAvatarUserID = nil;
+        self.drawingTimers = [NSMutableDictionary dictionary];
+        //self.waitingPaths = [NSMutableArray array];
     }
     
     return self;
@@ -175,7 +177,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     NSArray *allTouches = [[event allTouches] allObjects];
     
-    if (allTouches.count > 1 || !self.drawable) return;
+    if (allTouches.count > 1 || !self.drawable || (self.drawingUserID && ![self.drawingUserID isEqualToString:[FirebaseHelper sharedHelper].uid])) return;
     
     UITouch *touch = [touches anyObject];
     
@@ -201,7 +203,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         projectVC.eraserCursor.center = [touch locationInView:projectVC.view];
     }
     
-    if (projectVC.userRole > 0) [self addUserDrawing];
+    if (projectVC.userRole > 0) [self addUserDrawing:[FirebaseHelper sharedHelper].uid];
     
     // initializes our point records to current location
     self.previousPreviousPoint = [touch previousLocationInView:self];
@@ -251,7 +253,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     Firebase *subpathsRef = [[Firebase alloc] initWithUrl:subpathsString];
     [subpathsRef updateChildValues:@{ dateString  :  subpathValues }];
     [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:subpathValues forKey:dateString];
-    
+
     [[FirebaseHelper sharedHelper] resetUndo];
 }
 
@@ -259,7 +261,9 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     NSArray *allTouches = [[event allTouches] allObjects];
     
-    if (allTouches.count > 1 || !self.drawable || self.commenting || [projectVC.chatTextField isFirstResponder] || [[projectVC.view viewWithTag:104] isFirstResponder] || [projectVC.commentTitleTextField isFirstResponder] || self.selectedAvatarUserID) return;
+    if (allTouches.count > 1 || !self.drawable || self.commenting || [projectVC.chatTextField isFirstResponder] || [[projectVC.view viewWithTag:104] isFirstResponder] || [projectVC.commentTitleTextField isFirstResponder] || self.selectedAvatarUserID || (self.drawingUserID && ![self.drawingUserID isEqualToString:[FirebaseHelper sharedHelper].uid])) return;
+    
+    if (projectVC.userRole > 0) [self addUserDrawing:[FirebaseHelper sharedHelper].uid];
     
     UITouch *touch = [touches anyObject];
     
@@ -329,12 +333,11 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 
 -(void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     
-    if (!self.drawable) return;
+    if (!self.drawable || (self.drawingUserID && ![self.drawingUserID isEqualToString:[FirebaseHelper sharedHelper].uid])) return;
     
     projectVC.eraserCursor.hidden = true;
     
     if (self.commenting) {
-        
         self.commenting = false;
         return;
     }
@@ -356,8 +359,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         [projectVC.commentTitleTextField resignFirstResponder];
         return;
     }
-    
-    [self performSelector:@selector(removeUserDrawing) withObject:nil afterDelay:1.0];
     
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", self.boardID];
@@ -388,6 +389,32 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     [[FirebaseHelper sharedHelper] setProjectUpdatedAt];
     [[FirebaseHelper sharedHelper] setActiveBoardUpdatedAt];
+
+//    if (self.waitingPaths.count > 1) {
+//        
+//        //[projectVC drawBoard:self];
+//        [self.waitingPaths addObject:@{ dateString : @"penUp"}];
+//        for (NSDictionary *subpathValues in self.waitingPaths) [self drawSubpath:subpathValues];
+//    }
+//    
+//    self.waitingPaths = [NSMutableArray array];
+    
+    //    if (self.waitingPaths.allKeys.count > 0) {
+    //
+    //        NSMutableDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"];
+    //
+    //        for (NSString *userID in self.waitingPaths.allKeys) {
+    //
+    //            NSDictionary *userDict = [self.waitingPaths objectForKey:userID];
+    //
+    //            for (NSString *dateString in userDict.allKeys) {
+    //
+    //                [[subpathsDict objectForKey:userID] setObject:[userDict objectForKey:dateString] forKey:dateString];
+    //            }
+    //        }
+    //
+    //        [projectVC drawBoard:self];
+    //    }
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -658,47 +685,57 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     }
 }
 
--(BOOL) userDrawing {
+-(void) addUserDrawing:(NSString *)userID {
     
-    BOOL isDrawing = false;
+    self.drawingUserID = userID;
     
-    for (NSString *uid in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
+    for (AvatarButton *avatar in self.avatarButtons) {
         
-        if ([uid isEqualToString:[FirebaseHelper sharedHelper].uid]) continue;
+        if ([avatar.userID isEqualToString:userID]) avatar.drawingImage.hidden = false;
+    }
+    
+    if (![userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
         
-        if ([[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:uid] objectForKey:@"inBoard"] isEqualToString:self.boardID] && [[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:uid] objectForKey:@"isDrawing"] integerValue] > 0) {
+        for (int i=0; i<=projectVC.drawButtons.count; i++) {
             
-            isDrawing = true;
+            UIButton *button = (UIButton *)[projectVC.view viewWithTag:i+2];
+            button.userInteractionEnabled = NO;
+            button.alpha = .2;
         }
     }
     
-    return isDrawing;
+    for (NSString *uid in self.drawingTimers.allKeys) {
+        
+        if ([userID isEqualToString:uid]) {
+        
+            NSTimer *oldTimer = [self.drawingTimers objectForKey:userID];
+            [oldTimer invalidate];
+        }
+    }
+
+    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:2.0f target:self selector:@selector(removeUserDrawing:) userInfo:userID repeats:NO];
+    [self.drawingTimers setObject:timer forKey:userID];
 }
 
--(void) addUserDrawing {
+-(void) removeUserDrawing:(NSTimer *)timer {
+
+    self.drawingUserID = nil;
+    
+    NSString *userID = timer.userInfo;
     
     for (AvatarButton *avatar in self.avatarButtons) {
         
-        if ([avatar.userID isEqualToString:[FirebaseHelper sharedHelper].uid]) avatar.drawingImage.hidden = false;
+        if ([avatar.userID isEqualToString:userID]) avatar.drawingImage.hidden = true;
     }
     
-    [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:@1 forKey:@"isDrawing"];
-    NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@", [FirebaseHelper sharedHelper].uid];
-    Firebase *ref = [[Firebase alloc] initWithUrl:teamString];
-    [[ref childByAppendingPath:@"isDrawing"] setValue:@1];
-}
-
--(void) removeUserDrawing {
-    
-    for (AvatarButton *avatar in self.avatarButtons) {
+    for (int i=0; i<=projectVC.drawButtons.count; i++) {
         
-        if ([avatar.userID isEqualToString:[FirebaseHelper sharedHelper].uid]) avatar.drawingImage.hidden = true;
+        UIButton *button = (UIButton *)[projectVC.view viewWithTag:i+2];
+        button.userInteractionEnabled = YES;
+        button.alpha = 1;
     }
     
-    [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:@0 forKey:@"isDrawing"];
-    NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@", [FirebaseHelper sharedHelper].uid];
-    Firebase *ref = [[Firebase alloc] initWithUrl:teamString];
-    [[ref childByAppendingPath:@"isDrawing"] setValue:@0];
+    [self.drawingTimers removeObjectForKey:userID];
 }
 
 -(void) avatarTapped:(id)sender {
@@ -809,8 +846,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 #pragma mark interface
 
 -(void)clear {
-    
-    
     
     self.paths = [NSMutableArray array];
     [self setNeedsDisplay];

@@ -242,29 +242,39 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Project Name" minimumFontSize="17" id="sfM-SA-TQI">
-                                <rect key="frame" x="121" y="157" width="310" height="50"/>
+                                <rect key="frame" x="121" y="136" width="310" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="24"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <navigationBar contentMode="scaleToFill" id="8yA-Kc-b3x">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pick a project name." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="KMH-Dy-DXt">
+                                <rect key="frame" x="0.0" y="77" width="540" height="39"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="16"/>
+                                <color key="textColor" red="0.58823529409999997" green="0.58823529409999997" blue="0.58823529409999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <navigationBar userInteractionEnabled="NO" contentMode="scaleToFill" translucent="NO" id="aSp-TH-FVg">
                                 <rect key="frame" x="0.0" y="0.0" width="540" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                <color key="barTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <textAttributes key="titleTextAttributes">
+                                    <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="36"/>
+                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                </textAttributes>
                             </navigationBar>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create a New Project" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xCi-HA-2aj">
-                                <rect key="frame" x="176" y="11" width="223" height="21"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="feather.png" id="Ctr-1P-Xzf">
+                                <rect key="frame" x="183" y="7" width="32" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="New Project" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="jqV-xb-MxB">
+                                <rect key="frame" x="129" y="6" width="281" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="SourceSansPro-Light" family="Source Sans Pro" pointSize="24"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="feather.png" id="xxj-Fo-0FX">
-                                <rect key="frame" x="145" y="2" width="40" height="40"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="kWG-wL-KW9" customClass="RoundedButton">
-                                <rect key="frame" x="115" y="247" width="310" height="50"/>
+                                <rect key="frame" x="115" y="242" width="310" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="SourceSansPro-Semibold" family="Source Sans Pro" pointSize="24"/>
                                 <state key="normal" title="Create">
@@ -275,13 +285,6 @@
                                     <action selector="createProjectTapped:" destination="FPd-x4-jqO" eventType="touchUpInside" id="E7c-6u-FfY"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pick a project name." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="KMH-Dy-DXt">
-                                <rect key="frame" x="0.0" y="80" width="540" height="39"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="16"/>
-                                <color key="textColor" red="0.58823529409999997" green="0.58823529409999997" blue="0.58823529409999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -289,6 +292,7 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="540" height="350"/>
                     <connections>
+                        <outlet property="createButton" destination="kWG-wL-KW9" id="3kt-OU-ssd"/>
                         <outlet property="nameField" destination="sfM-SA-TQI" id="xMs-A5-WqG"/>
                     </connections>
                 </viewController>
@@ -458,6 +462,7 @@
                         <outlet property="inviteButton" destination="OVB-Us-JXU" id="xbP-Z8-nZ0"/>
                         <outlet property="inviteLabel" destination="MWf-mA-0uB" id="gQE-MJ-AMF"/>
                         <outlet property="inviteTable" destination="Koc-UB-IVg" id="OPS-jR-YqM"/>
+                        <outlet property="stepLabel" destination="26y-cI-FYb" id="18N-0D-SVY"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Eu-Rz-dO8" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -592,7 +597,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="gCn-bL-ae8">
-                                <rect key="frame" x="0.0" y="44" width="540" height="306"/>
+                                <rect key="frame" x="36" y="75" width="504" height="320"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
@@ -600,24 +605,12 @@
                                     <outlet property="delegate" destination="FWA-Ox-958" id="H3U-MG-X8R"/>
                                 </connections>
                             </tableView>
-                            <navigationBar contentMode="scaleToFill" translucent="NO" id="wz6-yX-pJp">
-                                <rect key="frame" x="0.0" y="0.0" width="540" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <color key="barTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </navigationBar>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" id="Wdr-ZT-e8V">
-                                <rect key="frame" x="200" y="6" width="139" height="26"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="24"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="feather.png" id="NEf-M5-6Eg">
-                                <rect key="frame" x="161" y="2" width="40" height="40"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="settingsfade.png" id="4K2-jH-bOU">
+                                <rect key="frame" x="0.0" y="20" width="540" height="112"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <button opaque="NO" alpha="0.20000000000000001" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Hx1-Wt-0Jg">
-                                <rect key="frame" x="347" y="12" width="20" height="20"/>
+                                <rect key="frame" x="207" y="72" width="20" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button" image="edit.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -626,6 +619,15 @@
                                     <action selector="editNameTapped:" destination="FWA-Ox-958" eventType="touchUpInside" id="J3r-kV-fj6"/>
                                 </connections>
                             </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Team Name" minimumFontSize="17" id="Wdr-ZT-e8V">
+                                <rect key="frame" x="57" y="62" width="478" height="38"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="28"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="FWA-Ox-958" id="GmS-Nn-UGI"/>
+                                </connections>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -633,8 +635,8 @@
                     <size key="freeformSize" width="540" height="350"/>
                     <connections>
                         <outlet property="editNameButton" destination="Hx1-Wt-0Jg" id="3q3-hO-fuG"/>
-                        <outlet property="iconImageView" destination="NEf-M5-6Eg" id="nEf-RK-SCg"/>
                         <outlet property="teamNameTextField" destination="Wdr-ZT-e8V" id="DGX-h6-PJJ"/>
+                        <outlet property="usersTable" destination="gCn-bL-ae8" id="ByC-Ye-TK3"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oxp-Gb-k3Y" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -991,7 +993,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="vkO-BG-XlA">
-                                        <rect key="frame" x="18" y="27" width="183" height="30"/>
+                                        <rect key="frame" x="18" y="27" width="154" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="20"/>
                                         <state key="normal">
@@ -1000,6 +1002,16 @@
                                         </state>
                                         <connections>
                                             <action selector="teamTapped:" destination="r9C-xd-JPc" eventType="touchUpInside" id="BO1-Nb-och"/>
+                                        </connections>
+                                    </button>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="lPB-A3-XS5">
+                                        <rect key="frame" x="185" y="35" width="15" height="15"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" image="arrow2.png">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="teamTapped:" destination="r9C-xd-JPc" eventType="touchUpInside" id="LFs-9K-AHl"/>
                                         </connections>
                                     </button>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="projectsshadow.png" id="3oG-px-YO9">
@@ -1012,6 +1024,7 @@
                                     <outlet property="nameButton" destination="AsX-Wz-CX7" id="CIx-K4-VOm"/>
                                     <outlet property="projectsTable" destination="hWs-Mz-psw" id="uHi-1w-TCZ"/>
                                     <outlet property="teamButton" destination="vkO-BG-XlA" id="cch-l4-Znj"/>
+                                    <outlet property="teamMenuButton" destination="lPB-A3-XS5" id="peq-H0-eHg"/>
                                 </connections>
                             </view>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" id="ibt-KP-kYl">
@@ -1081,6 +1094,7 @@
     </scenes>
     <resources>
         <image name="apply.png" width="378" height="100"/>
+        <image name="arrow2.png" width="120" height="120"/>
         <image name="background5.png" width="1024" height="768"/>
         <image name="cancel.png" width="378" height="100"/>
         <image name="chatfade5.png" width="1528" height="60"/>
@@ -1093,6 +1107,7 @@
         <image name="newboardbutton.png" width="280" height="280"/>
         <image name="plus1.png" width="232" height="231"/>
         <image name="projectsshadow.png" width="210" height="70"/>
+        <image name="settingsfade.png" width="540" height="112"/>
         <image name="up.png" width="145" height="80"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

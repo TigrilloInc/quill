@@ -54,7 +54,9 @@
     
     [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
     
-    InviteToTeamViewController *inviteVC = [self.storyboard instantiateViewControllerWithIdentifier:@"InviteToTeam"];
+    InviteToTeamViewController *inviteVC;
+    inviteVC.creatingTeam = true;
+    inviteVC = [self.storyboard instantiateViewControllerWithIdentifier:@"InviteToTeam"];
     [self.navigationController pushViewController:inviteVC animated:YES];
     
 }

@@ -12,6 +12,7 @@
 
 @interface PersonalSettingsViewController : UIViewController <UIGestureRecognizerDelegate, UITextFieldDelegate> {
     
+    UIImageView *logoImage;
     UITapGestureRecognizer *outsideTapRecognizer;
 }
 

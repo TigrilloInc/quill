@@ -8,6 +8,7 @@
 
 #import "TeamSettingsViewController.h"
 #import "FirebaseHelper.h"
+#import "InviteToTeamViewController.h"
 
 @implementation TeamSettingsViewController
 
@@ -16,6 +17,19 @@
     [super viewDidLoad];
     
     self.usersDict = [NSMutableDictionary dictionary];
+    
+    self.navigationItem.title = @"Team Settings";
+    logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
+    
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc]
+                                   initWithTitle: @"Settings"
+                                   style: UIBarButtonItemStyleBordered
+                                   target:self action:nil];
+    [backButton setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                        [UIFont fontWithName:@"SourceSansPro-Semibold" size:16],NSFontAttributeName,
+                                        nil] forState:UIControlStateNormal];
+    [self.navigationItem setBackBarButtonItem: backButton];
+
     
     for (NSString *userID in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
         
@@ -29,15 +43,11 @@
         [self.usersDict setObject:userDict forKey:userID];
     }
 
-    NSLog(@"userDict is %@", self.usersDict);
-    
     self.teamNameTextField.text = [FirebaseHelper sharedHelper].teamName;
-    [self.teamNameTextField sizeToFit];
-    self.teamNameTextField.center = CGPointMake(270, self.teamNameTextField.center.y);
-    self.teamNameTextField.userInteractionEnabled = NO;
+
+    CGRect nameRect = [self.teamNameTextField.text boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Regular" size:28]} context:nil];
     
-    self.iconImageView.center = CGPointMake(self.teamNameTextField.frame.origin.x-20, self.iconImageView.center.y);
-    self.editNameButton.center = CGPointMake(self.teamNameTextField.frame.origin.x+self.teamNameTextField.frame.size.width+10, self.editNameButton.center.y);
+    self.editNameButton.center = CGPointMake(nameRect.size.width+75, self.editNameButton.center.y);
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -54,6 +64,30 @@
     
     [super viewWillDisappear:animated];
     
+    if (![self.teamNameTextField.text isEqualToString:[FirebaseHelper sharedHelper].teamName]) {
+     
+        NSString *oldString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@", [FirebaseHelper sharedHelper].teamName];
+        Firebase *oldRef = [[Firebase alloc] initWithUrl:oldString];
+        [oldRef removeValue];
+        
+        [FirebaseHelper sharedHelper].teamName = self.teamNameTextField.text;
+        
+        NSString *newString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@", [FirebaseHelper sharedHelper].teamName];
+        Firebase *newRef = [[Firebase alloc] initWithUrl:newString];
+        
+        NSMutableDictionary *newDict = [NSMutableDictionary dictionary];
+        
+        [newDict setObject:[[FirebaseHelper sharedHelper].team objectForKey:@"projects"] forKey:@"projects"];
+        [newDict setObject:[NSMutableDictionary dictionary] forKey:@"users"];
+        
+        for (NSString *userID in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
+            
+            [[newDict objectForKey:@"users"] setObject:[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:@"teamOwner"] forKey:userID];
+        }
+        
+        [newRef setValue:newDict];
+    }
+    
     [outsideTapRecognizer setDelegate:nil];
     [self.view.window removeGestureRecognizer:outsideTapRecognizer];
 }
@@ -61,12 +95,17 @@
 -(IBAction)editNameTapped:(id)sender {
     
     self.teamNameTextField.userInteractionEnabled = YES;
-    
-    self.teamNameTextField.hidden = true;
-    self.editNameButton.hidden = true;
-    self.teamNameTextField.hidden = false;
-    
     [self.teamNameTextField becomeFirstResponder];
+}
+
+-(void)showLogo {
+    
+    logoImage.alpha = 0;
+    logoImage.hidden = false;
+    
+    [UIView animateWithDuration:.3 animations:^{
+        logoImage.alpha = 1;
+    }];
 }
 
 -(void)tappedOutside {
@@ -163,6 +202,42 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
+    if (indexPath.row == self.usersDict.allKeys.count) {
+        
+        logoImage.hidden = true;
+        logoImage.frame = CGRectMake(182, 8, 32, 32);
+        
+        [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
+        
+        InviteToTeamViewController *inviteVC = [self.storyboard instantiateViewControllerWithIdentifier:@"InviteToTeam"];
+        [self.navigationController pushViewController:inviteVC animated:YES];
+    }
+}
+
+#pragma mark - Text field handling
+
+- (BOOL)textFieldShouldReturn:(UITextField*)textField {
+    
+    if ([self.teamNameTextField isFirstResponder]) [self.teamNameTextField resignFirstResponder];
+    
+    return NO;
+}
+
+-(void)textFieldDidBeginEditing:(UITextField *)textField {
+    
+    self.editNameButton.hidden = true;
+}
+
+-(void)textFieldDidEndEditing:(UITextField *)textField {
+    
+    textField.userInteractionEnabled = NO;
+    
+    if (textField.text == 0) textField.text = [FirebaseHelper sharedHelper].teamName;
+    
+    CGRect nameRect = [textField.text boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Regular" size:28]} context:nil];
+    
+    self.editNameButton.center = CGPointMake(nameRect.size.width+75, self.editNameButton.center.y);
+    self.editNameButton.hidden = false;
 }
 
 #pragma mark - UIGestureRecognizer Delegate
