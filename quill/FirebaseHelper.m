@@ -440,7 +440,8 @@ static FirebaseHelper *sharedHelper = nil;
                 self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.carousel.center.x+self.projectVC.boardNameLabel.frame.size.width/2+122, self.projectVC.boardNameLabel.center.y);
                 self.projectVC.boardNameEditButton.hidden = false;
             }
-            else {
+            else if (self.currentProjectID) {
+                
                 self.projectVC.boardNameLabel.center = CGPointMake(self.projectVC.carousel.center.x, self.projectVC.boardNameLabel.center.y);
                 self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.carousel.center.x+self.projectVC.boardNameLabel.frame.size.width/2+17, self.projectVC.boardNameLabel.center.y);
                 self.projectVC.boardNameEditButton.hidden = false;
@@ -500,12 +501,8 @@ static FirebaseHelper *sharedHelper = nil;
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
 
             if (boardView.drawingUserID && ![boardView.drawingUserID isEqualToString:userID]) {
-               
-//                if([snapshot.value respondsToSelector:@selector(objectForKey:)]) [boardView.waitingPaths addObject:snapshot.value];
-//                else [boardView.waitingPaths addObject:@{snapshot.key : snapshot.value}];
                 
-//                if (![boardView.waitingPaths objectForKey:userID]) [boardView.waitingPaths setObject:[NSMutableDictionary dictionary] forKey:userID];
-//                [[boardView.waitingPaths objectForKey:userID] setObject:snapshot.value forKey:snapshot.key];
+                boardView.shouldRedraw = true;
             }
             else {
                 

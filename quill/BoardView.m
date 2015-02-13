@@ -177,7 +177,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     NSArray *allTouches = [[event allTouches] allObjects];
     
-    if (allTouches.count > 1 || !self.drawable || (self.drawingUserID && ![self.drawingUserID isEqualToString:[FirebaseHelper sharedHelper].uid])) return;
+    if (allTouches.count > 1 || !self.drawable) return;
     
     UITouch *touch = [touches anyObject];
     
@@ -261,7 +261,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     NSArray *allTouches = [[event allTouches] allObjects];
     
-    if (allTouches.count > 1 || !self.drawable || self.commenting || [projectVC.chatTextField isFirstResponder] || [[projectVC.view viewWithTag:104] isFirstResponder] || [projectVC.commentTitleTextField isFirstResponder] || self.selectedAvatarUserID || (self.drawingUserID && ![self.drawingUserID isEqualToString:[FirebaseHelper sharedHelper].uid])) return;
+    if (allTouches.count > 1 || !self.drawable || self.commenting || [projectVC.chatTextField isFirstResponder] || [[projectVC.view viewWithTag:104] isFirstResponder] || [projectVC.commentTitleTextField isFirstResponder] || self.selectedAvatarUserID) return;
     
     if (projectVC.userRole > 0) [self addUserDrawing:[FirebaseHelper sharedHelper].uid];
     
@@ -333,7 +333,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 
 -(void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     
-    if (!self.drawable || (self.drawingUserID && ![self.drawingUserID isEqualToString:[FirebaseHelper sharedHelper].uid])) return;
+    if (!self.drawable) return;
     
     projectVC.eraserCursor.hidden = true;
     
@@ -689,6 +689,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     self.drawingUserID = userID;
     
+    if (![userID isEqualToString:[FirebaseHelper sharedHelper].uid]) self.drawable = false;
+    
     for (AvatarButton *avatar in self.avatarButtons) {
         
         if ([avatar.userID isEqualToString:userID]) avatar.drawingImage.hidden = false;
@@ -721,6 +723,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 
     self.drawingUserID = nil;
     
+    self.drawable = true;
+    
     NSString *userID = timer.userInfo;
     
     for (AvatarButton *avatar in self.avatarButtons) {
@@ -736,6 +740,10 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     }
     
     [self.drawingTimers removeObjectForKey:userID];
+    
+    if (self.shouldRedraw) [projectVC drawBoard:self];
+    
+    self.shouldRedraw = false;
 }
 
 -(void) avatarTapped:(id)sender {

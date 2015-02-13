@@ -19,6 +19,7 @@
 @property (nonatomic, assign) BOOL drawable;
 @property (nonatomic, assign) BOOL commenting;
 @property (nonatomic, assign) BOOL hideComments;
+@property (nonatomic, assign) BOOL shouldRedraw;
 @property (nonatomic, assign) NSString *boardID;
 @property (nonatomic, assign) NSString *selectedAvatarUserID;
 @property (nonatomic, assign) NSString *drawingUserID;
@@ -37,6 +38,7 @@
 -(void)clear;
 -(void)drawSubpath:(NSDictionary *)subpathValues;
 -(void)addUserDrawing:(NSString *)userID;
+-(void)removeUserDrawing:(NSString *)userID;
 -(void)hideChat;
 -(void)layoutAvatars;
 -(void)layoutComments;

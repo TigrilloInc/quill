@@ -483,21 +483,90 @@
     [[FirebaseHelper sharedHelper] observeBoardWithID:boardID];
 }
 
+//-(void) drawBoard:(BoardView *)boardView {
+//    
+//    [boardView clear];
+//
+//    NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"subpaths"];
+//    
+//    NSDictionary *dictRef = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"undo"];
+//    NSMutableDictionary *undoDict = (NSMutableDictionary *)CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)dictRef, kCFPropertyListMutableContainers));
+//    
+//    NSMutableDictionary *subpathsToDraw = [NSMutableDictionary dictionary];
+//    
+//    for (NSString *uid in subpathsDict.allKeys) {
+//        
+//        NSDictionary *uidDict = [subpathsDict objectForKey:uid];
+//
+//        NSMutableArray *userOrderedKeys = [uidDict.allKeys mutableCopy];
+//        NSSortDescriptor *descendingSorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
+//        [userOrderedKeys sortUsingDescriptors:@[descendingSorter]];
+//        
+//        BOOL undone = true;
+//        BOOL cleared = false;
+//        int undoCount = [[[undoDict objectForKey:uid] objectForKey:@"currentIndex"] intValue];
+//        
+//        for (int i=0; i<userOrderedKeys.count; i++) {
+//            
+//            NSMutableDictionary *subpathValues = [[uidDict objectForKey:userOrderedKeys[i]] mutableCopy];
+//            
+//            if ([subpathValues respondsToSelector:@selector(objectForKey:)]){
+//                
+//                if (boardView.selectedAvatarUserID != nil && ![uid isEqualToString:boardView.selectedAvatarUserID]) [subpathValues setObject:@1 forKey:@"faded"];
+//                if (!undone && !cleared) [subpathsToDraw setObject:subpathValues forKey:userOrderedKeys[i]];
+//                
+//            } else if ([[uidDict objectForKey:userOrderedKeys[i]] respondsToSelector:@selector(isEqualToString:)]) {
+//                
+//                if ([[uidDict objectForKey:userOrderedKeys[i]] isEqualToString:@"penUp"]) {
+//                    
+//                    [subpathsToDraw setObject:@{userOrderedKeys[i] : @"penUp"} forKey:userOrderedKeys[i]];
+//                    
+//                    if (undoCount > 0) {
+//                        
+//                        undone = true;
+//                        undoCount--;
+//                        
+//                    } else {
+//
+//                        if (undone && [uid isEqualToString:[FirebaseHelper sharedHelper].uid]) self.activeBoardUndoIndexDate = userOrderedKeys[i];
+//                        
+//                        undone = false;
+//                    }
+//                    
+//                } else if ([[uidDict objectForKey:userOrderedKeys[i]] isEqualToString:@"clear"]) {
+//                    
+//                    if (!undone) cleared = true;
+//                }
+//            }
+//        }
+//    }
+//    
+//    NSMutableArray *allOrderedKeys = [subpathsToDraw.allKeys mutableCopy];
+//    NSSortDescriptor *ascendingSorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
+//    [allOrderedKeys sortUsingDescriptors:@[ascendingSorter]];
+//    
+//    for (int i=0; i<allOrderedKeys.count; i++) {
+//        
+//        NSDictionary *subpathDict = [subpathsToDraw objectForKey:allOrderedKeys[i]];
+//        [boardView drawSubpath:subpathDict];
+//    }
+//}
+
 -(void) drawBoard:(BoardView *)boardView {
     
     [boardView clear];
-
+    
     NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"subpaths"];
     
     NSDictionary *dictRef = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"undo"];
     NSMutableDictionary *undoDict = (NSMutableDictionary *)CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)dictRef, kCFPropertyListMutableContainers));
     
-    NSMutableDictionary *subpathsToDraw = [NSMutableDictionary dictionary];
+    NSMutableDictionary *pathsToDraw = [NSMutableDictionary dictionary];
     
     for (NSString *uid in subpathsDict.allKeys) {
         
         NSDictionary *uidDict = [subpathsDict objectForKey:uid];
-
+        
         NSMutableArray *userOrderedKeys = [uidDict.allKeys mutableCopy];
         NSSortDescriptor *descendingSorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
         [userOrderedKeys sortUsingDescriptors:@[descendingSorter]];
@@ -506,6 +575,9 @@
         BOOL cleared = false;
         int undoCount = [[[undoDict objectForKey:uid] objectForKey:@"currentIndex"] intValue];
         
+        NSMutableDictionary *subpathsToAdd = [NSMutableDictionary dictionary];
+        NSString *startDate;
+        
         for (int i=0; i<userOrderedKeys.count; i++) {
             
             NSMutableDictionary *subpathValues = [[uidDict objectForKey:userOrderedKeys[i]] mutableCopy];
@@ -513,13 +585,18 @@
             if ([subpathValues respondsToSelector:@selector(objectForKey:)]){
                 
                 if (boardView.selectedAvatarUserID != nil && ![uid isEqualToString:boardView.selectedAvatarUserID]) [subpathValues setObject:@1 forKey:@"faded"];
-                if (!undone && !cleared) [subpathsToDraw setObject:subpathValues forKey:userOrderedKeys[i]];
+                if (!undone && !cleared) [subpathsToAdd setObject:subpathValues forKey:userOrderedKeys[i]];
                 
             } else if ([[uidDict objectForKey:userOrderedKeys[i]] respondsToSelector:@selector(isEqualToString:)]) {
                 
                 if ([[uidDict objectForKey:userOrderedKeys[i]] isEqualToString:@"penUp"]) {
                     
-                    [subpathsToDraw setObject:@{userOrderedKeys[i] : @"penUp"} forKey:userOrderedKeys[i]];
+                    [subpathsToAdd setObject:@{userOrderedKeys[i] : @"penUp"} forKey:userOrderedKeys[i]];
+                    if (startDate) [pathsToDraw setObject:[subpathsToAdd copy] forKey:startDate];
+                    else [pathsToDraw setObject:[subpathsToAdd copy] forKey:userOrderedKeys[i]];
+                    subpathsToAdd = [NSMutableDictionary dictionary];
+                    
+                    if (i < userOrderedKeys.count-1) startDate = userOrderedKeys[i+1];
                     
                     if (undoCount > 0) {
                         
@@ -527,7 +604,7 @@
                         undoCount--;
                         
                     } else {
-
+                        
                         if (undone && [uid isEqualToString:[FirebaseHelper sharedHelper].uid]) self.activeBoardUndoIndexDate = userOrderedKeys[i];
                         
                         undone = false;
@@ -541,14 +618,21 @@
         }
     }
     
-    NSMutableArray *allOrderedKeys = [subpathsToDraw.allKeys mutableCopy];
     NSSortDescriptor *ascendingSorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
-    [allOrderedKeys sortUsingDescriptors:@[ascendingSorter]];
+    NSMutableArray *pathsOrderedKeys = [pathsToDraw.allKeys mutableCopy];
+    [pathsOrderedKeys sortUsingDescriptors:@[ascendingSorter]];
     
-    for (int i=0; i<allOrderedKeys.count; i++) {
+    for (int i=0; i<pathsOrderedKeys.count; i++) {
         
-        NSDictionary *subpathDict = [subpathsToDraw objectForKey:allOrderedKeys[i]];
-        [boardView drawSubpath:subpathDict];
+        NSDictionary *pathDict = [pathsToDraw objectForKey:pathsOrderedKeys[i]];
+        NSMutableArray *subpathsOrderedKeys = [pathDict.allKeys mutableCopy];
+        [subpathsOrderedKeys sortUsingDescriptors:@[ascendingSorter]];
+        
+        for (int i=0; i<subpathsOrderedKeys.count; i++) {
+            
+            NSDictionary *subpathDict = [pathDict objectForKey:subpathsOrderedKeys[i]];
+            [boardView drawSubpath:subpathDict];
+        }
     }
 }
 
