@@ -635,6 +635,7 @@ static FirebaseHelper *sharedHelper = nil;
             NSInteger boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
             boardView.loadingView.hidden = true;
+            boardView.fadeView.hidden = true;
             [boardView layoutComments];
             [self.projectVC drawBoard:boardView];
             

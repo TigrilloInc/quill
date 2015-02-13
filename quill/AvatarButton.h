@@ -11,6 +11,7 @@
 
 @interface AvatarButton : UIButton
 
+@property BOOL scaled;
 @property (strong, nonatomic) NSString *userID;
 @property (strong, nonatomic) UIImage *userImage;
 @property (strong, nonatomic) IdenticonView *identiconView;

@@ -1512,6 +1512,12 @@
         [((BoardView *)view) layoutAvatars];
     }
     else {
+        
+        ((BoardView *)view).fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, view.frame.size.height*2, view.frame.size.width*2)];
+        ((BoardView *)view).fadeView.backgroundColor = [UIColor whiteColor];
+        ((BoardView *)view).fadeView.alpha = .5f;
+        [((BoardView *)view) addSubview:((BoardView *)view).fadeView];
+        
         ((BoardView *)view).loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         ((BoardView *)view).loadingView.transform = CGAffineTransformMakeScale(5, 5);
         [((BoardView *)view).loadingView setCenter:((BoardView *)view).center];

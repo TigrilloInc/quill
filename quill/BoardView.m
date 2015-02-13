@@ -52,6 +52,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         _empty = YES;
         self.activeUserIDs = [NSMutableArray array];
         self.loadingView = nil;
+        self.fadeView = nil;
         self.hideComments = true;
         
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;;
@@ -689,11 +690,25 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     self.drawingUserID = userID;
     
-    if (![userID isEqualToString:[FirebaseHelper sharedHelper].uid]) self.drawable = false;
+    if (![userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
+        self.drawable = false;
+        self.fadeView.hidden = false;
+    }
     
     for (AvatarButton *avatar in self.avatarButtons) {
         
-        if ([avatar.userID isEqualToString:userID]) avatar.drawingImage.hidden = false;
+        if ([avatar.userID isEqualToString:userID]) {
+            avatar.drawingImage.hidden = false;
+            
+            if (!avatar.scaled) {
+                
+                [self bringSubviewToFront:avatar];
+                CGAffineTransform tr = CGAffineTransformScale(avatar.transform, 1.3, 1.3);
+                //tr = CGAffineTransformRotate(tr, -M_PI_2);
+                avatar.transform = tr;
+                avatar.scaled = true;
+            }
+        }
     }
     
     if (![userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
@@ -724,12 +739,22 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     self.drawingUserID = nil;
     
     self.drawable = true;
+    self.fadeView.hidden = true;
     
     NSString *userID = timer.userInfo;
     
     for (AvatarButton *avatar in self.avatarButtons) {
         
-        if ([avatar.userID isEqualToString:userID]) avatar.drawingImage.hidden = true;
+        if ([avatar.userID isEqualToString:userID]) {
+            avatar.drawingImage.hidden = true;
+            
+            if (avatar.scaled) {
+                CGAffineTransform tr = CGAffineTransformScale(avatar.transform, 1/1.3, 1/1.3);
+                //tr = CGAffineTransformRotate(tr, -M_PI_2);
+                avatar.transform = tr;
+                avatar.scaled = false;
+            }
+        }
     }
     
     for (int i=0; i<=projectVC.drawButtons.count; i++) {
@@ -738,6 +763,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         button.userInteractionEnabled = YES;
         button.alpha = 1;
     }
+    
+    self.alpha = 1;
     
     [self.drawingTimers removeObjectForKey:userID];
     
