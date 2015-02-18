@@ -51,9 +51,22 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         self.lineColorNumber = @1;
         _empty = YES;
         self.activeUserIDs = [NSMutableArray array];
+        self.gradientButton = nil;
         self.loadingView = nil;
-        self.fadeView = nil;
         self.hideComments = true;
+        
+        self. fadeView = [[UIView alloc] initWithFrame:self.frame];
+        self.fadeView.backgroundColor = [UIColor whiteColor];
+        self.fadeView.alpha = .5f;
+        self.fadeView.hidden = true;
+        [self addSubview:self.fadeView];
+        
+        self.userLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 100, 200, 40)];
+        self.userLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
+        self.userLabel.transform = CGAffineTransformMakeRotation(-M_PI_2);
+        self.userLabel.textAlignment = NSTextAlignmentCenter;
+        self.userLabel.hidden = true;
+        [self addSubview:self.userLabel];
         
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;;
         
@@ -183,6 +196,9 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     UITouch *touch = [touches anyObject];
     
     if (self.selectedAvatarUserID) {
+        
+        self.userLabel.text = nil;
+        self.userLabel.hidden = true;
         
         for (AvatarButton *avtr in self.avatarButtons) avtr.highlightedImage.hidden = true;
         
@@ -783,9 +799,28 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         avtr.highlightedImage.hidden = true;
     }
     
-    if  ([avatar.userID isEqualToString:self.selectedAvatarUserID])
+    if  ([avatar.userID isEqualToString:self.selectedAvatarUserID]) {
+        
+        self.userLabel.text = nil;
+        self.userLabel.hidden = true;
+        
         self.selectedAvatarUserID = nil;
+    }
     else {
+        
+        NSString *nameString = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"name"];
+        self.userLabel.text = nameString;
+        [self.userLabel sizeToFit];
+        self.userLabel.center = CGPointMake(self.userLabel.center.x, avatar.center.y);
+        
+        CGRect nameRect = [self.userLabel.text boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Semibold" size:20]} context:nil];
+
+        CGFloat diff = self.userLabel.center.y-nameRect.size.width/2;
+        
+        if (diff < 40) self.userLabel.center = CGPointMake(self.userLabel.center.x, self.userLabel.center.y-diff+10);
+        
+        self.userLabel.hidden = false;
+        
         avatar.highlightedImage.hidden = false;
         self.selectedAvatarUserID = avatar.userID;
     }
@@ -867,6 +902,10 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         backgroundRect.origin.x -= (oldOffset - projectVC.carouselOffset);
         self.avatarBackgroundImage.frame = backgroundRect;
 
+        CGRect labelRect = self.userLabel.frame;
+        labelRect.origin.x -= (oldOffset - projectVC.carouselOffset);
+        self.userLabel.frame = labelRect;
+        
         for (AvatarButton *avatar in self.avatarButtons) {
             
             CGRect avatarRect = avatar.frame;

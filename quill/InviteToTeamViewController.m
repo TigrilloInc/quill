@@ -9,6 +9,7 @@
 #import "InviteToTeamViewController.h"
 #import "FirebaseHelper.h"
 #import <MailCore/mailcore.h>
+#import "InviteEmail.h"
 
 @implementation InviteToTeamViewController
 
@@ -28,19 +29,18 @@
     
     projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
+}
+
+-(void) viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
     if (self.creatingTeam) self.navigationItem.title = @"Step 3: Send Invites";
     else {
+        
         self.navigationItem.title = @"Send Invites";
         self.stepLabel.hidden = true;
         [self.inviteButton setTitle:@"Send" forState:UIControlStateNormal];
-        
-
-    }
-}
-
--(void) viewDidAppear:(BOOL)animated {
-    
-    if (!self.creatingTeam) {
         
         outsideTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside)];
         
@@ -98,7 +98,7 @@
 
 -(void) updateInviteEmails {
 
-    int cellCount = self.inviteEmails.count;
+    NSInteger cellCount = self.inviteEmails.count;
     
     for (NSString *emailString in self.inviteEmails) {
         if (emailString.length == 0) [self.inviteEmails removeObject:emailString];
@@ -120,6 +120,28 @@
     }
 }
 
+-(void) activateCells:(BOOL)activate {
+    
+    for (int i=0; i<self.inviteEmails.count; i++) {
+        
+        UITableViewCell *cell = [self.inviteTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+        UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
+        
+        if ([textField isFirstResponder]) [textField resignFirstResponder];
+        
+        if (activate) {
+            
+            textField.userInteractionEnabled = true;
+            textField.alpha = 1;
+        }
+        else {
+            
+            textField.userInteractionEnabled = false;
+            textField.alpha = .5;
+        }
+    }
+}
+
 -(void) deleteTapped:(id)sender {
     
     [self updateInviteEmails];
@@ -135,13 +157,7 @@
 
     [self updateInviteEmails];
     
-    for (int i=0; i<self.inviteEmails.count; i++) {
-        
-        UITableViewCell *cell = [self.inviteTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-        UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
-        
-        if ([textField isFirstResponder]) [textField resignFirstResponder];
-    }
+    [self activateCells:false];
     
     NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
@@ -172,11 +188,19 @@
                 if (teamCreated && teamSet && emailsSent) [self invitesSent];
             }];
             
+            NSLog(@"teamID is %@", [FirebaseHelper sharedHelper].userName);
+            
             //////////Create Team
             Firebase *teamRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/teams"];
-            NSDictionary *newTeamValues = @{ [FirebaseHelper sharedHelper].teamName :
+            
+            [FirebaseHelper sharedHelper].teamID = [teamRef childByAutoId].key;
+            
+            NSLog(@"teamID is %@", [FirebaseHelper sharedHelper].teamID);
+            
+            NSDictionary *newTeamValues = @{ [FirebaseHelper sharedHelper].teamID :
                                                  @{ @"users" :
-                                                        @{ [FirebaseHelper sharedHelper].uid : @1 }
+                                                        @{ [FirebaseHelper sharedHelper].uid : @1 },
+                                                    @"name" : [FirebaseHelper sharedHelper].teamName
                                                     }
                                              };
             [teamRef updateChildValues:newTeamValues withCompletionBlock:^(NSError *error, Firebase *ref) {
@@ -187,8 +211,11 @@
             //////////Set Team
             NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/team", [FirebaseHelper sharedHelper].uid];
             Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
-            [userRef setValue:[FirebaseHelper sharedHelper].teamName withCompletionBlock:^(NSError *error, Firebase *ref) {
+            [userRef setValue:[FirebaseHelper sharedHelper].teamID withCompletionBlock:^(NSError *error, Firebase *ref) {
                 teamSet = true;
+                
+                NSLog(@"team set!");
+                
                 if (nameCreated && teamCreated && emailsSent) [self invitesSent];
             }];
         }
@@ -222,11 +249,13 @@
                 
                 NSString *token = [self generateToken];
                 NSString *tokenURL = [NSString stringWithFormat:@"quill://%@", token];
-                NSString *teamString = [NSString stringWithFormat:@"%@/team", token];
+                NSString *teamIDString = [NSString stringWithFormat:@"%@/teamID", token];
+                NSString *teamNameString = [NSString stringWithFormat:@"%@/teamName", token];
                 NSString *emailString = [NSString stringWithFormat:@"%@/email", token];
                 NSString *invitedByString = [NSString stringWithFormat:@"%@/invitedBy", token];
                 
-                [[tokenRef childByAppendingPath:teamString] setValue:[FirebaseHelper sharedHelper].teamName];
+                [[tokenRef childByAppendingPath:teamIDString] setValue:[FirebaseHelper sharedHelper].teamID];
+                [[tokenRef childByAppendingPath:teamNameString] setValue:[FirebaseHelper sharedHelper].teamName];
                 [[tokenRef childByAppendingPath:emailString] setValue:userEmail];
                 [[tokenRef childByAppendingPath:invitedByString] setValue:[FirebaseHelper sharedHelper].userName];
                 
@@ -237,7 +266,12 @@
                 [[builder header] setTo:@[to]];
                 
                 [[builder header] setSubject:@"Welcome to Quill!"];
-                //[builder setHTMLBody:@""];
+                
+//                InviteEmail *inviteEmail = [[InviteEmail alloc] init];
+//                inviteEmail.inviteURL = tokenURL;
+//                [inviteEmail updateHTML];
+//                [builder setHTMLBody:inviteEmail.htmlBody];
+                
                 [builder setTextBody:tokenURL];
                 NSData * rfc822Data = [builder data];
                 
@@ -259,6 +293,7 @@
     else {
         
         self.inviteLabel.text = @"Please fix the emails in red!";
+        [self activateCells:true];
     }
 }
 
@@ -266,12 +301,12 @@
     
     if (self.creatingTeam) {
         
+        [[FirebaseHelper sharedHelper] observeLocalUser];
+        
         if (self.inviteEmails.count == 0) self.inviteLabel.text = @"Team created!";
         else self.inviteLabel.text = @"Invites sent and team created!";
     }
     else self.inviteLabel.text = @"Invites sent!";
-        
-    [[FirebaseHelper sharedHelper] observeLocalUser];
     
     [self performSelector:@selector(dismiss) withObject:nil afterDelay:.3];
 }

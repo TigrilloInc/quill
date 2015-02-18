@@ -9,12 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "RoundedButton.h"
 
-@interface SignInViewController : UIViewController <UITextFieldDelegate> {
-    
-    BOOL _signingIn;
-}
+@interface SignInViewController : UIViewController <UITextFieldDelegate>
 
-
+@property BOOL signingIn;
 @property (weak, nonatomic) IBOutlet UILabel *signInLabel;
 @property (weak, nonatomic) IBOutlet UITextField *emailField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordField;

@@ -10,6 +10,7 @@
 #import "FirebaseHelper.h"
 #import "NSDate+ServerDate.h"
 #import <MailCore/mailcore.h>
+#import "InviteEmail.h"
 
 @implementation AddUserViewController
 
@@ -74,7 +75,7 @@
 
 -(void) updateInviteEmails {
     
-    int cellCount = self.availableUsersDict.allKeys.count+self.inviteEmails.count;
+    NSInteger cellCount = self.availableUsersDict.allKeys.count+self.inviteEmails.count;
     
     for (NSString *emailString in self.inviteEmails) {
         if (emailString.length == 0) [self.inviteEmails removeObject:emailString];
@@ -124,6 +125,28 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+-(void) activateCells:(BOOL)activate {
+    
+    for (int i=0; i<self.inviteEmails.count; i++) {
+        
+        UITableViewCell *cell = [self.usersTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+        UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
+        
+        if ([textField isFirstResponder]) [textField resignFirstResponder];
+        
+        if (activate) {
+            
+            textField.userInteractionEnabled = true;
+            textField.alpha = 1;
+        }
+        else {
+            
+            textField.userInteractionEnabled = false;
+            textField.alpha = .5;
+        }
+    }
+}
+
 - (IBAction)addUserTapped:(id)sender {
     
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
@@ -137,6 +160,8 @@
     
     [self updateInviteEmails];
     
+    [self activateCells:false];
+    
     NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
     NSMutableArray *errorEmails = [NSMutableArray array];
@@ -148,7 +173,8 @@
     
     if (errorEmails.count == 0) {
         
-        [self.inviteButton setTitle:@"Sending invites..." forState:UIControlStateNormal];
+        self.inviteLabel.text = @"Sending invites...";
+        self.inviteButton.alpha = .5;
         self.inviteButton.userInteractionEnabled = false;
 
         for (NSString *userID in self.selectedUsers) {
@@ -195,12 +221,14 @@
                     
                 NSString *token = [self generateToken];
                 NSString *tokenURL = [NSString stringWithFormat:@"quill://%@", token];
-                NSString *teamString = [NSString stringWithFormat:@"%@/team", token];
+                NSString *teamIDString = [NSString stringWithFormat:@"%@/teamID", token];
+                NSString *teamNameString = [NSString stringWithFormat:@"%@/teamName", token];
                 NSString *projectString = [NSString stringWithFormat:@"%@/project/%@", token, [FirebaseHelper sharedHelper].currentProjectID];
                 NSString *emailString = [NSString stringWithFormat:@"%@/email", token];
                 NSString *invitedByString = [NSString stringWithFormat:@"%@/invitedBy", token];
                 
-                [[tokenRef childByAppendingPath:teamString] setValue:[FirebaseHelper sharedHelper].teamName];
+                [[tokenRef childByAppendingPath:teamIDString] setValue:[FirebaseHelper sharedHelper].teamID];
+                [[tokenRef childByAppendingPath:teamNameString] setValue:[FirebaseHelper sharedHelper].teamName];
                 [[tokenRef childByAppendingPath:projectString] setValue:[self.roles objectForKey:userEmail]];
                 [[tokenRef childByAppendingPath:emailString] setValue:userEmail];
                 [[tokenRef childByAppendingPath:invitedByString] setValue:[FirebaseHelper sharedHelper].userName];
@@ -212,7 +240,12 @@
                 [[builder header] setTo:@[to]];
                 
                 [[builder header] setSubject:@"Welcome to Quill!"];
-                //[builder setHTMLBody:@""];
+                
+//                InviteEmail *inviteEmail = [[InviteEmail alloc] init];
+//                inviteEmail.inviteURL = tokenURL;
+//                [inviteEmail updateHTML];
+//                [builder setHTMLBody:inviteEmail.htmlBody];
+
                 [builder setTextBody:tokenURL];
                 NSData * rfc822Data = [builder data];
                 
@@ -238,6 +271,7 @@
     }
     else {
 
+        [self activateCells:true];
         self.inviteLabel.text = @"Please fix the emails in red.";
     }
 
@@ -397,7 +431,7 @@
             UISegmentedControl *roleControl = [[UISegmentedControl alloc] initWithItems:@[@"Viewer", @"Collaborator"]];
             roleControl.center = CGPointMake(400, cell.frame.size.height/2);
             roleControl.tintColor = [UIColor lightGrayColor];
-            int roleInt;
+            NSInteger roleInt;
             if ([self.roles objectForKey:userNameLabel.text] == nil) roleInt = 1;
             else roleInt = [[self.roles objectForKey:userNameLabel.text] integerValue];
             roleControl.selectedSegmentIndex = roleInt;
@@ -492,7 +526,7 @@
 
     [UIView setAnimationsEnabled:NO];
     
-    int cellCount = self.availableUsersDict.allKeys.count+self.inviteEmails.count;
+    NSInteger cellCount = self.availableUsersDict.allKeys.count+self.inviteEmails.count;
     [self updateInviteEmails];
     
     if (indexPath.row < self.availableUsersDict.allKeys.count) {

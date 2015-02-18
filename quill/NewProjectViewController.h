@@ -17,6 +17,7 @@
     BOOL teamDone;
     BOOL boardDone;
     BOOL chatDone;
+    BOOL keyboardShowing;
     
     UITapGestureRecognizer *outsideTapRecognizer;
     ProjectDetailViewController *projectVC;
@@ -24,5 +25,6 @@
 
 @property (weak, nonatomic) IBOutlet RoundedButton *createButton;
 @property (weak, nonatomic) IBOutlet UITextField *nameField;
+@property (weak, nonatomic) IBOutlet UILabel *projectLabel;
 
 @end

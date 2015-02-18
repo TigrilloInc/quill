@@ -14,13 +14,15 @@
 
 @interface FirebaseHelper : NSObject {
     
+    NSInteger userChildrenCount;
     NSInteger projectChildrenCount;
 }
 
 @property (strong, nonatomic) ProjectDetailViewController *projectVC;
 @property (strong, nonatomic) NSString *uid;
-@property (strong, nonatomic) NSString *email;
 @property (strong, nonatomic) NSString *userName;
+@property (strong, nonatomic) NSString *email;
+@property (strong, nonatomic) NSString *teamID;
 @property (strong, nonatomic) NSString *teamName;
 @property (strong, nonatomic) NSMutableDictionary *team;
 @property (strong, nonatomic) NSMutableDictionary *projects;
@@ -30,12 +32,16 @@
 @property (strong, nonatomic) NSString *currentProjectID;
 @property (strong, nonatomic) NSMutableArray *visibleProjectIDs;
 @property (strong, nonatomic) NSMutableArray *loadedBoardIDs;
+@property (strong, nonatomic) NSDictionary *invitedProject;
+@property (strong, nonatomic) NSURL *inviteURL;
+@property BOOL teamLoaded;
+@property BOOL projectsLoaded;
 @property BOOL connected;
-@property BOOL firstLoad;
 @property BOOL loggedIn;
 
 + (FirebaseHelper *)sharedHelper;
 - (void) testConnection;
+- (void) createUser;
 - (void) observeLocalUser;
 - (void) observeCurrentProjectBoards;
 - (void) observeProjectWithID:(NSString *)projectID;
@@ -53,6 +59,7 @@
 - (NSIndexPath *) getLastViewedProjectIndexPath;
 - (void) removeAllObservers;
 - (void) clearData;
+- (void) updateMasterView;
 
 @end
 

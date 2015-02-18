@@ -48,17 +48,7 @@
     
     [titleLabel setAttributedText:attrString];
     
-//    titleLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
-//    [titleLabel setText:userName];
-//    [titleLabel sizeToFit];
-    
     [self.view addSubview:titleLabel];
-    
-//    UILabel *roleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabel.frame.size.width+25, 20, 0, 0)];
-//    roleLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
-//    [roleLabel setText:roleString];
-//    [roleLabel sizeToFit];
-//    [self.view addSubview:roleLabel];
     
     int buttonCount = 0;
     

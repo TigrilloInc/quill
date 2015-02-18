@@ -9,12 +9,11 @@
 #import "AppDelegate.h"
 #import <Firebase/Firebase.h>
 #import "FirebaseHelper.h"
-#import "SignUpFromInviteViewController.h"
 
 @implementation AppDelegate
 
--(BOOL) application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+-(BOOL) application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
     [FirebaseHelper sharedHelper];
     
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
@@ -66,42 +65,10 @@ void signalHandler(int signal) {
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     
-    NSString *tokenString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/tokens/%@", [url.host stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    
-    
-    Firebase *tokenRef = [[Firebase alloc] initWithUrl:tokenString];
-    FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:tokenRef];
-    
-    [[FirebaseHelper sharedHelper] removeAllObservers];
-    [[FirebaseHelper sharedHelper] clearData];
-    
-    [authClient logout];
-    
-    [tokenRef observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
-        
-        SignUpFromInviteViewController *vc = [self.window.rootViewController.storyboard instantiateViewControllerWithIdentifier:@"SignUpFromInvite"];
-        vc.invitedBy = [snapshot.value objectForKey:@"invitedBy"];
-        vc.teamName = [snapshot.value objectForKey:@"team"];
-        
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
-        nav.modalPresentationStyle = UIModalPresentationFormSheet;
-        nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-        
-        if (self.window.rootViewController.presentedViewController) {
-            
-            [self.window.rootViewController dismissViewControllerAnimated:YES completion:^{
-                [self.window.rootViewController presentViewController:nav animated:YES completion:nil];
-            }];
-        }
-        else {
-            
-            [self.window.rootViewController presentViewController:nav animated:YES completion:nil];
-        }
-        
-    }];
+    [FirebaseHelper sharedHelper].inviteURL = url;
+    [[FirebaseHelper sharedHelper] createUser];
     
     return YES;
-    
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

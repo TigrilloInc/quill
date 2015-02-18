@@ -39,12 +39,12 @@
         self.boardView.center = self.center;
         [self.contentView addSubview:self.boardView];
         
-        self.gradientImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"board7.png"]];
+        self.gradientImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"board8.png"]];
         self.gradientImage.center = self.center;
         self.gradientImage.transform = tr;
         [self.contentView addSubview:self.gradientImage];
         
-        self.boardNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 1024, 20)];
+        self.boardNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 1024, 30)];
         self.boardNameLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:18];
         [self.contentView addSubview:self.boardNameLabel];
         
@@ -130,7 +130,7 @@
     if ([self.boardNameLabel.text isEqualToString:@"Untitled"]) self.boardNameLabel.alpha = .2;
     else self.boardNameLabel.alpha = 1;
     [self.boardNameLabel sizeToFit];
-    self.boardNameLabel.center = CGPointMake(self.contentView.center.x,160);
+    self.boardNameLabel.center = CGPointMake(self.contentView.center.x,165);
     
 }
 

@@ -66,26 +66,12 @@
     
     if (![self.teamNameTextField.text isEqualToString:[FirebaseHelper sharedHelper].teamName]) {
      
-        NSString *oldString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@", [FirebaseHelper sharedHelper].teamName];
-        Firebase *oldRef = [[Firebase alloc] initWithUrl:oldString];
-        [oldRef removeValue];
+        NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@/name", [FirebaseHelper sharedHelper].teamID];
+        Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
         
         [FirebaseHelper sharedHelper].teamName = self.teamNameTextField.text;
         
-        NSString *newString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@", [FirebaseHelper sharedHelper].teamName];
-        Firebase *newRef = [[Firebase alloc] initWithUrl:newString];
-        
-        NSMutableDictionary *newDict = [NSMutableDictionary dictionary];
-        
-        [newDict setObject:[[FirebaseHelper sharedHelper].team objectForKey:@"projects"] forKey:@"projects"];
-        [newDict setObject:[NSMutableDictionary dictionary] forKey:@"users"];
-        
-        for (NSString *userID in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
-            
-            [[newDict objectForKey:@"users"] setObject:[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:@"teamOwner"] forKey:userID];
-        }
-        
-        [newRef setValue:newDict];
+        [teamRef setValue:[FirebaseHelper sharedHelper].teamName];
     }
     
     [outsideTapRecognizer setDelegate:nil];

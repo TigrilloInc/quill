@@ -96,7 +96,7 @@
     
     [self updateProjects];
     
-    if (indexPath.row == [FirebaseHelper sharedHelper].visibleProjectIDs.count && ![FirebaseHelper sharedHelper].firstLoad) {
+    if (indexPath.row == [FirebaseHelper sharedHelper].visibleProjectIDs.count && [FirebaseHelper sharedHelper].projectsLoaded) {
         
         cell.imageView.image = [UIImage imageNamed:@"plus2.png"];
         cell.textLabel.text = @"New Project";
@@ -178,7 +178,7 @@
         if ([projectVC.chatTextField isFirstResponder]) [projectVC.chatTextField resignFirstResponder];
         if (projectVC.activeBoardID == nil) [projectVC.carousel scrollToItemAtIndex:projectVC.carousel.numberOfItems-1 duration:0];
     }
-    
+
     [self.projectsTable reloadData];
     [self.projectsTable selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
 }

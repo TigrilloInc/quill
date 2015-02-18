@@ -14,6 +14,7 @@
 }
 
 @property (nonatomic, strong) NSNumber *lineColorNumber;
+@property (nonatomic, strong) UIButton *gradientButton;
 @property (nonatomic, assign) NSInteger penType;
 @property (nonatomic, assign) BOOL empty;
 @property (nonatomic, assign) BOOL drawable;
@@ -32,6 +33,7 @@
 @property (nonatomic, strong) UIView *fadeView;
 @property (nonatomic, strong) CommentButton *movingCommentButton;
 @property (strong, nonatomic) UIImageView *avatarBackgroundImage;
+@property (strong, nonatomic) UILabel *userLabel;
 @property (nonatomic, strong) NSMutableArray *paths;
 //@property (nonatomic, strong) NSMutableArray *waitingPaths;
 @property (strong, nonatomic) UIColor *backgroundColor;

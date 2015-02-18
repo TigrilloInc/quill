@@ -30,10 +30,12 @@
     self.createButton.layer.borderWidth = 1;
     self.createButton.layer.cornerRadius = 10;
     self.createButton.layer.borderColor = [UIColor grayColor].CGColor;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
 }
 
-- (void) viewDidAppear:(BOOL)animated
-{
+- (void) viewDidAppear:(BOOL)animated {
     
     outsideTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside)];
     
@@ -43,11 +45,32 @@
     [self.view.window addGestureRecognizer:outsideTapRecognizer];
 }
 
+-(void)keyboardWillShow:(NSNotification *)notification {
+    
+    keyboardShowing = YES;
+}
+
+-(void)keyboardDidShow:(NSNotification *)notification {
+    
+    keyboardShowing = NO;
+}
+
 - (IBAction)createProjectTapped:(id)sender {
     
     if (self.nameField.text.length <= 0) return;
+    
+    for (NSString *projectID in [FirebaseHelper sharedHelper].projects.allKeys) {
         
-    NSString *teamRefString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@/projects", [FirebaseHelper sharedHelper].teamName];
+        NSString *projectName = [[[FirebaseHelper sharedHelper].projects objectForKey:projectID] objectForKey:@"name"];
+        
+        if ([self.nameField.text isEqualToString:projectName]) {
+            
+            self.projectLabel.text = @"There is already a project with that name - try again.";
+            return;
+        }
+    }
+    
+    NSString *teamRefString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@/projects", [FirebaseHelper sharedHelper].teamID];
     Firebase *teamRef = [[Firebase alloc] initWithUrl:teamRefString];
     
     Firebase *projectRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/projects"];
@@ -132,9 +155,9 @@
     if (outsideTapRecognizer.state == UIGestureRecognizerStateEnded) {
         
         CGPoint location = [outsideTapRecognizer locationInView:nil];
-        CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
-        
-        if (!CGRectContainsPoint(self.view.frame, converted)){
+        CGPoint converted = [self.view convertPoint:CGPointMake(location.y,location.x) fromView:self.view.window];
+
+        if (!CGRectContainsPoint(self.view.bounds, converted) && !keyboardShowing){
             
             [outsideTapRecognizer setDelegate:nil];
             [self.view.window removeGestureRecognizer:outsideTapRecognizer];

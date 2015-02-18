@@ -266,6 +266,8 @@
     self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+292, self.projectNameLabel.center.y+3);
     self.projectNameEditButton.center = self.editButton.center;
     
+    self.boardNameEditButton.hidden = false;
+    
     UIButton *projectNameButton = (UIButton *)[self.view viewWithTag:101];
     [projectNameButton setTitle:self.projectName forState:UIControlStateNormal];
     [projectNameButton sizeToFit];
@@ -748,6 +750,8 @@
     [self.currentBoardView.activeUserIDs removeObject:[FirebaseHelper sharedHelper].uid];
     [self.currentBoardView layoutAvatars];
     self.currentBoardView.selectedAvatarUserID = nil;
+    self.currentBoardView.userLabel.text = nil;
+    self.currentBoardView.userLabel.hidden = true;
     [self drawBoard:self.currentBoardView];
     self.currentBoardView = nil;
     
@@ -923,11 +927,15 @@
                 
                 if (![self.editBoardIDs containsObject:boardID]) {
                     
+                    NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"commentsID"];
+                    NSString *commentsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
+                    Firebase *commentsRef = [[Firebase alloc] initWithUrl:commentsString];
+                    [commentsRef removeValue];
+                    [[FirebaseHelper sharedHelper].comments removeObjectForKey:commentsID];
+                    
                     NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
                     Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
-                    
                     [boardRef removeValue];
-                    
                     [[FirebaseHelper sharedHelper].boards removeObjectForKey:boardID];
                 }
             }
@@ -986,7 +994,7 @@
     Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
     [projectRef removeValue];
     
-    NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@/projects/%@", [FirebaseHelper sharedHelper].teamName, [FirebaseHelper sharedHelper].currentProjectID];
+    NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@/projects/%@", [FirebaseHelper sharedHelper].teamID, [FirebaseHelper sharedHelper].currentProjectID];
     Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
     [teamRef removeValue];
     
@@ -1487,14 +1495,15 @@
         view.transform = tr;
     }
     
-    UIImage *gradientImage = [UIImage imageNamed:@"board7.png"];
+    UIImage *gradientImage = [UIImage imageNamed:@"board8.png"];
     UIButton *gradientButton = [UIButton buttonWithType:UIButtonTypeCustom];
     gradientButton.frame = CGRectMake(0.0f, 0.0f, gradientImage.size.width, gradientImage.size.height);
     gradientButton.center = view.center;
     gradientButton.adjustsImageWhenHighlighted = NO;
     [gradientButton setBackgroundImage:gradientImage forState:UIControlStateNormal];
     [gradientButton addTarget:self action:@selector(boardTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [view addSubview:gradientButton];
+    if (((BoardView *)view).gradientButton == nil) [view addSubview:gradientButton];
+    ((BoardView *)view).gradientButton = gradientButton;
     gradientButton.tag = 1;
     
     ((BoardView *)view).boardID = self.boardIDs[index];
@@ -1513,11 +1522,9 @@
     }
     else {
         
-        ((BoardView *)view).fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, view.frame.size.height*2, view.frame.size.width*2)];
-        ((BoardView *)view).fadeView.backgroundColor = [UIColor whiteColor];
-        ((BoardView *)view).fadeView.alpha = .5f;
-        [((BoardView *)view) addSubview:((BoardView *)view).fadeView];
+        ((BoardView *)view).fadeView.hidden = false;
         
+        [((BoardView *)view).loadingView removeFromSuperview];
         ((BoardView *)view).loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         ((BoardView *)view).loadingView.transform = CGAffineTransformMakeScale(5, 5);
         [((BoardView *)view).loadingView setCenter:((BoardView *)view).center];

@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RoundedButton.h"
 
-@interface SignUpFromInviteViewController : UIViewController
-
+@interface SignUpFromInviteViewController : UIViewController <UITextFieldDelegate>
 
 @property (strong, nonatomic) NSString *invitedBy;
 @property (strong, nonatomic) NSString *teamName;
@@ -18,5 +18,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *teamLabel;
 @property (weak, nonatomic) IBOutlet UITextField *emailField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordField;
+@property (weak, nonatomic) IBOutlet RoundedButton *nextButton;
 
 @end

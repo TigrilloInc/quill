@@ -25,8 +25,10 @@ static FirebaseHelper *sharedHelper = nil;
 + (FirebaseHelper *) sharedHelper {
     
     if (!sharedHelper) {
+        
         sharedHelper = [[FirebaseHelper alloc] init];
-        sharedHelper.firstLoad = true;
+        sharedHelper.teamLoaded = false;
+        sharedHelper.projectsLoaded = false;
         sharedHelper.team = [NSMutableDictionary dictionary];
         sharedHelper.projects = [NSMutableDictionary dictionary];
         sharedHelper.boards = [NSMutableDictionary dictionary];
@@ -52,7 +54,8 @@ static FirebaseHelper *sharedHelper = nil;
             
             weakSelf.connected = true;
             [NSDate serverDate];
-            if (!self.loggedIn) [self checkAuthStatus];
+            if (self.inviteURL) [self createUser];
+            else if (!self.loggedIn) [self checkAuthStatus];
             
             NSLog(@"Yayyy, we have the interwebs!");
         });
@@ -71,44 +74,11 @@ static FirebaseHelper *sharedHelper = nil;
 }
 
 -(void) checkAuthStatus {
-
-//    Firebase *tokenRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/tokens/9BnzrtrWnHYEUli"];
-//    FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:tokenRef];
-//    
-//    [[FirebaseHelper sharedHelper] removeAllObservers];
-//    [[FirebaseHelper sharedHelper] clearData];
-//    
-//    [authClient logout];
-//    
-//    [tokenRef observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
-//        
-//        SignUpFromInviteViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignUpFromInvite"];
-//        vc.invitedBy = [snapshot.value objectForKey:@"invitedBy"];
-//        vc.teamName = [snapshot.value objectForKey:@"team"];
-//        vc.email = [snapshot.value objectForKey:@"email"];
-//        
-//        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
-//        nav.modalPresentationStyle = UIModalPresentationFormSheet;
-//        nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-//        nav.navigationBar.barTintColor = [UIColor whiteColor];
-//        
-//        
-//        if (self.projectVC.presentedViewController) {
-//            
-//            [self.projectVC dismissViewControllerAnimated:YES completion:^{
-//                [self.projectVC presentViewController:nav animated:YES completion:nil];
-//            }];
-//        }
-//        else {
-//            
-//            [self.projectVC presentViewController:nav animated:YES completion:nil];
-//        }
-//        
-//    }];
-
     
     Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
     FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
+    
+    if (self.projectVC.presentedViewController) [self.projectVC dismissViewControllerAnimated:YES completion:nil];
     
     //[authClient logout];
     
@@ -137,27 +107,85 @@ static FirebaseHelper *sharedHelper = nil;
             logoImageView.tag = 800;
             [nav.navigationBar addSubview:logoImageView];
             
-            if (self.projectVC.presentedViewController) {
-                
-                [self.projectVC dismissViewControllerAnimated:YES completion:^{
-                    [self.projectVC presentViewController:nav animated:YES completion:nil];
-                }];
-            }
-            else {
-                
-                [self.projectVC presentViewController:nav animated:YES completion:nil];
-            }
+            [self.projectVC presentViewController:nav animated:YES completion:nil];
+        
         }
         else {
             
             NSLog(@"User logged in as %@", user.uid);
             
-            [FirebaseHelper sharedHelper].loggedIn = true;
-            [FirebaseHelper sharedHelper].uid = user.uid;
-            [[FirebaseHelper sharedHelper] observeLocalUser];
+            self.loggedIn = true;
+            self.uid = user.uid;
+            [self observeLocalUser];
         }
     }];
 }
+
+-(void) createUser {
+    
+    if (self.projectVC.presentedViewController) [self.projectVC dismissViewControllerAnimated:YES completion:nil];
+    
+    self.projectVC.masterView.teamButton.hidden = true;
+    self.projectVC.masterView.teamMenuButton.hidden = true;
+    self.projectVC.masterView.nameButton.hidden = true;
+    self.projectVC.masterView.avatarButton.hidden = true;
+    self.projectVC.projectNameLabel.hidden = true;
+    self.projectVC.editButton.hidden = true;
+    self.projectVC.carousel.hidden = true;
+    self.projectVC.chatAvatar.hidden = true;
+    self.projectVC.sendMessageButton.hidden = true;
+    self.projectVC.boardNameLabel.hidden = true;
+    self.projectVC.boardNameEditButton.hidden = true;
+    self.projectVC.editBoardNameTextField.hidden = true;
+    for (AvatarButton *avatar in self.projectVC.avatars) avatar.hidden = true;
+    self.projectVC.avatarBackgroundImage.hidden = true;
+    self.projectVC.addUserButton.hidden = true;
+    self.projectVC.chatTextField.hidden = true;
+    self.projectVC.addBoardBackgroundImage.hidden = true;
+    self.projectVC.addBoardButton.hidden = true;
+    self.projectVC.chatOpenButton.hidden = true;
+    
+    [[FirebaseHelper sharedHelper] removeAllObservers];
+    [[FirebaseHelper sharedHelper] clearData];
+    
+    NSString *tokenString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/tokens/%@", [self.inviteURL.host stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+
+    Firebase *tokenRef = [[Firebase alloc] initWithUrl:tokenString];
+    FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:tokenRef];
+    
+    [authClient logout];
+    
+    [tokenRef observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+        
+        self.inviteURL = nil;
+        
+        self.teamID = [snapshot.value objectForKey:@"teamID"];
+        self.teamName = [snapshot.value objectForKey:@"teamName"];
+        self.email = [snapshot.value objectForKey:@"email"];
+        if ([snapshot.value objectForKey:@"project"]) self.invitedProject = [snapshot.value objectForKey:@"project"];
+        
+        SignUpFromInviteViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignUpFromInvite"];
+        vc.invitedBy = [snapshot.value objectForKey:@"invitedBy"];
+        vc.teamName = self.teamName;
+        vc.email = self.email;
+        
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+        nav.modalPresentationStyle = UIModalPresentationFormSheet;
+        nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+        nav.navigationBar.barTintColor = [UIColor whiteColor];
+        nav.navigationBar.tintColor = [UIColor blackColor];
+        [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"SourceSansPro-Light" size:24.0], NSFontAttributeName, nil]];
+        [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5 forBarMetrics:UIBarMetricsDefault];
+        
+        UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+        logoImageView.frame = CGRectMake(155, 8, 32, 32);
+        logoImageView.tag = 800;
+        [nav.navigationBar addSubview:logoImageView];
+        
+        [self.projectVC presentViewController:nav animated:YES completion:nil];
+    }];
+}
+
 
 -(void) observeLocalUser {
 
@@ -169,13 +197,13 @@ static FirebaseHelper *sharedHelper = nil;
         for (FDataSnapshot *child in snapshot.children) {
             
             if ([child.key isEqualToString:@"name"]) self.userName = child.value;
-            if ([child.key isEqualToString:@"team"]) self.teamName = child.value;
+            if ([child.key isEqualToString:@"team"]) self.teamID = child.value;
         }
         
         [self.team setObject:[@{self.uid:[snapshot.value mutableCopy]} mutableCopy] forKey:@"users"];
 
-        [self observeProjects];
         [self observeTeam];
+        [self observeProjects];
     }];
 }
 
@@ -192,6 +220,12 @@ static FirebaseHelper *sharedHelper = nil;
         for (NSString *key in newUserDict.allKeys) {
             
             [[[self.team objectForKey:@"users"] objectForKey:userID] setObject:[newUserDict objectForKey:key] forKey:key];
+        }
+        
+        if (!self.teamLoaded && [[self.team objectForKey:@"users"] allKeys].count == userChildrenCount) {
+            
+            self.teamLoaded = true;
+            if (self.projectsLoaded) [self updateMasterView];
         }
         
         if ([userID isEqualToString:self.uid]) return;
@@ -245,7 +279,7 @@ static FirebaseHelper *sharedHelper = nil;
 
 - (void) observeProjects {
     
-    NSString *projectsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@/projects", self.teamName];
+    NSString *projectsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@/projects", self.teamID];
     Firebase *ref = [[Firebase alloc] initWithUrl:projectsString];
     
     [ref observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
@@ -259,7 +293,11 @@ static FirebaseHelper *sharedHelper = nil;
                 if (![self.projects.allKeys containsObject:child.key]) [self observeProjectWithID:child.key];
             }
         }
-        else [self updateMasterView];
+        else {
+
+            self.projectsLoaded = true;
+            if (self.teamLoaded) [self updateMasterView];
+        }
     }];
 }
 
@@ -305,10 +343,13 @@ static FirebaseHelper *sharedHelper = nil;
         
         [self observeChatWithID:[projectDict objectForKey:@"chatID"]];
         
-        if (self.firstLoad) self.projectVC.masterView.defaultRow = [self getLastViewedProjectIndexPath];
+        if (!self.teamLoaded || !self.projectsLoaded) self.projectVC.masterView.defaultRow = [self getLastViewedProjectIndexPath];
         
-        if (self.projectVC.activeBoardID == nil && self.projects.allKeys.count == projectChildrenCount) [self updateMasterView];
-        
+        if (self.projectVC.activeBoardID == nil && self.projects.allKeys.count == projectChildrenCount) {
+            
+            self.projectsLoaded = true;
+            if (self.teamLoaded) [self updateMasterView];
+        }
     }];
     
     [[ref childByAppendingPath:@"viewedAt"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
@@ -321,7 +362,8 @@ static FirebaseHelper *sharedHelper = nil;
         if (snapshot.value == [NSNull null]) return;
         
         [[self.projects objectForKey:projectID] setObject:snapshot.value forKey:@"updatedAt"];
-        if (!self.firstLoad) {
+        if (self.projectsLoaded && self.userName) {
+
             [self.projectVC.masterView.projectsTable reloadData];
             [self.projectVC.masterView.projectsTable selectRowAtIndexPath:self.projectVC.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
         }
@@ -330,7 +372,7 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void) updateMasterView {
     
-    self.firstLoad = false;
+    NSLog(@"master view udpated");
     
     self.projectVC.masterView.nameButton.titleLabel.numberOfLines = 1;
     self.projectVC.masterView.nameButton.titleLabel.adjustsFontSizeToFitWidth = YES;
@@ -338,14 +380,14 @@ static FirebaseHelper *sharedHelper = nil;
     self.projectVC.masterView.teamButton.titleLabel.numberOfLines = 1;
     self.projectVC.masterView.teamButton.titleLabel.adjustsFontSizeToFitWidth = YES;
     self.projectVC.masterView.teamButton.titleLabel.lineBreakMode = NSLineBreakByClipping;
-    
+
     [UIView setAnimationsEnabled:NO];
     [self.projectVC.masterView.nameButton setTitle:self.userName forState:UIControlStateNormal];
     self.projectVC.masterView.nameButton.center = CGPointMake(self.projectVC.masterView.nameButton.center.x, 107-60/self.projectVC.masterView.nameButton.titleLabel.font.pointSize);
-    [self.projectVC.masterView.teamButton setTitle:self.teamName forState:UIControlStateNormal];
+    [self.projectVC.masterView.teamButton setTitle:[FirebaseHelper sharedHelper].teamName forState:UIControlStateNormal];
     [self.projectVC.masterView.nameButton layoutIfNeeded];
     [self.projectVC.masterView.teamButton layoutIfNeeded];
-    CGRect teamRect = [self.teamName boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: self.projectVC.masterView.teamMenuButton.titleLabel.font} context:nil];
+    CGRect teamRect = [[FirebaseHelper sharedHelper].teamName boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: self.projectVC.masterView.teamMenuButton.titleLabel.font} context:nil];
     self.projectVC.masterView.teamMenuButton.center = CGPointMake(MIN(teamRect.size.width+40,185), self.projectVC.masterView.teamMenuButton.center.y);
     self.projectVC.masterView.nameButton.hidden = false;
     self.projectVC.masterView.teamButton.hidden = false;
@@ -369,7 +411,6 @@ static FirebaseHelper *sharedHelper = nil;
     self.projectVC.chatAvatar.transform = CGAffineTransformMakeScale(.16, .16);
     [self.projectVC.chatView addSubview:self.projectVC.chatAvatar];
     self.projectVC.chatAvatar.hidden = true;
-    
     [self.projectVC.masterView.projectsTable reloadData];
     
     if (self.projectVC.masterView.defaultRow.row != [FirebaseHelper sharedHelper].visibleProjectIDs.count)
@@ -378,15 +419,20 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void) observeTeam {
     
-    NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@", self.teamName];
-    
+    NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@", self.teamID];
+
     Firebase *ref = [[Firebase alloc] initWithUrl:teamString];
     
     [ref observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
+        self.teamName = [snapshot.value objectForKey:@"name"];
+        [self.team setObject:[snapshot.value objectForKey:@"name"] forKey:@"name"];
+        
         NSDictionary *projectsDict = [snapshot.value objectForKey:@"projects"];
         
         if (projectsDict) [self.team setObject:projectsDict forKey:@"projects"];
+        
+        userChildrenCount = [[snapshot.value objectForKey:@"users"] allKeys].count;
         
         for (NSString *userID in [[snapshot.value objectForKey:@"users"] allKeys]) {
             
@@ -438,13 +484,11 @@ static FirebaseHelper *sharedHelper = nil;
                 
                 self.projectVC.boardNameLabel.center = CGPointMake(self.projectVC.carousel.center.x+105, self.projectVC.boardNameLabel.center.y);
                 self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.carousel.center.x+self.projectVC.boardNameLabel.frame.size.width/2+122, self.projectVC.boardNameLabel.center.y);
-                self.projectVC.boardNameEditButton.hidden = false;
             }
             else if (self.currentProjectID) {
                 
                 self.projectVC.boardNameLabel.center = CGPointMake(self.projectVC.carousel.center.x, self.projectVC.boardNameLabel.center.y);
                 self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.carousel.center.x+self.projectVC.boardNameLabel.frame.size.width/2+17, self.projectVC.boardNameLabel.center.y);
-                self.projectVC.boardNameEditButton.hidden = false;
             }
         }
     }];
@@ -552,7 +596,7 @@ static FirebaseHelper *sharedHelper = nil;
         NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
         if ([boardIDs containsObject:boardID]) {
             
-            int boardIndex = [boardIDs indexOfObject:boardID];
+            NSUInteger boardIndex = [boardIDs indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
             [self.projectVC drawBoard:boardView];
         }
@@ -851,7 +895,7 @@ static FirebaseHelper *sharedHelper = nil;
     Firebase *uidRef = [[Firebase alloc] initWithUrl:uidString];
     [uidRef removeAllObservers];
     
-    NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@", self.teamName];
+    NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@", self.teamID];
     Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
     [teamRef removeAllObservers];
     
@@ -924,6 +968,7 @@ static FirebaseHelper *sharedHelper = nil;
     self.uid = nil;
     self.email = nil;
     self.userName = nil;
+    self.teamID = nil;
     self.teamName = nil;
     self.team = [NSMutableDictionary dictionary];
     self.projects = [NSMutableDictionary dictionary];
@@ -931,6 +976,11 @@ static FirebaseHelper *sharedHelper = nil;
     self.loadedBoardIDs = [NSMutableArray array];
     self.comments = [NSMutableDictionary dictionary];
     self.chats = [NSMutableDictionary dictionary];
+    self.teamLoaded = false;
+    self.projectsLoaded = false;
+    
+    projectChildrenCount = 0;
+    userChildrenCount = 0;
     
     [self.projectVC.masterView.projectsTable reloadData];
     self.projectVC.messages = [NSMutableArray array];

@@ -43,7 +43,7 @@
     self.passwordField.layer.borderWidth = 1;
     self.passwordField.layer.cornerRadius = 10;
     
-    _signingIn = [[[NSUserDefaults standardUserDefaults] objectForKey:@"registered"] integerValue];
+    self.signingIn = [[[NSUserDefaults standardUserDefaults] objectForKey:@"registered"] integerValue];
     
     [self updateDetails];
 }
@@ -52,7 +52,7 @@
     
     [UIView setAnimationsEnabled:NO];
     
-    if (_signingIn) {
+    if (self.signingIn) {
         
         [self.switchButton setTitle:@"Want to create an account?" forState:UIControlStateNormal];
         [self.signInButton setTitle:@"Sign In" forState:UIControlStateNormal];
@@ -94,9 +94,11 @@
     }
     
     self.emailField.userInteractionEnabled = false;
-    self.passwordField.userInteractionEnabled = false;
     self.emailField.alpha = .5;
+    self.passwordField.userInteractionEnabled = false;
     self.passwordField.alpha = .5;
+    self.signInButton.userInteractionEnabled = false;
+    self.signInButton.alpha = .5;
     
     Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
     FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
@@ -109,7 +111,7 @@
     
     if ([emailTest evaluateWithObject:self.emailField.text] == true && self.passwordField.text.length > 0) {
         
-        if (_signingIn == true) {
+        if (self.signingIn == true) {
             
             [authClient loginWithEmail:self.emailField.text andPassword:self.passwordField.text
                    withCompletionBlock:^(NSError* error, FAUser* user) {
@@ -117,10 +119,13 @@
                        if (error != nil) {
                            
                            [self.signInLabel setText:@"Something went wrong - try again."];
+                           
                            self.emailField.userInteractionEnabled = true;
                            self.passwordField.userInteractionEnabled = true;
                            self.emailField.alpha = 1;
                            self.passwordField.alpha = 1;
+                           self.signInButton.userInteractionEnabled = true;
+                           self.signInButton.alpha = 1;
                            NSLog(@"%@", error);
                        }
                        else {
@@ -143,6 +148,13 @@
                 if (error != nil) {
                     
                     [self.signInLabel setText:@"Something went wrong - try again."];
+                    
+                    self.emailField.userInteractionEnabled = true;
+                    self.emailField.alpha = 1;
+                    self.passwordField.userInteractionEnabled = true;
+                    self.passwordField.alpha = 1;
+                    self.signInButton.userInteractionEnabled = true;
+                    self.signInButton.alpha = 1;
                     
                     NSLog(@"%@", error);
                     
@@ -168,6 +180,7 @@
                             
                             [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:@"registered"];
                             [FirebaseHelper sharedHelper].loggedIn = true;
+                            [FirebaseHelper sharedHelper].uid = user.uid;
                             
                             [self performSelector:@selector(accountCreated) withObject:nil afterDelay:.5];
                         }
@@ -213,7 +226,7 @@
 
 - (IBAction)switchTapped:(id)sender {
 
-    _signingIn = !_signingIn;
+    self.signingIn = !self.signingIn;
 
     [self updateDetails];
 }
