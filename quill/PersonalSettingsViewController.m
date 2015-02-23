@@ -110,25 +110,11 @@
 -(void) signOutTapped {
     
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    [projectVC hideAll];
     projectVC.masterView.teamButton.hidden = true;
     projectVC.masterView.teamMenuButton.hidden = true;
     projectVC.masterView.nameButton.hidden = true;
     projectVC.masterView.avatarButton.hidden = true;
-    projectVC.projectNameLabel.hidden = true;
-    projectVC.editButton.hidden = true;
-    projectVC.carousel.hidden = true;
-    projectVC.chatAvatar.hidden = true;
-    projectVC.sendMessageButton.hidden = true;
-    projectVC.boardNameLabel.hidden = true;
-    projectVC.boardNameEditButton.hidden = true;
-    projectVC.editBoardNameTextField.hidden = true;
-    for (AvatarButton *avatar in projectVC.avatars) avatar.hidden = true;
-    projectVC.avatarBackgroundImage.hidden = true;
-    projectVC.addUserButton.hidden = true;
-    projectVC.chatTextField.hidden = true;
-    projectVC.addBoardBackgroundImage.hidden = true;
-    projectVC.addBoardButton.hidden = true;
-    projectVC.chatOpenButton.hidden = true;
     
     Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
     FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
@@ -147,10 +133,6 @@
     nav.modalPresentationStyle = UIModalPresentationFormSheet;
     nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     [projectVC presentViewController:nav animated:YES completion:nil];
-}
-
--(void)avatarTapped {
-    
 }
 
 - (IBAction)nameTapped:(id)sender {

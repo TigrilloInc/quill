@@ -1,0 +1,117 @@
+//
+//  LeaveProjectAlertViewController.m
+//  quill
+//
+//  Created by Alex Costantini on 2/19/15.
+//  Copyright (c) 2015 chalk. All rights reserved.
+//
+
+#import "LeaveProjectAlertViewController.h"
+#import "FirebaseHelper.h"
+
+@implementation LeaveProjectAlertViewController
+
+-(void) viewDidLoad {
+    
+    [super viewDidLoad];
+    
+    projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    
+    self.navigationItem.title = @"Leave Project";
+    
+    self.leaveButton.layer.borderWidth = 1;
+    self.leaveButton.layer.cornerRadius = 10;
+    self.leaveButton.layer.borderColor = [UIColor grayColor].CGColor;
+    self.cancelButton.layer.borderWidth = 1;
+    self.cancelButton.layer.cornerRadius = 10;
+    self.cancelButton.layer.borderColor = [UIColor grayColor].CGColor;
+
+}
+
+-(void) viewWillAppear:(BOOL)animated {
+    
+    NSString *projectName = [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"name"];
+    
+    UIFont *regFont = [UIFont fontWithName:@"SourceSansPro-Regular" size:17];
+    UIFont *projectFont = [UIFont fontWithName:@"SourceSansPro-Semibold" size:17];
+    
+    NSDictionary *regAttrs = [NSDictionary dictionaryWithObjectsAndKeys: regFont, NSFontAttributeName, nil];
+    NSDictionary *projectAttrs = [NSDictionary dictionaryWithObjectsAndKeys: projectFont, NSFontAttributeName, nil];
+    NSRange projectRange = NSMakeRange(33, projectName.length);
+    
+    NSString *projectString = [NSString stringWithFormat:@"Are you sure you'd like to leave %@?", projectName];
+    
+    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithString:projectString attributes:regAttrs];
+    [attrString setAttributes:projectAttrs range:projectRange];
+    
+    [self.projectLabel setAttributedText:attrString];
+    
+    if (self.deleteProject) [self.leaveLabel setText:@"The project and all its content will be deleted."];
+    else [self.leaveLabel setText:@"You'll have to be invited back to continue collaborating."];
+    
+}
+
+-(void) viewDidAppear:(BOOL)animated {
+    
+    outsideTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside)];
+    
+    [outsideTapRecognizer setDelegate:self];
+    [outsideTapRecognizer setNumberOfTapsRequired:1];
+    outsideTapRecognizer.cancelsTouchesInView = NO;
+    [self.view.window addGestureRecognizer:outsideTapRecognizer];
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+    
+    [outsideTapRecognizer setDelegate:nil];
+    [self.view.window removeGestureRecognizer:outsideTapRecognizer];
+}
+
+- (IBAction)leaveTapped:(id)sender {
+    
+    [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"roles"] removeObjectForKey:[FirebaseHelper sharedHelper].uid];
+    [[FirebaseHelper sharedHelper].projects removeObjectForKey:[FirebaseHelper sharedHelper].currentProjectID];
+    [[FirebaseHelper sharedHelper].visibleProjectIDs removeObject:[FirebaseHelper sharedHelper].currentProjectID];
+    
+    NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].currentProjectID, [FirebaseHelper sharedHelper].uid];
+    Firebase *ref = [[Firebase alloc] initWithUrl:projectString];
+    [ref removeValue];
+    
+    NSIndexPath *mostRecent = [[FirebaseHelper sharedHelper] getLastViewedProjectIndexPath];
+    [projectVC.masterView.projectsTable reloadData];
+    [projectVC.masterView tableView:projectVC.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
+    
+    if ([FirebaseHelper sharedHelper].projects.allKeys.count == 0) [projectVC hideAll];
+}
+
+- (IBAction)cancelTapped:(id)sender {
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void) tappedOutside {
+
+    if (outsideTapRecognizer.state == UIGestureRecognizerStateEnded) {
+        
+        CGPoint location = [outsideTapRecognizer locationInView:nil];
+        CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
+        
+        if (!CGRectContainsPoint(self.view.frame, converted)) [self dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+#pragma mark - UIGestureRecognizer Delegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    return YES;
+}
+
+@end

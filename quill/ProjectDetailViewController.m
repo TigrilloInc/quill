@@ -254,6 +254,25 @@
     [textField becomeFirstResponder];
 }
 
+-(void) hideAll {
+    
+    self.projectNameLabel.hidden = true;
+    self.editButton.hidden = true;
+    self.carousel.hidden = true;
+    self.chatAvatar.hidden = true;
+    self.sendMessageButton.hidden = true;
+    self.boardNameLabel.hidden = true;
+    self.boardNameEditButton.hidden = true;
+    self.editBoardNameTextField.hidden = true;
+    for (AvatarButton *avatar in self.avatars) avatar.hidden = true;
+    self.avatarBackgroundImage.hidden = true;
+    self.addUserButton.hidden = true;
+    self.chatTextField.hidden = true;
+    self.addBoardBackgroundImage.hidden = true;
+    self.addBoardButton.hidden = true;
+    self.chatOpenButton.hidden = true;
+}
+
 -(void) updateDetails {
     
     self.chatTextField.hidden = false;
@@ -279,7 +298,9 @@
     
     [self layoutAvatars];
     
-    if (self.userRole > 0) self.editButton.hidden = false;
+    
+    
+    if (self.userRole > 1) self.editButton.hidden = false;
     else self.editButton.hidden = true;
     
     if (self.userRole == 0) {
@@ -747,6 +768,7 @@
     
     [[FirebaseHelper sharedHelper] setInBoard:@"none"];
     
+    self.carouselOffset = 0;
     [self.currentBoardView.activeUserIDs removeObject:[FirebaseHelper sharedHelper].uid];
     [self.currentBoardView layoutAvatars];
     self.currentBoardView.selectedAvatarUserID = nil;
@@ -915,6 +937,8 @@
         
         if (![self.editBoardIDs isEqualToArray:self.boardIDs]) {
             
+            
+            
             NSMutableDictionary *boardsDict = [NSMutableDictionary dictionary];
             
             for (int i=0; i<self.editBoardIDs.count; i++) [boardsDict setObject:self.editBoardIDs[i] forKey:[@(i) stringValue]];
@@ -960,7 +984,7 @@
     editFadeRight.hidden = true;
     
     self.projectNameLabel.hidden = false;
-    self.editButton.hidden = false;
+    if (self.userRole > 1) self.editButton.hidden = false;
     self.projectNameEditButton.hidden = true;
     self.carousel.hidden = false;
     self.draggableCollectionView.hidden = true;
@@ -1560,6 +1584,7 @@
         self.boardNameLabel.text = boardName;
         if ([boardName isEqualToString:@"Untitled"]) self.boardNameLabel.alpha = .2;
         else self.boardNameLabel.alpha = 1;
+        NSLog(@"SHOW BOARD EDIT BUTTON 4");
         self.boardNameEditButton.hidden = false;
     }
     else self.boardNameEditButton.hidden = true;

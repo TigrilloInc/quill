@@ -85,8 +85,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    if ([FirebaseHelper sharedHelper].loggedIn) return [FirebaseHelper sharedHelper].visibleProjectIDs.count+1;
-    else return [FirebaseHelper sharedHelper].visibleProjectIDs.count;
+    return [FirebaseHelper sharedHelper].visibleProjectIDs.count+1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -95,7 +94,7 @@
     cell.backgroundColor = tableView.backgroundColor;
     
     [self updateProjects];
-    
+
     if (indexPath.row == [FirebaseHelper sharedHelper].visibleProjectIDs.count && [FirebaseHelper sharedHelper].projectsLoaded) {
         
         cell.imageView.image = [UIImage imageNamed:@"plus2.png"];
@@ -168,6 +167,8 @@
         projectVC.chatViewed = false;
         projectVC.viewedBoardIDs = [NSMutableArray array];
         
+        NSLog(@"userRole is %d", projectVC.userRole);
+        
         [[FirebaseHelper sharedHelper] setProjectViewedAt];
         [FirebaseHelper sharedHelper].currentProjectID = projectID;
         [[FirebaseHelper sharedHelper] setInProject:projectID];
@@ -178,7 +179,7 @@
         if ([projectVC.chatTextField isFirstResponder]) [projectVC.chatTextField resignFirstResponder];
         if (projectVC.activeBoardID == nil) [projectVC.carousel scrollToItemAtIndex:projectVC.carousel.numberOfItems-1 duration:0];
     }
-
+    
     [self.projectsTable reloadData];
     [self.projectsTable selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
 }

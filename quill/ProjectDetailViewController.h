@@ -97,7 +97,9 @@
 -(void) drawBoard:(BoardView *)boardView;
 -(IBAction) cancelTapped:(id)sender;
 -(void) showDrawMenu;
+-(void) hideAll;
 -(void) layoutAvatars;
 -(void) updateMessages;
+-(void) createBoard;
 
 @end

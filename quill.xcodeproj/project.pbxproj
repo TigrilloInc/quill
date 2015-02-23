@@ -142,6 +142,10 @@
 		12ACFBB71A6C98E8004C298B /* Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ACFBB61A6C98E8004C298B /* Logo.png */; };
 		12B79EF01A8367E700437CC8 /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12B79EEF1A8367E700437CC8 /* Firebase.framework */; };
 		12BCAF5B1A4C0EA500FC327E /* down.png in Resources */ = {isa = PBXBuildFile; fileRef = 12BCAF5A1A4C0EA500FC327E /* down.png */; };
+		12BDC6A21A95AF28001160AF /* LeaveProjectAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BDC6A11A95AF28001160AF /* LeaveProjectAlertViewController.m */; };
+		12BDC6A81A95B12B001160AF /* DeleteProjectAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BDC6A71A95B12B001160AF /* DeleteProjectAlertViewController.m */; };
+		12BDC6AB1A95B14A001160AF /* RemoveUserAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BDC6AA1A95B14A001160AF /* RemoveUserAlertViewController.m */; };
+		12BDC6AE1A96ECBB001160AF /* TransferOwnerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BDC6AD1A96ECBB001160AF /* TransferOwnerViewController.m */; };
 		12BE8D1D196A616000503F84 /* SignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BE8D1C196A616000503F84 /* SignInViewController.m */; };
 		12BE8D68196BA1B100503F84 /* NewTeamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BE8D67196BA1B100503F84 /* NewTeamViewController.m */; };
 		12BE8D74196CF04D00503F84 /* NewProjectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BE8D73196CF04D00503F84 /* NewProjectViewController.m */; };
@@ -415,6 +419,14 @@
 		12ACFBB61A6C98E8004C298B /* Logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Logo.png; path = Resources/Logo.png; sourceTree = "<group>"; };
 		12B79EEF1A8367E700437CC8 /* Firebase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Firebase.framework; path = quill/Resources/Firebase/Firebase.framework; sourceTree = "<group>"; };
 		12BCAF5A1A4C0EA500FC327E /* down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = down.png; path = Resources/down.png; sourceTree = "<group>"; };
+		12BDC6A01A95AF28001160AF /* LeaveProjectAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeaveProjectAlertViewController.h; sourceTree = "<group>"; };
+		12BDC6A11A95AF28001160AF /* LeaveProjectAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeaveProjectAlertViewController.m; sourceTree = "<group>"; };
+		12BDC6A61A95B12B001160AF /* DeleteProjectAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeleteProjectAlertViewController.h; sourceTree = "<group>"; };
+		12BDC6A71A95B12B001160AF /* DeleteProjectAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeleteProjectAlertViewController.m; sourceTree = "<group>"; };
+		12BDC6A91A95B14A001160AF /* RemoveUserAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoveUserAlertViewController.h; sourceTree = "<group>"; };
+		12BDC6AA1A95B14A001160AF /* RemoveUserAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoveUserAlertViewController.m; sourceTree = "<group>"; };
+		12BDC6AC1A96ECBB001160AF /* TransferOwnerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TransferOwnerViewController.h; sourceTree = "<group>"; };
+		12BDC6AD1A96ECBB001160AF /* TransferOwnerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TransferOwnerViewController.m; sourceTree = "<group>"; };
 		12BE8D1B196A616000503F84 /* SignInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignInViewController.h; sourceTree = "<group>"; };
 		12BE8D1C196A616000503F84 /* SignInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignInViewController.m; sourceTree = "<group>"; };
 		12BE8D66196BA1B100503F84 /* NewTeamViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewTeamViewController.h; sourceTree = "<group>"; };
@@ -590,32 +602,12 @@
 				129E12B519648C3200ED9D42 /* BoardView.m */,
 				12899BAE1A168CA100AF95BD /* MasterView.h */,
 				12899BAF1A168CA100AF95BD /* MasterView.m */,
-				12E898A519ECC6DA00E29E7B /* AvatarButton.h */,
-				12E898A619ECC6DA00E29E7B /* AvatarButton.m */,
-				12860FB41A40C58E0074B452 /* IdenticonView.h */,
-				12860FB51A40C58E0074B452 /* IdenticonView.m */,
-				12C3780A19FEE9FC000C0DB4 /* CommentButton.h */,
-				12C3780B19FEE9FC000C0DB4 /* CommentButton.m */,
-				128DC3051A1E8C7000FF6076 /* ChatTableViewCell.h */,
-				128DC3061A1E8C7000FF6076 /* ChatTableViewCell.m */,
-				12860FA01A3EA61F0074B452 /* ProjectsTableViewCell.h */,
-				12860FA11A3EA61F0074B452 /* ProjectsTableViewCell.m */,
 				12BE8D72196CF04D00503F84 /* NewProjectViewController.h */,
 				12BE8D73196CF04D00503F84 /* NewProjectViewController.m */,
 				12CE89751A75E85600983FBE /* TeamSettingsViewController.h */,
 				12CE89761A75E85600983FBE /* TeamSettingsViewController.m */,
 				12A3FA0B1977420400E03E9E /* PersonalSettingsViewController.h */,
 				12A3FA0C1977420400E03E9E /* PersonalSettingsViewController.m */,
-				12DC97A21A83060A00CC4616 /* ChangePasswordViewController.h */,
-				12DC97A31A83060A00CC4616 /* ChangePasswordViewController.m */,
-				128DC31E1A22C01800FF6076 /* AvatarPopoverViewController.h */,
-				128DC31F1A22C01800FF6076 /* AvatarPopoverViewController.m */,
-				12860FCB1A423EDA0074B452 /* PenTypePopoverViewController.h */,
-				12860FCC1A423EDA0074B452 /* PenTypePopoverViewController.m */,
-				12860FCE1A423F000074B452 /* ColorPopoverViewController.h */,
-				12860FCF1A423F000074B452 /* ColorPopoverViewController.m */,
-				1213D7B51A6849B7001FDEA9 /* CommentPopoverViewController.h */,
-				1213D7B61A6849B7001FDEA9 /* CommentPopoverViewController.m */,
 				1216D99F19A3DBED0095DBD8 /* BoardCollectionViewCell.h */,
 				1216D9A019A3DBED0095DBD8 /* BoardCollectionViewCell.m */,
 				12AA5FA919E7904700F6D552 /* AddUserViewController.h */,
@@ -632,6 +624,34 @@
 				12A310E3197DC65B00E03E9E /* SignUpFromInviteViewController.m */,
 				124943C01A91E11300C1BEA4 /* NameFromInviteViewController.h */,
 				124943C11A91E11300C1BEA4 /* NameFromInviteViewController.m */,
+				12DC97A21A83060A00CC4616 /* ChangePasswordViewController.h */,
+				12DC97A31A83060A00CC4616 /* ChangePasswordViewController.m */,
+				128DC31E1A22C01800FF6076 /* AvatarPopoverViewController.h */,
+				128DC31F1A22C01800FF6076 /* AvatarPopoverViewController.m */,
+				12860FCB1A423EDA0074B452 /* PenTypePopoverViewController.h */,
+				12860FCC1A423EDA0074B452 /* PenTypePopoverViewController.m */,
+				12860FCE1A423F000074B452 /* ColorPopoverViewController.h */,
+				12860FCF1A423F000074B452 /* ColorPopoverViewController.m */,
+				1213D7B51A6849B7001FDEA9 /* CommentPopoverViewController.h */,
+				1213D7B61A6849B7001FDEA9 /* CommentPopoverViewController.m */,
+				12BDC6A01A95AF28001160AF /* LeaveProjectAlertViewController.h */,
+				12BDC6A11A95AF28001160AF /* LeaveProjectAlertViewController.m */,
+				12BDC6A61A95B12B001160AF /* DeleteProjectAlertViewController.h */,
+				12BDC6A71A95B12B001160AF /* DeleteProjectAlertViewController.m */,
+				12BDC6A91A95B14A001160AF /* RemoveUserAlertViewController.h */,
+				12BDC6AA1A95B14A001160AF /* RemoveUserAlertViewController.m */,
+				12BDC6AC1A96ECBB001160AF /* TransferOwnerViewController.h */,
+				12BDC6AD1A96ECBB001160AF /* TransferOwnerViewController.m */,
+				12E898A519ECC6DA00E29E7B /* AvatarButton.h */,
+				12E898A619ECC6DA00E29E7B /* AvatarButton.m */,
+				12860FB41A40C58E0074B452 /* IdenticonView.h */,
+				12860FB51A40C58E0074B452 /* IdenticonView.m */,
+				12C3780A19FEE9FC000C0DB4 /* CommentButton.h */,
+				12C3780B19FEE9FC000C0DB4 /* CommentButton.m */,
+				128DC3051A1E8C7000FF6076 /* ChatTableViewCell.h */,
+				128DC3061A1E8C7000FF6076 /* ChatTableViewCell.m */,
+				12860FA01A3EA61F0074B452 /* ProjectsTableViewCell.h */,
+				12860FA11A3EA61F0074B452 /* ProjectsTableViewCell.m */,
 				12DC97931A7C0C9200CC4616 /* RoundedButton.h */,
 				12DC97941A7C0C9200CC4616 /* RoundedButton.m */,
 				12A310EB1980BE4300E03E9E /* iCarousel.h */,
@@ -1081,13 +1101,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				124943C21A91E11300C1BEA4 /* NameFromInviteViewController.m in Sources */,
+				12BDC6AB1A95B14A001160AF /* RemoveUserAlertViewController.m in Sources */,
 				1216D99E19A275980095DBD8 /* UICollectionView+Draggable.m in Sources */,
 				12BE8D74196CF04D00503F84 /* NewProjectViewController.m in Sources */,
 				124E5CF619AE83CB00442963 /* NSDate+ServerDate.m in Sources */,
 				12DC979B1A80073100CC4616 /* InviteToTeamViewController.m in Sources */,
+				12BDC6A21A95AF28001160AF /* LeaveProjectAlertViewController.m in Sources */,
+				12BDC6A81A95B12B001160AF /* DeleteProjectAlertViewController.m in Sources */,
 				12A310E4197DC65B00E03E9E /* SignUpFromInviteViewController.m in Sources */,
 				12860FD01A423F000074B452 /* ColorPopoverViewController.m in Sources */,
 				12DC97951A7C0C9200CC4616 /* RoundedButton.m in Sources */,
+				12BDC6AE1A96ECBB001160AF /* TransferOwnerViewController.m in Sources */,
 				128DC3201A22C01800FF6076 /* AvatarPopoverViewController.m in Sources */,
 				1216D9A119A3DBED0095DBD8 /* BoardCollectionViewCell.m in Sources */,
 				12860FB61A40C58E0074B452 /* IdenticonView.m in Sources */,

@@ -305,8 +305,6 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
              }];
             
             
-            
-            // Reset
             [self invalidatesScrollTimer];
             lastIndexPath = nil;
         } break;
@@ -314,8 +312,8 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
     }
 }
 
-- (void)warpToIndexPath:(NSIndexPath *)indexPath
-{
+- (void)warpToIndexPath:(NSIndexPath *)indexPath {
+    
     if(indexPath == nil || [lastIndexPath isEqual:indexPath]) {
         return;
     }

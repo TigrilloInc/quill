@@ -61,7 +61,7 @@ static FirebaseHelper *sharedHelper = nil;
         });
     };
     
-    reachability.unreachableBlock = ^(Reachability*reach) {
+    reachability.unreachableBlock = ^(Reachability *reach) {
         
         dispatch_async(dispatch_get_main_queue(), ^{
             
@@ -363,7 +363,7 @@ static FirebaseHelper *sharedHelper = nil;
         
         [[self.projects objectForKey:projectID] setObject:snapshot.value forKey:@"updatedAt"];
         if (self.projectsLoaded && self.userName) {
-
+            
             [self.projectVC.masterView.projectsTable reloadData];
             [self.projectVC.masterView.projectsTable selectRowAtIndexPath:self.projectVC.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
         }
@@ -372,7 +372,7 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void) updateMasterView {
     
-    NSLog(@"master view udpated");
+    NSLog(@"master view updated");
     
     self.projectVC.masterView.nameButton.titleLabel.numberOfLines = 1;
     self.projectVC.masterView.nameButton.titleLabel.adjustsFontSizeToFitWidth = YES;

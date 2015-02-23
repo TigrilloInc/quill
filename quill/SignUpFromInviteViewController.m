@@ -158,6 +158,8 @@
                            NameFromInviteViewController *nameVC = [self.storyboard instantiateViewControllerWithIdentifier:@"NameFromInvite"];
                            [self.navigationController pushViewController:nameVC animated:YES];
                            
+                           [FirebaseHelper sharedHelper].loggedIn = true;
+                           
                            UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
                            logoImage.hidden = true;
                            logoImage.frame = CGRectMake(188, 8, 32, 32);

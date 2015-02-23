@@ -8,13 +8,10 @@
 
 #import "AvatarPopoverViewController.h"
 #import "FirebaseHelper.h"
+#import "LeaveProjectAlertViewController.h"
+#import "TransferOwnerViewController.h"
 
 @implementation AvatarPopoverViewController
-
-- (void)viewDidLoad {
-    
-    [super viewDidLoad];
-}
 
 -(void)updateMenu {
     
@@ -123,26 +120,64 @@
 
 -(void) removeUser {
     
-    [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"roles"] removeObjectForKey:self.userID];
-    
-    NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].currentProjectID, self.userID];
-    Firebase *ref = [[Firebase alloc] initWithUrl:projectString];
-    [ref removeValue];
+    [self dismissViewControllerAnimated:NO completion:nil];
     
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
     if ([self.userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
-    
-        [[FirebaseHelper sharedHelper].projects removeObjectForKey:[FirebaseHelper sharedHelper].currentProjectID];
-        [[FirebaseHelper sharedHelper].visibleProjectIDs removeObject:[FirebaseHelper sharedHelper].currentProjectID];
         
-        NSIndexPath *mostRecent = [[FirebaseHelper sharedHelper] getLastViewedProjectIndexPath];
-        [projectVC.masterView.projectsTable reloadData];
-        [projectVC.masterView tableView:projectVC.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
+        UINavigationController *nav;
+        
+        UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+        logoImageView.tag = 800;
+        
+        
+        if (projectVC.userRole == 2) {
+            
+            if ([[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys].count == 1) {
+            
+                LeaveProjectAlertViewController *vc = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"LeaveProject"];
+                vc.deleteProject = true;
+                nav = [[UINavigationController alloc] initWithRootViewController:vc];
+                logoImageView.frame = CGRectMake(150, 8, 32, 32);
+            }
+            else {
+                
+                TransferOwnerViewController *vc = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"TransferOwner"];
+                nav = [[UINavigationController alloc] initWithRootViewController:vc];
+                logoImageView.frame = CGRectMake(150, 8, 32, 32);
+            }
+        }
+        else {
+            
+            LeaveProjectAlertViewController *vc = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"LeaveProject"];
+            vc.deleteProject = false;
+            nav = [[UINavigationController alloc] initWithRootViewController:vc];
+            logoImageView.frame = CGRectMake(150, 8, 32, 32);
+        }
+        
+        
+        nav.modalPresentationStyle = UIModalPresentationFormSheet;
+        nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+        nav.navigationBar.barTintColor = [UIColor whiteColor];
+        nav.navigationBar.tintColor = [UIColor blackColor];
+        [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"SourceSansPro-Light" size:24.0], NSFontAttributeName, nil]];
+        [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5 forBarMetrics:UIBarMetricsDefault];
+        
+        [nav.navigationBar addSubview:logoImageView];
+        
+        [projectVC presentViewController:nav animated:YES completion:nil];
     }
-    else [projectVC layoutAvatars];
+    else {
         
-    [self dismissViewControllerAnimated:NO completion:nil];
+        [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"roles"] removeObjectForKey:self.userID];
+        
+        NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].currentProjectID, self.userID];
+        Firebase *ref = [[Firebase alloc] initWithUrl:projectString];
+        [ref removeValue];
+        
+        [projectVC layoutAvatars];
+    }
 }
 
 @end

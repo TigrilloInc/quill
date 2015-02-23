@@ -37,10 +37,15 @@
     
     if (self.creatingTeam) self.navigationItem.title = @"Step 3: Send Invites";
     else {
-        
         self.navigationItem.title = @"Send Invites";
         self.stepLabel.hidden = true;
         [self.inviteButton setTitle:@"Send" forState:UIControlStateNormal];
+    }
+}
+
+-(void) viewDidAppear:(BOOL)animated {
+    
+    if (!self.creatingTeam) {
         
         outsideTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside)];
         
@@ -473,6 +478,20 @@
     }
     
     [UIView setAnimationsEnabled:YES];
+}
+
+#pragma mark - UIGestureRecognizer Delegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    return YES;
 }
 
 @end
