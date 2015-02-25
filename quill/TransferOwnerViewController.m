@@ -17,6 +17,8 @@
     
     self.navigationItem.title = @"Transfer Ownership";
     
+    projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    
     self.ownerButton.layer.borderWidth = 1;
     self.ownerButton.layer.cornerRadius = 10;
     self.ownerButton.layer.borderColor = [UIColor grayColor].CGColor;
@@ -27,7 +29,7 @@
     NSMutableDictionary *usersDict = (NSMutableDictionary *)CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)[[FirebaseHelper sharedHelper].team objectForKey:@"users"], kCFPropertyListMutableContainers));
     for (NSString *userID in usersDict.allKeys) {
         
-        if ([projectVC.roles.allKeys containsObject:userID]) [usersDict removeObjectForKey:userID];
+        if (![projectVC.roles.allKeys containsObject:userID] || [userID isEqualToString:[FirebaseHelper sharedHelper].uid]) [usersDict removeObjectForKey:userID];
     }
     self.availableUsersDict = usersDict;
 }
@@ -48,6 +50,68 @@
     [attrString setAttributes:projectAttrs range:projectRange];
     
     [self.ownerLabel setAttributedText:attrString];
+}
+
+- (void) viewDidAppear:(BOOL)animated {
+    
+    outsideTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside)];
+    
+    [outsideTapRecognizer setDelegate:self];
+    [outsideTapRecognizer setNumberOfTapsRequired:1];
+    outsideTapRecognizer.cancelsTouchesInView = NO;
+    [self.view.window addGestureRecognizer:outsideTapRecognizer];
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    [outsideTapRecognizer setDelegate:nil];
+    [self.view.window removeGestureRecognizer:outsideTapRecognizer];
+}
+
+- (IBAction)leaveTapped:(id)sender {
+
+    NSString *leaveString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].currentProjectID, [FirebaseHelper sharedHelper].uid];
+    Firebase *leaveRef = [[Firebase alloc] initWithUrl:leaveString];
+    [leaveRef setValue:@(-1)];
+    
+    [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"roles"] setObject:@(-1) forKey:[FirebaseHelper sharedHelper].uid];
+    [[FirebaseHelper sharedHelper].visibleProjectIDs removeObject:[FirebaseHelper sharedHelper].currentProjectID];
+    
+    NSString *ownerString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].currentProjectID, self.selectedUserID];
+    Firebase *ownerRef = [[Firebase alloc] initWithUrl:ownerString];
+    [ownerRef setValue:@(2)];
+    
+    [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"roles"] setObject:@(2) forKey:self.selectedUserID];
+    
+    [FirebaseHelper sharedHelper].currentProjectID = nil;
+    
+    if ([FirebaseHelper sharedHelper].visibleProjectIDs.count == 0) [projectVC hideAll];
+    else {
+        NSIndexPath *mostRecent = [[FirebaseHelper sharedHelper] getLastViewedProjectIndexPath];
+        [projectVC.masterView.projectsTable reloadData];
+        [projectVC.masterView tableView:projectVC.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)cancelTapped:(id)sender {
+
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void) tappedOutside {
+    
+    if (outsideTapRecognizer.state == UIGestureRecognizerStateEnded) {
+        
+        CGPoint location = [outsideTapRecognizer locationInView:nil];
+        CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
+        
+        if (!CGRectContainsPoint(self.view.frame, converted)) [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 #pragma mark - Table view data source
@@ -124,9 +188,23 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    self.selectedUserID = self.availableUsersDict.allKeys[indexPath.row];
+    if ([self.selectedUserID isEqualToString:self.availableUsersDict.allKeys[indexPath.row]]) self.selectedUserID = nil;
+    else self.selectedUserID = self.availableUsersDict.allKeys[indexPath.row];
     [tableView reloadData];
 }
 
+#pragma mark - UIGestureRecognizer Delegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    return YES;
+}
 
 @end

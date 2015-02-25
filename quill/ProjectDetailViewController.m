@@ -412,6 +412,11 @@
     
     NSMutableArray *users = [self.roles.allKeys mutableCopy];
 
+    for (NSString *user in self.roles.allKeys) {
+        
+        if ([[self.roles objectForKey:user] integerValue] == -1) [users removeObject:user];
+    }
+    
     NSArray *userIDs = [users sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     
     [self.avatarBackgroundImage removeFromSuperview];
@@ -1584,7 +1589,6 @@
         self.boardNameLabel.text = boardName;
         if ([boardName isEqualToString:@"Untitled"]) self.boardNameLabel.alpha = .2;
         else self.boardNameLabel.alpha = 1;
-        NSLog(@"SHOW BOARD EDIT BUTTON 4");
         self.boardNameEditButton.hidden = false;
     }
     else self.boardNameEditButton.hidden = true;

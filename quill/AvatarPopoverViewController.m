@@ -90,7 +90,7 @@
             [self.view addSubview:removeButton];
         }
     }
-    else {
+    else if ([self.userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
         
         buttonCount++;
         
@@ -102,7 +102,12 @@
         [self.view addSubview:leaveButton];
     }
     
-    self.preferredContentSize = CGSizeMake(260, 70+(buttonCount*40));
+    if (buttonCount == 0) {
+        titleLabel.textAlignment = NSTextAlignmentCenter;
+        titleLabel.center = CGPointMake(titleLabel.frame.size.width/2, titleLabel.center.y);
+        self.preferredContentSize = CGSizeMake(titleLabel.frame.size.width, 65);
+    }
+    else self.preferredContentSize = CGSizeMake(260, 70+(buttonCount*40));
 }
 
 -(void) setRole:(id)sender {
@@ -134,7 +139,7 @@
         
         if (projectVC.userRole == 2) {
             
-            if ([[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys].count == 1) {
+            if (projectVC.roles.allKeys.count == 1) {
             
                 LeaveProjectAlertViewController *vc = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"LeaveProject"];
                 vc.deleteProject = true;
@@ -155,7 +160,6 @@
             nav = [[UINavigationController alloc] initWithRootViewController:vc];
             logoImageView.frame = CGRectMake(150, 8, 32, 32);
         }
-        
         
         nav.modalPresentationStyle = UIModalPresentationFormSheet;
         nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;

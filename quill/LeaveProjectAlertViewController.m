@@ -69,19 +69,23 @@
 
 - (IBAction)leaveTapped:(id)sender {
     
-    [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"roles"] removeObjectForKey:[FirebaseHelper sharedHelper].uid];
-    [[FirebaseHelper sharedHelper].projects removeObjectForKey:[FirebaseHelper sharedHelper].currentProjectID];
+    [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"roles"] setObject:@(-1) forKey:[FirebaseHelper sharedHelper].uid];
     [[FirebaseHelper sharedHelper].visibleProjectIDs removeObject:[FirebaseHelper sharedHelper].currentProjectID];
     
     NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].currentProjectID, [FirebaseHelper sharedHelper].uid];
     Firebase *ref = [[Firebase alloc] initWithUrl:projectString];
-    [ref removeValue];
+    [ref setValue:@(-1)];
     
-    NSIndexPath *mostRecent = [[FirebaseHelper sharedHelper] getLastViewedProjectIndexPath];
-    [projectVC.masterView.projectsTable reloadData];
-    [projectVC.masterView tableView:projectVC.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
+    [FirebaseHelper sharedHelper].currentProjectID = nil;
     
-    if ([FirebaseHelper sharedHelper].projects.allKeys.count == 0) [projectVC hideAll];
+    if ([FirebaseHelper sharedHelper].visibleProjectIDs.count == 0) [projectVC hideAll];
+    else {
+        NSIndexPath *mostRecent = [[FirebaseHelper sharedHelper] getLastViewedProjectIndexPath];
+        [projectVC.masterView.projectsTable reloadData];
+        [projectVC.masterView tableView:projectVC.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)cancelTapped:(id)sender {

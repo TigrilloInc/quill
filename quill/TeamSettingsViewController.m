@@ -9,6 +9,8 @@
 #import "TeamSettingsViewController.h"
 #import "FirebaseHelper.h"
 #import "InviteToTeamViewController.h"
+#import "RemoveUserAlertViewController.h"
+#import "ProjectDetailViewController.h"
 
 @implementation TeamSettingsViewController
 
@@ -30,8 +32,9 @@
                                         nil] forState:UIControlStateNormal];
     [self.navigationItem setBackBarButtonItem: backButton];
 
-    
     for (NSString *userID in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
+        
+        if ([[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"deleted"] integerValue] == 1) continue;
         
         NSMutableDictionary *userDict = [NSMutableDictionary dictionary];
         NSString *userName = (NSString *)[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"name"];
@@ -47,7 +50,7 @@
 
     CGRect nameRect = [self.teamNameTextField.text boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Regular" size:28]} context:nil];
     
-    self.editNameButton.center = CGPointMake(nameRect.size.width+75, self.editNameButton.center.y);
+    self.editNameButton.center = CGPointMake(nameRect.size.width+50, self.editNameButton.center.y);
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -60,7 +63,7 @@
     [self.view.window addGestureRecognizer:outsideTapRecognizer];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
+-(void)viewWillDisappear:(BOOL)animated {
     
     [super viewWillDisappear:animated];
     
@@ -82,6 +85,20 @@
     
     self.teamNameTextField.userInteractionEnabled = YES;
     [self.teamNameTextField becomeFirstResponder];
+}
+
+-(void)deleteTapped:(id)sender {
+    
+    UIButton *deleteButton = (UIButton *)sender;
+    UITableViewCell *cell = (UITableViewCell *)deleteButton.superview.superview;
+    NSIndexPath *indexPath = [self.usersTable indexPathForCell:cell];
+    
+    NSString *userID = self.usersDict.allKeys[indexPath.row];
+    
+    RemoveUserAlertViewController *removeUserVC = [self.storyboard instantiateViewControllerWithIdentifier:@"RemoveUser"];
+    removeUserVC.userID = userID;
+
+    [self.navigationController pushViewController:removeUserVC animated:YES];
 }
 
 -(void)showLogo {
@@ -132,7 +149,7 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"UserCell"];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    for (int i=1; i<4; i++) {
+    for (int i=1; i<5; i++) {
         
         if ([cell.contentView viewWithTag:500+i] != nil) [[cell.contentView viewWithTag:400+i] removeFromSuperview];
     }
@@ -157,13 +174,22 @@
         avatar.userInteractionEnabled = false;
         [cell.contentView addSubview:avatar];
         
-        UILabel *emailLabel = [[UILabel alloc] initWithFrame:CGRectMake(185, 11, 0, 0)];
+        UILabel *emailLabel = [[UILabel alloc] initWithFrame:CGRectMake(190, 11, 0, 0)];
         emailLabel.text = [[self.usersDict objectForKey:userID] objectForKey:@"email"];
-        emailLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:18];
+        emailLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:15];
         [emailLabel sizeToFit];
         emailLabel.tag = 503;
         [cell.contentView addSubview:emailLabel];
         
+        if ([[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"teamOwner"] integerValue] == 1 && ![userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
+            
+            UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            [deleteButton setBackgroundImage:[UIImage imageNamed:@"minus2.png"] forState:UIControlStateNormal];
+            deleteButton.frame = CGRectMake(480, 6, 35, 35);
+            [deleteButton addTarget:self action:@selector(deleteTapped:) forControlEvents:UIControlEventTouchUpInside];
+            deleteButton.tag = 504;
+            [cell.contentView addSubview:deleteButton];
+        }
     }
     else {
         
@@ -180,7 +206,6 @@
         plusImage.alpha = .3;
         plusImage.tag = 405;
         [cell.contentView addSubview:plusImage];
-
     }
     
     return cell;
@@ -222,7 +247,7 @@
     
     CGRect nameRect = [textField.text boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Regular" size:28]} context:nil];
     
-    self.editNameButton.center = CGPointMake(nameRect.size.width+75, self.editNameButton.center.y);
+    self.editNameButton.center = CGPointMake(nameRect.size.width+50, self.editNameButton.center.y);
     self.editNameButton.hidden = false;
 }
 

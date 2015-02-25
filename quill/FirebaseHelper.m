@@ -17,6 +17,7 @@
 #import "NSDate+ServerDate.h"
 #import "AvatarButton.h"
 #import "Reachability.h"
+#import "UserDeletedAlertViewController.h"
 
 @implementation FirebaseHelper
 
@@ -108,7 +109,6 @@ static FirebaseHelper *sharedHelper = nil;
             [nav.navigationBar addSubview:logoImageView];
             
             [self.projectVC presentViewController:nav animated:YES completion:nil];
-        
         }
         else {
             
@@ -166,8 +166,6 @@ static FirebaseHelper *sharedHelper = nil;
         
         SignUpFromInviteViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignUpFromInvite"];
         vc.invitedBy = [snapshot.value objectForKey:@"invitedBy"];
-        vc.teamName = self.teamName;
-        vc.email = self.email;
         
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
         nav.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -194,16 +192,45 @@ static FirebaseHelper *sharedHelper = nil;
     
     [ref observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
-        for (FDataSnapshot *child in snapshot.children) {
+        self.userName = [snapshot.value objectForKey:@"name"];
+        self.teamID = [snapshot.value objectForKey:@"team"];
+        self.email = [snapshot.value objectForKey:@"email"];
+        
+        if ([[snapshot.value objectForKey:@"deleted"] integerValue] == 1) {
             
-            if ([child.key isEqualToString:@"name"]) self.userName = child.value;
-            if ([child.key isEqualToString:@"team"]) self.teamID = child.value;
+            UserDeletedAlertViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"UserDeleted"];
+            
+            NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@/name", self.teamID];
+            Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
+            
+            [teamRef observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+                
+                self.teamName = snapshot.value;
+                
+                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+                nav.modalPresentationStyle = UIModalPresentationFormSheet;
+                nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+                nav.navigationBar.barTintColor = [UIColor whiteColor];
+                nav.navigationBar.tintColor = [UIColor blackColor];
+                [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"SourceSansPro-Light" size:24.0], NSFontAttributeName, nil]];
+                [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5 forBarMetrics:UIBarMetricsDefault];
+                
+                UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+                logoImageView.frame = CGRectMake(155, 8, 32, 32);
+                logoImageView.tag = 800;
+                [nav.navigationBar addSubview:logoImageView];
+                
+                [self.projectVC presentViewController:nav animated:YES completion:nil];
+            }];
         }
         
-        [self.team setObject:[@{self.uid:[snapshot.value mutableCopy]} mutableCopy] forKey:@"users"];
-
-        [self observeTeam];
-        [self observeProjects];
+        else {
+         
+            [self.team setObject:[@{self.uid:[snapshot.value mutableCopy]} mutableCopy] forKey:@"users"];
+            
+            [self observeTeam];
+            [self observeProjects];
+        }
     }];
 }
 
@@ -315,7 +342,12 @@ static FirebaseHelper *sharedHelper = nil;
         if ([self.projects objectForKey:projectID]) projectDict = [self.projects objectForKey:projectID];
         else projectDict = [NSMutableDictionary dictionary];
         
-        if ([((NSDictionary *)[snapshot.value objectForKey:@"roles"]).allKeys containsObject:self.uid] && ![self.visibleProjectIDs containsObject:projectID]) [self.visibleProjectIDs addObject:projectID];
+        if ([((NSDictionary *)[snapshot.value objectForKey:@"roles"]).allKeys containsObject:self.uid]) {
+            
+            if (![self.visibleProjectIDs containsObject:projectID] && [[[snapshot.value objectForKey:@"roles"] objectForKey:self.uid] integerValue] != -1) [self.visibleProjectIDs addObject:projectID];
+            
+            if ([self.visibleProjectIDs containsObject:projectID] && [[[snapshot.value objectForKey:@"roles"] objectForKey:self.uid] integerValue] == -1) [self.visibleProjectIDs removeObject:projectID];
+        }
         
         for (FDataSnapshot *child in snapshot.children) {
             

@@ -8,6 +8,7 @@
 
 #import "ChangePasswordViewController.h"
 #import "FirebaseHelper.h"
+
 @implementation ChangePasswordViewController
 
 - (void)viewDidLoad {
@@ -117,6 +118,20 @@
             [self dismissViewControllerAnimated:YES completion:nil];
         }
     }
+}
+
+#pragma mark - UIGestureRecognizer Delegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    return YES;
 }
 
 @end

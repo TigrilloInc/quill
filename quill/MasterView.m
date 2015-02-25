@@ -39,18 +39,6 @@
     return self;
 }
 
-- (id)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    
-    if (self) {
-        
-        self.defaultRow = [NSIndexPath indexPathForRow:0 inSection:0];
-        projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
-    }
-    
-    return self;
-}
-
 -(void)updateProjects {
     
     NSMutableArray *projectNames = [NSMutableArray array];
@@ -93,8 +81,10 @@
     ProjectsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MasterCell" forIndexPath:indexPath];
     cell.backgroundColor = tableView.backgroundColor;
     
+    cell.textLabel.text = nil;
+    
     [self updateProjects];
-
+    
     if (indexPath.row == [FirebaseHelper sharedHelper].visibleProjectIDs.count && [FirebaseHelper sharedHelper].projectsLoaded) {
         
         cell.imageView.image = [UIImage imageNamed:@"plus2.png"];
@@ -166,9 +156,7 @@
         projectVC.boardNameLabel.text = nil;
         projectVC.chatViewed = false;
         projectVC.viewedBoardIDs = [NSMutableArray array];
-        
-        NSLog(@"userRole is %d", projectVC.userRole);
-        
+   
         [[FirebaseHelper sharedHelper] setProjectViewedAt];
         [FirebaseHelper sharedHelper].currentProjectID = projectID;
         [[FirebaseHelper sharedHelper] setInProject:projectID];

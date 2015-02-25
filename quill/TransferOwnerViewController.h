@@ -13,6 +13,7 @@
 @interface TransferOwnerViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate> {
     
     ProjectDetailViewController *projectVC;
+    UITapGestureRecognizer *outsideTapRecognizer;
 }
 
 @property (strong, nonatomic) NSDictionary *availableUsersDict;

@@ -56,16 +56,16 @@
     NSDictionary *regAttrs = [NSDictionary dictionaryWithObjectsAndKeys: regFont, NSFontAttributeName, nil];
     NSDictionary *boldAttrs = [NSDictionary dictionaryWithObjectsAndKeys: boldFont, NSFontAttributeName, nil];
     NSRange userRange = NSMakeRange(23,self.invitedBy.length);
-    NSRange teamRange = NSMakeRange(32+self.invitedBy.length,self.teamName.length);
+    NSRange teamRange = NSMakeRange(32+self.invitedBy.length,[FirebaseHelper sharedHelper].teamName.length);
     
-    NSString *teamString = [NSString stringWithFormat:@"You've been invited by %@ to join %@.", self.invitedBy, self.teamName];
+    NSString *teamString = [NSString stringWithFormat:@"You've been invited by %@ to join %@.", self.invitedBy, [FirebaseHelper sharedHelper].teamName];
     NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithString:teamString attributes:regAttrs];
     [attrString setAttributes:boldAttrs range:userRange];
     [attrString setAttributes:boldAttrs range:teamRange];
 
     [self.teamLabel setAttributedText:attrString];
     
-    self.emailField.text = self.email;
+    self.emailField.text = [FirebaseHelper sharedHelper].email;
 }
 
 - (IBAction)signUpTapped:(id)sender {

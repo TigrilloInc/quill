@@ -28,7 +28,7 @@
     NSMutableDictionary *usersDict = (NSMutableDictionary *)CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)[[FirebaseHelper sharedHelper].team objectForKey:@"users"], kCFPropertyListMutableContainers));
     for (NSString *userID in usersDict.allKeys) {
         
-        if ([projectVC.roles.allKeys containsObject:userID]) [usersDict removeObjectForKey:userID];
+        if ([projectVC.roles.allKeys containsObject:userID] && [[projectVC.roles objectForKey:userID] integerValue] != -1) [usersDict removeObjectForKey:userID];
     }
     self.availableUsersDict = usersDict;
     
