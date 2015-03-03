@@ -272,12 +272,14 @@
                 
                 [[builder header] setSubject:@"Welcome to Quill!"];
                 
-//                InviteEmail *inviteEmail = [[InviteEmail alloc] init];
-//                inviteEmail.inviteURL = tokenURL;
-//                [inviteEmail updateHTML];
-//                [builder setHTMLBody:inviteEmail.htmlBody];
+                InviteEmail *inviteEmail = [[InviteEmail alloc] init];
+                inviteEmail.inviteURL = tokenURL;
+                [inviteEmail updateHTML];
+                [builder setHTMLBody:inviteEmail.htmlBody];
                 
-                [builder setTextBody:tokenURL];
+                NSLog(@"HTML is %@", builder.htmlBodyRendering);
+                
+                //[builder setTextBody:tokenURL];
                 NSData * rfc822Data = [builder data];
                 
                 MCOSMTPSendOperation *sendOperation =

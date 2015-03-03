@@ -143,7 +143,6 @@
     [nav.navigationBar addSubview:logoImageView];
     
     [projectVC presentViewController:nav animated:YES completion:nil];
-
 }
 
 -(void) avatarTapped {

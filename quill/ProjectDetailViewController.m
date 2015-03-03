@@ -65,18 +65,26 @@
     [self setUpDrawMenu];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    
-    [super viewWillAppear:animated];
 
+- (void) viewDidAppear:(BOOL)animated {
+    
+    chatTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(chatTableTapped)];
+    
+    [chatTapRecognizer setDelegate:self];
+    [chatTapRecognizer setNumberOfTapsRequired:1];
+    chatTapRecognizer.cancelsTouchesInView = NO;
+    [self.view.window addGestureRecognizer:chatTapRecognizer];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
+- (void)viewWillDisappear:(BOOL)animated {
     
+    [super viewWillDisappear:animated];
+
+    [chatTapRecognizer setDelegate:nil];
+    [self.view.window removeGestureRecognizer:chatTapRecognizer];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
@@ -126,13 +134,13 @@
     [self.view addSubview:editBoardNameTextField];
     
     self.drawButtons = @[ @"undo",
-                     @"redo",
-                     @"clear",
-                     @"pen",
-                     @"erase",
-                     @"color",
-                     @"comment"
-                    ];
+                          @"redo",
+                          @"clear",
+                          @"pen",
+                          @"erase",
+                          @"color",
+                          @"comment"
+                        ];
     
     for (int i=0; i<self.drawButtons.count; i++) {
         
@@ -172,16 +180,19 @@
     boardNameLabel.hidden = false;
     [self.view bringSubviewToFront:boardNameLabel];
     
-    UIButton *editBoardNameButton = (UIButton *)[self.view viewWithTag:103];
-    editBoardNameButton.frame = CGRectMake(boardNameLabel.frame.origin.x+boardNameLabel.frame.size.width+6, boardNameLabel.frame.origin.y+4, 17, 17);
-    editBoardNameButton.hidden = false;
-    [self.view bringSubviewToFront:editBoardNameButton];
-    
-    for (int i=0; i<self.drawButtons.count; i++) {
+    if (self.userRole > 0) {
         
-        UIButton *button = (UIButton *)[self.view viewWithTag:i+2];
-        button.hidden = false;
-        [self.view bringSubviewToFront:button];
+        UIButton *editBoardNameButton = (UIButton *)[self.view viewWithTag:103];
+        editBoardNameButton.frame = CGRectMake(boardNameLabel.frame.origin.x+boardNameLabel.frame.size.width+6, boardNameLabel.frame.origin.y+4, 17, 17);
+        editBoardNameButton.hidden = false;
+        [self.view bringSubviewToFront:editBoardNameButton];
+        
+        for (int i=0; i<self.drawButtons.count; i++) {
+            
+            UIButton *button = (UIButton *)[self.view viewWithTag:i+2];
+            button.hidden = false;
+            [self.view bringSubviewToFront:button];
+        }
     }
 }
 
@@ -273,6 +284,13 @@
     self.chatOpenButton.hidden = true;
 }
 
+-(void) setChatTableSize {
+    
+    if (self.userRole > 0) {
+        
+    }
+}
+
 -(void) updateDetails {
     
     self.chatTextField.hidden = false;
@@ -285,8 +303,6 @@
     self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+292, self.projectNameLabel.center.y+3);
     self.projectNameEditButton.center = self.editButton.center;
     
-    self.boardNameEditButton.hidden = false;
-    
     UIButton *projectNameButton = (UIButton *)[self.view viewWithTag:101];
     [projectNameButton setTitle:self.projectName forState:UIControlStateNormal];
     [projectNameButton sizeToFit];
@@ -298,22 +314,25 @@
     
     [self layoutAvatars];
     
-    
-    
     if (self.userRole > 1) self.editButton.hidden = false;
     else self.editButton.hidden = true;
     
-    if (self.userRole == 0) {
-        
-        self.chatView.hidden = true;
-        self.addBoardButton.hidden = true;
+    if  (self.userRole > 0) self.chatDiff = 0;
+    else self.chatDiff = self.chatView.frame.size.height;
+
+    if (![self.chatTextField isFirstResponder]) {
+    
+        self.chatView.center = CGPointMake(617, 743.5);
+        self.chatOpenButton.center = CGPointMake(617.5, 598);
+        self.chatFadeImage.center = CGPointMake(722, 615.5);
+        self.chatTable.frame = CGRectMake(210, 612, self.view.frame.size.width-210, 107+self.chatDiff);
     }
-    else {
-        self.chatView.hidden = false;
-        self.addBoardButton.hidden = false;
-    }
+
+    [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
     
     [self carouselCurrentItemIndexDidChange:self.carousel];
+    
+    self.chatOpen = false;
 }
 
 -(void) updateMessages {
@@ -359,7 +378,8 @@
             CGPoint chatCenter = self.chatOpenButton.center;
             self.chatOpenButton.frame = CGRectMake(0, 0, 51, 28);
             self.chatOpenButton.center = chatCenter;
-            [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
+            if (self.chatOpen) [self.chatOpenButton setImage:[UIImage imageNamed:@"down.png"] forState:UIControlStateNormal];
+            else [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
         }
     }
     
@@ -402,6 +422,29 @@
             }
         }
     }
+}
+
+-(void) updateChatHeight {
+    
+    float tableHeight = 10;
+    for (int i=0; i<self.messages.count; i++) {
+        tableHeight += [self tableView:self.chatTable heightForRowAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]];
+    }
+    
+    CGRect chatTableRect = self.chatTable.frame;
+    
+    if (chatTableRect.size.height < 673) {
+        
+        float tableDiff = tableHeight-chatTableRect.size.height;
+        
+        self.chatFadeImage.center = CGPointMake(self.chatFadeImage.center.x, self.chatFadeImage.center.y-tableDiff);
+        self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y-tableDiff);
+        chatTableRect.size.height += tableDiff;
+        chatTableRect.origin.y -= tableDiff;
+        
+        self.chatTable.frame = chatTableRect;
+    }
+    
 }
 
 -(void) layoutAvatars {
@@ -510,75 +553,6 @@
     
     [[FirebaseHelper sharedHelper] observeBoardWithID:boardID];
 }
-
-//-(void) drawBoard:(BoardView *)boardView {
-//    
-//    [boardView clear];
-//
-//    NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"subpaths"];
-//    
-//    NSDictionary *dictRef = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"undo"];
-//    NSMutableDictionary *undoDict = (NSMutableDictionary *)CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)dictRef, kCFPropertyListMutableContainers));
-//    
-//    NSMutableDictionary *subpathsToDraw = [NSMutableDictionary dictionary];
-//    
-//    for (NSString *uid in subpathsDict.allKeys) {
-//        
-//        NSDictionary *uidDict = [subpathsDict objectForKey:uid];
-//
-//        NSMutableArray *userOrderedKeys = [uidDict.allKeys mutableCopy];
-//        NSSortDescriptor *descendingSorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
-//        [userOrderedKeys sortUsingDescriptors:@[descendingSorter]];
-//        
-//        BOOL undone = true;
-//        BOOL cleared = false;
-//        int undoCount = [[[undoDict objectForKey:uid] objectForKey:@"currentIndex"] intValue];
-//        
-//        for (int i=0; i<userOrderedKeys.count; i++) {
-//            
-//            NSMutableDictionary *subpathValues = [[uidDict objectForKey:userOrderedKeys[i]] mutableCopy];
-//            
-//            if ([subpathValues respondsToSelector:@selector(objectForKey:)]){
-//                
-//                if (boardView.selectedAvatarUserID != nil && ![uid isEqualToString:boardView.selectedAvatarUserID]) [subpathValues setObject:@1 forKey:@"faded"];
-//                if (!undone && !cleared) [subpathsToDraw setObject:subpathValues forKey:userOrderedKeys[i]];
-//                
-//            } else if ([[uidDict objectForKey:userOrderedKeys[i]] respondsToSelector:@selector(isEqualToString:)]) {
-//                
-//                if ([[uidDict objectForKey:userOrderedKeys[i]] isEqualToString:@"penUp"]) {
-//                    
-//                    [subpathsToDraw setObject:@{userOrderedKeys[i] : @"penUp"} forKey:userOrderedKeys[i]];
-//                    
-//                    if (undoCount > 0) {
-//                        
-//                        undone = true;
-//                        undoCount--;
-//                        
-//                    } else {
-//
-//                        if (undone && [uid isEqualToString:[FirebaseHelper sharedHelper].uid]) self.activeBoardUndoIndexDate = userOrderedKeys[i];
-//                        
-//                        undone = false;
-//                    }
-//                    
-//                } else if ([[uidDict objectForKey:userOrderedKeys[i]] isEqualToString:@"clear"]) {
-//                    
-//                    if (!undone) cleared = true;
-//                }
-//            }
-//        }
-//    }
-//    
-//    NSMutableArray *allOrderedKeys = [subpathsToDraw.allKeys mutableCopy];
-//    NSSortDescriptor *ascendingSorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
-//    [allOrderedKeys sortUsingDescriptors:@[ascendingSorter]];
-//    
-//    for (int i=0; i<allOrderedKeys.count; i++) {
-//        
-//        NSDictionary *subpathDict = [subpathsToDraw objectForKey:allOrderedKeys[i]];
-//        [boardView drawSubpath:subpathDict];
-//    }
-//}
 
 -(void) drawBoard:(BoardView *)boardView {
     
@@ -731,10 +705,10 @@
                          
                          self.masterView.center = CGPointMake(-105, self.masterView.center.y);
                          
-                         self.chatTextField.frame = CGRectMake(51, 113, 877, 30);
-                         self.chatView.frame = CGRectMake(0, 616, 1024, 152);
-                         self.chatTable.frame = CGRectMake(0, 616, self.view.frame.size.width, 103);
-                         self.sendMessageButton.frame = CGRectMake(936, 112, 80, 30);
+                         self.chatTextField.frame = CGRectMake(51, 10, 877, 30);
+                         self.chatView.frame = CGRectMake(0, 719, 1024, 152);
+                         self.chatTable.frame = CGRectMake(0, 612, self.view.frame.size.width, 107+self.chatDiff);
+                         self.sendMessageButton.frame = CGRectMake(936, 9, 80, 30);
                          self.chatOpenButton.center = CGPointMake(self.view.center.x, self.chatOpenButton.center.y);
                          self.chatFadeImage.frame = CGRectMake(0, 603, 1024, 25);
                          self.commentTitleView.frame = CGRectMake(0, 613, 1024, 50);
@@ -745,13 +719,15 @@
                          
                          boardButton.hidden = true;
                          
-                         if (self.userRole > 0) [self showDrawMenu];
+                         [self showDrawMenu];
                          
                          if (newBoardCreated) {
                              
                              [self showEditBoardName];
                              newBoardCreated = false;
                          }
+                         
+                         NSLog(@"carousel Rect is %@", NSStringFromCGRect(self.carousel.frame));
                      }
      ];
 }
@@ -760,7 +736,7 @@
     
     boardButton.hidden = false;
     self.currentBoardView.commenting = false;
-    commentsOpen = false;
+    self.chatOpen = false;
     
     self.currentBoardView.lineColorNumber = @0;
     [(UIButton *)[self.view viewWithTag:7] setBackgroundImage:[UIImage imageNamed:@"black.png"] forState:UIControlStateNormal];
@@ -799,10 +775,10 @@
                          
                          float masterWidth = self.masterView.frame.size.width;
                          
-                         self.chatTextField.frame = CGRectMake(51, 113, 667, 30);
-                         self.chatTable.frame = CGRectMake(masterWidth, 612, self.view.frame.size.width-masterWidth, 107);
-                         self.chatView.frame = CGRectMake(masterWidth, 616, 814, 152);
-                         self.sendMessageButton.frame = CGRectMake(726, 112, 80, 30);
+                         self.chatTextField.frame = CGRectMake(51, 10, 667, 30);
+                         self.chatTable.frame = CGRectMake(masterWidth, 612, self.view.frame.size.width-masterWidth, 107+self.chatDiff);
+                         self.chatView.frame = CGRectMake(masterWidth, 719, 814, 49);
+                         self.sendMessageButton.frame = CGRectMake(726, 9, 80, 30);
                          self.chatOpenButton.center = CGPointMake(self.chatView.center.x, 598);
                          self.chatFadeImage.frame = CGRectMake(210, 603, 1024, 25);
                          self.commentTitleView.frame = CGRectMake(210, 613, 1024, 50);
@@ -829,7 +805,6 @@
                      }
      ];
 }
-
 
 - (IBAction)editTapped:(id)sender {
     
@@ -899,7 +874,6 @@
     else self.editBoardNameTextField.text = boardName;
     
     [self.editBoardNameTextField becomeFirstResponder];
-    
 }
 
 -(void) avatarTapped:(id)sender {
@@ -941,9 +915,7 @@
         [[projectRef childByAppendingPath:@"name"] setValue:newName];
         
         if (![self.editBoardIDs isEqualToArray:self.boardIDs]) {
-            
-            
-            
+
             NSMutableDictionary *boardsDict = [NSMutableDictionary dictionary];
             
             for (int i=0; i<self.editBoardIDs.count; i++) [boardsDict setObject:self.editBoardIDs[i] forKey:[@(i) stringValue]];
@@ -989,14 +961,27 @@
     editFadeRight.hidden = true;
     
     self.projectNameLabel.hidden = false;
-    if (self.userRole > 1) self.editButton.hidden = false;
     self.projectNameEditButton.hidden = true;
     self.carousel.hidden = false;
     self.draggableCollectionView.hidden = true;
     self.boardNameLabel.hidden = false;
-    if (self.editing) self.boardNameEditButton.hidden = false;
-    self.addBoardButton.hidden = false;
-    self.addBoardBackgroundImage.hidden = false;
+    
+    if (self.userRole > 0) {
+        
+        self.editButton.hidden = false;
+        self.addBoardButton.hidden = false;
+        self.addBoardBackgroundImage.hidden = false;
+        self.chatView.hidden = false;
+        if (self.editing) self.boardNameEditButton.hidden = false;
+    }
+    else {
+        
+        self.editButton.hidden = true;
+        self.addBoardButton.hidden = true;
+        self.addBoardBackgroundImage.hidden = true;
+        self.chatView.hidden = true;
+        self.boardNameEditButton.hidden = true;
+    }
     
     self.editProjectNameTextField.hidden = true;
     self.editBoardNameTextField.hidden = true;
@@ -1005,8 +990,6 @@
     self.deleteProjectButton.hidden = true;
     
     self.chatFadeImage.hidden = false;
-    self.chatView.hidden = false;
-    self.chatTextField.hidden = false;
     self.chatTable.hidden = false;
     self.chatOpenButton.hidden = false;
     
@@ -1252,12 +1235,28 @@
     if (!self.activeBoardID) {
         
         if ([self.chatTextField isFirstResponder]) [self.chatTextField resignFirstResponder];
-        else [self.chatTextField becomeFirstResponder];
+        else if (self.userRole > 0) [self.chatTextField becomeFirstResponder];
+        else [self openChat];
     }
-    else [self openComments];
+    else [self openChat];
 }
 
--(void)openComments {
+-(void)chatTableTapped {
+ 
+    if (self.presentedViewController == nil && !self.activeBoardID) {
+        
+        CGPoint location = [chatTapRecognizer locationInView:nil];
+        CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
+        
+        if (CGRectContainsPoint(self.chatTable.frame, converted)) {
+            
+            if (![self.chatTextField isFirstResponder] && self.userRole > 0) [self.chatTextField becomeFirstResponder];
+            else if (!self.chatOpen && self.userRole == 0) [self openChat];
+        }
+    }
+}
+
+-(void)openChat {
     
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:.25];
@@ -1266,33 +1265,84 @@
 
     CGRect chatTableRect = self.chatTable.frame;
     CGRect titleRect = self.commentTitleView.frame;
+
+    float tableHeight = -148;
+    if (self.activeBoardID) tableHeight = 10;
+    for (int i=0; i<self.messages.count; i++) {
+        tableHeight += [self tableView:self.chatTable heightForRowAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]];
+    }
+    float chatHeight = MAX(0,MIN(tableHeight,517));
+    if (self.activeBoardID) chatHeight = MIN(384, MAX(tableHeight,156));
     
-    if (commentsOpen) {
-        self.chatFadeImage.center = CGPointMake(self.chatFadeImage.center.x, self.chatFadeImage.center.y+keyboardDiff);
-        self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y+keyboardDiff);
-        chatTableRect.size.height -= keyboardDiff;
-        chatTableRect.origin.y += keyboardDiff;
-        titleRect.origin.y += keyboardDiff;
+    if (self.activeBoardID) {
+        
+        if (self.userRole == 0) {
+            
+            if (self.chatOpen) {
+                
+                self.chatOpenButton.center = CGPointMake(512, 754-chatHeight);
+                self.chatFadeImage.center = CGPointMake(512, 772-chatHeight);
+                chatTableRect = CGRectMake(self.chatTable.frame.origin.x, 768-chatHeight, self.chatTable.frame.size.width, chatHeight);
+            }
+            else {
+                
+                self.chatFadeImage.center = CGPointMake(512, 98.5);
+                self.chatOpenButton.center = CGPointMake(512, 81);
+                chatTableRect = CGRectMake(0, 95, 1024, 673);
+            }
+        }
+        else {
+            
+            if (self.chatOpen) {
+                self.chatFadeImage.center = CGPointMake(self.chatFadeImage.center.x, self.chatFadeImage.center.y+keyboardDiff);
+                self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y+keyboardDiff);
+                chatTableRect.size.height -= keyboardDiff;
+                chatTableRect.origin.y += keyboardDiff;
+                titleRect.origin.y += keyboardDiff;
+            }
+            else {
+                self.chatFadeImage.center = CGPointMake(self.chatFadeImage.center.x, self.chatFadeImage.center.y-keyboardDiff);
+                self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y-keyboardDiff);
+                chatTableRect.size.height += keyboardDiff;
+                chatTableRect.origin.y -= keyboardDiff;
+                titleRect.origin.y -= keyboardDiff;
+            }
+            
+            self.commentTitleView.frame = titleRect;
+        }
     }
     else {
-        self.chatFadeImage.center = CGPointMake(self.chatFadeImage.center.x, self.chatFadeImage.center.y-keyboardDiff);
-        self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y-keyboardDiff);
-        chatTableRect.size.height += keyboardDiff;
-        chatTableRect.origin.y -= keyboardDiff;
-        titleRect.origin.y -= keyboardDiff;
+        
+        if (self.chatOpen) {
+            
+            self.chatFadeImage.center = CGPointMake(self.chatFadeImage.center.x, self.chatFadeImage.center.y+chatHeight);
+            self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y+chatHeight);
+            chatTableRect.size.height -= chatHeight;
+            chatTableRect.origin.y += chatHeight;
+        }
+        else {
+            
+            self.chatFadeImage.center = CGPointMake(self.chatFadeImage.center.x, self.chatFadeImage.center.y-chatHeight);
+            self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y-chatHeight);
+            chatTableRect.size.height += chatHeight;
+            chatTableRect.origin.y -= chatHeight;
+        }
     }
     
     self.chatTable.frame = chatTableRect;
-    self.commentTitleView.frame = titleRect;
     
     [self.view bringSubviewToFront:self.chatOpenButton];
     
     [UIView commitAnimations];
     
-    commentsOpen = !commentsOpen;
+    if (self.chatOpen) [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
+    else [self.chatOpenButton setImage:[UIImage imageNamed:@"down.png"] forState:UIControlStateNormal];
+    
+    self.chatOpen = !self.chatOpen;
 
-    if (commentsOpen) [self.chatOpenButton setImage:[UIImage imageNamed:@"down.png"] forState:UIControlStateNormal];
-    else [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
+    NSLog(@"fade center is %@", NSStringFromCGPoint(self.chatFadeImage.center));
+    NSLog(@"button center is %@", NSStringFromCGPoint(self.chatOpenButton.center));
+    NSLog(@"chat Rect is %@", NSStringFromCGRect(self.chatTable.frame));
 }
 
 -(void)keyboardWillShow:(NSNotification *)notification {
@@ -1328,6 +1378,8 @@
             chatTableRect.origin.y -= (height+keyboardDiff);
         }
         else chatTableRect.origin.y -= height;
+        
+        
         self.chatTable.frame = chatTableRect;
         
         if (self.activeBoardID && self.carouselOffset > 0) {
@@ -1377,7 +1429,7 @@
         
         self.editBoardNameTextField.hidden = true;
         self.boardNameLabel.hidden = false;
-        self.boardNameEditButton.hidden = false;
+        if (self.userRole > 0) self.boardNameEditButton.hidden = false;
     }
     
     if ([self.chatTextField isFirstResponder] || [self.commentTitleTextField isFirstResponder]) {
@@ -1393,10 +1445,6 @@
         [UIView setAnimationCurve:[notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] doubleValue]];
         [UIView setAnimationBeginsFromCurrentState:YES];
         
-        CGRect viewRect = self.chatView.frame;
-        viewRect.origin.y += height;
-        self.chatView.frame = viewRect;
-        
         CGRect projectsTableRect = self.masterView.projectsTable.frame;
         projectsTableRect.size.height += (height-keyboardDiff);
         self.masterView.projectsTable.frame = projectsTableRect;
@@ -1404,6 +1452,10 @@
         CGRect titleRect = self.commentTitleView.frame;
         titleRect.origin.y += height;
         self.commentTitleView.frame = titleRect;
+
+        CGRect viewRect = self.chatView.frame;
+        viewRect.origin.y += height;
+        self.chatView.frame = viewRect;
         
         CGRect fadeRect = self.chatFadeImage.frame;
         if(self.activeBoardID == nil) fadeRect.origin.y += (height+keyboardDiff);
@@ -1412,12 +1464,12 @@
         
         CGRect chatTableRect = self.chatTable.frame;
         if (self.activeBoardID == nil) {
-            chatTableRect.size.height -= keyboardDiff;
+            chatTableRect.size.height -= keyboardDiff-self.chatDiff;
             chatTableRect.origin.y += (height+keyboardDiff);
         }
         else chatTableRect.origin.y += height;
         self.chatTable.frame = chatTableRect;
-
+            
         if (self.activeBoardID && self.carouselOffset > 0) {
             
             CGRect carouselRect = self.carousel.frame;
@@ -1445,7 +1497,7 @@
         if (self.activeBoardID) self.chatOpenButton.center = CGPointMake(self.view.center.x, self.chatOpenButton.center.y+height);
         else self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y+(height+keyboardDiff));
         
-        if (commentsOpen) [self openComments];
+        if (self.chatOpen) [self openChat];
 
         [self.view bringSubviewToFront:self.chatOpenButton];
         
@@ -1496,8 +1548,8 @@
 #pragma mark -
 #pragma mark iCarousel methods
 
-- (CATransform3D)carousel:(iCarousel *)carousel itemTransformForOffset:(CGFloat)offset baseTransform:(CATransform3D)transform
-{
+- (CATransform3D)carousel:(iCarousel *)carousel itemTransformForOffset:(CGFloat)offset baseTransform:(CATransform3D)transform {
+    
     CGFloat MAX_SCALE = 1.25f; //max scale of center item
     CGFloat MAX_SHIFT = 25.0f; //amount to shift items to keep spacing the same
     
@@ -1507,13 +1559,13 @@
     return CATransform3DScale(transform, scale, scale, scale);
 }
 
-- (NSUInteger)numberOfItemsInCarousel:(iCarousel *)carousel
-{
+- (NSUInteger)numberOfItemsInCarousel:(iCarousel *)carousel {
+    
     return self.boardIDs.count;
 }
 
-- (UIView *)carousel:(iCarousel *)carousel viewForItemAtIndex:(NSUInteger)index reusingView:(UIView *)view
-{
+- (UIView *)carousel:(iCarousel *)carousel viewForItemAtIndex:(NSUInteger)index reusingView:(UIView *)view {
+    
     if (view == nil) {
         
         BoardView *boardView = [[BoardView alloc] initWithFrame:CGRectMake(0, 0, 768, 1024)];
@@ -1589,7 +1641,7 @@
         self.boardNameLabel.text = boardName;
         if ([boardName isEqualToString:@"Untitled"]) self.boardNameLabel.alpha = .2;
         else self.boardNameLabel.alpha = 1;
-        self.boardNameEditButton.hidden = false;
+        if (self.userRole > 0) self.boardNameEditButton.hidden = false;
     }
     else self.boardNameEditButton.hidden = true;
     
@@ -1611,19 +1663,17 @@
     self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+17, self.boardNameLabel.center.y);
 }
 
-- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event
-{
+- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event {
 
-    if ([self.chatTextField isFirstResponder]) {
-        [self.chatTextField resignFirstResponder];
-        self.activeCommentThreadID = nil;
-    }
+    if ([self.chatTextField isFirstResponder] && self.userRole > 0) [self.chatTextField resignFirstResponder];
+    else if (self.chatOpen && self.userRole == 0) [self openChat];
+    
     if ([self.editBoardNameTextField isFirstResponder]) {
         [self.editBoardNameTextField resignFirstResponder];
         self.editBoardNameTextField.text = nil;
     }
-    if ([self.editProjectNameTextField isFirstResponder]) [self.editProjectNameTextField resignFirstResponder];
     
+    if ([self.editProjectNameTextField isFirstResponder]) [self.editProjectNameTextField resignFirstResponder];
 }
 
 #pragma mark - Text field handling
@@ -1850,11 +1900,6 @@
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (![self.chatTextField isFirstResponder]) [self.chatTextField becomeFirstResponder];
-        
-}
 
 #pragma mark -
 #pragma mark UICollectionView
@@ -1896,6 +1941,20 @@
     NSString *fromID = [self.editBoardIDs objectAtIndex:fromIndexPath.item];
     [self.editBoardIDs removeObjectAtIndex:fromIndexPath.item];
     [self.editBoardIDs insertObject:fromID atIndex:toIndexPath.item];
+}
+
+#pragma mark - UIGestureRecognizer Delegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    return YES;
 }
 
 @end

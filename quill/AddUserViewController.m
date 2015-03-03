@@ -241,12 +241,12 @@
                 
                 [[builder header] setSubject:@"Welcome to Quill!"];
                 
-//                InviteEmail *inviteEmail = [[InviteEmail alloc] init];
-//                inviteEmail.inviteURL = tokenURL;
-//                [inviteEmail updateHTML];
-//                [builder setHTMLBody:inviteEmail.htmlBody];
+                InviteEmail *inviteEmail = [[InviteEmail alloc] init];
+                inviteEmail.inviteURL = tokenURL;
+                [inviteEmail updateHTML];
+                [builder setHTMLBody:inviteEmail.htmlBody];
 
-                [builder setTextBody:tokenURL];
+                //[builder setTextBody:tokenURL];
                 NSData * rfc822Data = [builder data];
                 
                 MCOSMTPSendOperation *sendOperation =
@@ -432,7 +432,12 @@
             roleControl.center = CGPointMake(400, cell.frame.size.height/2);
             roleControl.tintColor = [UIColor lightGrayColor];
             NSInteger roleInt;
-            if ([self.roles objectForKey:userNameLabel.text] == nil) roleInt = 1;
+            if (projectVC.userRole == 0) {
+                roleControl.userInteractionEnabled = false;
+                roleControl.alpha = .5;
+                roleInt = 0;
+            }
+            else if ([self.roles objectForKey:userNameLabel.text] == nil) roleInt = 1;
             else roleInt = [[self.roles objectForKey:userNameLabel.text] integerValue];
             roleControl.selectedSegmentIndex = roleInt;
             [roleControl addTarget:self action:@selector(roleTapped:) forControlEvents:UIControlEventValueChanged];
@@ -493,7 +498,12 @@
             roleControl.tintColor = [UIColor lightGrayColor];
             roleControl.center = CGPointMake(398, cell.frame.size.height/2);
             int roleInt;
-            if ([self.roles objectForKey:inviteTextField.text] == nil) roleInt = 1;
+            if (projectVC.userRole == 0) {
+                roleControl.userInteractionEnabled = false;
+                roleControl.alpha = .5;
+                roleInt = 0;
+            }
+            else if ([self.roles objectForKey:inviteTextField.text] == nil) roleInt = 1;
             else roleInt = [[self.roles objectForKey:inviteTextField.text] integerValue];
             roleControl.selectedSegmentIndex = roleInt;
             [roleControl setTitleTextAttributes:@{ NSFontAttributeName : [UIFont fontWithName:@"SourceSansPro-Light" size:13]} forState:UIControlStateNormal];

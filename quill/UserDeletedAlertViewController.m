@@ -21,12 +21,13 @@
     self.okButton.layer.borderWidth = 1;
     self.okButton.layer.cornerRadius = 10;
     self.okButton.layer.borderColor = [UIColor grayColor].CGColor;
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
 
-    UIFont *nameFont = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
-    UIFont *labelFont = [UIFont fontWithName:@"SourceSansPro-Regular" size:20];
+    UIFont *nameFont = [UIFont fontWithName:@"SourceSansPro-Semibold" size:15];
+    UIFont *labelFont = [UIFont fontWithName:@"SourceSansPro-Regular" size:15];
     
     NSDictionary *nameAttrs = [NSDictionary dictionaryWithObjectsAndKeys: nameFont, NSFontAttributeName, nil];
     NSDictionary *labelAttrs = [NSDictionary dictionaryWithObjectsAndKeys: labelFont, NSFontAttributeName, nil];
@@ -39,6 +40,8 @@
     [attrString setAttributes:nameAttrs range:teamRange];
     
     [self.nameLabel setAttributedText:attrString];
+    
+    
 }
 
 - (IBAction)okTapped:(id)sender {
@@ -58,12 +61,21 @@
     logoImageView.tag = 800;
     [nav.navigationBar addSubview:logoImageView];
     
+    Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
+    FirebaseSimpleLogin *auth = [[FirebaseSimpleLogin alloc] initWithRef:ref];
+    [auth logout];
+    
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
     [self dismissViewControllerAnimated:YES completion:^{
         
         [projectVC presentViewController:nav animated:YES completion:nil];
     }];
+}
+
+- (IBAction)emailTapped:(id)sender {
+
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"mailto:hello@tigrillo.co"]];
 }
 
 @end

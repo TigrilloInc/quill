@@ -15,10 +15,9 @@
 
 @class MasterView;
 
-@interface ProjectDetailViewController : UIViewController <iCarouselDataSource, iCarouselDelegate, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource_Draggable, UICollectionViewDelegate> {
+@interface ProjectDetailViewController : UIViewController <iCarouselDataSource, iCarouselDelegate, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource_Draggable, UICollectionViewDelegate, UIGestureRecognizerDelegate> {
     
     BOOL newBoardCreated;
-    BOOL commentsOpen;
     UIButton *boardButton;
     UIImageView *carouselFadeLeft;
     UIImageView *carouselFadeRight;
@@ -30,6 +29,8 @@
     NSString *tappedUserID;
     
     CGFloat keyboardDiff;
+    
+    UITapGestureRecognizer *chatTapRecognizer;
 }
 
 @property (strong, nonatomic) NSString *projectName;
@@ -48,21 +49,22 @@
 @property BOOL carouselMoving;
 @property BOOL chatViewed;
 @property BOOL erasing;
+@property BOOL chatOpen;
 
 @property int userRole;
-
+@property float chatDiff;
 @property float carouselOffset;
 
 @property (weak, nonatomic) IBOutlet MasterView *masterView;
 @property (weak, nonatomic) IBOutlet iCarousel *carousel;
 @property (weak, nonatomic) IBOutlet UILabel *projectNameLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImage;
-@property (weak, nonatomic) IBOutlet UIImageView *addBoardBackgroundImage;
 @property (strong, nonatomic) UIImageView *avatarBackgroundImage;
 
 @property (weak, nonatomic) BoardView *currentBoardView;
 
 @property (weak, nonatomic) IBOutlet UIButton *addBoardButton;
+@property (weak, nonatomic) IBOutlet UIImageView *addBoardBackgroundImage;
 
 @property (weak, nonatomic) IBOutlet UIButton *sendMessageButton;
 
@@ -97,9 +99,11 @@
 -(void) drawBoard:(BoardView *)boardView;
 -(IBAction) cancelTapped:(id)sender;
 -(void) showDrawMenu;
+-(void) showChat;
 -(void) hideAll;
 -(void) layoutAvatars;
 -(void) updateMessages;
+-(void) updateChatHeight;
 -(void) createBoard;
 
 @end

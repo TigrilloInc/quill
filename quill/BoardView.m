@@ -127,6 +127,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         [avatar addTarget:self action:@selector(avatarTapped:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:avatar];
         [self.avatarButtons addObject:avatar];
+        
+        NSLog(@"avatar rect is %@", NSStringFromCGRect(avatar.frame));
     }
 }
 
@@ -349,6 +351,34 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 }
 
 -(void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    if (projectVC.userRole == 0 && projectVC.activeCommentThreadID) {
+
+        [self hideChat];
+        [projectVC.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
+        projectVC.chatOpen = false;
+        
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:.25];
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+        [UIView setAnimationBeginsFromCurrentState:YES];
+        
+        projectVC.carousel.center = CGPointMake(projectVC.view.center.x, projectVC.view.center.y);
+        
+        CGRect backgroundRect = self.avatarBackgroundImage.frame;
+        self.avatarBackgroundImage.frame = CGRectMake(18, backgroundRect.origin.y, backgroundRect.size.width, backgroundRect.size.height);
+        
+        CGRect labelRect = self.userLabel.frame;
+        self.userLabel.frame = CGRectMake(95, labelRect.origin.y, labelRect.size.width, labelRect.size.height);
+        
+        for (AvatarButton *avatar in self.avatarButtons) {
+            
+            CGRect avatarRect = avatar.frame;
+            avatar.frame = CGRectMake(23.25, avatarRect.origin.y, avatarRect.size.width, avatarRect.size.height);
+        }
+
+        [UIView commitAnimations];
+    }
     
     if (!self.drawable) return;
     
@@ -575,6 +605,19 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         commentButton.highlightedImage.hidden = true;
         commentButton.deleteButton.hidden = true;
     }
+
+    if (projectVC.userRole == 0) {
+        
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, .25 * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            
+            projectVC.chatOpenButton.center = CGPointMake(512, 598);
+            projectVC.chatFadeImage.center = CGPointMake(512, 616);
+            projectVC.chatView.frame = CGRectMake(0, 719, 1024, 152);
+            projectVC.chatTable.frame = CGRectMake(0, 612, projectVC.view.frame.size.width, 107+projectVC.chatDiff);
+            projectVC.commentTitleView.frame = CGRectMake(0, 613, 1024, 50);
+        });
+    }
 }
 
 -(void) addCommentAtPoint:(CGPoint)point {
@@ -792,9 +835,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 -(void) avatarTapped:(id)sender {
     
     AvatarButton *avatar = (AvatarButton *)sender;
-    
-    if([[[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"roles"] objectForKey:avatar.userID] integerValue] == 0) return;
-    
+
     for (AvatarButton *avtr in self.avatarButtons) {
         avtr.highlightedImage.hidden = true;
     }
@@ -851,8 +892,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         commentButton.highlightedImage.hidden = true;
     }
     
-    [self updateCarouselOffsetWithPoint:comment.point];
-    
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"commentsID"];
     NSDictionary *commentDict = [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:comment.commentThreadID];
     NSString *ownerID = [commentDict objectForKey:@"owner"];
@@ -878,21 +917,72 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [projectVC updateMessages];
     [projectVC.chatTable reloadData];
     
-    if (title.length == 0 && messages.allKeys.count == 0) [projectVC.commentTitleTextField becomeFirstResponder];
-    else [projectVC.chatTextField becomeFirstResponder];
-}
-
--(void) updateCarouselOffsetWithPoint:(CGPoint)point {
-    
-    float oldOffset = projectVC.carouselOffset;
-    projectVC.carouselOffset = (point.x*.75)-70;
-    
-    if (projectVC.activeCommentThreadID && projectVC.carouselOffset > 0) {
+    if (projectVC.userRole > 0) {
+        
+        if (title.length == 0 && messages.allKeys.count == 0) [projectVC.commentTitleTextField becomeFirstResponder];
+        else [projectVC.chatTextField becomeFirstResponder];
+    }
+    else {
+        
+        float tableHeight = 10;
+        for (int i=0; i<projectVC.messages.count; i++) {
+            tableHeight += [projectVC tableView:projectVC.chatTable heightForRowAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]];
+        }
+        
+        float chatHeight = MIN(384, MAX(tableHeight,156));
         
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:.25];
         [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
         [UIView setAnimationBeginsFromCurrentState:YES];
+        
+        projectVC.chatTable.frame = CGRectMake(projectVC.chatTable.frame.origin.x, 768-chatHeight, projectVC.chatTable.frame.size.width, chatHeight);
+        
+        projectVC.chatOpenButton.center = CGPointMake(512, 754-chatHeight);
+        projectVC.chatFadeImage.center = CGPointMake(512, 772-chatHeight);
+        
+        [UIView commitAnimations];
+        
+        [projectVC showChat];
+    }
+    
+    [self updateCarouselOffsetWithPoint:comment.point];
+}
+
+-(void) updateCarouselOffsetWithPoint:(CGPoint)point {
+    
+    float oldOffset = projectVC.carouselOffset;
+    
+    if (projectVC.userRole > 0) projectVC.carouselOffset = (point.x*.75)-70;
+    else projectVC.carouselOffset = projectVC.chatTable.frame.size.height;
+        
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:.25];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [UIView setAnimationBeginsFromCurrentState:YES];
+    
+    if (projectVC.userRole == 0) {
+        
+        if (point.x > 768-projectVC.carouselOffset || oldOffset > projectVC.carouselOffset) {
+            
+            CGRect carouselRect = projectVC.carousel.frame;
+            projectVC.carousel.frame = CGRectMake(carouselRect.origin.x, 5-projectVC.carouselOffset, carouselRect.size.width, carouselRect.size.height);
+            
+            CGRect backgroundRect = self.avatarBackgroundImage.frame;
+            self.avatarBackgroundImage.frame = CGRectMake(17+projectVC.carouselOffset, backgroundRect.origin.y, backgroundRect.size.width, backgroundRect.size.height);
+            
+            CGRect labelRect = self.userLabel.frame;
+            self.userLabel.frame = CGRectMake(94+projectVC.carouselOffset, labelRect.origin.y, labelRect.size.width, labelRect.size.height);
+            
+            for (AvatarButton *avatar in self.avatarButtons) {
+                
+                CGRect avatarRect = avatar.frame;
+                avatar.frame = CGRectMake(22.25+projectVC.carouselOffset, avatarRect.origin.y, avatarRect.size.width, avatarRect.size.height);
+            }
+        }
+
+    }
+    else if (projectVC.activeCommentThreadID && projectVC.carouselOffset > 0) {
         
         CGRect carouselRect = projectVC.carousel.frame;
         carouselRect.origin.y += (oldOffset - projectVC.carouselOffset);
@@ -912,9 +1002,9 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
             avatarRect.origin.x -= (oldOffset - projectVC.carouselOffset);
             avatar.frame = avatarRect;
         }
-        
-        [UIView commitAnimations];
     }
+    
+    [UIView commitAnimations];
 }
 
 #pragma mark interface

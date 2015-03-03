@@ -439,7 +439,7 @@ static FirebaseHelper *sharedHelper = nil;
     self.projectVC.chatAvatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
     self.projectVC.chatAvatar.userID = self.uid;
     [self.projectVC.chatAvatar generateIdenticonWithShadow:false];
-    self.projectVC.chatAvatar.frame = CGRectMake(-100,4, self.projectVC.chatAvatar.userImage.size.width, self.projectVC.chatAvatar.userImage.size.height);
+    self.projectVC.chatAvatar.frame = CGRectMake(-100,-100, self.projectVC.chatAvatar.userImage.size.width, self.projectVC.chatAvatar.userImage.size.height);
     self.projectVC.chatAvatar.transform = CGAffineTransformMakeScale(.16, .16);
     [self.projectVC.chatView addSubview:self.projectVC.chatAvatar];
     self.projectVC.chatAvatar.hidden = true;
@@ -674,6 +674,7 @@ static FirebaseHelper *sharedHelper = nil;
         
         [self.projectVC updateMessages];
         [self.projectVC.chatTable reloadData];
+        if (self.projectVC.chatOpen) [self.projectVC updateChatHeight];
         
     }];
 }
