@@ -61,8 +61,11 @@
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
+            <string>SourceSansPro-Regular</string>
         </mutableArray>
         <mutableArray key="SourceSansPro-Semibold.ttf">
+            <string>SourceSansPro-Semibold</string>
+            <string>SourceSansPro-Semibold</string>
             <string>SourceSansPro-Semibold</string>
             <string>SourceSansPro-Semibold</string>
             <string>SourceSansPro-Semibold</string>
@@ -721,6 +724,59 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="awA-3x-BMU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-5834" y="-760"/>
+        </scene>
+        <!--Instabug View Controller-->
+        <scene sceneID="XKj-O1-Rzt">
+            <objects>
+                <viewController storyboardIdentifier="Instabug" id="LGe-76-dYz" customClass="InstabugViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Ixe-mn-AE7">
+                        <rect key="frame" x="0.0" y="0.0" width="540" height="360"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Report a bug or suggest a feature." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="KwM-Fm-sss">
+                                <rect key="frame" x="0.0" y="104" width="540" height="22"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="kTS-uB-mtD" customClass="RoundedButton">
+                                <rect key="frame" x="115" y="182" width="310" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-Semibold" family="Source Sans Pro" pointSize="24"/>
+                                <state key="normal" title="Report Bug">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="reportBugTapped:" destination="LGe-76-dYz" eventType="touchUpInside" id="LND-O2-ZSj"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Nft-3G-kPk" customClass="RoundedButton">
+                                <rect key="frame" x="115" y="263" width="310" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-Semibold" family="Source Sans Pro" pointSize="24"/>
+                                <state key="normal" title="Suggest Feature">
+                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="suggestFeatureTapped:" destination="LGe-76-dYz" eventType="touchUpInside" id="ZeT-e1-mHY"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="540" height="360"/>
+                    <connections>
+                        <outlet property="bugButton" destination="kTS-uB-mtD" id="ZlS-s4-tP7"/>
+                        <outlet property="featureButton" destination="Nft-3G-kPk" id="8Z8-0C-Lfb"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DsK-a3-noJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-5834" y="-313"/>
         </scene>
         <!--Transfer Owner View Controller-->
         <scene sceneID="y9z-gh-RXn">

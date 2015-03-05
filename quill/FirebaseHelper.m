@@ -18,6 +18,7 @@
 #import "AvatarButton.h"
 #import "Reachability.h"
 #import "UserDeletedAlertViewController.h"
+#import <Instabug/Instabug.h>
 
 @implementation FirebaseHelper
 
@@ -180,6 +181,8 @@ static FirebaseHelper *sharedHelper = nil;
         logoImageView.tag = 800;
         [nav.navigationBar addSubview:logoImageView];
         
+        [Instabug setDefaultEmail:self.email];
+        
         [self.projectVC presentViewController:nav animated:YES completion:nil];
     }];
 }
@@ -195,6 +198,8 @@ static FirebaseHelper *sharedHelper = nil;
         self.userName = [snapshot.value objectForKey:@"name"];
         self.teamID = [snapshot.value objectForKey:@"team"];
         self.email = [snapshot.value objectForKey:@"email"];
+        
+        [Instabug setDefaultEmail:self.email];
         
         if ([[snapshot.value objectForKey:@"deleted"] integerValue] == 1) {
             
@@ -671,11 +676,13 @@ static FirebaseHelper *sharedHelper = nil;
         [chatDict setObject:snapshot.value forKey:snapshot.key];
     
         [self.chats setObject:chatDict forKey:chatID];
-        
-        [self.projectVC updateMessages];
-        [self.projectVC.chatTable reloadData];
-        if (self.projectVC.chatOpen) [self.projectVC updateChatHeight];
-        
+
+        if (!self.projectVC.activeBoardID) {
+            
+            [self.projectVC updateMessages];
+            [self.projectVC.chatTable reloadData];
+            if (self.projectVC.chatOpen) [self.projectVC updateChatHeight];
+        }
     }];
 }
 
@@ -788,8 +795,9 @@ static FirebaseHelper *sharedHelper = nil;
             NSString *titleString = [snapshot.value objectForKey:@"title"];
             
             if ([self.projectVC.activeCommentThreadID isEqualToString:commentThreadID] && titleString.length > 0) {
+
                 self.projectVC.commentTitleTextField.text = titleString;
-                self.projectVC.commentTitleTextField.hidden = false;
+                self.projectVC.commentTitleView.hidden = false;
             }
         }
     }];
@@ -805,6 +813,10 @@ static FirebaseHelper *sharedHelper = nil;
         if ([self.projectVC.activeCommentThreadID isEqualToString:commentThreadID]) {
             [self.projectVC updateMessages];
             [self.projectVC.chatTable reloadData];
+            if (!self.projectVC.chatOpen && self.projectVC.userRole == 0) {
+                [self.projectVC updateChatHeight];
+
+            }
         }
     }];
 }

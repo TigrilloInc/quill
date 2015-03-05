@@ -127,8 +127,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         [avatar addTarget:self action:@selector(avatarTapped:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:avatar];
         [self.avatarButtons addObject:avatar];
-        
-        NSLog(@"avatar rect is %@", NSStringFromCGRect(avatar.frame));
     }
 }
 
@@ -169,7 +167,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
             
             button.commentImage.hidden = true;
             button.highlightedImage.hidden = false;
-            button.deleteButton.hidden = false;
+            if (projectVC.userRole > 0) button.deleteButton.hidden = false;
             
             [self updateCarouselOffsetWithPoint:button.point];
         }
@@ -357,6 +355,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         [self hideChat];
         [projectVC.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
         projectVC.chatOpen = false;
+        projectVC.activeCommentThreadID = nil;
         
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:.25];
@@ -930,16 +929,18 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         }
         
         float chatHeight = MIN(384, MAX(tableHeight,156));
+        float titleOffset = 0;
+        if (!projectVC.commentTitleView.hidden) titleOffset = 41;
         
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:.25];
         [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
         [UIView setAnimationBeginsFromCurrentState:YES];
         
-        projectVC.chatTable.frame = CGRectMake(projectVC.chatTable.frame.origin.x, 768-chatHeight, projectVC.chatTable.frame.size.width, chatHeight);
-        
+        projectVC.chatTable.frame = CGRectMake(projectVC.chatTable.frame.origin.x, 768-chatHeight+titleOffset, projectVC.chatTable.frame.size.width, chatHeight-titleOffset);
         projectVC.chatOpenButton.center = CGPointMake(512, 754-chatHeight);
         projectVC.chatFadeImage.center = CGPointMake(512, 772-chatHeight);
+        projectVC.commentTitleView.center = CGPointMake(512, 794-chatHeight);
         
         [UIView commitAnimations];
         
@@ -954,7 +955,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     float oldOffset = projectVC.carouselOffset;
     
     if (projectVC.userRole > 0) projectVC.carouselOffset = (point.x*.75)-70;
-    else projectVC.carouselOffset = projectVC.chatTable.frame.size.height;
         
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:.25];
@@ -963,7 +963,11 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     if (projectVC.userRole == 0) {
         
-        if (point.x > 768-projectVC.carouselOffset || oldOffset > projectVC.carouselOffset) {
+        float chatHeight = projectVC.chatTable.frame.size.height;
+        
+        if ((point.x > 768-chatHeight || oldOffset > chatHeight) && !projectVC.chatOpen) {
+            
+            projectVC.carouselOffset = chatHeight;
             
             CGRect carouselRect = projectVC.carousel.frame;
             projectVC.carousel.frame = CGRectMake(carouselRect.origin.x, 5-projectVC.carouselOffset, carouselRect.size.width, carouselRect.size.height);

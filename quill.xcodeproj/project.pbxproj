@@ -183,6 +183,15 @@
 		12DC97A11A82D79300CC4616 /* Logo3.png in Resources */ = {isa = PBXBuildFile; fileRef = 12DC97A01A82D79300CC4616 /* Logo3.png */; };
 		12DC97A41A83060A00CC4616 /* ChangePasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12DC97A31A83060A00CC4616 /* ChangePasswordViewController.m */; };
 		12E898A719ECC6DA00E29E7B /* AvatarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 12E898A619ECC6DA00E29E7B /* AvatarButton.m */; };
+		12F4F9BC1AA7ECB800C8FC31 /* Instabug.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12F4F9BB1AA7ECB800C8FC31 /* Instabug.framework */; };
+		12F4F9C41AA7ECDF00C8FC31 /* Instabug.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 12F4F9C31AA7ECDF00C8FC31 /* Instabug.bundle */; };
+		12F4F9C61AA7ED2C00C8FC31 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12F4F9C51AA7ED2C00C8FC31 /* CoreMotion.framework */; };
+		12F4F9C81AA7ED3700C8FC31 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12F4F9C71AA7ED3700C8FC31 /* CoreTelephony.framework */; };
+		12F4F9CA1AA7ED3E00C8FC31 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12F4F9C91AA7ED3E00C8FC31 /* AudioToolbox.framework */; };
+		12F4F9CC1AA7ED6300C8FC31 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12F4F9CB1AA7ED6300C8FC31 /* MessageUI.framework */; };
+		12F4F9CE1AA7ED7D00C8FC31 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12F4F9CD1AA7ED7D00C8FC31 /* OpenGLES.framework */; };
+		12F4F9D01AA7ED8B00C8FC31 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12F4F9CF1AA7ED8B00C8FC31 /* GLKit.framework */; };
+		12F4F9D31AA808DA00C8FC31 /* InstabugViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12F4F9D21AA808DA00C8FC31 /* InstabugViewController.m */; };
 		12FF4C281A1545D7008A6001 /* libMailCore-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 12FF4C1D1A15459D008A6001 /* libMailCore-ios.a */; };
 		F3012919198C3F0800A596DA /* FirebaseSimpleLogin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3012918198C3F0800A596DA /* FirebaseSimpleLogin.framework */; };
 /* End PBXBuildFile section */
@@ -476,6 +485,16 @@
 		12DC97A31A83060A00CC4616 /* ChangePasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangePasswordViewController.m; sourceTree = "<group>"; };
 		12E898A519ECC6DA00E29E7B /* AvatarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AvatarButton.h; sourceTree = "<group>"; };
 		12E898A619ECC6DA00E29E7B /* AvatarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AvatarButton.m; sourceTree = "<group>"; };
+		12F4F9BB1AA7ECB800C8FC31 /* Instabug.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Instabug.framework; path = quill/Resources/Instabug/Instabug.framework; sourceTree = "<group>"; };
+		12F4F9C31AA7ECDF00C8FC31 /* Instabug.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Instabug.bundle; path = quill/Resources/Instabug/Instabug.bundle; sourceTree = "<group>"; };
+		12F4F9C51AA7ED2C00C8FC31 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		12F4F9C71AA7ED3700C8FC31 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		12F4F9C91AA7ED3E00C8FC31 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		12F4F9CB1AA7ED6300C8FC31 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		12F4F9CD1AA7ED7D00C8FC31 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		12F4F9CF1AA7ED8B00C8FC31 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		12F4F9D11AA808DA00C8FC31 /* InstabugViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InstabugViewController.h; sourceTree = "<group>"; };
+		12F4F9D21AA808DA00C8FC31 /* InstabugViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InstabugViewController.m; sourceTree = "<group>"; };
 		12FF4C101A15459C008A6001 /* mailcore2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = mailcore2.xcodeproj; path = "Resources/mailcore2/build-mac/mailcore2.xcodeproj"; sourceTree = "<group>"; };
 		F3012918198C3F0800A596DA /* FirebaseSimpleLogin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseSimpleLogin.framework; path = quill/Resources/Firebase/FirebaseSimpleLogin.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -485,9 +504,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				129E127219648A2C00ED9D42 /* Foundation.framework in Frameworks */,
+				12F4F9D01AA7ED8B00C8FC31 /* GLKit.framework in Frameworks */,
+				12F4F9CE1AA7ED7D00C8FC31 /* OpenGLES.framework in Frameworks */,
+				12F4F9CC1AA7ED6300C8FC31 /* MessageUI.framework in Frameworks */,
+				12A310EA1980BCD400E03E9E /* QuartzCore.framework in Frameworks */,
+				12F4F9CA1AA7ED3E00C8FC31 /* AudioToolbox.framework in Frameworks */,
+				12F4F9C81AA7ED3700C8FC31 /* CoreTelephony.framework in Frameworks */,
+				12F4F9C61AA7ED2C00C8FC31 /* CoreMotion.framework in Frameworks */,
 				129E127C19648A2C00ED9D42 /* SystemConfiguration.framework in Frameworks */,
 				12FF4C281A1545D7008A6001 /* libMailCore-ios.a in Frameworks */,
-				12A310EA1980BCD400E03E9E /* QuartzCore.framework in Frameworks */,
+				12F4F9BC1AA7ECB800C8FC31 /* Instabug.framework in Frameworks */,
 				12B79EF01A8367E700437CC8 /* Firebase.framework in Frameworks */,
 				12564B62196A5C4000F8F3D2 /* Social.framework in Frameworks */,
 				F3012919198C3F0800A596DA /* FirebaseSimpleLogin.framework in Frameworks */,
@@ -498,7 +525,6 @@
 				129E127A19648A2C00ED9D42 /* Security.framework in Frameworks */,
 				129E127619648A2C00ED9D42 /* UIKit.framework in Frameworks */,
 				129E127819648A2C00ED9D42 /* CFNetwork.framework in Frameworks */,
-				129E127219648A2C00ED9D42 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -571,6 +597,14 @@
 		129E127019648A2C00ED9D42 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				12F4F9CF1AA7ED8B00C8FC31 /* GLKit.framework */,
+				12F4F9CD1AA7ED7D00C8FC31 /* OpenGLES.framework */,
+				12F4F9CB1AA7ED6300C8FC31 /* MessageUI.framework */,
+				12F4F9C91AA7ED3E00C8FC31 /* AudioToolbox.framework */,
+				12F4F9C71AA7ED3700C8FC31 /* CoreTelephony.framework */,
+				12F4F9C51AA7ED2C00C8FC31 /* CoreMotion.framework */,
+				12F4F9C31AA7ECDF00C8FC31 /* Instabug.bundle */,
+				12F4F9BB1AA7ECB800C8FC31 /* Instabug.framework */,
 				12B79EEF1A8367E700437CC8 /* Firebase.framework */,
 				F3012918198C3F0800A596DA /* FirebaseSimpleLogin.framework */,
 				12A310E91980BCD400E03E9E /* QuartzCore.framework */,
@@ -653,6 +687,8 @@
 				12BDC6AD1A96ECBB001160AF /* TransferOwnerViewController.m */,
 				12CAB1211A9D4EC800136AB1 /* UserDeletedAlertViewController.h */,
 				12CAB1221A9D4EC800136AB1 /* UserDeletedAlertViewController.m */,
+				12F4F9D11AA808DA00C8FC31 /* InstabugViewController.h */,
+				12F4F9D21AA808DA00C8FC31 /* InstabugViewController.m */,
 				128DC3051A1E8C7000FF6076 /* ChatTableViewCell.h */,
 				128DC3061A1E8C7000FF6076 /* ChatTableViewCell.m */,
 				12860FA01A3EA61F0074B452 /* ProjectsTableViewCell.h */,
@@ -1066,6 +1102,7 @@
 				12860FEC1A47C3170074B452 /* plus1.png in Resources */,
 				12C4E4D31A3B781600DB0E23 /* board5.png in Resources */,
 				12C4E4E11A3B98B300DB0E23 /* background4.png in Resources */,
+				12F4F9C41AA7ECDF00C8FC31 /* Instabug.bundle in Resources */,
 				12ACFBAF1A6C9262004C298B /* formsheetbackground.png in Resources */,
 				1213D7AE1A664FB6001FDEA9 /* commenttitle.png in Resources */,
 				12BCAF5B1A4C0EA500FC327E /* down.png in Resources */,
@@ -1142,6 +1179,7 @@
 				128DC3071A1E8C7000FF6076 /* ChatTableViewCell.m in Sources */,
 				12DC97981A7C158900CC4616 /* NewNameViewController.m in Sources */,
 				1231BEC51A6EE2F200E09914 /* Reachability.m in Sources */,
+				12F4F9D31AA808DA00C8FC31 /* InstabugViewController.m in Sources */,
 				129E128419648A2C00ED9D42 /* main.m in Sources */,
 				12860FB31A4024920074B452 /* NSString+MD5.m in Sources */,
 				12A3FA0D1977420400E03E9E /* PersonalSettingsViewController.m in Sources */,
@@ -1296,6 +1334,7 @@
 					"$(PROJECT_DIR)/quill/Resources/Firebase/",
 					"$(PROJECT_DIR)/quill/Resources/Firebase",
 					/Users/Shared/Firebase/Frameworks,
+					"$(PROJECT_DIR)/quill/Resources/Instabug",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "quill/quill-Prefix.pch";
@@ -1336,6 +1375,7 @@
 					"$(PROJECT_DIR)/quill/Resources/Firebase/",
 					"$(PROJECT_DIR)/quill/Resources/Firebase",
 					/Users/Shared/Firebase/Frameworks,
+					"$(PROJECT_DIR)/quill/Resources/Instabug",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "quill/quill-Prefix.pch";

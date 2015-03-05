@@ -9,12 +9,17 @@
 #import "AppDelegate.h"
 #import <Firebase/Firebase.h>
 #import "FirebaseHelper.h"
+#import <Instabug/Instabug.h>
 
 @implementation AppDelegate
 
 -(BOOL) application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     [FirebaseHelper sharedHelper];
+    
+    [Instabug startWithToken:@"9a674b675e5dd033bc995a4d7a4a231f" captureSource:IBGCaptureSourceUIKit invocationEvent:IBGInvocationEventNone];
+    [Instabug setEmailIsRequired:NO];
+    [Instabug setWillShowFeedbackSentAlert:NO];
     
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     signal(SIGABRT, signalHandler);

@@ -19,6 +19,7 @@
 #import "ColorPopoverViewController.h"
 #import "PenTypePopoverViewController.h"
 #import "CommentPopoverViewController.h"
+#import "InstabugViewController.h"
 
 @implementation ProjectDetailViewController
 
@@ -87,6 +88,39 @@
     [self.view.window removeGestureRecognizer:chatTapRecognizer];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
+- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
+    
+    if (UIEventSubtypeMotionShake) {
+        
+        InstabugViewController *instabugVC = [self.storyboard instantiateViewControllerWithIdentifier:@"Instabug"];
+        
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:instabugVC];
+        nav.modalPresentationStyle = UIModalPresentationFormSheet;
+        nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+        nav.navigationBar.barTintColor = [UIColor whiteColor];
+        nav.navigationBar.tintColor = [UIColor blackColor];
+        [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"SourceSansPro-Light" size:24.0], NSFontAttributeName, nil]];
+        [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5 forBarMetrics:UIBarMetricsDefault];
+        
+        UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+        logoImageView.frame = CGRectMake(195, 8, 32, 32);
+        logoImageView.tag = 800;
+        [nav.navigationBar addSubview:logoImageView];
+        
+        if (self.presentedViewController) {
+            
+            UINavigationController *presentedNav = (UINavigationController *)self.presentedViewController;
+            
+            if (![presentedNav.viewControllers[0] isKindOfClass:[InstabugViewController class]]) [self.presentedViewController presentViewController:nav animated:YES completion:nil];
+        }
+        else [self presentViewController:nav animated:YES completion:nil];
+    }
 }
 
 -(void) setUpDrawMenu {
@@ -298,6 +332,17 @@
     self.chatAvatar.hidden = false;
     self.chatOpenButton.hidden = false;
     
+    if  (self.userRole > 0) self.chatDiff = 0;
+    else self.chatDiff = self.chatView.frame.size.height;
+    
+    if (![self.chatTextField isFirstResponder]) {
+        
+        self.chatView.center = CGPointMake(617, 743.5);
+        self.chatOpenButton.center = CGPointMake(617.5, 598);
+        self.chatFadeImage.center = CGPointMake(722, 615.5);
+        self.chatTable.frame = CGRectMake(210, 612, self.view.frame.size.width-210, 107+self.chatDiff);
+    }
+    
     self.projectNameLabel.text = self.projectName;
     [self.projectNameLabel sizeToFit];
     self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+292, self.projectNameLabel.center.y+3);
@@ -316,20 +361,7 @@
     
     if (self.userRole > 1) self.editButton.hidden = false;
     else self.editButton.hidden = true;
-    
-    if  (self.userRole > 0) self.chatDiff = 0;
-    else self.chatDiff = self.chatView.frame.size.height;
 
-    if (![self.chatTextField isFirstResponder]) {
-    
-        self.chatView.center = CGPointMake(617, 743.5);
-        self.chatOpenButton.center = CGPointMake(617.5, 598);
-        self.chatFadeImage.center = CGPointMake(722, 615.5);
-        self.chatTable.frame = CGRectMake(210, 612, self.view.frame.size.width-210, 107+self.chatDiff);
-    }
-
-    [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
-    
     [self carouselCurrentItemIndexDidChange:self.carousel];
     
     self.chatOpen = false;
@@ -400,9 +432,9 @@
                 
                 [self.messages replaceObjectAtIndex:i withObject:@"new messages"];
                 if (!self.chatViewed && ![self.chatTextField isFirstResponder]) {
-                    CGPoint chatCenter = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y+3);
+                    
                     self.chatOpenButton.frame = CGRectMake(0, 0, 150, 31);
-                    self.chatOpenButton.center = chatCenter;
+                    self.chatOpenButton.center = CGPointMake(617.9, 598);
                     [self.chatOpenButton setImage:[UIImage imageNamed:@"newmessages.png"] forState:UIControlStateNormal];
                 }
             }
@@ -427,24 +459,28 @@
 -(void) updateChatHeight {
     
     float tableHeight = 10;
+    
     for (int i=0; i<self.messages.count; i++) {
         tableHeight += [self tableView:self.chatTable heightForRowAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]];
     }
     
     CGRect chatTableRect = self.chatTable.frame;
+    float maxHeight = 673;
+    if (self.activeBoardID && self.userRole == 0) maxHeight = 384;
     
-    if (chatTableRect.size.height < 673) {
+    if (chatTableRect.size.height < maxHeight) {
         
         float tableDiff = tableHeight-chatTableRect.size.height;
-        
-        self.chatFadeImage.center = CGPointMake(self.chatFadeImage.center.x, self.chatFadeImage.center.y-tableDiff);
-        self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y-tableDiff);
         chatTableRect.size.height += tableDiff;
         chatTableRect.origin.y -= tableDiff;
         
-        self.chatTable.frame = chatTableRect;
+        if (chatTableRect.size.height > 156) {
+            
+            self.chatFadeImage.center = CGPointMake(self.chatFadeImage.center.x, self.chatFadeImage.center.y-tableDiff);
+            self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y-tableDiff);
+            self.chatTable.frame = chatTableRect;
+        }
     }
-    
 }
 
 -(void) layoutAvatars {
@@ -726,8 +762,6 @@
                              [self showEditBoardName];
                              newBoardCreated = false;
                          }
-                         
-                         NSLog(@"carousel Rect is %@", NSStringFromCGRect(self.carousel.frame));
                      }
      ];
 }
@@ -1280,14 +1314,19 @@
             
             if (self.chatOpen) {
                 
+                float titleOffset = 0;
+                if (!self.commentTitleView.hidden) titleOffset = 41;
+                
                 self.chatOpenButton.center = CGPointMake(512, 754-chatHeight);
                 self.chatFadeImage.center = CGPointMake(512, 772-chatHeight);
-                chatTableRect = CGRectMake(self.chatTable.frame.origin.x, 768-chatHeight, self.chatTable.frame.size.width, chatHeight);
+                self.commentTitleView.center = CGPointMake(512, 794-chatHeight);
+                chatTableRect = CGRectMake(self.chatTable.frame.origin.x, 768-chatHeight+titleOffset, self.chatTable.frame.size.width, chatHeight-titleOffset);
             }
             else {
                 
                 self.chatFadeImage.center = CGPointMake(512, 98.5);
                 self.chatOpenButton.center = CGPointMake(512, 81);
+                self.commentTitleView.center = CGPointMake(512, 120);
                 chatTableRect = CGRectMake(0, 95, 1024, 673);
             }
         }
@@ -1339,10 +1378,6 @@
     else [self.chatOpenButton setImage:[UIImage imageNamed:@"down.png"] forState:UIControlStateNormal];
     
     self.chatOpen = !self.chatOpen;
-
-    NSLog(@"fade center is %@", NSStringFromCGPoint(self.chatFadeImage.center));
-    NSLog(@"button center is %@", NSStringFromCGPoint(self.chatOpenButton.center));
-    NSLog(@"chat Rect is %@", NSStringFromCGRect(self.chatTable.frame));
 }
 
 -(void)keyboardWillShow:(NSNotification *)notification {
@@ -1509,7 +1544,6 @@
         [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
 
         if (self.activeBoardID) [self.currentBoardView hideChat];
-        
     }
     
     if ([[self.view viewWithTag:104] isFirstResponder]) {
