@@ -31,18 +31,19 @@
     
     UIFont *nameFont = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
     UIFont *labelFont = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
-    
     NSDictionary *nameAttrs = [NSDictionary dictionaryWithObjectsAndKeys: nameFont, NSFontAttributeName, nil];
     NSDictionary *labelAttrs = [NSDictionary dictionaryWithObjectsAndKeys: labelFont, NSFontAttributeName, nil];
-    NSRange userRange = NSMakeRange(32,userName.length);
-    NSRange teamRange = NSMakeRange(38+userName.length,[FirebaseHelper sharedHelper].teamName.length);
+   
+    NSString *removeString = [NSString stringWithFormat:@"Are you sure you want to remove %@ from %@?", userName,[FirebaseHelper sharedHelper].teamName];
+    NSMutableAttributedString *removeAttrString = [[NSMutableAttributedString alloc] initWithString:removeString attributes:labelAttrs];
+    [removeAttrString setAttributes:nameAttrs range:NSMakeRange(32,userName.length)];
+    [removeAttrString setAttributes:nameAttrs range:NSMakeRange(38+userName.length,[FirebaseHelper sharedHelper].teamName.length)];
+    [self.removeLabel setAttributedText:removeAttrString];
     
-    NSString *labelString = [NSString stringWithFormat:@"Are you sure you want to remove %@ from %@?", userName,[FirebaseHelper sharedHelper].teamName];
-    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithString:labelString attributes:labelAttrs];
-    [attrString setAttributes:nameAttrs range:userRange];
-    [attrString setAttributes:nameAttrs range:teamRange];
-    
-    [self.removeLabel setAttributedText:attrString];
+    NSString *warnString = [NSString stringWithFormat:@"Once removed, %@ won't have access to any projects and will have to be invited again to continue collaborating.", userName];
+    NSMutableAttributedString *warnAttrString = [[NSMutableAttributedString alloc] initWithString:warnString attributes:labelAttrs];
+    [warnAttrString setAttributes:nameAttrs range:NSMakeRange(14, userName.length)];
+    [self.warnLabel setAttributedText:warnAttrString];
 }
 
 -(void) viewDidAppear:(BOOL)animated {

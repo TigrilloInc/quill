@@ -97,6 +97,7 @@
 
 -(void) updateDetails;
 -(void) drawBoard:(BoardView *)boardView;
+-(void) closeTapped;
 -(IBAction) cancelTapped:(id)sender;
 -(void) showDrawMenu;
 -(void) showChat;

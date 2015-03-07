@@ -62,6 +62,7 @@
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
+            <string>SourceSansPro-Regular</string>
         </mutableArray>
         <mutableArray key="SourceSansPro-Semibold.ttf">
             <string>SourceSansPro-Semibold</string>
@@ -638,7 +639,7 @@
         <!--Delete Project Alert View Controller-->
         <scene sceneID="yCN-Z1-XBd">
             <objects>
-                <viewController id="BU5-NL-cWQ" customClass="DeleteProjectAlertViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DeleteProject" id="BU5-NL-cWQ" customClass="DeleteProjectAlertViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="EcL-QL-qLU">
                         <rect key="frame" x="0.0" y="0.0" width="540" height="350"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -651,6 +652,9 @@
                                     <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="cancelTapped:" destination="BU5-NL-cWQ" eventType="touchUpInside" id="Nu6-4q-pB8"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="CNu-9J-Yz1" customClass="RoundedButton">
                                 <rect key="frame" x="281" y="300" width="240" height="50"/>
@@ -660,12 +664,34 @@
                                     <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="deleteTapped:" destination="BU5-NL-cWQ" eventType="touchUpInside" id="6dt-Qa-O9F"/>
+                                </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="9oe-hL-sgb">
+                                <rect key="frame" x="16" y="125" width="508" height="42"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Deleted projects cannot be recovered." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="fkj-Fk-bD6">
+                                <rect key="frame" x="16" y="180" width="508" height="42"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="540" height="350"/>
+                    <connections>
+                        <outlet property="cancelButton" destination="rOM-DT-vIb" id="c5F-C9-ooF"/>
+                        <outlet property="deleteButton" destination="CNu-9J-Yz1" id="VcI-nU-M5S"/>
+                        <outlet property="projectLabel" destination="9oe-hL-sgb" id="tgP-3E-yMP"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Y6L-bh-QcS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -710,6 +736,13 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="%@ will no longer have access to any projects and will have to be invited again to continue collaborating." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="POW-Sd-lfY">
+                                <rect key="frame" x="22" y="150" width="499" height="80"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -719,6 +752,7 @@
                         <outlet property="cancelButton" destination="mGw-qx-y7S" id="xU0-7J-liU"/>
                         <outlet property="removeButton" destination="jca-HS-plb" id="SCz-FP-F3a"/>
                         <outlet property="removeLabel" destination="CZw-FL-IpE" id="avl-Bs-YSA"/>
+                        <outlet property="warnLabel" destination="POW-Sd-lfY" id="Tm4-nx-X9m"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="awA-3x-BMU" userLabel="First Responder" sceneMemberID="firstResponder"/>

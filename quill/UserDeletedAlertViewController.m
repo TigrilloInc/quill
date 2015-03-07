@@ -14,6 +14,7 @@
 @implementation UserDeletedAlertViewController
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
     
     self.navigationItem.title = @"User Deleted";
@@ -21,7 +22,6 @@
     self.okButton.layer.borderWidth = 1;
     self.okButton.layer.cornerRadius = 10;
     self.okButton.layer.borderColor = [UIColor grayColor].CGColor;
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -40,8 +40,6 @@
     [attrString setAttributes:nameAttrs range:teamRange];
     
     [self.nameLabel setAttributedText:attrString];
-    
-    
 }
 
 - (IBAction)okTapped:(id)sender {

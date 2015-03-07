@@ -480,6 +480,90 @@ static FirebaseHelper *sharedHelper = nil;
             [self observeUserWithID:userID];
         }
     }];
+    
+    [[ref childByAppendingPath:@"projects"] observeEventType:FEventTypeChildRemoved withBlock:^(FDataSnapshot *snapshot) {
+        
+        NSString *projectID = snapshot.key;
+        
+        if (![self.projects.allKeys containsObject:projectID]) return;
+        
+        NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@", projectID];
+        Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
+        [[projectRef childByAppendingPath:@"info"] removeAllObservers];
+        [[projectRef childByAppendingPath:@"viewedAt"] removeAllObservers];
+        [[projectRef childByAppendingPath:@"updatedAt"] removeAllObservers];
+        
+        for (NSString *boardID in [[self.projects objectForKey:projectID] objectForKey:@"boards"]) {
+            
+            NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
+            Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
+            [[boardRef childByAppendingPath:@"name"] removeAllObservers];
+            [[boardRef childByAppendingPath:@"updatedAt"] removeAllObservers];
+            
+            NSDictionary *boardDict = [self.boards objectForKey:boardID];
+            
+            for (NSString *userID in [[boardDict objectForKey:@"undo"] allKeys]) {
+                
+                NSString *undoString = [NSString stringWithFormat:@"undo/%@", userID];
+                [[boardRef childByAppendingPath:undoString] removeAllObservers];
+            }
+            
+            for (NSString *userID in [[boardDict objectForKey:@"subpaths"] allKeys]) {
+                
+                NSString *subpathsString = [NSString stringWithFormat:@"subpaths/%@", userID];
+                [[boardRef childByAppendingPath:subpathsString] removeAllObservers];
+            }
+            
+            NSString *commentsID = [[self.boards objectForKey:boardID] objectForKey:@"commentsID"];
+            NSString *commentsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
+            Firebase *commentsRef = [[Firebase alloc] initWithUrl:commentsString];
+            [commentsRef removeAllObservers];
+            
+            for (NSString *commentThreadID in [[self.comments objectForKey:commentsID] allKeys]) {
+                
+                NSString *infoString = [NSString stringWithFormat:@"%@/info", commentThreadID];
+                [[commentsRef childByAppendingPath:infoString] removeAllObservers];
+                
+                NSString *messageString = [NSString stringWithFormat:@"%@/messages", commentThreadID];
+                [[commentsRef childByAppendingPath:messageString] removeAllObservers];
+            }
+            
+            [self.boards removeObjectForKey:boardID];
+            [self.loadedBoardIDs removeObject:boardID];
+            [self.comments removeObjectForKey:commentsID];
+        }
+        
+        NSString *chatID = [[self.projects objectForKey:projectID] objectForKey:@"chatID"];
+        NSString *chatString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/chats/%@", chatID];
+        Firebase *chatRef = [[Firebase alloc] initWithUrl:chatString];
+        [chatRef removeAllObservers];
+        
+        
+        [self.projects removeObjectForKey:projectID];
+        [self.visibleProjectIDs removeObject:projectID];
+        [[self.team objectForKey:@"projects"] removeObjectForKey:projectID];
+        [self.chats removeObjectForKey:chatID];
+        
+        
+        if ([self.currentProjectID isEqualToString:projectID]) {
+            
+            if (self.projectVC.activeBoardID) [self.projectVC closeTapped];
+            else {
+                
+                [self.projectVC.masterView.projectsTable reloadData];
+                
+                if (self.visibleProjectIDs.count > 0) {
+                    
+                    NSIndexPath *mostRecent = [self getLastViewedProjectIndexPath];
+                    [self.projectVC.masterView tableView:self.projectVC.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
+                }
+                else {
+                    [self.projectVC hideAll];
+                    self.currentProjectID = nil;
+                }
+            }
+        }
+    }];
 }
 
 -(void) observeBoardWithID:(NSString *)boardID {
@@ -943,6 +1027,7 @@ static FirebaseHelper *sharedHelper = nil;
     NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@", self.teamID];
     Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
     [teamRef removeAllObservers];
+    [[teamRef childByAppendingPath:@"projects"] removeAllObservers];
     
     for (NSString *userID in [[self.team objectForKey:@"users"] allKeys]) {
 

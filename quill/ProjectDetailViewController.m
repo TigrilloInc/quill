@@ -20,6 +20,7 @@
 #import "PenTypePopoverViewController.h"
 #import "CommentPopoverViewController.h"
 #import "InstabugViewController.h"
+#import "DeleteProjectAlertViewController.h"
 
 @implementation ProjectDetailViewController
 
@@ -36,11 +37,11 @@
     
     carouselFadeLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfadeleft.png"]];
     [self.carousel addSubview:carouselFadeLeft];
-    carouselFadeLeft.frame = CGRectMake(0, -5, 50, 400);
-
+    carouselFadeLeft.frame = CGRectMake(0, -5, 30, 400);
+    
     carouselFadeRight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfaderight.png"]];
     [self.carousel addSubview:carouselFadeRight];
-    carouselFadeRight.frame = CGRectMake(764, -5, 50, 400);
+    carouselFadeRight.frame = CGRectMake(784, -5, 30, 400);
     
     editFadeLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"editfadeleft.png"]];
     [self.view addSubview:editFadeLeft];
@@ -90,13 +91,13 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
 
-- (BOOL)canBecomeFirstResponder {
-    return YES;
-}
+//- (BOOL)canBecomeFirstResponder {
+//    return YES;
+//}
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
     
-    if (UIEventSubtypeMotionShake) {
+    if (motion == UIEventSubtypeMotionShake) {
         
         InstabugViewController *instabugVC = [self.storyboard instantiateViewControllerWithIdentifier:@"Instabug"];
         
@@ -130,14 +131,14 @@
     [closeButton setImage:[UIImage imageNamed:@"back.png"] forState:UIControlStateNormal];
     closeButton.adjustsImageWhenHighlighted = NO;
     closeButton.tintColor = [UIColor blackColor];
-    [closeButton addTarget:self action:@selector(closeTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [closeButton addTarget:self action:@selector(closeTapped) forControlEvents:UIControlEventTouchUpInside];
     closeButton.hidden = true;
     [self.view addSubview:closeButton];
     closeButton.tag = 100;
     
     UIButton *projectNameButton = [UIButton buttonWithType:UIButtonTypeSystem];
     projectNameButton.titleLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:20];
-    [projectNameButton addTarget:self action:@selector(closeTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [projectNameButton addTarget:self action:@selector(closeTapped) forControlEvents:UIControlEventTouchUpInside];
     projectNameButton.tintColor = [UIColor blackColor];
     projectNameButton.hidden = true;
     projectNameButton.frame = CGRectMake(30, 24, 0, 0);
@@ -303,19 +304,42 @@
     
     self.projectNameLabel.hidden = true;
     self.editButton.hidden = true;
-    self.carousel.hidden = true;
-    self.chatAvatar.hidden = true;
-    self.sendMessageButton.hidden = true;
+    self.editProjectNameTextField.hidden = true;
+    self.editBoardNameTextField.hidden = true;
+    
     self.boardNameLabel.hidden = true;
     self.boardNameEditButton.hidden = true;
     self.editBoardNameTextField.hidden = true;
+    
+    self.carousel.hidden = true;
+    carouselFadeLeft.hidden = false;
+    carouselFadeRight.hidden = false;
+    
     for (AvatarButton *avatar in self.avatars) avatar.hidden = true;
     self.avatarBackgroundImage.hidden = true;
     self.addUserButton.hidden = true;
+    
+    [self updateMessages];
+    [self.chatTable reloadData];
+    self.chatView.hidden = false;
+    self.chatFadeImage.hidden = false;
+    self.chatTable.hidden = false;
+    self.chatOpenButton.hidden = true;
     self.chatTextField.hidden = true;
+    self.chatAvatar.hidden = true;
+    self.sendMessageButton.hidden = true;
+    
     self.addBoardBackgroundImage.hidden = true;
     self.addBoardButton.hidden = true;
-    self.chatOpenButton.hidden = true;
+    self.projectNameEditButton.hidden = true;
+    self.draggableCollectionView.hidden = true;
+    
+    self.applyChangesButton.hidden = true;
+    self.cancelButton.hidden = true;
+    self.deleteProjectButton.hidden = true;
+    editFadeLeft.hidden = true;
+    editFadeRight.hidden = true;
+    self.editing = false;
 }
 
 -(void) setChatTableSize {
@@ -766,7 +790,7 @@
      ];
 }
 
--(void)closeTapped:(id)sender {
+-(void)closeTapped {
     
     boardButton.hidden = false;
     self.currentBoardView.commenting = false;
@@ -834,8 +858,26 @@
                          [self.view bringSubviewToFront:self.addBoardBackgroundImage];
                          [self.view bringSubviewToFront:self.addBoardButton];
                          
-                         [self.masterView.projectsTable reloadData];
-                         [self.masterView.projectsTable selectRowAtIndexPath:self.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
+                         if ([[FirebaseHelper sharedHelper].projects.allKeys containsObject:[FirebaseHelper sharedHelper].currentProjectID]) {
+                             
+                             [self.masterView.projectsTable reloadData];
+                             [self.masterView.projectsTable selectRowAtIndexPath:self.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
+                         }
+                         else {
+                             
+                             [self.masterView.projectsTable reloadData];
+                             
+                             if ([FirebaseHelper sharedHelper].visibleProjectIDs.count > 0) {
+
+                                 NSIndexPath *mostRecent = [[FirebaseHelper sharedHelper] getLastViewedProjectIndexPath];
+                                 [self.masterView tableView:self.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
+                             }
+                             else {
+                                 
+                                 [self hideAll];
+                                 [FirebaseHelper sharedHelper].currentProjectID = nil;
+                             }
+                         }
                      }
      ];
 }
@@ -1032,48 +1074,22 @@
 
 - (IBAction)deleteProjectTapped:(id)sender {
     
-    [[FirebaseHelper sharedHelper].projects removeObjectForKey:[FirebaseHelper sharedHelper].currentProjectID];
-    [[FirebaseHelper sharedHelper].visibleProjectIDs removeObject:[FirebaseHelper sharedHelper].currentProjectID];
-    [[[FirebaseHelper sharedHelper].team objectForKey:@"projects"] removeObjectForKey:[FirebaseHelper sharedHelper].currentProjectID];
+    DeleteProjectAlertViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"DeleteProject"];
     
-    NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/", [FirebaseHelper sharedHelper].currentProjectID];
-    Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
-    [projectRef removeValue];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    nav.modalPresentationStyle = UIModalPresentationFormSheet;
+    nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    nav.navigationBar.barTintColor = [UIColor whiteColor];
+    nav.navigationBar.tintColor = [UIColor blackColor];
+    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"SourceSansPro-Light" size:24.0], NSFontAttributeName, nil]];
+    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5 forBarMetrics:UIBarMetricsDefault];
     
-    NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@/projects/%@", [FirebaseHelper sharedHelper].teamID, [FirebaseHelper sharedHelper].currentProjectID];
-    Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
-    [teamRef removeValue];
+    UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+    logoImageView.frame = CGRectMake(160, 8, 32, 32);
+    logoImageView.tag = 800;
+    [nav.navigationBar addSubview:logoImageView];
     
-    for (NSString *boardID in self.boardIDs) {
-        
-        [[FirebaseHelper sharedHelper].boards removeObjectForKey:boardID];
-        [[FirebaseHelper sharedHelper].loadedBoardIDs removeObject:boardID];
-        
-        NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
-        Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
-        [boardRef removeValue];
-    }
-    
-    NSIndexPath *mostRecent = [[FirebaseHelper sharedHelper] getLastViewedProjectIndexPath];
-    [self.masterView.projectsTable reloadData];
-    [self.masterView tableView:self.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
-    
-    if ([FirebaseHelper sharedHelper].visibleProjectIDs.count == 0) {
-        
-        self.draggableCollectionView.hidden = true;
-        self.applyChangesButton.hidden = true;
-        self.cancelButton.hidden = true;
-        self.deleteProjectButton.hidden = true;
-        self.editProjectNameTextField.hidden = true;
-        
-        for (AvatarButton *avatar in self.avatars) avatar.hidden = true;
-        self.avatarBackgroundImage.hidden = true;
-        self.addUserButton.hidden = true;
-        
-        self.chatView.hidden = false;
-        self.sendMessageButton.hidden = true;
-        self.chatFadeImage.hidden = false;
-    }
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void) undoTapped:(id)sender {
@@ -1277,7 +1293,7 @@
 
 -(void)chatTableTapped {
  
-    if (self.presentedViewController == nil && !self.activeBoardID) {
+    if (self.presentedViewController == nil && !self.activeBoardID && !self.editing) {
         
         CGPoint location = [chatTapRecognizer locationInView:nil];
         CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
@@ -1468,6 +1484,7 @@
     }
     
     if ([self.chatTextField isFirstResponder] || [self.commentTitleTextField isFirstResponder]) {
+        
         
         self.chatTextField.text = nil;
         self.activeCommentThreadID = nil;

@@ -243,8 +243,8 @@
             MCOSMTPSession *smtpSession = [[MCOSMTPSession alloc] init];
             smtpSession.hostname = @"smtp.gmail.com";
             smtpSession.port = 465;
-            smtpSession.username = @"cos@tigrillo.co";
-            smtpSession.password = @"foothill94022";
+            smtpSession.username = @"hello@tigrillo.co";
+            smtpSession.password = @"DRc4iK3NJZ;aKEodNoH/";
             smtpSession.authType = MCOAuthTypeSASLPlain;
             smtpSession.connectionType = MCOConnectionTypeTLS;
             

@@ -212,8 +212,8 @@
             MCOSMTPSession *smtpSession = [[MCOSMTPSession alloc] init];
             smtpSession.hostname = @"smtp.gmail.com";
             smtpSession.port = 465;
-            smtpSession.username = @"cos@tigrillo.co";
-            smtpSession.password = @"foothill94022";
+            smtpSession.username = @"hello@tigrillo.co";
+            smtpSession.password = @"DRc4iK3NJZ;aKEodNoH/";
             smtpSession.authType = MCOAuthTypeSASLPlain;
             smtpSession.connectionType = MCOConnectionTypeTLS;
             
@@ -234,7 +234,7 @@
                 [[tokenRef childByAppendingPath:invitedByString] setValue:[FirebaseHelper sharedHelper].userName];
                 
                 MCOMessageBuilder *builder = [[MCOMessageBuilder alloc] init];
-                MCOAddress *from = [MCOAddress addressWithDisplayName:@"Quill" mailbox:@"cos@tigrillo.co"];
+                MCOAddress *from = [MCOAddress addressWithDisplayName:@"Quill" mailbox:@"hello@tigrillo.co"];
                 MCOAddress *to = [MCOAddress addressWithDisplayName:nil mailbox:userEmail];
                 [[builder header] setFrom:from];
                 [[builder header] setTo:@[to]];
