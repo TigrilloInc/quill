@@ -132,11 +132,7 @@
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
     nav.modalPresentationStyle = UIModalPresentationFormSheet;
     nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    nav.navigationBar.barTintColor = [UIColor whiteColor];
-    nav.navigationBar.tintColor = [UIColor blackColor];
-    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"SourceSansPro-Light" size:24.0], NSFontAttributeName, nil]];
-    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5 forBarMetrics:UIBarMetricsDefault];
-    
+ 
     UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
     logoImageView.frame = CGRectMake(155, 8, 32, 32);
     logoImageView.tag = 800;

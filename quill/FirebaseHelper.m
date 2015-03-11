@@ -99,11 +99,7 @@ static FirebaseHelper *sharedHelper = nil;
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
             nav.modalPresentationStyle = UIModalPresentationFormSheet;
             nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-            nav.navigationBar.barTintColor = [UIColor whiteColor];
-            nav.navigationBar.tintColor = [UIColor blackColor];
-            [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"SourceSansPro-Light" size:24.0], NSFontAttributeName, nil]];
-            [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5 forBarMetrics:UIBarMetricsDefault];
-            
+
             UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
             logoImageView.frame = CGRectMake(155, 8, 32, 32);
             logoImageView.tag = 800;
@@ -171,11 +167,7 @@ static FirebaseHelper *sharedHelper = nil;
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
         nav.modalPresentationStyle = UIModalPresentationFormSheet;
         nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-        nav.navigationBar.barTintColor = [UIColor whiteColor];
-        nav.navigationBar.tintColor = [UIColor blackColor];
-        [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"SourceSansPro-Light" size:24.0], NSFontAttributeName, nil]];
-        [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5 forBarMetrics:UIBarMetricsDefault];
-        
+
         UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
         logoImageView.frame = CGRectMake(155, 8, 32, 32);
         logoImageView.tag = 800;
@@ -215,10 +207,6 @@ static FirebaseHelper *sharedHelper = nil;
                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
                 nav.modalPresentationStyle = UIModalPresentationFormSheet;
                 nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-                nav.navigationBar.barTintColor = [UIColor whiteColor];
-                nav.navigationBar.tintColor = [UIColor blackColor];
-                [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"SourceSansPro-Light" size:24.0], NSFontAttributeName, nil]];
-                [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5 forBarMetrics:UIBarMetricsDefault];
                 
                 UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
                 logoImageView.frame = CGRectMake(155, 8, 32, 32);
@@ -588,27 +576,30 @@ static FirebaseHelper *sharedHelper = nil;
 
             self.projectVC.boardNameLabel.text = snapshot.value;
             if ([self.projectVC.boardNameLabel.text isEqualToString:@"Untitled"]) self.projectVC.boardNameLabel.alpha = .2;
+
             else self.projectVC.boardNameLabel.alpha = 1;
             [self.projectVC.boardNameLabel sizeToFit];
             
             if ([self.projectVC.activeBoardID isEqualToString:boardID]) {
                 
                 UILabel *boardLevelNameLabel = (UILabel *)[self.projectVC.view viewWithTag:102];
-                NSString *boardNameString = [NSString stringWithFormat:@"|  %@", snapshot.value];
+                NSString *boardNameString = [NSString stringWithFormat:@"|   %@", snapshot.value];
                 boardLevelNameLabel.text = boardNameString;
                 if ([boardLevelNameLabel.text isEqualToString:@"Untitled"]) boardLevelNameLabel.alpha = .2;
                 else boardLevelNameLabel.alpha = 1;
                 [boardLevelNameLabel sizeToFit];
                 
                 UIButton *editBoardNameButton = (UIButton *)[self.projectVC.view viewWithTag:103];
-                editBoardNameButton.frame = CGRectMake(boardLevelNameLabel.frame.origin.x+boardLevelNameLabel.frame.size.width+6, boardLevelNameLabel.frame.origin.y+4, 17, 17);
+                editBoardNameButton.frame = CGRectMake(boardLevelNameLabel.frame.origin.x+boardLevelNameLabel.frame.size.width-5, boardLevelNameLabel.frame.origin.y-6, 36, 36);
                 
                 self.projectVC.boardNameLabel.center = CGPointMake(self.projectVC.carousel.center.x+105, self.projectVC.boardNameLabel.center.y);
                 self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.carousel.center.x+self.projectVC.boardNameLabel.frame.size.width/2+122, self.projectVC.boardNameLabel.center.y);
             }
-            else if (self.currentProjectID) {
+            else if (self.currentProjectID ) {
                 
                 self.projectVC.boardNameLabel.center = CGPointMake(self.projectVC.carousel.center.x, self.projectVC.boardNameLabel.center.y);
+                
+                if (self.projectVC.boardNameLabel.text.length > 0 && !self.projectVC.boardNameLabel.hidden) self.projectVC.boardNameEditButton.hidden = false;
                 self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.carousel.center.x+self.projectVC.boardNameLabel.frame.size.width/2+17, self.projectVC.boardNameLabel.center.y);
             }
         }
@@ -784,12 +775,15 @@ static FirebaseHelper *sharedHelper = nil;
             for (NSString *commentThreadID in [snapshot.value allKeys]) {
                 
                 NSDictionary *infoDict = [[snapshot.value objectForKey:commentThreadID] objectForKey:@"info"];
-                NSDictionary *commentDict = @{ @"location" : [infoDict objectForKey:@"location"],
-                                               @"owner" : [infoDict objectForKey:@"owner"],
-                                               @"title" : [infoDict objectForKey:@"title"]
-                                               };
+                NSMutableDictionary *commentDict = [@{ @"location" : [infoDict objectForKey:@"location"],
+                                                       @"owner" : [infoDict objectForKey:@"owner"],
+                                                       @"title" : [infoDict objectForKey:@"title"],
+                                                       @"updatedAt" : [[snapshot.value objectForKey:commentThreadID] objectForKey:@"updatedAt"],
+                                                       } mutableCopy];
                 
-                [[self.comments objectForKey:commentsID] setObject:[commentDict mutableCopy] forKey:commentThreadID];
+                if ([[snapshot.value objectForKey:commentThreadID] objectForKey:@"messages"]) [commentDict setObject:[[snapshot.value objectForKey:commentThreadID] objectForKey:@"messages"] forKey:@"messages"];
+                
+                [[self.comments objectForKey:commentsID] setObject:commentDict forKey:commentThreadID];
                 
                 [self observeCommentThreadWithID:commentThreadID boardID:boardID];
             }
@@ -854,14 +848,12 @@ static FirebaseHelper *sharedHelper = nil;
     
     NSString *commentsID = [[self.boards objectForKey:boardID] objectForKey:@"commentsID"];
     
-    NSString *commentsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
+    NSString *commentsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@/%@", commentsID, commentThreadID];
     Firebase *ref = [[Firebase alloc] initWithUrl:commentsString];
     
     NSMutableDictionary *threadDict = [[self.comments objectForKey:commentsID] objectForKey:commentThreadID];
     
-    NSString *infoString = [NSString stringWithFormat:@"%@/info", commentThreadID];
-    
-    [[ref childByAppendingPath:infoString] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot){
+    [[ref childByAppendingPath:@"info"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot){
         
         if (snapshot.value == [NSNull null] || [[snapshot.value objectForKey:@"owner"] isEqualToString:self.uid]) return;
         
@@ -886,9 +878,7 @@ static FirebaseHelper *sharedHelper = nil;
         }
     }];
     
-    NSString *messageString = [NSString stringWithFormat:@"%@/messages", commentThreadID];
-    
-    [[ref childByAppendingPath:messageString] observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot) {
+    [[ref childByAppendingPath:@"messages"] observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot) {
         
         if(![threadDict objectForKey:@"messages"]) [threadDict setObject:[NSMutableDictionary dictionary] forKey:@"messages"];
         
@@ -902,6 +892,11 @@ static FirebaseHelper *sharedHelper = nil;
 
             }
         }
+    }];
+    
+    [[ref childByAppendingPath:@"updatedAt"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+        
+        [threadDict setObject:snapshot.value forKey:@"updatedAt"];
     }];
 }
 
@@ -973,9 +968,7 @@ static FirebaseHelper *sharedHelper = nil;
     [oldProjectRef setValue:dateString];
 }
 
--(void) setProjectUpdatedAt {
-    
-    NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+-(void) setProjectUpdatedAt:(NSString *)dateString {
     
     [[self.projects objectForKey:self.currentProjectID] setObject:dateString forKey:@"updatedAt"];
     
@@ -992,6 +985,25 @@ static FirebaseHelper *sharedHelper = nil;
     Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
     [boardRef setValue:dateString];
     [[self.boards objectForKey:self.projectVC.activeBoardID] setObject:dateString forKey:@"updatedAt"];
+    
+    [self setProjectUpdatedAt:dateString];
+}
+
+-(void) setCommentThread:(NSString *)commentThreadID updatedAt:(NSString *)dateString {
+    
+    NSString *commentsID = [[self.boards objectForKey:self.projectVC.currentBoardView.boardID] objectForKey:@"commentsID"];
+    
+    NSString *commentString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@/%@/updatedAt", commentsID, commentThreadID];
+    Firebase *commentRef = [[Firebase alloc] initWithUrl:commentString];
+    [commentRef setValue:dateString];
+    [[[self.comments objectForKey:commentsID] objectForKey:commentThreadID] setObject:dateString forKey:@"updatedAt"];
+    
+    NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/updatedAt", self.projectVC.activeBoardID];
+    Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
+    [boardRef setValue:dateString];
+    [[self.boards objectForKey:self.projectVC.activeBoardID] setObject:dateString forKey:@"updatedAt"];
+    
+    [self setProjectUpdatedAt:dateString];
 }
 
 -(NSIndexPath *) getLastViewedProjectIndexPath {
@@ -1078,6 +1090,9 @@ static FirebaseHelper *sharedHelper = nil;
             
             NSString *messageString = [NSString stringWithFormat:@"%@/messages", commentThreadID];
             [[commentsRef childByAppendingPath:messageString] removeAllObservers];
+            
+            NSString *updatedString = [NSString stringWithFormat:@"%@/updatedAt", commentThreadID];
+            [[commentsRef childByAppendingPath:updatedString] removeAllObservers];
         }
     }
     

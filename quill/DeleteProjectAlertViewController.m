@@ -150,7 +150,6 @@
     [[[FirebaseHelper sharedHelper].team objectForKey:@"projects"] removeObjectForKey:[FirebaseHelper sharedHelper].currentProjectID];
     [[FirebaseHelper sharedHelper].chats removeObjectForKey:chatID];
     
-    
     [projectVC.masterView.projectsTable reloadData];
     
     if ([FirebaseHelper sharedHelper].visibleProjectIDs.count > 0) {

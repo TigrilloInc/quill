@@ -89,6 +89,8 @@
 		12899BB21A1AEC3B00AF95BD /* carouselfade.png in Resources */ = {isa = PBXBuildFile; fileRef = 12899BB11A1AEC3A00AF95BD /* carouselfade.png */; };
 		128DC3071A1E8C7000FF6076 /* ChatTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 128DC3061A1E8C7000FF6076 /* ChatTableViewCell.m */; };
 		128DC3201A22C01800FF6076 /* AvatarPopoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 128DC31F1A22C01800FF6076 /* AvatarPopoverViewController.m */; };
+		129667501AAE297000CB57FA /* usercomment3.png in Resources */ = {isa = PBXBuildFile; fileRef = 1296674F1AAE297000CB57FA /* usercomment3.png */; };
+		129667581AAE335200CB57FA /* usercomment4.png in Resources */ = {isa = PBXBuildFile; fileRef = 129667571AAE335200CB57FA /* usercomment4.png */; };
 		129E127219648A2C00ED9D42 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127119648A2C00ED9D42 /* Foundation.framework */; };
 		129E127419648A2C00ED9D42 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127319648A2C00ED9D42 /* CoreGraphics.framework */; };
 		129E127619648A2C00ED9D42 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127519648A2C00ED9D42 /* UIKit.framework */; };
@@ -366,6 +368,8 @@
 		128DC3061A1E8C7000FF6076 /* ChatTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatTableViewCell.m; sourceTree = "<group>"; };
 		128DC31E1A22C01800FF6076 /* AvatarPopoverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AvatarPopoverViewController.h; sourceTree = "<group>"; };
 		128DC31F1A22C01800FF6076 /* AvatarPopoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AvatarPopoverViewController.m; sourceTree = "<group>"; };
+		1296674F1AAE297000CB57FA /* usercomment3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = usercomment3.png; path = Resources/usercomment3.png; sourceTree = "<group>"; };
+		129667571AAE335200CB57FA /* usercomment4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = usercomment4.png; path = Resources/usercomment4.png; sourceTree = "<group>"; };
 		129E126E19648A2C00ED9D42 /* quill.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = quill.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		129E127119648A2C00ED9D42 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		129E127319648A2C00ED9D42 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -775,6 +779,8 @@
 				12860FBC1A40C8CD0074B452 /* userbutton6shadow.png */,
 				12860FC31A41170E0074B452 /* usercomment.png */,
 				1213D7A51A646D5D001FDEA9 /* usercomment2.png */,
+				1296674F1AAE297000CB57FA /* usercomment3.png */,
+				129667571AAE335200CB57FA /* usercomment4.png */,
 				1243AFB219FF0A900029B976 /* userhighlight.png */,
 				12860FC71A414FF70074B452 /* userhighlight2.png */,
 				12860FC51A4140310074B452 /* usercommenthighlight2.png */,
@@ -1111,6 +1117,7 @@
 				12ABCE8E1A5E491A00C4C7DC /* delete.png in Resources */,
 				12C4E4E31A3B9DA800DB0E23 /* carouselfadeleft.png in Resources */,
 				12C4E4D11A3B704400DB0E23 /* board4.png in Resources */,
+				129667581AAE335200CB57FA /* usercomment4.png in Resources */,
 				12860FDC1A44AE040074B452 /* redo.png in Resources */,
 				12860FC61A4140310074B452 /* usercommenthighlight2.png in Resources */,
 				12860FA91A3FBE750074B452 /* SourceSansPro-Regular.ttf in Resources */,
@@ -1122,6 +1129,7 @@
 				1225C434199D4AB30061027B /* board2.png in Resources */,
 				12860FD61A43CEE60074B452 /* clear.png in Resources */,
 				123D200B1A5A5365004D5743 /* red.png in Resources */,
+				129667501AAE297000CB57FA /* usercomment3.png in Resources */,
 				12D5DBAA1A4A8619003727AC /* gear1.png in Resources */,
 				12D5DB971A48F167003727AC /* marker.png in Resources */,
 			);

@@ -28,6 +28,12 @@
     
     [super viewDidLoad];
     
+    [[UITextField appearance] setTintColor:[UIColor grayColor]];
+    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"SourceSansPro-Light" size:24.0], NSFontAttributeName, nil]];
+    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5 forBarMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setTintColor:[UIColor blackColor]];
+    [[UINavigationBar appearance] setBarTintColor:[UIColor whiteColor]];
+    
     self.chatTextField.delegate = self;
     self.editBoardNameTextField.delegate = self;
     self.carousel.delegate = self;
@@ -104,11 +110,7 @@
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:instabugVC];
         nav.modalPresentationStyle = UIModalPresentationFormSheet;
         nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-        nav.navigationBar.barTintColor = [UIColor whiteColor];
-        nav.navigationBar.tintColor = [UIColor blackColor];
-        [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"SourceSansPro-Light" size:24.0], NSFontAttributeName, nil]];
-        [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5 forBarMetrics:UIBarMetricsDefault];
-        
+
         UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
         logoImageView.frame = CGRectMake(195, 8, 32, 32);
         logoImageView.tag = 800;
@@ -127,7 +129,7 @@
 -(void) setUpDrawMenu {
     
     UIButton *closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    closeButton.frame = CGRectMake(15, 34, 20, 18);
+    closeButton.frame = CGRectMake(10, 28, 30, 30);
     [closeButton setImage:[UIImage imageNamed:@"back.png"] forState:UIControlStateNormal];
     closeButton.adjustsImageWhenHighlighted = NO;
     closeButton.tintColor = [UIColor blackColor];
@@ -141,7 +143,7 @@
     [projectNameButton addTarget:self action:@selector(closeTapped) forControlEvents:UIControlEventTouchUpInside];
     projectNameButton.tintColor = [UIColor blackColor];
     projectNameButton.hidden = true;
-    projectNameButton.frame = CGRectMake(30, 24, 0, 0);
+    projectNameButton.frame = CGRectMake(35, 24, 0, 0);
     [self.view addSubview:projectNameButton];
     projectNameButton.tag = 101;
     
@@ -186,12 +188,12 @@
         UIImage *buttonImage = [UIImage imageNamed:imageName];
         if (i>2 && i!=5) {
             UIImageView *selectedImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"selected.png"]];
-            selectedImage.frame = CGRectMake(-12.5, -12.5, 75, 75);
+            selectedImage.frame = CGRectMake(-7.5, -7.5, 75, 75);
             selectedImage.tag = 50;
             [button addSubview:selectedImage];
             if (i!=3) selectedImage.hidden = true;
         }
-        button.frame = CGRectMake(0, 0, 50, 50);
+        button.frame = CGRectMake(0, 0, 60, 60);
         [button setBackgroundImage:buttonImage forState:UIControlStateNormal];
         button.center = CGPointMake(272+i*80, 720);
         [button addTarget:self action:NSSelectorFromString([NSString stringWithFormat:@"%@Tapped:", self.drawButtons[i]]) forControlEvents:UIControlEventTouchUpInside];
@@ -218,7 +220,7 @@
     if (self.userRole > 0) {
         
         UIButton *editBoardNameButton = (UIButton *)[self.view viewWithTag:103];
-        editBoardNameButton.frame = CGRectMake(boardNameLabel.frame.origin.x+boardNameLabel.frame.size.width+6, boardNameLabel.frame.origin.y+4, 17, 17);
+        editBoardNameButton.frame = CGRectMake(boardNameLabel.frame.origin.x+boardNameLabel.frame.size.width-5, boardNameLabel.frame.origin.y-6, 36, 36);
         editBoardNameButton.hidden = false;
         [self.view bringSubviewToFront:editBoardNameButton];
         
@@ -291,7 +293,7 @@
     button.hidden = true;
     
     UITextField *textField = (UITextField *)[self.view viewWithTag:104];
-    textField.frame = CGRectMake(label.frame.origin.x+12, label.frame.origin.y+1, 500, 25);
+    textField.frame = CGRectMake(label.frame.origin.x+17, label.frame.origin.y+1, 500, 25);
     NSString *boardName = [[[FirebaseHelper sharedHelper].boards objectForKey:self.activeBoardID] objectForKey:@"name"];
     if ([boardName isEqualToString:@"Untitled"]) textField.text = nil;
     else textField.text = boardName;
@@ -382,7 +384,7 @@
     [self.draggableCollectionView reloadData];
     
     [self layoutAvatars];
-    
+
     if (self.userRole > 1) self.editButton.hidden = false;
     else self.editButton.hidden = true;
 
@@ -738,14 +740,14 @@
     [self.currentBoardView layoutAvatars];
     
     NSString *boardName = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"name"];
-    NSString *labelString = [NSString stringWithFormat:@"|  %@", boardName];
+    NSString *labelString = [NSString stringWithFormat:@"|   %@", boardName];
     UILabel *boardNameLabel = (UILabel *)[self.view viewWithTag:102];
     boardNameLabel.text = labelString;
     if ([boardName isEqualToString:@"Untitled"]) boardNameLabel.alpha = .2;
     else boardNameLabel.alpha = 1;
     [boardNameLabel sizeToFit];
     CGRect projectNameRect = [self.view viewWithTag:101].frame;
-    boardNameLabel.frame = CGRectMake(projectNameRect.size.width+36, projectNameRect.origin.y+5.5, boardNameLabel.frame.size.width, boardNameLabel.frame.size.height);
+    boardNameLabel.frame = CGRectMake(projectNameRect.size.width+46, projectNameRect.origin.y+5.5, boardNameLabel.frame.size.width, boardNameLabel.frame.size.height);
     
     self.messages = [NSMutableArray array];
     [self.chatTable reloadData];
@@ -859,7 +861,7 @@
                          [self.view bringSubviewToFront:self.addBoardButton];
                          
                          if ([[FirebaseHelper sharedHelper].projects.allKeys containsObject:[FirebaseHelper sharedHelper].currentProjectID]) {
-                             
+
                              [self.masterView.projectsTable reloadData];
                              [self.masterView.projectsTable selectRowAtIndexPath:self.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
                          }
@@ -1007,11 +1009,41 @@
                     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"commentsID"];
                     NSString *commentsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
                     Firebase *commentsRef = [[Firebase alloc] initWithUrl:commentsString];
+                    [commentsRef removeAllObservers];
+                    
+                    for (NSString *commentThreadID in [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] allKeys]) {
+                        
+                        NSString *infoString = [NSString stringWithFormat:@"%@/info", commentThreadID];
+                        [[commentsRef childByAppendingPath:infoString] removeAllObservers];
+                        
+                        NSString *messageString = [NSString stringWithFormat:@"%@/messages", commentThreadID];
+                        [[commentsRef childByAppendingPath:messageString] removeAllObservers];
+                        
+                        NSString *updatedString = [NSString stringWithFormat:@"%@/updatedAt", commentThreadID];
+                        [[commentsRef childByAppendingPath:updatedString] removeAllObservers];
+                    }
+                    
                     [commentsRef removeValue];
+                    
                     [[FirebaseHelper sharedHelper].comments removeObjectForKey:commentsID];
                     
                     NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
                     Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
+                    [[boardRef childByAppendingPath:@"name"] removeAllObservers];
+                    [[boardRef childByAppendingPath:@"updatedAt"] removeAllObservers];
+                    
+                    for (NSString *userID in [[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"undo"] allKeys]) {
+                        
+                        NSString *undoString = [NSString stringWithFormat:@"undo/%@", userID];
+                        [[boardRef childByAppendingPath:undoString] removeAllObservers];
+                    }
+                    
+                    for (NSString *userID in [[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"subpaths"] allKeys]) {
+                        
+                        NSString *subpathsString = [NSString stringWithFormat:@"subpaths/%@", userID];
+                        [[boardRef childByAppendingPath:subpathsString] removeAllObservers];
+                    }
+                    
                     [boardRef removeValue];
                     [[FirebaseHelper sharedHelper].boards removeObjectForKey:boardID];
                 }
@@ -1043,12 +1075,13 @@
     self.boardNameLabel.hidden = false;
     
     if (self.userRole > 0) {
-        
-        self.editButton.hidden = false;
+
+        if (self.userRole > 1) self.editButton.hidden = false;
+        else self.editButton.hidden = true;
         self.addBoardButton.hidden = false;
         self.addBoardBackgroundImage.hidden = false;
         self.chatView.hidden = false;
-        if (self.editing) self.boardNameEditButton.hidden = false;
+        if (self.boardNameLabel.text.length > 0) self.boardNameEditButton.hidden = false;
     }
     else {
         
@@ -1079,11 +1112,7 @@
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
     nav.modalPresentationStyle = UIModalPresentationFormSheet;
     nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    nav.navigationBar.barTintColor = [UIColor whiteColor];
-    nav.navigationBar.tintColor = [UIColor blackColor];
-    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"SourceSansPro-Light" size:24.0], NSFontAttributeName, nil]];
-    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5 forBarMetrics:UIBarMetricsDefault];
-    
+
     UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
     logoImageView.frame = CGRectMake(160, 8, 32, 32);
     logoImageView.tag = 800;
@@ -1572,9 +1601,9 @@
         if (self.activeBoardID){
             
             NSString *boardName = [[[FirebaseHelper sharedHelper].boards objectForKey:self.activeBoardID] objectForKey:@"name"];
-            NSString *labelString = [NSString stringWithFormat:@"|  %@", boardName];
+            NSString *labelString = [NSString stringWithFormat:@"|   %@", boardName];
             label.text = labelString;
-            if ([label.text isEqualToString:@"Untitled"]) label.alpha = .2;
+            if ([boardName isEqualToString:@"Untitled"]) label.alpha = .2;
             else label.alpha = 1;
             
             label.hidden = false;
@@ -1689,13 +1718,11 @@
     NSString *boardName = [boardDict objectForKey:@"name"];
     
     if (boardName) {
+    
         self.boardNameLabel.text = boardName;
         if ([boardName isEqualToString:@"Untitled"]) self.boardNameLabel.alpha = .2;
         else self.boardNameLabel.alpha = 1;
-        if (self.userRole > 0) self.boardNameEditButton.hidden = false;
     }
-    else self.boardNameEditButton.hidden = true;
-    
     
     double viewedAt = [[[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid] doubleValue];
     double updatedAt = [[boardDict objectForKey:@"updatedAt"] doubleValue];
@@ -1738,11 +1765,17 @@
         NSString *chatString;
         NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
         
-        if (self.activeCommentThreadID) {
+        if (self.activeCommentThreadID != nil) {
+            
             NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"commentsID"];
             chatString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@/%@/messages", commentsID, self.activeCommentThreadID];
+            [[FirebaseHelper sharedHelper] setCommentThread:self.activeCommentThreadID updatedAt:dateString];
         }
-        else chatString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/chats/%@", self.chatID];
+        else {
+            
+            chatString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/chats/%@", self.chatID];
+            [[FirebaseHelper sharedHelper] setProjectUpdatedAt:dateString];
+        }
         
         Firebase *chatRef = [[Firebase alloc] initWithUrl:chatString];
         NSDictionary *messageDict = @{ @"user" : [FirebaseHelper sharedHelper].uid ,
@@ -1750,8 +1783,6 @@
                                        @"sentAt" : dateString
                                        };
         [[chatRef childByAutoId] setValue:messageDict];
-        
-        [[FirebaseHelper sharedHelper] setProjectUpdatedAt];
         
         self.chatTextField.text = nil;
     }
@@ -1784,7 +1815,7 @@
         editBoardNameTextField.hidden = true;
         
         UILabel *boardNameLabel = (UILabel *)[self.view viewWithTag:102];
-        NSString *boardNameString = [NSString stringWithFormat:@"|  %@", editBoardNameTextField.text];
+        NSString *boardNameString = [NSString stringWithFormat:@"|   %@", editBoardNameTextField.text];
         boardNameLabel.text = boardNameString;
         if ([boardNameLabel.text isEqualToString:@"Untitled"]) boardNameLabel.alpha = .2;
         else boardNameLabel.alpha = 1;
@@ -1799,7 +1830,7 @@
         self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+122, self.boardNameLabel.center.y);
         
         UIButton *editBoardNameButton = (UIButton *)[self.view viewWithTag:103];
-        editBoardNameButton.frame = CGRectMake(boardNameLabel.frame.origin.x+boardNameLabel.frame.size.width+6, boardNameLabel.frame.origin.y+4, 17, 17);
+        editBoardNameButton.frame = CGRectMake(boardNameLabel.frame.origin.x+boardNameLabel.frame.size.width-5, boardNameLabel.frame.origin.y-6, 36, 36);
         editBoardNameButton.hidden = false;
         
         NSString *boardNameRefString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/name", self.boardIDs[self.carousel.currentItemIndex]];
@@ -1829,6 +1860,9 @@
         [titleRef setValue:self.commentTitleTextField.text];
         
         [self.chatTextField becomeFirstResponder];
+        
+        NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+        [[FirebaseHelper sharedHelper] setCommentThread:self.activeCommentThreadID updatedAt:dateString];
     }
     
     return NO;

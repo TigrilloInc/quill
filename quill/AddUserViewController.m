@@ -429,7 +429,7 @@
             userNameLabel.alpha = 1;
             
             UISegmentedControl *roleControl = [[UISegmentedControl alloc] initWithItems:@[@"Viewer", @"Collaborator"]];
-            roleControl.center = CGPointMake(400, cell.frame.size.height/2);
+            roleControl.frame = CGRectMake(288, 5, 180, 38);
             roleControl.tintColor = [UIColor lightGrayColor];
             NSInteger roleInt;
             if (projectVC.userRole == 0) {
@@ -495,8 +495,8 @@
             [cell.contentView addSubview:mailImage];
             
             UISegmentedControl *roleControl = [[UISegmentedControl alloc] initWithItems:@[@"Viewer", @"Collaborator"]];
+            roleControl.frame = CGRectMake(288, 5, 180, 38);
             roleControl.tintColor = [UIColor lightGrayColor];
-            roleControl.center = CGPointMake(398, cell.frame.size.height/2);
             int roleInt;
             if (projectVC.userRole == 0) {
                 roleControl.userInteractionEnabled = false;

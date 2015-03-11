@@ -163,11 +163,7 @@
         
         nav.modalPresentationStyle = UIModalPresentationFormSheet;
         nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-        nav.navigationBar.barTintColor = [UIColor whiteColor];
-        nav.navigationBar.tintColor = [UIColor blackColor];
-        [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys: [UIFont fontWithName:@"SourceSansPro-Light" size:24.0], NSFontAttributeName, nil]];
-        [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5 forBarMetrics:UIBarMetricsDefault];
-        
+
         [nav.navigationBar addSubview:logoImageView];
         
         [projectVC presentViewController:nav animated:YES completion:nil];

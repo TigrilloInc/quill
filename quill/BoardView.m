@@ -157,6 +157,13 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         button.transform = tr;
         [button addTarget:self action:@selector(commentTapped:) forControlEvents:UIControlEventTouchUpInside];
         
+        NSString *viewedAtString = [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid];
+        
+        if ([[[commentDict objectForKey:commentThreadID] objectForKey:@"updatedAt"] doubleValue] > [viewedAtString doubleValue]) {
+            
+            [button.commentImage setImage:[UIImage imageNamed:@"usercomment4.png"]];
+        }
+        
         if ([button.userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
             UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(commentLongPress:)];
             longPress.minimumPressDuration = .2;
@@ -268,7 +275,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     NSString *subpathsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", self.boardID, [FirebaseHelper sharedHelper].uid];
     Firebase *subpathsRef = [[Firebase alloc] initWithUrl:subpathsString];
-    [subpathsRef updateChildValues:@{ dateString  :  subpathValues }];
+    [subpathsRef updateChildValues:@{dateString : subpathValues}];
     [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:subpathValues forKey:dateString];
 
     [[FirebaseHelper sharedHelper] resetUndo];
@@ -410,7 +417,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", self.boardID];
     Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
     
-    NSDictionary *penUpDict = @{ dateString  :  @"penUp" };
+    NSDictionary *penUpDict = @{dateString : @"penUp"};
     
     [self.paths addObject:penUpDict];
     
@@ -433,34 +440,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:@"penUp" forKey:dateString];
     
-    [[FirebaseHelper sharedHelper] setProjectUpdatedAt];
     [[FirebaseHelper sharedHelper] setActiveBoardUpdatedAt];
-
-//    if (self.waitingPaths.count > 1) {
-//        
-//        //[projectVC drawBoard:self];
-//        [self.waitingPaths addObject:@{ dateString : @"penUp"}];
-//        for (NSDictionary *subpathValues in self.waitingPaths) [self drawSubpath:subpathValues];
-//    }
-//    
-//    self.waitingPaths = [NSMutableArray array];
-    
-    //    if (self.waitingPaths.allKeys.count > 0) {
-    //
-    //        NSMutableDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"];
-    //
-    //        for (NSString *userID in self.waitingPaths.allKeys) {
-    //
-    //            NSDictionary *userDict = [self.waitingPaths objectForKey:userID];
-    //
-    //            for (NSString *dateString in userDict.allKeys) {
-    //
-    //                [[subpathsDict objectForKey:userID] setObject:[userDict objectForKey:dateString] forKey:dateString];
-    //            }
-    //        }
-    //
-    //        [projectVC drawBoard:self];
-    //    }
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -630,13 +610,20 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                                    @"title" : @""
                                    };
     
+    NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+    
     NSString *commentThreadString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
     Firebase *commentThreadRef = [[Firebase alloc] initWithUrl:commentThreadString];
     
     Firebase *commentThreadRefWithID = [commentThreadRef childByAutoId];
-    [commentThreadRefWithID setValue:@{ @"info" : commentDict }];
+    [commentThreadRefWithID setValue:@{ @"info" : commentDict,
+                                        @"updatedAt" : dateString
+                                        }];
     
-    [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] setObject:[commentDict mutableCopy] forKey:commentThreadRefWithID.key];
+    NSMutableDictionary *mutableCommentDict = [commentDict mutableCopy];
+    [mutableCommentDict setObject:dateString forKey:@"updatedAt"];
+    
+    [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] setObject:mutableCommentDict forKey:commentThreadRefWithID.key];
     [[FirebaseHelper sharedHelper] observeCommentThreadWithID:commentThreadRefWithID.key boardID:self.boardID];
     
     CommentButton *button = [CommentButton buttonWithType:UIButtonTypeCustom];
@@ -659,7 +646,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [self.commentButtons addObject:button];
     
     [self commentTapped:button];
-    
 }
 
 -(void) commentLongPress:(UILongPressGestureRecognizer*)sender {
@@ -739,7 +725,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                              NSString *locationString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@/%@/info/location", commentsID, button.commentThreadID];
                              Firebase *locationRef = [[Firebase alloc] initWithUrl:locationString];
                              [locationRef setValue:locationDict];
-                             
                          }];
     }
 }

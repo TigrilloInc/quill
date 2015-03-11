@@ -18,11 +18,12 @@
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
+    
     if (self) {
         
         self.adjustsImageWhenHighlighted = NO;
-        
-        self.commentImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"usercomment2.png"]];
+
+        self.commentImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"usercomment3.png"]];
         self.commentImage.center = CGPointMake(125, 136);
         [self addSubview:self.commentImage];
         
@@ -51,6 +52,9 @@
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"commentsID"];
     NSString *commentThreadString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@/%@/", commentsID, self.commentThreadID];
     Firebase *commentThreadRef = [[Firebase alloc] initWithUrl:commentThreadString];
+    [[commentThreadRef childByAppendingPath:@"info"] removeAllObservers];
+    [[commentThreadRef childByAppendingPath:@"messages"] removeAllObservers];
+    [[commentThreadRef childByAppendingPath:@"updatedAt"] removeAllObservers];
     [commentThreadRef removeValue];
     
     [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] removeObjectForKey:self.commentThreadID];

@@ -53,8 +53,9 @@
 - (void) setInProject:(NSString *)projectID;
 - (void) setInBoard:(NSString *)boardID;
 - (void) setProjectViewedAt;
-- (void) setProjectUpdatedAt;
+- (void) setProjectUpdatedAt:(NSString *)dateString;
 - (void) setActiveBoardUpdatedAt;
+- (void) setCommentThread:(NSString *)commentThreadID updatedAt:(NSString *)dateString;
 - (void) resetUndo;
 - (NSIndexPath *) getLastViewedProjectIndexPath;
 - (void) removeAllObservers;

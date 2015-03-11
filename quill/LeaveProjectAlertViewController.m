@@ -78,11 +78,17 @@
     
     [FirebaseHelper sharedHelper].currentProjectID = nil;
     
-    if ([FirebaseHelper sharedHelper].visibleProjectIDs.count == 0) [projectVC hideAll];
-    else {
+    [projectVC.masterView.projectsTable reloadData];
+    
+    if ([FirebaseHelper sharedHelper].visibleProjectIDs.count > 0) {
+        
         NSIndexPath *mostRecent = [[FirebaseHelper sharedHelper] getLastViewedProjectIndexPath];
-        [projectVC.masterView.projectsTable reloadData];
         [projectVC.masterView tableView:projectVC.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
+    }
+    else {
+        
+        [projectVC hideAll];
+        [FirebaseHelper sharedHelper].currentProjectID = nil;
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];
