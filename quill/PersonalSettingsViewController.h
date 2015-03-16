@@ -14,6 +14,8 @@
     
     UIImageView *logoImage;
     UITapGestureRecognizer *outsideTapRecognizer;
+    NSMutableArray *teamNames;
+    NSMutableArray *teamEmails;
 }
 
 @property (weak, nonatomic) IBOutlet UITextField *nameTextField;

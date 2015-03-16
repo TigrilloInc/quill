@@ -37,7 +37,7 @@
     self.chatTextField.delegate = self;
     self.editBoardNameTextField.delegate = self;
     self.carousel.delegate = self;
-
+    
     self.carousel.type = iCarouselTypeCoverFlow2;
     self.carousel.bounceDistance = 0.1f;
     
@@ -344,13 +344,6 @@
     self.editing = false;
 }
 
--(void) setChatTableSize {
-    
-    if (self.userRole > 0) {
-        
-    }
-}
-
 -(void) updateDetails {
     
     self.chatTextField.hidden = false;
@@ -423,13 +416,15 @@
     }
     
     NSString *viewedAt = [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid];
+    
     if (!viewedAt) viewedAt = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     [self.messages addObject:viewedAt];
     
     NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
     [self.messages sortUsingDescriptors:@[sorter]];
     
-    if ([self.messages.lastObject isEqualToString:viewedAt] || (!self.activeCommentThreadID && self.chatViewed) || [self.viewedCommentThreadIDs containsObject:self.activeCommentThreadID]) {
+    if ([self.messages.lastObject isEqualToString:viewedAt] || (self.activeBoardID && [self.messages.firstObject isEqualToString:viewedAt]) || (!self.activeCommentThreadID && self.chatViewed) || ([self.viewedCommentThreadIDs containsObject:self.activeCommentThreadID])) {
+        
         [self.messages removeObject:viewedAt];
         self.chatViewed = true;
         if (![self.chatTextField isFirstResponder]) {
@@ -608,11 +603,13 @@
     NSString *boardID = boardRefWithID.key;
     
     [self.boardIDs addObject:boardID];
+    [self.viewedBoardIDs addObject:boardID];
     [[FirebaseHelper sharedHelper].loadedBoardIDs addObject:boardID];
     [[FirebaseHelper sharedHelper].boards setObject:[boardDict mutableCopy] forKey:boardID];
     [[FirebaseHelper sharedHelper].comments setObject:[NSMutableDictionary dictionary] forKey:commentsID];
     [[[FirebaseHelper sharedHelper].projects objectForKey:@"boards"] setObject:boardID forKey:boardNum];
     
+    [[FirebaseHelper sharedHelper] setProjectUpdatedAt:dateString];
     [[FirebaseHelper sharedHelper] observeBoardWithID:boardID];
 }
 
@@ -728,8 +725,8 @@
     NSString *boardID = self.currentBoardView.boardID;
     self.boardNameLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:24];
     [self.boardNameLabel sizeToFit];
+    self.boardNameLabel.center = CGPointMake(self.carousel.center.x, self.boardNameLabel.center.y);
     self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+17, self.boardNameLabel.center.y);
-    [self.viewedBoardIDs addObject:boardID];
     boardButton = button;
     self.activeBoardID = boardID;
     self.activeBoardUndoIndexDate = [[[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndexDate"];
@@ -804,6 +801,7 @@
     [(UIButton *)[self.view viewWithTag:5] setBackgroundImage:[UIImage imageNamed:@"pen.png"] forState:UIControlStateNormal];
     [self hideDrawMenu];
     
+    [self.viewedBoardIDs addObject:self.activeBoardID];
     self.activeBoardID = nil;
     self.activeCommentThreadID = nil;
     
@@ -945,6 +943,7 @@
     self.editBoardNameTextField.hidden = false;
     self.boardNameLabel.hidden = true;
     self.boardNameEditButton.hidden = true;
+    [self.carousel setScrollEnabled:NO];
     
     NSString *boardName = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"name"];
     
@@ -1144,6 +1143,9 @@
         NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@", self.currentBoardView.boardID, [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
         [ref setValue:undoDict];
+        
+        NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+        [[FirebaseHelper sharedHelper] setBoard:self.activeBoardID UpdatedAt:dateString];
     }
 }
 
@@ -1169,6 +1171,9 @@
         NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@/", self.currentBoardView.boardID, [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
         [ref setValue:undoDict];
+        
+        NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+        [[FirebaseHelper sharedHelper] setBoard:self.activeBoardID UpdatedAt:dateString];
     }
 }
 
@@ -1300,9 +1305,17 @@
     
     AddUserViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"AddUser"];
     
-    vc.modalPresentationStyle = UIModalPresentationFormSheet;
-    vc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    [self presentViewController:vc animated:YES completion:nil];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    nav.modalPresentationStyle = UIModalPresentationFormSheet;
+    nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    
+    UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+    logoImageView.frame = CGRectMake(105, 8, 32, 32);
+    logoImageView.tag = 800;
+    [nav.navigationBar addSubview:logoImageView];
+    
+    [self presentViewController:nav animated:YES completion:nil];
+    
 }
 
 - (IBAction)openChatTapped:(id)sender {
@@ -1459,7 +1472,6 @@
         }
         else chatTableRect.origin.y -= height;
         
-        
         self.chatTable.frame = chatTableRect;
         
         if (self.activeBoardID && self.carouselOffset > 0) {
@@ -1471,6 +1483,10 @@
             CGRect backgroundRect = self.currentBoardView.avatarBackgroundImage.frame;
             backgroundRect.origin.x += self.carouselOffset;
             self.currentBoardView.avatarBackgroundImage.frame = backgroundRect;
+            
+            CGRect labelRect = self.currentBoardView.userLabel.frame;
+            labelRect.origin.x -= self.carouselOffset;
+            self.currentBoardView.userLabel.frame = labelRect;
             
             for (AvatarButton *avatar in self.currentBoardView.avatarButtons) {
                 
@@ -1514,8 +1530,9 @@
     
     if ([self.chatTextField isFirstResponder] || [self.commentTitleTextField isFirstResponder]) {
         
-        
         self.chatTextField.text = nil;
+        
+        if (self.activeCommentThreadID) [self.viewedCommentThreadIDs addObject:self.activeCommentThreadID];
         self.activeCommentThreadID = nil;
         
         CGFloat height = [[notification.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
@@ -1560,6 +1577,10 @@
             CGRect backgroundRect = self.currentBoardView.avatarBackgroundImage.frame;
             backgroundRect.origin.x -= self.carouselOffset;
             self.currentBoardView.avatarBackgroundImage.frame = backgroundRect;
+            
+            CGRect labelRect = self.currentBoardView.userLabel.frame;
+            labelRect.origin.x -= self.carouselOffset;
+            self.currentBoardView.userLabel.frame = labelRect;
             
             for (AvatarButton *avatar in self.currentBoardView.avatarButtons) {
                 
@@ -1729,8 +1750,10 @@
     
     UIFont *labelFont;
     
-    if (updatedAt > viewedAt && ![self.viewedBoardIDs containsObject:boardID] && !newBoardCreated)
+    if (updatedAt > viewedAt && ![self.viewedBoardIDs containsObject:boardID] && !newBoardCreated) {
+        
         labelFont = [UIFont fontWithName:@"SourceSansPro-Semibold" size:24];
+    }
     else
         labelFont = [UIFont fontWithName:@"SourceSansPro-Light" size:24];
     
@@ -1747,6 +1770,8 @@
     else if (self.chatOpen && self.userRole == 0) [self openChat];
     
     if ([self.editBoardNameTextField isFirstResponder]) {
+        
+        [self.carousel setScrollEnabled:YES];
         [self.editBoardNameTextField resignFirstResponder];
         self.editBoardNameTextField.text = nil;
     }
@@ -1789,20 +1814,29 @@
     
     if ([textField isEqual:self.editBoardNameTextField]) {
         
+        [self.carousel setScrollEnabled:YES];
         [textField resignFirstResponder];
+
+        NSString *oldBoardName = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"name"];
         
-        NSString *boardNameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/name", self.boardIDs[self.carousel.currentItemIndex]];
-        Firebase *ref = [[Firebase alloc] initWithUrl:boardNameString];
-        [ref setValue:self.editBoardNameTextField.text];
-        [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] setObject:self.editBoardNameTextField.text forKey:@"name"];
-        
-        self.boardNameLabel.text = self.editBoardNameTextField.text;
-        if ([self.boardNameLabel.text isEqualToString:@"Untitled"]) self.boardNameLabel.alpha = .2;
-        else self.boardNameLabel.alpha = 1;
-        [self.boardNameLabel sizeToFit];
-        self.boardNameLabel.center = CGPointMake(self.carousel.center.x, self.boardNameLabel.center.y);
-        
-        self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+17, self.boardNameLabel.center.y);
+        if (![textField.text isEqualToString:oldBoardName]) {
+            
+            NSString *boardNameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/name", self.boardIDs[self.carousel.currentItemIndex]];
+            Firebase *ref = [[Firebase alloc] initWithUrl:boardNameString];
+            [ref setValue:self.editBoardNameTextField.text];
+            [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] setObject:self.editBoardNameTextField.text forKey:@"name"];
+            
+            self.boardNameLabel.text = self.editBoardNameTextField.text;
+            if ([self.boardNameLabel.text isEqualToString:@"Untitled"]) self.boardNameLabel.alpha = .2;
+            else self.boardNameLabel.alpha = 1;
+            [self.boardNameLabel sizeToFit];
+            self.boardNameLabel.center = CGPointMake(self.carousel.center.x, self.boardNameLabel.center.y);
+            
+            self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+17, self.boardNameLabel.center.y);
+            
+            NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+            [[FirebaseHelper sharedHelper] setBoard:self.boardIDs[self.carousel.currentItemIndex] UpdatedAt:dateString];
+        }
 
         [self cancelTapped:nil];
     }
@@ -1837,6 +1871,9 @@
         Firebase *ref = [[Firebase alloc] initWithUrl:boardNameRefString];
         [ref setValue:editBoardNameTextField.text];
         [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] setObject:editBoardNameTextField.text forKey:@"name"];
+        
+        NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+        [[FirebaseHelper sharedHelper] setBoard:self.activeBoardID UpdatedAt:dateString];
     }
     
     if ([textField isEqual:self.editProjectNameTextField]) {
@@ -1866,6 +1903,22 @@
     }
     
     return NO;
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    if (![textField isEqual:self.editProjectNameTextField] && ![textField isEqual:self.editBoardNameTextField]) return YES;
+    
+    if(range.length + range.location > textField.text.length) return NO;
+    
+    NSUInteger newLength = [textField.text length] + [string length] - range.length;
+    NSUInteger limit;
+    
+    if ([textField isEqual:self.editProjectNameTextField]) limit = 21;
+    else limit = 41;
+    
+    if (newLength > limit) return NO;
+    else return YES;
 }
 
 #pragma mark - Chat table view data source

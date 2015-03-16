@@ -37,18 +37,66 @@
 
 - (IBAction)doneTapped:(id)sender {
 
-    if (self.nameTextField.text.length > 0) {
+    if (self.nameTextField.text.length == 0) {
         
-        NSString *nameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/name/", [FirebaseHelper sharedHelper].uid];
-        Firebase *nameRef = [[Firebase alloc] initWithUrl:nameString];
-        [nameRef setValue:self.nameTextField.text];
+        self.nameLabel.text = @"Please enter your name.";
+        return;
+    }
+    
+    if (self.nameTextField.text.length == 1) {
         
-        [FirebaseHelper sharedHelper].userName = self.nameTextField.text;
-        [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:self.nameTextField.text forKey:@"name"];
+        self.nameLabel.text = @"Names must be at least 2 letters long.";
+        return;
+    }
+    
+    if ([self.nameTextField.text rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location != NSNotFound || [self.nameTextField.text rangeOfCharacterFromSet:[NSCharacterSet decimalDigitCharacterSet]].location != NSNotFound || [self.nameTextField.text rangeOfCharacterFromSet:[[NSCharacterSet alphanumericCharacterSet] invertedSet]].location != NSNotFound) {
         
-        [[FirebaseHelper sharedHelper] observeLocalUser];
+        self.nameLabel.text = @"Names cannot contain spaces, numbers, or special characters.";
+        return;
+    }
+    
+    NSMutableArray *nameArray = [NSMutableArray array];
+
+    for (NSString *userID in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
         
-        [[FirebaseHelper sharedHelper].projectVC dismissViewControllerAnimated:YES completion:nil];
+        NSString *userName = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"name"];
+        [nameArray addObject:userName];
+    }
+
+    if ([nameArray containsObject:self.nameTextField.text]) {
+        
+        self.nameLabel.text = @"That name is already in use.";
+        return;
+    }
+    
+    NSString *nameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/name/", [FirebaseHelper sharedHelper].uid];
+    Firebase *nameRef = [[Firebase alloc] initWithUrl:nameString];
+    [nameRef setValue:self.nameTextField.text];
+    
+    [FirebaseHelper sharedHelper].userName = self.nameTextField.text;
+    [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:self.nameTextField.text forKey:@"name"];
+    
+    [[FirebaseHelper sharedHelper] observeLocalUser];
+    
+    [[FirebaseHelper sharedHelper].projectVC dismissViewControllerAnimated:YES completion:nil];
+
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+
+    if(range.length + range.location > textField.text.length) return NO;
+    
+    NSUInteger newLength = [textField.text length] + [string length] - range.length;
+    
+    if (newLength > 16) {
+        
+        self.nameLabel.text = @"Names must be 15 characters or less.";
+        return NO;
+    }
+    else {
+        
+        self.nameLabel.text = @"What do people call you?";
+        return YES;
     }
 }
 

@@ -17,6 +17,7 @@
 #import "NSDate+ServerDate.h"
 #import "AvatarButton.h"
 #import "Reachability.h"
+#import "NameFromInviteViewController.h"
 #import "UserDeletedAlertViewController.h"
 #import <Instabug/Instabug.h>
 
@@ -91,10 +92,10 @@ static FirebaseHelper *sharedHelper = nil;
             [authClient logout];
             [self checkAuthStatus];
         }
-        
         else if (user == nil) {
             
             SignInViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignIn"];
+            //SignUpFromInviteViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignUpFromInvite"];
             
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
             nav.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -122,28 +123,10 @@ static FirebaseHelper *sharedHelper = nil;
     
     if (self.projectVC.presentedViewController) [self.projectVC dismissViewControllerAnimated:YES completion:nil];
     
-    self.projectVC.masterView.teamButton.hidden = true;
-    self.projectVC.masterView.teamMenuButton.hidden = true;
-    self.projectVC.masterView.nameButton.hidden = true;
-    self.projectVC.masterView.avatarButton.hidden = true;
-    self.projectVC.projectNameLabel.hidden = true;
-    self.projectVC.editButton.hidden = true;
-    self.projectVC.carousel.hidden = true;
-    self.projectVC.chatAvatar.hidden = true;
-    self.projectVC.sendMessageButton.hidden = true;
-    self.projectVC.boardNameLabel.hidden = true;
-    self.projectVC.boardNameEditButton.hidden = true;
-    self.projectVC.editBoardNameTextField.hidden = true;
-    for (AvatarButton *avatar in self.projectVC.avatars) avatar.hidden = true;
-    self.projectVC.avatarBackgroundImage.hidden = true;
-    self.projectVC.addUserButton.hidden = true;
-    self.projectVC.chatTextField.hidden = true;
-    self.projectVC.addBoardBackgroundImage.hidden = true;
-    self.projectVC.addBoardButton.hidden = true;
-    self.projectVC.chatOpenButton.hidden = true;
-    
     [[FirebaseHelper sharedHelper] removeAllObservers];
     [[FirebaseHelper sharedHelper] clearData];
+    
+    [self.projectVC hideAll];
     
     NSString *tokenString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/tokens/%@", [self.inviteURL.host stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 
@@ -159,7 +142,19 @@ static FirebaseHelper *sharedHelper = nil;
         self.teamID = [snapshot.value objectForKey:@"teamID"];
         self.teamName = [snapshot.value objectForKey:@"teamName"];
         self.email = [snapshot.value objectForKey:@"email"];
+        
+        [self.team setObject:[NSMutableDictionary dictionary] forKey:@"users"];
+        
+        for (NSString *userID in [[snapshot.value objectForKey:@"users"] allKeys]) {
+            
+            NSString *userName = [[snapshot.value objectForKey:@"users"] objectForKey:userID];
+            NSMutableDictionary *nameDict = [@{@"name" : userName} mutableCopy];
+            [[self.team objectForKey:@"users"] setObject:nameDict forKey:userID];
+        }
+
         if ([snapshot.value objectForKey:@"project"]) self.invitedProject = [snapshot.value objectForKey:@"project"];
+        
+        [Instabug setDefaultEmail:self.email];
         
         SignUpFromInviteViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignUpFromInvite"];
         vc.invitedBy = [snapshot.value objectForKey:@"invitedBy"];
@@ -172,8 +167,6 @@ static FirebaseHelper *sharedHelper = nil;
         logoImageView.frame = CGRectMake(155, 8, 32, 32);
         logoImageView.tag = 800;
         [nav.navigationBar addSubview:logoImageView];
-        
-        [Instabug setDefaultEmail:self.email];
         
         [self.projectVC presentViewController:nav animated:YES completion:nil];
     }];
@@ -193,7 +186,25 @@ static FirebaseHelper *sharedHelper = nil;
         
         [Instabug setDefaultEmail:self.email];
         
-        if ([[snapshot.value objectForKey:@"deleted"] integerValue] == 1) {
+        UINavigationController *nav = (UINavigationController *)self.projectVC.presentedViewController;
+        SignInViewController *signInVC = (SignInViewController *)nav.viewControllers[0];
+        
+        if (!self.teamID) {
+            
+            [signInVC accountCreated];
+        }
+        else if (!self.userName) {
+            
+            NameFromInviteViewController *newNameVC = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"NameFromInvite"];
+            
+            UIImageView *logoImage = (UIImageView *)[signInVC.navigationController.navigationBar viewWithTag:800];
+            logoImage.hidden = true;
+            logoImage.frame = CGRectMake(154, 8, 32, 32);
+            
+            [signInVC performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
+            [signInVC.navigationController pushViewController:newNameVC animated:YES];
+        }
+        else if ([[snapshot.value objectForKey:@"deleted"] integerValue] == 1) {
             
             UserDeletedAlertViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"UserDeleted"];
             
@@ -216,9 +227,10 @@ static FirebaseHelper *sharedHelper = nil;
                 [self.projectVC presentViewController:nav animated:YES completion:nil];
             }];
         }
-        
         else {
          
+            [signInVC dismissViewControllerAnimated:YES completion:nil];
+            
             [self.team setObject:[@{self.uid:[snapshot.value mutableCopy]} mutableCopy] forKey:@"users"];
             
             [self observeTeam];
@@ -281,11 +293,9 @@ static FirebaseHelper *sharedHelper = nil;
             else inBoard = true;
         }
         
-        NSArray *currentProjectBoardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
-        
-        if ([currentProjectBoardIDs containsObject:boardID]){
+        if ([self.projectVC.boardIDs containsObject:boardID]){
             
-            NSInteger boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
+            NSInteger boardIndex = [self.projectVC.boardIDs indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
             
             if (inBoard && ![boardView.activeUserIDs containsObject:userID]) [boardView.activeUserIDs addObject:userID];
@@ -358,6 +368,7 @@ static FirebaseHelper *sharedHelper = nil;
                             
                             if (![self.projectVC.boardIDs containsObject:boardID]) [self.projectVC.boardIDs addObject:boardID];
                             if (self.projectVC.activeBoardID == nil) [self.projectVC.carousel reloadData];
+                            else if ([self.projectVC.activeBoardID isEqualToString:boardID]) [self.projectVC closeTapped];
                         }
                     }
                 }
@@ -410,6 +421,7 @@ static FirebaseHelper *sharedHelper = nil;
     [self.projectVC.masterView.nameButton setTitle:self.userName forState:UIControlStateNormal];
     self.projectVC.masterView.nameButton.center = CGPointMake(self.projectVC.masterView.nameButton.center.x, 107-60/self.projectVC.masterView.nameButton.titleLabel.font.pointSize);
     [self.projectVC.masterView.teamButton setTitle:[FirebaseHelper sharedHelper].teamName forState:UIControlStateNormal];
+
     [self.projectVC.masterView.nameButton layoutIfNeeded];
     [self.projectVC.masterView.teamButton layoutIfNeeded];
     CGRect teamRect = [[FirebaseHelper sharedHelper].teamName boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: self.projectVC.masterView.teamMenuButton.titleLabel.font} context:nil];
@@ -446,9 +458,9 @@ static FirebaseHelper *sharedHelper = nil;
     
     NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@", self.teamID];
 
-    Firebase *ref = [[Firebase alloc] initWithUrl:teamString];
+    Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
     
-    [ref observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+    [teamRef observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         self.teamName = [snapshot.value objectForKey:@"name"];
         [self.team setObject:[snapshot.value objectForKey:@"name"] forKey:@"name"];
@@ -469,7 +481,7 @@ static FirebaseHelper *sharedHelper = nil;
         }
     }];
     
-    [[ref childByAppendingPath:@"projects"] observeEventType:FEventTypeChildRemoved withBlock:^(FDataSnapshot *snapshot) {
+    [[teamRef childByAppendingPath:@"projects"] observeEventType:FEventTypeChildRemoved withBlock:^(FDataSnapshot *snapshot) {
         
         NSString *projectID = snapshot.key;
         
@@ -599,7 +611,7 @@ static FirebaseHelper *sharedHelper = nil;
                 
                 self.projectVC.boardNameLabel.center = CGPointMake(self.projectVC.carousel.center.x, self.projectVC.boardNameLabel.center.y);
                 
-                if (self.projectVC.boardNameLabel.text.length > 0 && !self.projectVC.boardNameLabel.hidden) self.projectVC.boardNameEditButton.hidden = false;
+                if (self.projectVC.boardNameLabel.text.length > 0 && !self.projectVC.boardNameLabel.hidden && self.projectVC.userRole > 0) self.projectVC.boardNameEditButton.hidden = false;
                 self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.carousel.center.x+self.projectVC.boardNameLabel.frame.size.width/2+17, self.projectVC.boardNameLabel.center.y);
             }
         }
@@ -625,6 +637,16 @@ static FirebaseHelper *sharedHelper = nil;
     [[ref childByAppendingPath:@"updatedAt"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         [[self.boards objectForKey:boardID] setObject:snapshot.value forKey:@"updatedAt"];
+        
+        if ([self.projectVC.viewedBoardIDs containsObject:boardID]) [self.projectVC.viewedBoardIDs removeObject:boardID];
+        
+        if (self.projectVC.carousel.currentItemIndex == [self.projectVC.boardIDs indexOfObject:boardID] && self.projectVC.currentBoardView == nil) {
+            
+            self.projectVC.boardNameLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:24];
+            [self.projectVC.boardNameLabel sizeToFit];
+            self.projectVC.boardNameLabel.center = CGPointMake(self.projectVC.carousel.center.x, self.projectVC.boardNameLabel.center.y);
+            self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.carousel.center.x+self.projectVC.boardNameLabel.frame.size.width/2+17, self.projectVC.boardNameLabel.center.y);
+        }
     }];
 }
 
@@ -641,31 +663,33 @@ static FirebaseHelper *sharedHelper = nil;
         NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
         [orderedKeys sortUsingDescriptors:@[sorter]];
         
-        NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
-
-        if ([boardIDs containsObject:boardID] && ![orderedKeys containsObject:snapshot.key]) {
+        if(![orderedKeys containsObject:snapshot.key]) {
             
             [subpathsDict setObject:snapshot.value forKey:snapshot.key];
+        
             [[[[self.boards objectForKey:boardID] objectForKey:@"undo"] objectForKey:userID] setObject:snapshot.key forKey:@"currentIndexDate"];
             
             for (NSString *dateString in orderedKeys) {
-
+                
                 if ([dateString doubleValue] > [snapshot.key doubleValue]) [subpathsDict removeObjectForKey:dateString];
             }
             
-            NSInteger boardIndex = [boardIDs indexOfObject:boardID];
-            BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
+            if ([self.projectVC.boardIDs containsObject:boardID]) {
+                
+                NSInteger boardIndex = [self.projectVC.boardIDs indexOfObject:boardID];
+                BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
 
-            if (boardView.drawingUserID && ![boardView.drawingUserID isEqualToString:userID]) {
-                
-                boardView.shouldRedraw = true;
-            }
-            else {
-                
-                if([snapshot.value respondsToSelector:@selector(objectForKey:)]) [boardView drawSubpath:snapshot.value];
-                else [boardView drawSubpath:@{snapshot.key : snapshot.value}];
-                
-                [boardView addUserDrawing:userID];
+                if (boardView.drawingUserID && ![boardView.drawingUserID isEqualToString:userID]) {
+                    
+                    boardView.shouldRedraw = true;
+                }
+                else {
+                    
+                    if([snapshot.value respondsToSelector:@selector(objectForKey:)]) [boardView drawSubpath:snapshot.value];
+                    else [boardView drawSubpath:@{snapshot.key : snapshot.value}];
+                    
+                    [boardView addUserDrawing:userID];
+                }
             }
         }
     }];
@@ -711,6 +735,7 @@ static FirebaseHelper *sharedHelper = nil;
             NSUInteger boardIndex = [boardIDs indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
             [self.projectVC drawBoard:boardView];
+        
         }
         
         if ([userID isEqualToString:self.uid]) [ref removeAllObservers];
@@ -753,6 +778,16 @@ static FirebaseHelper *sharedHelper = nil;
         [self.chats setObject:chatDict forKey:chatID];
 
         if (!self.projectVC.activeBoardID) {
+            
+            NSString *projectID;
+            for (NSString *pid in self.projects.allKeys) {
+                if ([[[self.projects objectForKey:pid] objectForKey:@"chatID"] isEqualToString:chatID]) {
+                    projectID = pid;
+                    break;
+                }
+            }
+            
+            if ([projectID isEqualToString:self.currentProjectID] && !self.projectVC.chatOpen) self.projectVC.chatViewed = false;
             
             [self.projectVC updateMessages];
             [self.projectVC.chatTable reloadData];
@@ -897,6 +932,15 @@ static FirebaseHelper *sharedHelper = nil;
     [[ref childByAppendingPath:@"updatedAt"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         [threadDict setObject:snapshot.value forKey:@"updatedAt"];
+        
+        if ([self.projectVC.viewedCommentThreadIDs containsObject:commentThreadID] && ![self.projectVC.activeCommentThreadID isEqualToString:commentThreadID]) [self.projectVC.viewedCommentThreadIDs removeObject:commentThreadID];
+        
+        if ([self.projectVC.boardIDs containsObject:boardID]) {
+            
+            NSInteger boardIndex = [self.projectVC.boardIDs indexOfObject:boardID];
+            BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
+            [boardView layoutComments];
+        }
     }];
 }
 
@@ -977,14 +1021,12 @@ static FirebaseHelper *sharedHelper = nil;
     [projectRef setValue:dateString];
 }
 
--(void) setActiveBoardUpdatedAt {
+-(void) setBoard:(NSString *)boardID UpdatedAt:(NSString *)dateString {
 
-    NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
-    
-    NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/updatedAt", self.projectVC.activeBoardID];
+    NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/updatedAt", boardID];
     Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
     [boardRef setValue:dateString];
-    [[self.boards objectForKey:self.projectVC.activeBoardID] setObject:dateString forKey:@"updatedAt"];
+    [[self.boards objectForKey:boardID] setObject:dateString forKey:@"updatedAt"];
     
     [self setProjectUpdatedAt:dateString];
 }
@@ -1003,7 +1045,7 @@ static FirebaseHelper *sharedHelper = nil;
     [boardRef setValue:dateString];
     [[self.boards objectForKey:self.projectVC.activeBoardID] setObject:dateString forKey:@"updatedAt"];
     
-    [self setProjectUpdatedAt:dateString];
+    [self setBoard:self.projectVC.activeBoardID UpdatedAt:dateString];
 }
 
 -(NSIndexPath *) getLastViewedProjectIndexPath {

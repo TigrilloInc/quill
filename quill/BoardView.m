@@ -158,8 +158,9 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         [button addTarget:self action:@selector(commentTapped:) forControlEvents:UIControlEventTouchUpInside];
         
         NSString *viewedAtString = [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid];
+        NSString *updatedAtString = [[commentDict objectForKey:commentThreadID] objectForKey:@"updatedAt"];
         
-        if ([[[commentDict objectForKey:commentThreadID] objectForKey:@"updatedAt"] doubleValue] > [viewedAtString doubleValue]) {
+        if (([updatedAtString doubleValue] > [viewedAtString doubleValue] || updatedAtString == nil) && ![projectVC.viewedCommentThreadIDs containsObject:commentThreadID] && ![projectVC.viewedBoardIDs containsObject:self.boardID]) {
             
             [button.commentImage setImage:[UIImage imageNamed:@"usercomment4.png"]];
         }
@@ -275,7 +276,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     NSString *subpathsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", self.boardID, [FirebaseHelper sharedHelper].uid];
     Firebase *subpathsRef = [[Firebase alloc] initWithUrl:subpathsString];
-    [subpathsRef updateChildValues:@{dateString : subpathValues}];
+    [subpathsRef updateChildValues:@{ dateString  :  subpathValues }];
     [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:subpathValues forKey:dateString];
 
     [[FirebaseHelper sharedHelper] resetUndo];
@@ -440,7 +441,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:@"penUp" forKey:dateString];
     
-    [[FirebaseHelper sharedHelper] setActiveBoardUpdatedAt];
+    [[FirebaseHelper sharedHelper] setBoard:self.boardID UpdatedAt:dateString];
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -622,7 +623,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     NSMutableDictionary *mutableCommentDict = [commentDict mutableCopy];
     [mutableCommentDict setObject:dateString forKey:@"updatedAt"];
-    
+
+    [[FirebaseHelper sharedHelper] setCommentThread:commentThreadRefWithID.key updatedAt:dateString];
     [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] setObject:mutableCommentDict forKey:commentThreadRefWithID.key];
     [[FirebaseHelper sharedHelper] observeCommentThreadWithID:commentThreadRefWithID.key boardID:self.boardID];
     
@@ -857,7 +859,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     CommentButton *comment = (CommentButton *)sender;
     
-    [projectVC.viewedCommentThreadIDs addObject:comment.commentThreadID];
+    [comment.commentImage setImage:[UIImage imageNamed:@"usercomment3.png"]];
     projectVC.erasing = false;
     
     for (int i=5; i<=8; i++) {

@@ -12,6 +12,7 @@
 #import "FirebaseHelper.h"
 #import "NewNameViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "NameFromInviteViewController.h"
 
 @implementation SignInViewController
 
@@ -43,7 +44,8 @@
     self.passwordField.layer.borderWidth = 1;
     self.passwordField.layer.cornerRadius = 10;
     
-    self.signingIn = [[[NSUserDefaults standardUserDefaults] objectForKey:@"registered"] integerValue];
+    self.signingIn = true;
+    //self.signingIn = [[[NSUserDefaults standardUserDefaults] objectForKey:@"registered"] integerValue];
     
     [self updateDetails];
 }
@@ -57,7 +59,7 @@
         [self.switchButton setTitle:@"Want to create an account?" forState:UIControlStateNormal];
         [self.signInButton setTitle:@"Sign In" forState:UIControlStateNormal];
         [self.signInLabel setText:@"Sign in with your email."];
-        self.passwordResetButton.hidden = false;
+        //self.passwordResetButton.hidden = false;
         
     } else {
         
@@ -80,16 +82,28 @@
 
 - (IBAction)signInTapped:(id)sender {
     
+//    [self accountCreated];
+//    return;
+    
     if (self.emailField.text.length == 0 && self.passwordField.text.length == 0) {
-        [self.signInLabel setText:@"Enter your email and password."];
+        [self.signInLabel setText:@"Please enter an email and password."];
         return;
     };
     if (self.emailField.text.length == 0) {
-        [self.signInLabel setText:@"Enter your email."];
+        [self.signInLabel setText:@"Please enter an email."];
         return;
     }
     if (self.passwordField.text.length == 0) {
-        [self.signInLabel setText:@"Enter your password."];
+        [self.signInLabel setText:@"Please enter a password."];
+        return;
+    }
+    
+    NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
+    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
+    
+    if ([emailTest evaluateWithObject:self.emailField.text] != true) {
+        
+        [self.signInLabel setText:@"Please enter a valid email."];
         return;
     }
     
@@ -102,100 +116,97 @@
     
     Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
     FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
-    
-    NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
-    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
- 
-//    NewTeamViewController *newTeamVC = [self.storyboard instantiateViewControllerWithIdentifier:@"NewTeam"];
-//    [self.navigationController pushViewController:newTeamVC animated:YES];
-    
-    if ([emailTest evaluateWithObject:self.emailField.text] == true && self.passwordField.text.length > 0) {
         
-        if (self.signingIn == true) {
-            
-            [authClient loginWithEmail:self.emailField.text andPassword:self.passwordField.text
-                   withCompletionBlock:^(NSError* error, FAUser* user) {
+    if (self.signingIn == true) {
+        
+        self.signInLabel.text = @"Authenticating user...";
+        
+        [authClient loginWithEmail:self.emailField.text andPassword:self.passwordField.text
+               withCompletionBlock:^(NSError* error, FAUser* user) {
+                   
+                   if (error != nil) {
                        
-                       if (error != nil) {
-                           
-                           [self.signInLabel setText:@"Something went wrong - try again."];
-                           
-                           self.emailField.userInteractionEnabled = true;
-                           self.passwordField.userInteractionEnabled = true;
-                           self.emailField.alpha = 1;
-                           self.passwordField.alpha = 1;
-                           self.signInButton.userInteractionEnabled = true;
-                           self.signInButton.alpha = 1;
-                           NSLog(@"%@", error);
-                       }
-                       else {
-                           
-                           [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:@"registered"];
-                           [FirebaseHelper sharedHelper].loggedIn = true;
-                           [FirebaseHelper sharedHelper].uid = user.uid;
-                           [[FirebaseHelper sharedHelper] observeLocalUser];
-                           
-                           [self dismissViewControllerAnimated:YES completion:nil];
-                       }
-                   }];
+                       if (error.code == -2) [self.signInLabel setText:@"Incorrect password - try again."];
+                       else if (error.code == -1) [self.signInLabel setText:@"There is no user account with that email."];
+                       else [self.signInLabel setText:@"Something went wrong - try again."];
+                       
+                       self.emailField.userInteractionEnabled = true;
+                       self.passwordField.userInteractionEnabled = true;
+                       self.emailField.alpha = 1;
+                       self.passwordField.alpha = 1;
+                       self.signInButton.userInteractionEnabled = true;
+                       self.signInButton.alpha = 1;
+                   }
+                   else {
+                       
+                       [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:@"registered"];
+                       [FirebaseHelper sharedHelper].loggedIn = true;
+                       [FirebaseHelper sharedHelper].uid = user.uid;
+                       [[FirebaseHelper sharedHelper] observeLocalUser];
+                   }
+               }];
+    }
+    else {
+        
+        if (self.passwordField.text.length < 6 || [self.passwordField.text rangeOfCharacterFromSet:[NSCharacterSet letterCharacterSet]].location == NSNotFound || [self.passwordField.text rangeOfCharacterFromSet:[NSCharacterSet decimalDigitCharacterSet]].location == NSNotFound) {
+            
+            self.signInLabel.text = @"Passwords must be 6-20 characters in length,\n and must contain at least one letter and one number.";
+            
+            self.emailField.userInteractionEnabled = true;
+            self.passwordField.userInteractionEnabled = true;
+            self.emailField.alpha = 1;
+            self.passwordField.alpha = 1;
+            self.signInButton.userInteractionEnabled = true;
+            self.signInButton.alpha = 1;
+            
+            return;
         }
-        else {
+        
+        self.signInLabel.text = @"Creating user account...";
+        
+        [authClient createUserWithEmail:self.emailField.text password:self.passwordField.text andCompletionBlock:^(NSError* error, FAUser* user) {
             
-            self.signInLabel.text = @"Creating user account...";
-            
-            [authClient createUserWithEmail:self.emailField.text password:self.passwordField.text andCompletionBlock:^(NSError* error, FAUser* user) {
+            if (error != nil) {
                 
-                if (error != nil) {
-                    
-                    [self.signInLabel setText:@"Something went wrong - try again."];
-                    
-                    self.emailField.userInteractionEnabled = true;
-                    self.emailField.alpha = 1;
-                    self.passwordField.userInteractionEnabled = true;
-                    self.passwordField.alpha = 1;
-                    self.signInButton.userInteractionEnabled = true;
-                    self.signInButton.alpha = 1;
-                    
-                    NSLog(@"%@", error);
-                    
-                } else {
-                    
-                    [[ref childByAppendingPath:@"users"] updateChildValues:@{ user.uid :
-                                                                                  @{ @"email" : self.emailField.text}
-                                                                              }];
-                    
-                    [FirebaseHelper sharedHelper].uid = user.uid;
-                    
-                    [authClient loginWithEmail:self.emailField.text andPassword:self.passwordField.text
-                           withCompletionBlock:^(NSError* error, FAUser* user) {
+                if (error.code == -9999) [self.signInLabel setText:@"That email is already in use."];
+                else [self.signInLabel setText:@"Something went wrong - try again."];
+                
+                self.emailField.userInteractionEnabled = true;
+                self.emailField.alpha = 1;
+                self.passwordField.userInteractionEnabled = true;
+                self.passwordField.alpha = 1;
+                self.signInButton.userInteractionEnabled = true;
+                self.signInButton.alpha = 1;
+            }
+            else {
+                
+                [[ref childByAppendingPath:@"users"] updateChildValues:@{ user.uid :
+                                                                              @{ @"email" : self.emailField.text}
+                                                                          }];
+                
+                [FirebaseHelper sharedHelper].uid = user.uid;
+                
+                [authClient loginWithEmail:self.emailField.text andPassword:self.passwordField.text
+                       withCompletionBlock:^(NSError* error, FAUser* user) {
+                           
+                    if (error != nil) {
                                
-                        if (error != nil) {
-                                   
-                            [self.signInLabel setText:@"Something went wrong - try again."];
-                            NSLog(@"%@", error);
-                
-                        } else {
-                            
-                            self.signInLabel.text = @"User account created!";
-                            
-                            [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:@"registered"];
-                            [FirebaseHelper sharedHelper].loggedIn = true;
-                            [FirebaseHelper sharedHelper].uid = user.uid;
-                            
-                            [self performSelector:@selector(accountCreated) withObject:nil afterDelay:.5];
-                        }
-                    }];
-                }
-            }];
-        }
-        
-    } else {
-        
-        [self.signInLabel setText:@"Invalid email - try again."];
-        self.emailField.userInteractionEnabled = true;
-        self.passwordField.userInteractionEnabled = true;
-        self.emailField.alpha = 1;
-        self.passwordField.alpha = 1;
+                        [self.signInLabel setText:@"Something went wrong - try again."];
+                        NSLog(@"%@", error);
+            
+                    } else {
+                        
+                        self.signInLabel.text = @"User account created!";
+                        
+                        [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:@"registered"];
+                        [FirebaseHelper sharedHelper].loggedIn = true;
+                        [FirebaseHelper sharedHelper].uid = user.uid;
+                        
+                        [self performSelector:@selector(accountCreated) withObject:nil afterDelay:.5];
+                    }
+                }];
+            }
+        }];
     }
 }
 
@@ -215,6 +226,7 @@
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
     NewNameViewController *newNameVC = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"NewName"];
+//    NameFromInviteViewController *newNameVC = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"NameFromInvite"];
     
     UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
     logoImage.hidden = true;
@@ -235,6 +247,27 @@
 
     [self.view endEditing:YES];
     [super touchesBegan:touches withEvent:event];
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    if (![textField isEqual:self.passwordField]) return YES;
+    
+    if(range.length + range.location > textField.text.length) return NO;
+    
+    NSUInteger newLength = [textField.text length] + [string length] - range.length;
+    
+    if (newLength > 21) {
+        
+        self.signInLabel.text = @"Passwords must be 20 characters or less.";
+        return NO;
+    }
+    else {
+        
+        if (self.signingIn) self.signInLabel.text = @"Sign in with your email.";
+        else self.signInLabel.text = @"Pick an email and password to begin creating a team.";
+        return YES;
+    }
 }
 
 @end

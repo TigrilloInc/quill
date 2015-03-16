@@ -45,7 +45,18 @@
 
 - (IBAction)createTeamTapped:(id)sender {
     
-    if (self.teamField.text.length == 0) return;
+    if (self.teamField.text.length == 0) {
+        
+        self.teamLabel.text = @"Please enter a team name.";
+        return;
+    }
+    
+    if (self.teamField.text.length == 1) {
+        
+        self.teamLabel.text = @"Team names must be at least 2 characters long.";
+        return;
+    }
+
     
     [FirebaseHelper sharedHelper].teamName = self.teamField.text;
     
@@ -87,5 +98,24 @@
     [self.view endEditing:YES];
     [super touchesBegan:touches withEvent:event];
 }
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    if(range.length + range.location > textField.text.length) return NO;
+    
+    NSUInteger newLength = [textField.text length] + [string length] - range.length;
+    
+    if (newLength > 21) {
+        
+        self.teamLabel.text = @"Team names must be 20 characters or less.";
+        return NO;
+    }
+    else {
+        
+        self.teamLabel.text = @"Pick a name for your team.";
+        return YES;
+    }
+}
+
 
 @end

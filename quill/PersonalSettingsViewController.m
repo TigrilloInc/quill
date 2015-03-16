@@ -77,6 +77,22 @@
                                         [UIFont fontWithName:@"SourceSansPro-Semibold" size:16],NSFontAttributeName,
                                         nil] forState:UIControlStateNormal];
     [self.navigationItem setRightBarButtonItems:@[signOutButton] animated:NO];
+    
+    teamEmails = [NSMutableArray array];
+    
+    for (NSString *userID in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
+        
+        NSString *userEmail = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"email"];
+        if (![userEmail isEqualToString:[FirebaseHelper sharedHelper].email]) [teamEmails addObject:userEmail];
+    }
+    
+    teamNames = [NSMutableArray array];
+    
+    for (NSString *userID in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
+        
+        NSString *userName = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"name"];
+        if (![userName isEqualToString:[FirebaseHelper sharedHelper].userName]) [teamNames addObject:userName];
+    }
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -178,32 +194,46 @@
     if ([self.nameTextField isFirstResponder]) [self.nameTextField resignFirstResponder];
     if ([self.emailTextField isFirstResponder]) [self.emailTextField resignFirstResponder];
     
-    BOOL nameChanged = false;
-    BOOL emailChanged = false;
-    BOOL nameError = false;
-    BOOL emailError = false;
+    if ([self.nameTextField.text rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location != NSNotFound || [self.nameTextField.text rangeOfCharacterFromSet:[NSCharacterSet decimalDigitCharacterSet]].location != NSNotFound || [self.nameTextField.text rangeOfCharacterFromSet:[[NSCharacterSet alphanumericCharacterSet] invertedSet]].location != NSNotFound) {
+        
+        self.settingsLabel.text = @"Names cannot contain spaces, numbers, or special characters.";
+        return;
+    }
     
-    NSString *oldEmail = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"email"];
+    if (self.nameTextField.text.length == 1) {
+        
+        self.settingsLabel.text = @"Names must be at least 2 letters long.";
+        return;
+    }
+    
+    if ([teamNames containsObject:self.nameTextField.text]) {
+        
+        self.settingsLabel.text = @"That name is already in use by a teammate.";
+        return;
+    }
     
     NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
     
-    if (![self.emailTextField.text isEqualToString:oldEmail]) {
+    if ([emailTest evaluateWithObject:self.emailTextField.text] != true) {
         
-        if (![emailTest evaluateWithObject:self.emailTextField.text] || self.emailTextField.text.length == 0) emailError = true;
-        else if (self.passwordTextField.text.length > 0) emailChanged = true;
+        self.settingsLabel.text = @"Please enter a valid email.";
+        return;
     }
     
-    if (![self.nameTextField.text isEqualToString:[FirebaseHelper sharedHelper].userName]) {
+    if ([teamEmails containsObject:self.emailTextField.text]) {
         
-        if (self.nameTextField.text.length == 0) nameError = true;
-        else if (self.passwordTextField.text.length > 0) emailChanged = true;
+        self.settingsLabel.text = @"That email is already in use by a teammate.";
+        return;
     }
     
-    if (nameError && emailError) self.settingsLabel.text = @"Please fix your name and email.";
-    else if (nameError) self.settingsLabel.text = @"Please fix your name.";
-    else if (emailError) self.settingsLabel.text = @"Please fix your email.";
-    else if (!nameChanged && !emailChanged) [self dismissViewControllerAnimated:YES completion:nil];
+    BOOL nameChanged = false;
+    BOOL emailChanged = false;
+    
+    if (![self.emailTextField.text isEqualToString:[FirebaseHelper sharedHelper].email] && self.passwordTextField.text.length > 0) emailChanged = true;
+    if (![self.nameTextField.text isEqualToString:[FirebaseHelper sharedHelper].userName] && self.passwordTextField.text.length > 0) emailChanged = true;
+    
+    if (!nameChanged && !emailChanged) [self dismissViewControllerAnimated:YES completion:nil];
     else if (emailChanged && nameChanged) {
         
         __block BOOL emailReady = false;
@@ -213,7 +243,7 @@
         Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com"];
         [ref changeEmailForUser:[FirebaseHelper sharedHelper].uid password:self.passwordTextField.text toNewEmail:self.emailTextField.text withCompletionBlock:^(NSError *error) {
             
-            if (error) self.settingsLabel.text = @"Something went wrong - try again.";
+            if (error) self.settingsLabel.text = @"Something went wrong.";
             else {
                 
                 emailReady = true;
@@ -330,10 +360,14 @@
         
         if (textField.text.length > 0) {
             nameRect = [self.nameTextField.text boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Semibold" size:18]} context:nil];
+            
+            if (textField.text.length < 2) textField.textColor = [UIColor redColor];
+            else textField.textColor = [UIColor blackColor];
         }
         else {
             nameRect = [@"Name" boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Semibold" size:18]} context:nil];
         }
+        
         self.nameButton.center = CGPointMake(nameRect.size.width+218, self.nameButton.center.y);
         self.nameButton.hidden = false;
         self.nameTextField.userInteractionEnabled = false;
@@ -350,15 +384,25 @@
         else {
             emailRect = [@"Email" boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Regular" size:18]} context:nil];
         }
+    
         self.emailButton.center = CGPointMake(emailRect.size.width+218, self.emailButton.center.y);
         self.emailButton.hidden = false;
         self.emailTextField.userInteractionEnabled = false;
     }
     
-    
     BOOL changesMade = false;
     
-    if (![self.nameTextField.text isEqualToString:[FirebaseHelper sharedHelper].userName]) changesMade = true;
+    if (![self.nameTextField.text isEqualToString:[FirebaseHelper sharedHelper].userName]) {
+        
+        changesMade = true;
+        
+        if ([self.nameTextField.text rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location != NSNotFound || [self.nameTextField.text rangeOfCharacterFromSet:[NSCharacterSet decimalDigitCharacterSet]].location != NSNotFound || [self.nameTextField.text rangeOfCharacterFromSet:[[NSCharacterSet alphanumericCharacterSet] invertedSet]].location != NSNotFound || self.nameTextField.text.length == 1 || [teamNames containsObject:self.nameTextField.text]) {
+            
+            self.nameTextField.textColor = [UIColor redColor];
+            return;
+        }
+        else self.nameTextField.textColor = [UIColor blackColor];
+    }
 
     if (![self.emailTextField.text isEqualToString:oldEmail]) {
         
@@ -369,13 +413,13 @@
         self.avatarButton.center = CGPointMake(147, 97);
         self.nameTextField.frame = CGRectMake(200, 66, 340, 30);
         self.emailTextField.frame = CGRectMake(200, 96, 340, 30);
-        self.nameButton.frame = CGRectMake(self.nameButton.frame.origin.x, 68, 20, 20);
-        self.emailButton.frame = CGRectMake(self.emailButton.frame.origin.x, 98, 20, 20);
+        self.nameButton.frame = CGRectMake(self.nameButton.frame.origin.x, 58, 40, 40);
+        self.emailButton.frame = CGRectMake(self.emailButton.frame.origin.x, 88, 40, 40);
         self.passwordButton.frame = CGRectMake(115, 146, 310, 50);
         
         NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
         NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
-        if ([textField isEqual:self.emailTextField] && textField.text.length > 0 && ![emailTest evaluateWithObject:textField.text]) textField.textColor = [UIColor redColor];
+        if ([textField isEqual:self.emailTextField] && textField.text.length > 0 && (![emailTest evaluateWithObject:textField.text] || [teamEmails containsObject:textField.text])) textField.textColor = [UIColor redColor];
         else textField.textColor = [UIColor blackColor];
     }
     else {
@@ -385,8 +429,8 @@
         self.avatarButton.center = CGPointMake(147, 117);
         self.nameTextField.frame = CGRectMake(200, 86, 340, 30);
         self.emailTextField.frame = CGRectMake(200, 116, 340, 30);
-        self.nameButton.frame = CGRectMake(self.nameButton.frame.origin.x, 88, 20, 20);
-        self.emailButton.frame = CGRectMake(self.emailButton.frame.origin.x, 118, 20, 20);
+        self.nameButton.frame = CGRectMake(self.nameButton.frame.origin.x, 78, 40, 40);
+        self.emailButton.frame = CGRectMake(self.emailButton.frame.origin.x, 108, 40, 40);
         self.passwordButton.frame = CGRectMake(115, 186, 310, 50);
     }
     
@@ -398,6 +442,19 @@
 -(void) textFieldDidBeginEditing:(UITextField *)textField {
     
     textField.textColor = [UIColor blackColor];
+}
+
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    if (![textField isEqual:self.nameTextField]) return YES;
+    
+    if(range.length + range.location > textField.text.length) return NO;
+    
+    NSUInteger newLength = [textField.text length] + [string length] - range.length;
+    
+    if (newLength > 16) return NO;
+    else return YES;
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {

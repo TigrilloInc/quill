@@ -15,5 +15,6 @@
 
 @property (weak, nonatomic) IBOutlet UITextField *teamField;
 @property (weak, nonatomic) IBOutlet UIButton *createTeamButton;
+@property (weak, nonatomic) IBOutlet UILabel *teamLabel;
 
 @end

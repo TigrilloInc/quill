@@ -14,7 +14,7 @@
 
     ProjectDetailViewController *projectVC;
     UITapGestureRecognizer *outsideTapRecognizer;
-    
+    NSMutableArray *teamEmails;
     NSMutableArray *editedText;
 }
 

@@ -18,6 +18,8 @@
     
     [super viewDidLoad];
     
+    isOwner = [[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"teamOwner"] integerValue];
+    
     self.usersDict = [NSMutableDictionary dictionary];
     
     self.navigationItem.title = @"Team Settings";
@@ -47,10 +49,11 @@
     }
 
     self.teamNameTextField.text = [FirebaseHelper sharedHelper].teamName;
-
+    
     CGRect nameRect = [self.teamNameTextField.text boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Regular" size:28]} context:nil];
     
     self.editNameButton.center = CGPointMake(nameRect.size.width+50, self.editNameButton.center.y);
+    if (!isOwner) self.editNameButton.hidden = true;
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -181,7 +184,7 @@
         emailLabel.tag = 503;
         [cell.contentView addSubview:emailLabel];
         
-        if ([[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"teamOwner"] integerValue] == 1 && ![userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
+        if (isOwner && ![userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
             
             UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
             [deleteButton setBackgroundImage:[UIImage imageNamed:@"minus2.png"] forState:UIControlStateNormal];

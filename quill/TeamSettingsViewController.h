@@ -12,6 +12,8 @@
     
     UIImageView *logoImage;
     UITapGestureRecognizer *outsideTapRecognizer;
+    
+    BOOL isOwner;
 }
 
 @property (weak, nonatomic) IBOutlet UITableView *usersTable;

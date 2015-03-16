@@ -70,11 +70,29 @@
 
 - (IBAction)signUpTapped:(id)sender {
     
-    Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
-    FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
+    if (self.emailField.text.length == 0 && self.passwordField.text.length == 0) {
+        [self.statusLabel setText:@"Please enter an email and password."];
+        return;
+    };
+    if (self.emailField.text.length == 0) {
+        [self.statusLabel setText:@"Please enter an email."];
+        return;
+    }
+    if (self.passwordField.text.length == 0) {
+        [self.statusLabel setText:@"Please enter a password."];
+        return;
+    }
     
     NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
+    
+    if ([emailTest evaluateWithObject:self.emailField.text] != true) {
+        
+        [self.statusLabel setText:@"Invalid email - try again."];
+        return;
+    }
+    
+    self.statusLabel.text = @"Creating user account...";
     
     self.nextButton.userInteractionEnabled = false;
     self.nextButton.alpha = .5;
@@ -83,94 +101,92 @@
     self.emailField.userInteractionEnabled = false;
     self.emailField.alpha = .5;
     
-    if ([emailTest evaluateWithObject:self.emailField.text] == true && self.passwordField.text.length > 0) {
+    Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
+    FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
+
+    [authClient createUserWithEmail:self.emailField.text password:self.passwordField.text andCompletionBlock:^(NSError* error, FAUser* user) {
         
-        [authClient createUserWithEmail:self.emailField.text password:self.passwordField.text andCompletionBlock:^(NSError* error, FAUser* user) {
+        if (error) {
             
-            if (error != nil) {
-                
-                NSLog(@"%@", error);
-                
-                self.statusLabel.text = @"Something went wrong - try again.";
-                
-                self.nextButton.userInteractionEnabled = true;
-                self.nextButton.alpha = 1;
-                self.passwordField.userInteractionEnabled = true;
-                self.passwordField.alpha = 1;
-                self.emailField.userInteractionEnabled = true;
-                self.emailField.alpha = 1;
-            }
-            else {
+            if (error.code == -9999) [self.statusLabel setText:@"That email is already in use."];
+            else [self.statusLabel setText:@"Something went wrong - try again."];
             
-                [FirebaseHelper sharedHelper].uid = user.uid;
+            self.emailField.userInteractionEnabled = true;
+            self.passwordField.userInteractionEnabled = true;
+            self.emailField.alpha = 1;
+            self.passwordField.alpha = 1;
+            self.nextButton.userInteractionEnabled = true;
+            self.nextButton.alpha = 1;
+        }
+        else {
+        
+            [FirebaseHelper sharedHelper].uid = user.uid;
+            
+            [[ref childByAppendingPath:@"users"] updateChildValues:@{ user.uid :
+                                                                          @{ @"team" : [FirebaseHelper sharedHelper].teamID,
+                                                                             @"email" : [FirebaseHelper sharedHelper].email }
+                                                                      }];
+            
+            if ([FirebaseHelper sharedHelper].invitedProject != nil) {
                 
-                [[ref childByAppendingPath:@"users"] updateChildValues:@{ user.uid :
-                                                                              @{ @"team" : [FirebaseHelper sharedHelper].teamID,
-                                                                                 @"email" : [FirebaseHelper sharedHelper].email }
-                                                                          }];
+                NSString *projectID = [FirebaseHelper sharedHelper].invitedProject.allKeys[0];
+                NSString *boardsString = [NSString stringWithFormat:@"projects/%@/info/boards", projectID];
+                NSString *rolesString = [NSString stringWithFormat:@"projects/%@/info/roles/%@", projectID, user.uid];
                 
-                if ([FirebaseHelper sharedHelper].invitedProject != nil) {
+                NSNumber *roleNum = [[FirebaseHelper sharedHelper].invitedProject objectForKey:projectID];
+                [[ref childByAppendingPath:rolesString] setValue:roleNum];
+                
+                [[ref childByAppendingPath:boardsString] observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
                     
-                    NSString *projectID = [FirebaseHelper sharedHelper].invitedProject.allKeys[0];
-                    NSString *boardsString = [NSString stringWithFormat:@"projects/%@/info/boards", projectID];
-                    NSString *rolesString = [NSString stringWithFormat:@"projects/%@/info/roles/%@", projectID, user.uid];
+                    NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
                     
-                    NSNumber *roleNum = [[FirebaseHelper sharedHelper].invitedProject objectForKey:projectID];
-                    [[ref childByAppendingPath:rolesString] setValue:roleNum];
-                    
-                    [[ref childByAppendingPath:boardsString] observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+                    for (NSString *boardID in snapshot.value) {
                         
-                        NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+                        NSString *subpathsString = [NSString stringWithFormat:@"boards/%@/subpaths", boardID];
+                        NSString *undoString = [NSString stringWithFormat:@"boards/%@/undo", boardID];
                         
-                        for (NSString *boardID in snapshot.value) {
-                            
-                            NSString *subpathsString = [NSString stringWithFormat:@"boards/%@/subpaths", boardID];
-                            NSString *undoString = [NSString stringWithFormat:@"boards/%@/undo", boardID];
-                            
-                            NSDictionary *subpathDict = @{ [FirebaseHelper sharedHelper].uid :
-                                                               @{ dateString : @"penUp" }
-                                                           };
-                            NSDictionary *undoDict = @{ [FirebaseHelper sharedHelper].uid :
-                                                            @{ @"currentIndex" : @0,
-                                                               @"currentIndexDate" : dateString,
-                                                               @"total" : @0
-                                                               }
-                                                        };
-                            
-                            [[ref childByAppendingPath:subpathsString] updateChildValues:subpathDict];
-                            [[ref childByAppendingPath:undoString] updateChildValues:undoDict];
-                        }
-                    }];
-                }
-                
-                NSString *teamString = [NSString stringWithFormat:@"teams/%@/users/", [FirebaseHelper sharedHelper].teamID];
-                [[ref childByAppendingPath:teamString] updateChildValues:@{ user.uid : @0 }];
-                
-                [authClient loginWithEmail:self.emailField.text andPassword:self.passwordField.text
-                       withCompletionBlock:^(NSError* error, FAUser* user) {
-                           
-                       if (error != nil) {
-                           
-                           NSLog(@"%@", error);
-                           
-                       } else {
-                           
-                           NameFromInviteViewController *nameVC = [self.storyboard instantiateViewControllerWithIdentifier:@"NameFromInvite"];
-                           [self.navigationController pushViewController:nameVC animated:YES];
-                           
-                           [FirebaseHelper sharedHelper].loggedIn = true;
-                           
-                           UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
-                           logoImage.hidden = true;
-                           logoImage.frame = CGRectMake(188, 8, 32, 32);
-                           
-                           [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
-                       }
+                        NSDictionary *subpathDict = @{ [FirebaseHelper sharedHelper].uid :
+                                                           @{ dateString : @"penUp" }
+                                                       };
+                        NSDictionary *undoDict = @{ [FirebaseHelper sharedHelper].uid :
+                                                        @{ @"currentIndex" : @0,
+                                                           @"currentIndexDate" : dateString,
+                                                           @"total" : @0
+                                                           }
+                                                    };
+                        
+                        [[ref childByAppendingPath:subpathsString] updateChildValues:subpathDict];
+                        [[ref childByAppendingPath:undoString] updateChildValues:undoDict];
+                    }
                 }];
             }
-        }];
-        
-    }
+            
+            NSString *teamString = [NSString stringWithFormat:@"teams/%@/users/", [FirebaseHelper sharedHelper].teamID];
+            [[ref childByAppendingPath:teamString] updateChildValues:@{ user.uid : @0 }];
+            
+            [authClient loginWithEmail:self.emailField.text andPassword:self.passwordField.text
+                   withCompletionBlock:^(NSError* error, FAUser* user) {
+                       
+                   if (error != nil) {
+                       
+                       NSLog(@"%@", error);
+                       
+                   } else {
+                       
+                       NameFromInviteViewController *nameVC = [self.storyboard instantiateViewControllerWithIdentifier:@"NameFromInvite"];
+                       [self.navigationController pushViewController:nameVC animated:YES];
+                       
+                       [FirebaseHelper sharedHelper].loggedIn = true;
+                       
+                       UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
+                       logoImage.hidden = true;
+                       logoImage.frame = CGRectMake(188, 8, 32, 32);
+                       
+                       [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
+                   }
+            }];
+        }
+    }];
 }
 
 - (IBAction)switchTapped:(id)sender {

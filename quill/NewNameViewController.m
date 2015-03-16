@@ -44,7 +44,23 @@
 
 -(IBAction)nextTapped:(id)sender {
     
-    if (self.nameTextField.text.length == 0) return;
+    if (self.nameTextField.text.length == 0) {
+        
+        self.nameLabel.text = @"Please enter your name.";
+        return;
+    }
+    
+    if (self.nameTextField.text.length == 1) {
+        
+        self.nameLabel.text = @"Names must be at least 2 letters long.";
+        return;
+    }
+    
+    if ([self.nameTextField.text rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location != NSNotFound || [self.nameTextField.text rangeOfCharacterFromSet:[NSCharacterSet decimalDigitCharacterSet]].location != NSNotFound || [self.nameTextField.text rangeOfCharacterFromSet:[[NSCharacterSet alphanumericCharacterSet] invertedSet]].location != NSNotFound) {
+        
+        self.nameLabel.text = @"Names cannot contain spaces, numbers, or special characters.";
+        return;
+    }
     
     [FirebaseHelper sharedHelper].userName = self.nameTextField.text;
     
@@ -76,6 +92,24 @@
     [UIView animateWithDuration:.3 animations:^{
         logoImage.alpha = 1;
     }];
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    if(range.length + range.location > textField.text.length) return NO;
+    
+    NSUInteger newLength = [textField.text length] + [string length] - range.length;
+    
+    if (newLength > 16) {
+        
+        self.nameLabel.text = @"Names must be 15 characters or less.";
+        return NO;
+    }
+    else {
+        
+        self.nameLabel.text = @"What do people call you?";
+        return YES;
+    }
 }
 
 @end

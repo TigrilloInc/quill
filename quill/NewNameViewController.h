@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "RoundedButton.h"
 
-@interface NewNameViewController : UIViewController
+@interface NewNameViewController : UIViewController <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *nameTextField;
 @property (weak, nonatomic) IBOutlet RoundedButton *nameButton;
+@property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 
 @end

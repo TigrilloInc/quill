@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "RoundedButton.h"
 
-@interface NameFromInviteViewController : UIViewController
+@interface NameFromInviteViewController : UIViewController <UITextFieldDelegate>
 
 
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;

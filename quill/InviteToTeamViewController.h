@@ -15,6 +15,7 @@
     UIImageView *logoImage;
     ProjectDetailViewController *projectVC;
     NSMutableArray *editedText;
+    NSMutableArray *teamEmails;
     UITapGestureRecognizer *outsideTapRecognizer;
 }
 

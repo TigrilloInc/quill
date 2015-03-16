@@ -18,6 +18,8 @@
     
     [super viewDidLoad];
     
+    self.navigationItem.title = @"Invite Teammates to Project";
+    
     self.selectedUsers = [NSMutableArray array];
     self.inviteEmails = [NSMutableArray array];
     self.roles = [NSMutableDictionary dictionary];
@@ -35,6 +37,14 @@
     self.inviteButton.layer.borderWidth = 1;
     self.inviteButton.layer.cornerRadius = 10;
     self.inviteButton.layer.borderColor = [UIColor grayColor].CGColor;
+    
+    teamEmails = [NSMutableArray array];
+    
+    for (NSString *userID in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
+        
+        NSString *userEmail = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"email"];
+        [teamEmails addObject:userEmail];
+    }
     
     //if (self.availableUsersDict.allKeys.count == 0) [self.inviteEmails addObject:@""];
 }
@@ -126,41 +136,56 @@
 }
 
 -(void) activateCells:(BOOL)activate {
-    
-    for (int i=0; i<self.inviteEmails.count; i++) {
+
+    for (int i=0; i<self.inviteEmails.count+self.availableUsersDict.allKeys.count; i++) {
         
         UITableViewCell *cell = [self.usersTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+
         UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
-        
         if ([textField isFirstResponder]) [textField resignFirstResponder];
         
         if (activate) {
             
-            textField.userInteractionEnabled = true;
-            textField.alpha = 1;
+            cell.userInteractionEnabled = YES;
+            cell.alpha = 1;
         }
         else {
             
-            textField.userInteractionEnabled = false;
-            textField.alpha = .5;
+            cell.userInteractionEnabled = NO;
+            cell.alpha = 0.5;
         }
     }
 }
 
 - (IBAction)addUserTapped:(id)sender {
     
+    [self updateInviteEmails];
+    
+    if (self.inviteEmails.count+self.selectedUsers.count == 0) {
+        
+        self.inviteLabel.text = @"Please add at least one user.";
+        return;
+    }
+    
+    [self activateCells:false];
+    
+    for (NSString *email in self.inviteEmails) {
+        
+        if ([teamEmails containsObject:email]) {
+            self.inviteLabel.text = @"One or more of the emails entered is already in use by a teammate.\nPlease fix the emails in red.";
+            [self activateCells:true];
+            return;
+        }
+    }
+    
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     
     NSDictionary *newUndoDict = @{  @"currentIndex" : @0,
                                     @"currentIndexDate" : dateString,
                                     @"total" : @0
-                                    };    
+                                    };
     
     NSDictionary *newSubpathsDict = @{ dateString : @"penUp"};
-    
-    [self updateInviteEmails];
-    
-    [self activateCells:false];
     
     NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegEx];
@@ -206,8 +231,6 @@
         [projectRef updateChildValues:projectVC.roles];
         
         if (self.inviteEmails.count > 0) {
-            
-            Firebase *tokenRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/tokens"];
 
             MCOSMTPSession *smtpSession = [[MCOSMTPSession alloc] init];
             smtpSession.hostname = @"smtp.gmail.com";
@@ -217,21 +240,31 @@
             smtpSession.authType = MCOAuthTypeSASLPlain;
             smtpSession.connectionType = MCOConnectionTypeTLS;
             
+            NSMutableDictionary *usersDict = [NSMutableDictionary dictionary];
+            
+            for (NSString *userID in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
+                
+                NSString *userName = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"name"];
+                [usersDict setObject:userName forKey:userID];
+            }
+            
             for (NSString *userEmail in self.inviteEmails) {
-                    
+                
                 NSString *token = [self generateToken];
                 NSString *tokenURL = [NSString stringWithFormat:@"quill://%@", token];
-                NSString *teamIDString = [NSString stringWithFormat:@"%@/teamID", token];
-                NSString *teamNameString = [NSString stringWithFormat:@"%@/teamName", token];
-                NSString *projectString = [NSString stringWithFormat:@"%@/project/%@", token, [FirebaseHelper sharedHelper].currentProjectID];
-                NSString *emailString = [NSString stringWithFormat:@"%@/email", token];
-                NSString *invitedByString = [NSString stringWithFormat:@"%@/invitedBy", token];
                 
-                [[tokenRef childByAppendingPath:teamIDString] setValue:[FirebaseHelper sharedHelper].teamID];
-                [[tokenRef childByAppendingPath:teamNameString] setValue:[FirebaseHelper sharedHelper].teamName];
-                [[tokenRef childByAppendingPath:projectString] setValue:[self.roles objectForKey:userEmail]];
-                [[tokenRef childByAppendingPath:emailString] setValue:userEmail];
-                [[tokenRef childByAppendingPath:invitedByString] setValue:[FirebaseHelper sharedHelper].userName];
+                NSString *tokenString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/tokens/%@", token];
+                Firebase *tokenRef = [[Firebase alloc] initWithUrl:tokenString];
+ 
+                NSDictionary *tokenDict = @{ @"teamID" : [FirebaseHelper sharedHelper].teamID,
+                                             @"teamName" : [FirebaseHelper sharedHelper].teamName,
+                                             @"project" : @{[FirebaseHelper sharedHelper].currentProjectID :
+                                                                [self.roles objectForKey:userEmail]},
+                                             @"email" : userEmail,
+                                             @"invitedBy" : [FirebaseHelper sharedHelper].userName,
+                                             @"users" : usersDict
+                                                 };
+                [tokenRef setValue:tokenDict];
                 
                 MCOMessageBuilder *builder = [[MCOMessageBuilder alloc] init];
                 MCOAddress *from = [MCOAddress addressWithDisplayName:@"Quill" mailbox:@"hello@tigrillo.co"];
@@ -289,8 +322,6 @@
     
     [self.roles setObject:@(roleControl.selectedSegmentIndex) forKey:userString];
     
-    NSLog(@"roles is %@", self.roles);
-
 }
 
 -(void) deleteTapped:(id)sender {
@@ -349,7 +380,9 @@
         
         roleControl.hidden = false;
         deleteButton.hidden = false;
-        if (![emailTest evaluateWithObject:textField.text]) textField.textColor = [UIColor redColor];
+
+        if (![emailTest evaluateWithObject:textField.text] || [teamEmails containsObject:textField.text]) textField.textColor = [UIColor redColor];
+        else textField.textColor = [UIColor blackColor];
     }
     else {
         roleControl.hidden = true;
@@ -484,7 +517,7 @@
             inviteTextField.tag = 401;
             inviteTextField.delegate = self;
             inviteTextField.text = self.inviteEmails[indexPath.row-self.availableUsersDict.allKeys.count];
-            if (![emailTest evaluateWithObject:inviteTextField.text]) inviteTextField.textColor = [UIColor redColor];
+            if (![emailTest evaluateWithObject:inviteTextField.text] || [teamEmails containsObject:inviteTextField.text]) inviteTextField.textColor = [UIColor redColor];
             inviteTextField.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:20];
             [cell.contentView addSubview:inviteTextField];
             

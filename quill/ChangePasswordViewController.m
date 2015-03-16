@@ -72,14 +72,43 @@
 
 - (IBAction)applyTapped:(id)sender {
     
-    if (![self.passwordTextField.text isEqualToString:self.confirmTextField.text])
-        self.passwordLabel.text = @"Passwords don't match - try again.";
-    else if (self.currentTextField.text > 0) {
+    if (self.passwordTextField.text.length == 0 || self.confirmTextField.text.length == 0 || self.currentTextField.text.length == 0)
+        self.passwordLabel.text = @"Please enter a password in all fields";
+    else if (![self.passwordTextField.text isEqualToString:self.confirmTextField.text])
+        self.passwordLabel.text = @"The passwords entered don't match.";
+    else if (self.passwordTextField.text.length < 6 || [self.passwordTextField.text rangeOfCharacterFromSet:[NSCharacterSet letterCharacterSet]].location == NSNotFound || [self.passwordTextField.text rangeOfCharacterFromSet:[NSCharacterSet decimalDigitCharacterSet]].location == NSNotFound) self.passwordLabel.text = @"Passwords must be 6-20 characters in length,\n and must contain at least one letter and one number.";
+    else {
+        
+        self.passwordTextField.userInteractionEnabled = false;
+        self.passwordTextField.alpha = .5;
+        self.confirmTextField.userInteractionEnabled = false;
+        self.confirmTextField.alpha = .5;
+        self.currentTextField.userInteractionEnabled = false;
+        self.currentTextField.alpha = .5;
+        self.applyButton.userInteractionEnabled = false;
+        self.applyButton.alpha = .5;
         
         Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
         [ref changePasswordForUser:[FirebaseHelper sharedHelper].uid fromOld:self.currentTextField.text toNew:self.passwordTextField.text withCompletionBlock:^(NSError *error) {
             
-            if (error) self.passwordLabel.text = @"Something went wrong - try again.";
+            if (error) {
+                
+                self.passwordTextField.userInteractionEnabled = true;
+                self.passwordTextField.alpha = 1;
+                self.confirmTextField.userInteractionEnabled = true;
+                self.confirmTextField.alpha = 1;
+                self.currentTextField.userInteractionEnabled = true;
+                self.currentTextField.alpha = 1;
+                self.applyButton.userInteractionEnabled = true;
+                self.applyButton.alpha = 1;
+                
+                NSLog(@"%@", error);
+                
+                if (error.code) {
+                    
+                }
+                self.passwordLabel.text = @"Something went wrong - try again.";
+            }
             else {
                 
                 self.passwordLabel.text = @"Password updated!";
@@ -117,6 +146,28 @@
             [self.view.window removeGestureRecognizer:outsideTapRecognizer];
             [self dismissViewControllerAnimated:YES completion:nil];
         }
+    }
+}
+
+#pragma mark - UITextField Delegate
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    if (![textField isEqual:self.passwordTextField] && ![textField isEqual:self.confirmTextField]) return YES;
+    
+    if(range.length + range.location > textField.text.length) return NO;
+    
+    NSUInteger newLength = [textField.text length] + [string length] - range.length;
+    
+    if (newLength > 21) {
+        
+        self.passwordLabel.text = @"Passwords must be 20 characters or less.";
+        return NO;
+    }
+    else {
+        
+        self.passwordLabel.text = @"";
+        return YES;
     }
 }
 

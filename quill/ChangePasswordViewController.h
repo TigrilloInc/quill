@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RoundedButton.h"
 
 @interface ChangePasswordViewController : UIViewController <UITextFieldDelegate, UIGestureRecognizerDelegate> {
     
@@ -18,7 +19,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
 @property (weak, nonatomic) IBOutlet UITextField *confirmTextField;
 @property (weak, nonatomic) IBOutlet UITextField *currentTextField;
-@property (weak, nonatomic) IBOutlet UIButton *applyButton;
+@property (weak, nonatomic) IBOutlet RoundedButton *applyButton;
 @property (weak, nonatomic) IBOutlet UILabel *passwordLabel;
 
 @end

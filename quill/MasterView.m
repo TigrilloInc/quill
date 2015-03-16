@@ -82,6 +82,7 @@
     cell.backgroundColor = tableView.backgroundColor;
     
     cell.textLabel.text = nil;
+    cell.imageView.image = nil;
     
     [self updateProjects];
     
@@ -142,7 +143,7 @@
             projectID = pID;
     }
     
-    if ([projectID isEqualToString:[FirebaseHelper sharedHelper].currentProjectID]) return;
+    //if ([projectID isEqualToString:[FirebaseHelper sharedHelper].currentProjectID]) return;
     
     if (projectID) {
         
