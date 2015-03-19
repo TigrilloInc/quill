@@ -13,7 +13,7 @@
 #import "AvatarButton.h"
 #import "ChangePasswordViewController.h"
 #import "SignInViewController.h"
-
+#import "PhotosCollectionViewController.h"
 
 @implementation PersonalSettingsViewController
 
@@ -29,15 +29,12 @@
                                    initWithTitle: @"Settings"
                                    style: UIBarButtonItemStyleBordered
                                    target: nil action: nil];
-    [backButton setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                        [UIFont fontWithName:@"SourceSansPro-Semibold" size:16],NSFontAttributeName,
-                                        nil] forState:UIControlStateNormal];
     [self.navigationItem setBackBarButtonItem: backButton];
     
     self.avatarButton = [AvatarButton buttonWithType:UIButtonTypeCustom];
     [self.avatarButton addTarget:self action:@selector(avatarTapped) forControlEvents:UIControlEventTouchUpInside];
     self.avatarButton.userID = [FirebaseHelper sharedHelper].uid;
-    [self.avatarButton generateIdenticonWithShadow:false];
+    [self.avatarButton generateIdenticonWithShadow:true];
     self.avatarButton.frame = CGRectMake(0, 0, self.avatarButton.userImage.size.width, self.avatarButton.userImage.size.height);
     self.avatarButton.transform = CGAffineTransformMakeScale(.25, .25);
     self.avatarButton.center = CGPointMake(147, 117);
@@ -73,9 +70,6 @@
                                    initWithTitle: @"Sign Out"
                                    style: UIBarButtonItemStyleBordered
                                    target: self action: @selector(signOutTapped)];
-    [signOutButton setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                        [UIFont fontWithName:@"SourceSansPro-Semibold" size:16],NSFontAttributeName,
-                                        nil] forState:UIControlStateNormal];
     [self.navigationItem setRightBarButtonItems:@[signOutButton] animated:NO];
     
     teamEmails = [NSMutableArray array];
@@ -159,6 +153,17 @@
 
 -(void) avatarTapped {
     
+    PhotosCollectionViewController *photosVC = [self.storyboard instantiateViewControllerWithIdentifier:@"Photos"];
+    PHFetchOptions *options = [[PHFetchOptions alloc] init];
+    options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+    photosVC.assetsFetchResults = [PHAsset fetchAssetsWithOptions:options];
+    
+    logoImage.hidden = true;
+    logoImage.frame = CGRectMake(175, 8, 32, 32);
+    
+    [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
+    
+    [self.navigationController pushViewController:photosVC animated:YES];
     
 }
 
@@ -456,6 +461,8 @@
     if (newLength > 16) return NO;
     else return YES;
 }
+
+#pragma mark - Gesture recognizer
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     return YES;

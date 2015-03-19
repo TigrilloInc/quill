@@ -24,9 +24,6 @@
                                    initWithTitle: @"Your Name"
                                    style: UIBarButtonItemStyleBordered
                                    target:self action: @selector(backTapped)];
-    [backButton setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                        [UIFont fontWithName:@"SourceSansPro-Semibold" size:16],NSFontAttributeName,
-                                        nil] forState:UIControlStateNormal];
     [self.navigationItem setBackBarButtonItem: backButton];
     
     

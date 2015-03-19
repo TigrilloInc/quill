@@ -21,6 +21,7 @@
 #import "CommentPopoverViewController.h"
 #import "InstabugViewController.h"
 #import "DeleteProjectAlertViewController.h"
+#import "InvalidNameAlertViewController.h"
 
 @implementation ProjectDetailViewController
 
@@ -33,6 +34,7 @@
     [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:5 forBarMetrics:UIBarMetricsDefault];
     [[UINavigationBar appearance] setTintColor:[UIColor blackColor]];
     [[UINavigationBar appearance] setBarTintColor:[UIColor whiteColor]];
+    [[UIBarButtonItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"SourceSansPro-Semibold" size:16],NSFontAttributeName, nil] forState:UIControlStateNormal];
     
     self.chatTextField.delegate = self;
     self.editBoardNameTextField.delegate = self;
@@ -327,7 +329,6 @@
     self.chatFadeImage.hidden = false;
     self.chatTable.hidden = false;
     self.chatOpenButton.hidden = true;
-    self.chatTextField.hidden = true;
     self.chatAvatar.hidden = true;
     self.sendMessageButton.hidden = true;
     
@@ -423,10 +424,9 @@
     NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
     [self.messages sortUsingDescriptors:@[sorter]];
     
-    if ([self.messages.lastObject isEqualToString:viewedAt] || (self.activeBoardID && [self.messages.firstObject isEqualToString:viewedAt]) || (!self.activeCommentThreadID && self.chatViewed) || ([self.viewedCommentThreadIDs containsObject:self.activeCommentThreadID])) {
+    if ([self.messages.lastObject isEqualToString:viewedAt] || [self.messages.firstObject isEqualToString:viewedAt] || (!self.activeCommentThreadID && self.chatViewed) || ([self.viewedCommentThreadIDs containsObject:self.activeCommentThreadID])) {
         
         [self.messages removeObject:viewedAt];
-        self.chatViewed = true;
         if (![self.chatTextField isFirstResponder]) {
             CGPoint chatCenter = self.chatOpenButton.center;
             self.chatOpenButton.frame = CGRectMake(0, 0, 51, 28);
@@ -706,6 +706,7 @@
 -(void) boardTapped:(id)sender {
     
     if([self.editBoardNameTextField isFirstResponder]) {
+        [self textFieldShouldReturn:self.editBoardNameTextField];
         [self.editBoardNameTextField resignFirstResponder];
         return;
     }
@@ -889,7 +890,7 @@
     [self.draggableCollectionView reloadData];
     
     if ([self.chatTextField isFirstResponder]) [self.chatTextField resignFirstResponder];
-    if ([self.boardNameEditButton isFirstResponder]) [self.boardNameEditButton resignFirstResponder];
+    if ([self.editBoardNameTextField isFirstResponder]) [self.editBoardNameTextField resignFirstResponder];
     
     self.editBoardIDs = [self.boardIDs mutableCopy];
     
@@ -914,7 +915,6 @@
     
     self.chatFadeImage.hidden = true;
     self.chatView.hidden = true;
-    self.chatTextField.hidden = true;
     self.chatTable.hidden = true;
     self.chatOpenButton.hidden = true;
     
@@ -931,6 +931,8 @@
 
     self.editProjectNameTextField.text = self.projectNameLabel.text;
     
+    self.editProjectNameTextField.textColor = [UIColor blackColor];
+    self.editProjectNameTextField.userInteractionEnabled = true;
     self.projectNameEditButton.hidden = true;
     self.projectNameLabel.hidden = true;
     self.editProjectNameTextField.hidden = false;
@@ -975,91 +977,88 @@
     NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info", [FirebaseHelper sharedHelper].currentProjectID];
     Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
     
-    if (self.editProjectNameTextField.text.length > 0) {
-        
-        NSString *newName = self.editProjectNameTextField.text;
-        [self.projectNameLabel setText:newName];
-        [self.projectNameLabel sizeToFit];
-        self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+292, self.projectNameLabel.center.y+3);
-        
-        [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] setObject:newName forKey:@"name"];
-        
-        [self.masterView updateProjects];        
-        self.masterView.defaultRow = [NSIndexPath indexPathForRow:[self.masterView.orderedProjectNames indexOfObject:newName] inSection:0];
-        [self.masterView.projectsTable reloadData];
-        [self.masterView tableView:self.masterView.projectsTable didSelectRowAtIndexPath:self.masterView.defaultRow];
-     
-        [[projectRef childByAppendingPath:@"name"] setValue:newName];
-        
-        if (![self.editBoardIDs isEqualToArray:self.boardIDs]) {
+    NSString *newName = self.editProjectNameTextField.text;
+    [self.projectNameLabel setText:newName];
+    [self.projectNameLabel sizeToFit];
+    self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+292, self.projectNameLabel.center.y+3);
+    
+    [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] setObject:newName forKey:@"name"];
+    
+    [self.masterView updateProjects];        
+    self.masterView.defaultRow = [NSIndexPath indexPathForRow:[self.masterView.orderedProjectNames indexOfObject:newName] inSection:0];
+    [self.masterView.projectsTable reloadData];
+    [self.masterView tableView:self.masterView.projectsTable didSelectRowAtIndexPath:self.masterView.defaultRow];
+ 
+    [[projectRef childByAppendingPath:@"name"] setValue:newName];
+    
+    if (![self.editBoardIDs isEqualToArray:self.boardIDs]) {
 
-            NSMutableDictionary *boardsDict = [NSMutableDictionary dictionary];
+        NSMutableDictionary *boardsDict = [NSMutableDictionary dictionary];
+        
+        for (int i=0; i<self.editBoardIDs.count; i++) [boardsDict setObject:self.editBoardIDs[i] forKey:[@(i) stringValue]];
+        
+        [[projectRef childByAppendingPath:@"boards"] setValue:boardsDict];
+        
+        [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] setObject:boardsDict forKey:@"boards"];
+        
+        for (NSString *boardID in self.boardIDs) {
             
-            for (int i=0; i<self.editBoardIDs.count; i++) [boardsDict setObject:self.editBoardIDs[i] forKey:[@(i) stringValue]];
-            
-            [[projectRef childByAppendingPath:@"boards"] setValue:boardsDict];
-            
-            [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] setObject:boardsDict forKey:@"boards"];
-            
-            for (NSString *boardID in self.boardIDs) {
+            if (![self.editBoardIDs containsObject:boardID]) {
                 
-                if (![self.editBoardIDs containsObject:boardID]) {
+                NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"commentsID"];
+                NSString *commentsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
+                Firebase *commentsRef = [[Firebase alloc] initWithUrl:commentsString];
+                [commentsRef removeAllObservers];
+                
+                for (NSString *commentThreadID in [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] allKeys]) {
                     
-                    NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"commentsID"];
-                    NSString *commentsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
-                    Firebase *commentsRef = [[Firebase alloc] initWithUrl:commentsString];
-                    [commentsRef removeAllObservers];
+                    NSString *infoString = [NSString stringWithFormat:@"%@/info", commentThreadID];
+                    [[commentsRef childByAppendingPath:infoString] removeAllObservers];
                     
-                    for (NSString *commentThreadID in [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] allKeys]) {
-                        
-                        NSString *infoString = [NSString stringWithFormat:@"%@/info", commentThreadID];
-                        [[commentsRef childByAppendingPath:infoString] removeAllObservers];
-                        
-                        NSString *messageString = [NSString stringWithFormat:@"%@/messages", commentThreadID];
-                        [[commentsRef childByAppendingPath:messageString] removeAllObservers];
-                        
-                        NSString *updatedString = [NSString stringWithFormat:@"%@/updatedAt", commentThreadID];
-                        [[commentsRef childByAppendingPath:updatedString] removeAllObservers];
-                    }
+                    NSString *messageString = [NSString stringWithFormat:@"%@/messages", commentThreadID];
+                    [[commentsRef childByAppendingPath:messageString] removeAllObservers];
                     
-                    [commentsRef removeValue];
-                    
-                    [[FirebaseHelper sharedHelper].comments removeObjectForKey:commentsID];
-                    
-                    NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
-                    Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
-                    [[boardRef childByAppendingPath:@"name"] removeAllObservers];
-                    [[boardRef childByAppendingPath:@"updatedAt"] removeAllObservers];
-                    
-                    for (NSString *userID in [[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"undo"] allKeys]) {
-                        
-                        NSString *undoString = [NSString stringWithFormat:@"undo/%@", userID];
-                        [[boardRef childByAppendingPath:undoString] removeAllObservers];
-                    }
-                    
-                    for (NSString *userID in [[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"subpaths"] allKeys]) {
-                        
-                        NSString *subpathsString = [NSString stringWithFormat:@"subpaths/%@", userID];
-                        [[boardRef childByAppendingPath:subpathsString] removeAllObservers];
-                    }
-                    
-                    [boardRef removeValue];
-                    [[FirebaseHelper sharedHelper].boards removeObjectForKey:boardID];
+                    NSString *updatedString = [NSString stringWithFormat:@"%@/updatedAt", commentThreadID];
+                    [[commentsRef childByAppendingPath:updatedString] removeAllObservers];
                 }
+                
+                [commentsRef removeValue];
+                
+                [[FirebaseHelper sharedHelper].comments removeObjectForKey:commentsID];
+                
+                NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
+                Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
+                [[boardRef childByAppendingPath:@"name"] removeAllObservers];
+                [[boardRef childByAppendingPath:@"updatedAt"] removeAllObservers];
+                
+                for (NSString *userID in [[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"undo"] allKeys]) {
+                    
+                    NSString *undoString = [NSString stringWithFormat:@"undo/%@", userID];
+                    [[boardRef childByAppendingPath:undoString] removeAllObservers];
+                }
+                
+                for (NSString *userID in [[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"subpaths"] allKeys]) {
+                    
+                    NSString *subpathsString = [NSString stringWithFormat:@"subpaths/%@", userID];
+                    [[boardRef childByAppendingPath:subpathsString] removeAllObservers];
+                }
+                
+                [boardRef removeValue];
+                [[FirebaseHelper sharedHelper].boards removeObjectForKey:boardID];
             }
-            
-            self.boardIDs = [self.editBoardIDs mutableCopy];
-            
-            if (self.boardIDs.count == 0) [self createBoard];
-            
-            [self.carousel reloadData];
-            [self carouselCurrentItemIndexDidChange:self.carousel];
-            
-            [self cancelTapped:nil];
         }
+        
+        self.boardIDs = [self.editBoardIDs mutableCopy];
+        
+        if (self.boardIDs.count == 0) [self createBoard];
+        
+        [self.carousel reloadData];
+        [self carouselCurrentItemIndexDidChange:self.carousel];
         
         [self cancelTapped:nil];
     }
+    
+    [self cancelTapped:nil];
 }
 
 - (IBAction)cancelTapped:(id)sender {
@@ -1325,6 +1324,8 @@
     self.chatOpenButton.center = chatCenter;
     
     if (!self.activeBoardID) {
+        
+        self.chatViewed = true;
         
         if ([self.chatTextField isFirstResponder]) [self.chatTextField resignFirstResponder];
         else if (self.userRole > 0) [self.chatTextField becomeFirstResponder];
@@ -1613,37 +1614,178 @@
         if (self.activeBoardID) [self.currentBoardView hideChat];
     }
     
+    [UIView setAnimationsEnabled:NO];
+    
+    if ([self.editBoardNameTextField isFirstResponder]) {
+        
+        [self.carousel setScrollEnabled:YES];
+        [self.editBoardNameTextField resignFirstResponder];
+        
+        NSString *oldBoardName = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"name"];
+        
+        NSMutableArray *boardNames = [NSMutableArray array];
+        
+        for (NSString *boardID in self.boardIDs) {
+            
+            NSString *boardName = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"name"];
+            if (![boardName isEqualToString:oldBoardName] && ![boardName isEqualToString:@"Untitled"]) [boardNames addObject:boardName];
+        }
+        
+        if ([boardNames containsObject:self.editBoardNameTextField.text]) {
+            
+            self.editBoardNameTextField.text = oldBoardName;
+            
+            InvalidNameAlertViewController *invalidVC = [self.storyboard instantiateViewControllerWithIdentifier:@"InvalidName"];
+            
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:invalidVC];
+            nav.modalPresentationStyle = UIModalPresentationFormSheet;
+            nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            
+            UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+            logoImageView.frame = CGRectMake(140, 8, 32, 32);
+            logoImageView.tag = 800;
+            [nav.navigationBar addSubview:logoImageView];
+            
+            [self presentViewController:nav animated:YES completion:nil];
+        }
+        else if (![self.editBoardNameTextField.text isEqualToString:oldBoardName]) {
+            
+            NSString *name;
+            
+            NSString *noSpacesString = [self.editBoardNameTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            
+            if (noSpacesString.length == 0) {
+                name = @"Untitled";
+                self.boardNameLabel.alpha = .2;
+            } else {
+                name = self.editBoardNameTextField.text;
+                self.boardNameLabel.alpha = 1;
+            }
+            self.boardNameLabel.text = name;
+            if ([self.boardNameLabel.text isEqualToString:@"Untitled"]) self.boardNameLabel.alpha = .2;
+            else self.boardNameLabel.alpha = 1;
+            [self.boardNameLabel sizeToFit];
+            self.boardNameLabel.center = CGPointMake(self.carousel.center.x, self.boardNameLabel.center.y);
+            
+            NSString *boardNameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/name", self.boardIDs[self.carousel.currentItemIndex]];
+            Firebase *ref = [[Firebase alloc] initWithUrl:boardNameString];
+            [ref setValue:name];
+            [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] setObject:name forKey:@"name"];
+            
+            self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+17, self.boardNameLabel.center.y);
+            
+            NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+            [[FirebaseHelper sharedHelper] setBoard:self.boardIDs[self.carousel.currentItemIndex] UpdatedAt:dateString];
+        }
+        
+        [self cancelTapped:nil];
+    }
+    
     if ([[self.view viewWithTag:104] isFirstResponder]) {
         
-        UILabel *label = (UILabel *)[self.view viewWithTag:102];
-        UIButton *editBoardNameButton = (UIButton *)[self.view viewWithTag:103];
-        UITextField *textField = (UITextField *)[self.view viewWithTag:104];
+        UITextField *boardNameTextField = (UITextField *)[self.view viewWithTag:104];
         
-        if (self.activeBoardID){
+        [boardNameTextField resignFirstResponder];
+        
+        UITextField *editBoardNameTextField = (UITextField *)[self.view viewWithTag:104];
+        editBoardNameTextField.hidden = true;
+        
+        NSString *oldBoardName = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"name"];
+        
+        NSMutableArray *boardNames = [NSMutableArray array];
+        
+        for (NSString *boardID in self.boardIDs) {
             
-            NSString *boardName = [[[FirebaseHelper sharedHelper].boards objectForKey:self.activeBoardID] objectForKey:@"name"];
-            NSString *labelString = [NSString stringWithFormat:@"|   %@", boardName];
-            label.text = labelString;
-            if ([boardName isEqualToString:@"Untitled"]) label.alpha = .2;
-            else label.alpha = 1;
+            NSString *boardName = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"name"];
+            if (![boardName isEqualToString:oldBoardName] && ![boardName isEqualToString:@"Untitled"]) [boardNames addObject:boardName];
+        }
+        
+        NSString *name;
+        
+        if ([boardNames containsObject:boardNameTextField.text]) {
             
-            label.hidden = false;
-            editBoardNameButton.hidden = false;
-            textField.hidden = true;
+            name = oldBoardName;
+            
+            InvalidNameAlertViewController *invalidVC = [self.storyboard instantiateViewControllerWithIdentifier:@"InvalidName"];
+            
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:invalidVC];
+            nav.modalPresentationStyle = UIModalPresentationFormSheet;
+            nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            
+            UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+            logoImageView.frame = CGRectMake(140, 8, 32, 32);
+            logoImageView.tag = 800;
+            [nav.navigationBar addSubview:logoImageView];
+            
+            [self presentViewController:nav animated:YES completion:nil];
         }
         else {
-            label.hidden = true;
-            editBoardNameButton.hidden = true;
-            textField.hidden = true;
+            
+            NSString *noSpacesString = [boardNameTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            
+            if (noSpacesString.length == 0) name = @"Untitled";
+            else name = editBoardNameTextField.text;
+            
+            if (![boardNameTextField.text isEqualToString:oldBoardName]) {
+                
+                NSString *boardNameRefString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/name", self.boardIDs[self.carousel.currentItemIndex]];
+                Firebase *ref = [[Firebase alloc] initWithUrl:boardNameRefString];
+                [ref setValue:name];
+                [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] setObject:name forKey:@"name"];
+                
+                NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+                [[FirebaseHelper sharedHelper] setBoard:self.activeBoardID UpdatedAt:dateString];
+            }
         }
+        
+        UILabel *boardNameLabel = (UILabel *)[self.view viewWithTag:102];
+        
+        if ([name isEqualToString:@"Untitled"]) {
+            boardNameTextField.alpha = .2;
+            boardNameLabel.alpha = .2;
+            self.boardNameLabel.alpha = .2;
+        }
+        else {
+            boardNameLabel.alpha = 1;
+            self.boardNameLabel.alpha = 1;
+        }
+        
+        NSString *boardNameString = [NSString stringWithFormat:@"|   %@", name];
+        boardNameLabel.text = boardNameString;
+        [boardNameLabel sizeToFit];
+        boardNameLabel.hidden = false;
+        
+        self.boardNameLabel.text = name;
+        [self.boardNameLabel sizeToFit];
+        self.boardNameLabel.center = CGPointMake(self.carousel.center.x+105, self.boardNameLabel.center.y);
+        self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+122, self.boardNameLabel.center.y);
+        
+        UIButton *editBoardNameButton = (UIButton *)[self.view viewWithTag:103];
+        editBoardNameButton.frame = CGRectMake(boardNameLabel.frame.origin.x+boardNameLabel.frame.size.width-5, boardNameLabel.frame.origin.y-6, 36, 36);
+        editBoardNameButton.hidden = false;
+
     }
     
     if ([self.editProjectNameTextField isFirstResponder]) {
+        
+        NSString *projectName = [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"name"];
+
+        NSString *noSpacesString = [self.editProjectNameTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        
+        if (noSpacesString.length == 0) self.editProjectNameTextField.text = projectName;
+        else self.editProjectNameTextField.textColor = [UIColor blackColor];
+        self.projectNameLabel.text = self.editProjectNameTextField.text;
+        [self.projectNameLabel sizeToFit];
+        self.projectNameEditButton.center = CGPointMake(self.projectNameLabel.frame.size.width+292, self.projectNameLabel.center.y+3);
+        self.projectNameEditButton.hidden = false;
+        self.editProjectNameTextField.userInteractionEnabled = false;
         
         self.projectNameLabel.hidden = false;
         self.projectNameEditButton.hidden = false;
         self.editProjectNameTextField.hidden = true;
     }
+    
+    [UIView setAnimationsEnabled:YES];
 }
 
 #pragma mark -
@@ -1783,9 +1925,9 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField*)textField {
     
-    if (textField.text.length == 0) return NO;
-    
     if ([textField isEqual:self.chatTextField]) {
+        
+        if (textField.text.length == 0) return NO;
         
         NSString *chatString;
         NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
@@ -1812,77 +1954,7 @@
         self.chatTextField.text = nil;
     }
     
-    if ([textField isEqual:self.editBoardNameTextField]) {
-        
-        [self.carousel setScrollEnabled:YES];
-        [textField resignFirstResponder];
-
-        NSString *oldBoardName = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"name"];
-        
-        if (![textField.text isEqualToString:oldBoardName]) {
-            
-            NSString *boardNameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/name", self.boardIDs[self.carousel.currentItemIndex]];
-            Firebase *ref = [[Firebase alloc] initWithUrl:boardNameString];
-            [ref setValue:self.editBoardNameTextField.text];
-            [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] setObject:self.editBoardNameTextField.text forKey:@"name"];
-            
-            self.boardNameLabel.text = self.editBoardNameTextField.text;
-            if ([self.boardNameLabel.text isEqualToString:@"Untitled"]) self.boardNameLabel.alpha = .2;
-            else self.boardNameLabel.alpha = 1;
-            [self.boardNameLabel sizeToFit];
-            self.boardNameLabel.center = CGPointMake(self.carousel.center.x, self.boardNameLabel.center.y);
-            
-            self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+17, self.boardNameLabel.center.y);
-            
-            NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
-            [[FirebaseHelper sharedHelper] setBoard:self.boardIDs[self.carousel.currentItemIndex] UpdatedAt:dateString];
-        }
-
-        [self cancelTapped:nil];
-    }
-    
-    if ([textField isEqual:[self.view viewWithTag:104]]) {
-        
-        [textField resignFirstResponder];
-        
-        UITextField *editBoardNameTextField = (UITextField *)[self.view viewWithTag:104];
-        editBoardNameTextField.hidden = true;
-        
-        UILabel *boardNameLabel = (UILabel *)[self.view viewWithTag:102];
-        NSString *boardNameString = [NSString stringWithFormat:@"|   %@", editBoardNameTextField.text];
-        boardNameLabel.text = boardNameString;
-        if ([boardNameLabel.text isEqualToString:@"Untitled"]) boardNameLabel.alpha = .2;
-        else boardNameLabel.alpha = 1;
-        [boardNameLabel sizeToFit];
-        boardNameLabel.hidden = false;
-        
-        self.boardNameLabel.text = editBoardNameTextField.text;
-        if ([self.boardNameLabel.text isEqualToString:@"Untitled"]) self.boardNameLabel.alpha = .2;
-        else self.boardNameLabel.alpha = 1;
-        [self.boardNameLabel sizeToFit];
-        self.boardNameLabel.center = CGPointMake(self.carousel.center.x+105, self.boardNameLabel.center.y);
-        self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+122, self.boardNameLabel.center.y);
-        
-        UIButton *editBoardNameButton = (UIButton *)[self.view viewWithTag:103];
-        editBoardNameButton.frame = CGRectMake(boardNameLabel.frame.origin.x+boardNameLabel.frame.size.width-5, boardNameLabel.frame.origin.y-6, 36, 36);
-        editBoardNameButton.hidden = false;
-        
-        NSString *boardNameRefString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/name", self.boardIDs[self.carousel.currentItemIndex]];
-        Firebase *ref = [[Firebase alloc] initWithUrl:boardNameRefString];
-        [ref setValue:editBoardNameTextField.text];
-        [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] setObject:editBoardNameTextField.text forKey:@"name"];
-        
-        NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
-        [[FirebaseHelper sharedHelper] setBoard:self.activeBoardID UpdatedAt:dateString];
-    }
-    
-    if ([textField isEqual:self.editProjectNameTextField]) {
-        
-        [UIView setAnimationsEnabled:NO];
-        self.projectNameLabel.text = self.editProjectNameTextField.text;
-        [self.projectNameLabel sizeToFit];
-        self.projectNameEditButton.center = CGPointMake(self.projectNameLabel.frame.size.width+292, self.projectNameLabel.center.y+3);
-        [UIView setAnimationsEnabled:YES];
+    if ([textField isEqual:self.editBoardNameTextField] || [textField isEqual:[self.view viewWithTag:104]] || [textField isEqual:self.editProjectNameTextField]) {
         
         [textField resignFirstResponder];
     }

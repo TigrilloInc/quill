@@ -20,6 +20,5 @@
 @property (weak, nonatomic) IBOutlet UILabel *projectLabel;
 @property (weak, nonatomic) IBOutlet UILabel *leaveLabel;
 @property (weak, nonatomic) IBOutlet RoundedButton *leaveButton;
-@property (weak, nonatomic) IBOutlet RoundedButton *cancelButton;
 
 @end

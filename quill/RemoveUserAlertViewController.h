@@ -16,7 +16,6 @@
 
 @property (strong, nonatomic) NSString *userID;
 @property (weak, nonatomic) IBOutlet RoundedButton *removeButton;
-@property (weak, nonatomic) IBOutlet RoundedButton *cancelButton;
 @property (weak, nonatomic) IBOutlet UILabel *removeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *warnLabel;
 

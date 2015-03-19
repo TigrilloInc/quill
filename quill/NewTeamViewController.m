@@ -26,9 +26,6 @@
                                    initWithTitle: @"Team Name"
                                    style: UIBarButtonItemStyleBordered
                                    target: nil action: nil];
-    [backButton setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                        [UIFont fontWithName:@"SourceSansPro-Semibold" size:16],NSFontAttributeName,
-                                        nil] forState:UIControlStateNormal];
     [self.navigationItem setBackBarButtonItem: backButton];
     
     self.createTeamButton.layer.borderWidth = 1;

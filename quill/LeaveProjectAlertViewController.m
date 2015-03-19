@@ -22,9 +22,6 @@
     self.leaveButton.layer.borderWidth = 1;
     self.leaveButton.layer.cornerRadius = 10;
     self.leaveButton.layer.borderColor = [UIColor grayColor].CGColor;
-    self.cancelButton.layer.borderWidth = 1;
-    self.cancelButton.layer.cornerRadius = 10;
-    self.cancelButton.layer.borderColor = [UIColor grayColor].CGColor;
 
 }
 
@@ -90,11 +87,6 @@
         [projectVC hideAll];
         [FirebaseHelper sharedHelper].currentProjectID = nil;
     }
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (IBAction)cancelTapped:(id)sender {
     
     [self dismissViewControllerAnimated:YES completion:nil];
 }

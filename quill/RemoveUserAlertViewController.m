@@ -20,9 +20,7 @@
     self.removeButton.layer.borderWidth = 1;
     self.removeButton.layer.cornerRadius = 10;
     self.removeButton.layer.borderColor = [UIColor grayColor].CGColor;
-    self.cancelButton.layer.borderWidth = 1;
-    self.cancelButton.layer.cornerRadius = 10;
-    self.cancelButton.layer.borderColor = [UIColor grayColor].CGColor;
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -75,11 +73,6 @@
     [teamVC.usersTable reloadData];
     
     [self.navigationController popToRootViewControllerAnimated:YES];
-}
-
-- (IBAction)cancelTapped:(id)sender {
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void) tappedOutside {

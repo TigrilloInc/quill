@@ -21,9 +21,6 @@
     self.deleteButton.layer.borderWidth = 1;
     self.deleteButton.layer.cornerRadius = 10;
     self.deleteButton.layer.borderColor = [UIColor grayColor].CGColor;
-    self.cancelButton.layer.borderWidth = 1;
-    self.cancelButton.layer.cornerRadius = 10;
-    self.cancelButton.layer.borderColor = [UIColor grayColor].CGColor;
     
 }
 
@@ -70,11 +67,6 @@
         
         if (!CGRectContainsPoint(self.view.frame, converted)) [self dismissViewControllerAnimated:YES completion:nil];
     }
-}
-
-- (IBAction)cancelTapped:(id)sender {
-
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)deleteTapped:(id)sender {

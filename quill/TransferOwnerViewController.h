@@ -19,7 +19,6 @@
 @property (strong, nonatomic) NSDictionary *availableUsersDict;
 @property (strong, nonatomic) NSString *selectedUserID;
 @property (weak, nonatomic) IBOutlet RoundedButton *ownerButton;
-@property (weak, nonatomic) IBOutlet RoundedButton *cancelButton;
 @property (weak, nonatomic) IBOutlet UILabel *ownerLabel;
 
 @end

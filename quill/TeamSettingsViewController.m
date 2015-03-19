@@ -25,13 +25,14 @@
     self.navigationItem.title = @"Team Settings";
     logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
     
+    self.doneButton.layer.borderWidth = 1;
+    self.doneButton.layer.cornerRadius = 10;
+    self.doneButton.layer.borderColor = [UIColor grayColor].CGColor;
+    
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc]
                                    initWithTitle: @"Settings"
                                    style: UIBarButtonItemStyleBordered
                                    target:self action:nil];
-    [backButton setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                        [UIFont fontWithName:@"SourceSansPro-Semibold" size:16],NSFontAttributeName,
-                                        nil] forState:UIControlStateNormal];
     [self.navigationItem setBackBarButtonItem: backButton];
 
     for (NSString *userID in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
@@ -70,16 +71,6 @@
     
     [super viewWillDisappear:animated];
     
-    if (![self.teamNameTextField.text isEqualToString:[FirebaseHelper sharedHelper].teamName]) {
-     
-        NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@/name", [FirebaseHelper sharedHelper].teamID];
-        Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
-        
-        [FirebaseHelper sharedHelper].teamName = self.teamNameTextField.text;
-        
-        [teamRef setValue:[FirebaseHelper sharedHelper].teamName];
-    }
-    
     [outsideTapRecognizer setDelegate:nil];
     [self.view.window removeGestureRecognizer:outsideTapRecognizer];
 }
@@ -112,6 +103,27 @@
     [UIView animateWithDuration:.3 animations:^{
         logoImage.alpha = 1;
     }];
+}
+
+- (IBAction)doneTapped:(id)sender {
+
+    if (![self.teamNameTextField.text isEqualToString:[FirebaseHelper sharedHelper].teamName]) {
+        
+        if (self.teamNameTextField.text.length < 2) {
+            
+            self.teamLabel.text = @"Team names must be at least 2 characters long.";
+        }
+        else {
+            NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@/name", [FirebaseHelper sharedHelper].teamID];
+            Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
+            
+            [FirebaseHelper sharedHelper].teamName = self.teamNameTextField.text;
+            [teamRef setValue:[FirebaseHelper sharedHelper].teamName];
+            
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }
+    }
+    else [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)tappedOutside {
@@ -246,12 +258,26 @@
     
     textField.userInteractionEnabled = NO;
     
-    if (textField.text == 0) textField.text = [FirebaseHelper sharedHelper].teamName;
+    if (textField.text.length == 0) textField.text = [FirebaseHelper sharedHelper].teamName;
+    
+    if (textField.text.length == 1) textField.textColor = [UIColor redColor];
+    else textField.textColor = [UIColor blackColor];
     
     CGRect nameRect = [textField.text boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{ NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Regular" size:28]} context:nil];
     
     self.editNameButton.center = CGPointMake(nameRect.size.width+50, self.editNameButton.center.y);
     self.editNameButton.hidden = false;
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    if(range.length + range.location > textField.text.length) return NO;
+    
+    NSUInteger newLength = [textField.text length] + [string length] - range.length;
+    
+    if (newLength > 16) return NO;
+    else return YES;
+
 }
 
 #pragma mark - UIGestureRecognizer Delegate

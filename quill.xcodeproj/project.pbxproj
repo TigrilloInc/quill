@@ -91,6 +91,10 @@
 		128DC3201A22C01800FF6076 /* AvatarPopoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 128DC31F1A22C01800FF6076 /* AvatarPopoverViewController.m */; };
 		129667501AAE297000CB57FA /* usercomment3.png in Resources */ = {isa = PBXBuildFile; fileRef = 1296674F1AAE297000CB57FA /* usercomment3.png */; };
 		129667581AAE335200CB57FA /* usercomment4.png in Resources */ = {isa = PBXBuildFile; fileRef = 129667571AAE335200CB57FA /* usercomment4.png */; };
+		129667671AB7DD1800CB57FA /* InvalidNameAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 129667661AB7DD1800CB57FA /* InvalidNameAlertViewController.m */; };
+		1296676A1ABA6CAE00CB57FA /* PhotosCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 129667691ABA6CAE00CB57FA /* PhotosCollectionViewController.m */; };
+		1296676D1ABA795A00CB57FA /* PhotosCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1296676C1ABA795A00CB57FA /* PhotosCollectionViewCell.m */; };
+		1296676F1ABA954500CB57FA /* userbuttonmask.png in Resources */ = {isa = PBXBuildFile; fileRef = 1296676E1ABA954500CB57FA /* userbuttonmask.png */; };
 		129E127219648A2C00ED9D42 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127119648A2C00ED9D42 /* Foundation.framework */; };
 		129E127419648A2C00ED9D42 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127319648A2C00ED9D42 /* CoreGraphics.framework */; };
 		129E127619648A2C00ED9D42 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127519648A2C00ED9D42 /* UIKit.framework */; };
@@ -370,6 +374,13 @@
 		128DC31F1A22C01800FF6076 /* AvatarPopoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AvatarPopoverViewController.m; sourceTree = "<group>"; };
 		1296674F1AAE297000CB57FA /* usercomment3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = usercomment3.png; path = Resources/usercomment3.png; sourceTree = "<group>"; };
 		129667571AAE335200CB57FA /* usercomment4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = usercomment4.png; path = Resources/usercomment4.png; sourceTree = "<group>"; };
+		129667651AB7DD1800CB57FA /* InvalidNameAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InvalidNameAlertViewController.h; sourceTree = "<group>"; };
+		129667661AB7DD1800CB57FA /* InvalidNameAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InvalidNameAlertViewController.m; sourceTree = "<group>"; };
+		129667681ABA6CAE00CB57FA /* PhotosCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotosCollectionViewController.h; sourceTree = "<group>"; };
+		129667691ABA6CAE00CB57FA /* PhotosCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotosCollectionViewController.m; sourceTree = "<group>"; };
+		1296676B1ABA795A00CB57FA /* PhotosCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotosCollectionViewCell.h; sourceTree = "<group>"; };
+		1296676C1ABA795A00CB57FA /* PhotosCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotosCollectionViewCell.m; sourceTree = "<group>"; };
+		1296676E1ABA954500CB57FA /* userbuttonmask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userbuttonmask.png; path = Resources/userbuttonmask.png; sourceTree = "<group>"; };
 		129E126E19648A2C00ED9D42 /* quill.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = quill.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		129E127119648A2C00ED9D42 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		129E127319648A2C00ED9D42 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -659,6 +670,10 @@
 				12CE89761A75E85600983FBE /* TeamSettingsViewController.m */,
 				12A3FA0B1977420400E03E9E /* PersonalSettingsViewController.h */,
 				12A3FA0C1977420400E03E9E /* PersonalSettingsViewController.m */,
+				129667681ABA6CAE00CB57FA /* PhotosCollectionViewController.h */,
+				129667691ABA6CAE00CB57FA /* PhotosCollectionViewController.m */,
+				1296676B1ABA795A00CB57FA /* PhotosCollectionViewCell.h */,
+				1296676C1ABA795A00CB57FA /* PhotosCollectionViewCell.m */,
 				1216D99F19A3DBED0095DBD8 /* BoardCollectionViewCell.h */,
 				1216D9A019A3DBED0095DBD8 /* BoardCollectionViewCell.m */,
 				12AA5FA919E7904700F6D552 /* AddUserViewController.h */,
@@ -691,6 +706,8 @@
 				12BDC6AD1A96ECBB001160AF /* TransferOwnerViewController.m */,
 				12CAB1211A9D4EC800136AB1 /* UserDeletedAlertViewController.h */,
 				12CAB1221A9D4EC800136AB1 /* UserDeletedAlertViewController.m */,
+				129667651AB7DD1800CB57FA /* InvalidNameAlertViewController.h */,
+				129667661AB7DD1800CB57FA /* InvalidNameAlertViewController.m */,
 				12F4F9D11AA808DA00C8FC31 /* InstabugViewController.h */,
 				12F4F9D21AA808DA00C8FC31 /* InstabugViewController.m */,
 				128DC3051A1E8C7000FF6076 /* ChatTableViewCell.h */,
@@ -765,6 +782,7 @@
 				1231BEB81A6D8D2B00E09914 /* plus3.png */,
 				12C3A7FE1A88567F0022F2AA /* settingsfade.png */,
 				12860FE91A47AF800074B452 /* avatarbackground.png */,
+				1296676E1ABA954500CB57FA /* userbuttonmask.png */,
 				12ABCE971A5F214C00C4C7DC /* userbutton1.png */,
 				12ABCE981A5F214C00C4C7DC /* userbutton2.png */,
 				12ABCE991A5F214C00C4C7DC /* userbutton3.png */,
@@ -1131,6 +1149,7 @@
 				123D200B1A5A5365004D5743 /* red.png in Resources */,
 				129667501AAE297000CB57FA /* usercomment3.png in Resources */,
 				12D5DBAA1A4A8619003727AC /* gear1.png in Resources */,
+				1296676F1ABA954500CB57FA /* userbuttonmask.png in Resources */,
 				12D5DB971A48F167003727AC /* marker.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1182,6 +1201,7 @@
 				1213D7B71A6849B7001FDEA9 /* CommentPopoverViewController.m in Sources */,
 				1216D99B19A275980095DBD8 /* LSCollectionViewHelper.m in Sources */,
 				12A3FA101979861800E03E9E /* ProjectDetailViewController.m in Sources */,
+				129667671AB7DD1800CB57FA /* InvalidNameAlertViewController.m in Sources */,
 				12DC97A41A83060A00CC4616 /* ChangePasswordViewController.m in Sources */,
 				12AA5FAB19E7904700F6D552 /* AddUserViewController.m in Sources */,
 				128DC3071A1E8C7000FF6076 /* ChatTableViewCell.m in Sources */,
@@ -1189,6 +1209,8 @@
 				1231BEC51A6EE2F200E09914 /* Reachability.m in Sources */,
 				12F4F9D31AA808DA00C8FC31 /* InstabugViewController.m in Sources */,
 				129E128419648A2C00ED9D42 /* main.m in Sources */,
+				1296676A1ABA6CAE00CB57FA /* PhotosCollectionViewController.m in Sources */,
+				1296676D1ABA795A00CB57FA /* PhotosCollectionViewCell.m in Sources */,
 				12860FB31A4024920074B452 /* NSString+MD5.m in Sources */,
 				12A3FA0D1977420400E03E9E /* PersonalSettingsViewController.m in Sources */,
 				12899BB01A168CA100AF95BD /* MasterView.m in Sources */,

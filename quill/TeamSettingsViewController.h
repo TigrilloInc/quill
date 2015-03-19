@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RoundedButton.h"
 
 @interface TeamSettingsViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate> {
     
@@ -19,6 +20,8 @@
 @property (weak, nonatomic) IBOutlet UITableView *usersTable;
 @property (weak, nonatomic) IBOutlet UIButton *editNameButton;
 @property (weak, nonatomic) IBOutlet UITextField *teamNameTextField;
+@property (weak, nonatomic) IBOutlet UILabel *teamLabel;
+@property (weak, nonatomic) IBOutlet RoundedButton *doneButton;
 
 @property (strong, nonatomic) NSMutableDictionary *usersDict;
 

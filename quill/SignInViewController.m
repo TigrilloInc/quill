@@ -130,6 +130,8 @@
                        else if (error.code == -1) [self.signInLabel setText:@"There is no user account with that email."];
                        else [self.signInLabel setText:@"Something went wrong - try again."];
                        
+                       NSLog(@"%@", error);
+                       
                        self.emailField.userInteractionEnabled = true;
                        self.passwordField.userInteractionEnabled = true;
                        self.emailField.alpha = 1;

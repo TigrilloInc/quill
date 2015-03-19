@@ -104,10 +104,8 @@
                 
                 NSLog(@"%@", error);
                 
-                if (error.code) {
-                    
-                }
-                self.passwordLabel.text = @"Something went wrong - try again.";
+                if (error.code == -6) self.passwordLabel.text = @"The current password entered is incorrect.";
+                else self.passwordLabel.text = @"Something went wrong - try again.";
             }
             else {
                 

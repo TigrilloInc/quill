@@ -22,10 +22,7 @@
     self.ownerButton.layer.borderWidth = 1;
     self.ownerButton.layer.cornerRadius = 10;
     self.ownerButton.layer.borderColor = [UIColor grayColor].CGColor;
-    self.cancelButton.layer.borderWidth = 1;
-    self.cancelButton.layer.cornerRadius = 10;
-    self.cancelButton.layer.borderColor = [UIColor grayColor].CGColor;
-    
+
     NSMutableDictionary *usersDict = (NSMutableDictionary *)CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)[[FirebaseHelper sharedHelper].team objectForKey:@"users"], kCFPropertyListMutableContainers));
     for (NSString *userID in usersDict.allKeys) {
         
@@ -73,6 +70,8 @@
 
 - (IBAction)leaveTapped:(id)sender {
 
+    if (self.selectedUserID == nil) return;
+    
     NSString *leaveString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].currentProjectID, [FirebaseHelper sharedHelper].uid];
     Firebase *leaveRef = [[Firebase alloc] initWithUrl:leaveString];
     [leaveRef setValue:@(-1)];
@@ -95,11 +94,6 @@
         [projectVC.masterView tableView:projectVC.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
     }
     
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (IBAction)cancelTapped:(id)sender {
-
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
