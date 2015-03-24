@@ -118,13 +118,33 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
         avatar.userID = userIDs[i];
-        [avatar generateIdenticonWithShadow:true];
-        avatar.frame = CGRectMake(-70.5+projectVC.carouselOffset, -12+(i-1)*66, avatar.userImage.size.width, avatar.userImage.size.height);
-        CGAffineTransform tr = CGAffineTransformScale(avatar.transform, .25, .25);
+        [avatar addTarget:self action:@selector(avatarTapped:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIImage *avatarImage = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"avatar"];
+        
+        CGAffineTransform tr;
+        
+        if (i==0) {
+            
+            [avatar setImage:avatarImage forState:UIControlStateNormal];
+            avatar.frame = CGRectMake(-11.5+projectVC.carouselOffset, 49+(i-1)*66, avatarImage.size.width, avatarImage.size.height);
+            avatar.shadowImage.hidden = false;
+            avatar.shadowImage.center = CGPointMake(64, 69);
+            avatar.drawingImage.transform = avatar.highlightedImage.transform = CGAffineTransformMakeScale(.2875, .2875);
+            avatar.drawingImage.center = avatar.highlightedImage.center = CGPointMake(64, 64);
+            avatar.imageView.layer.cornerRadius = avatarImage.size.width/2;
+            avatar.imageView.layer.masksToBounds = YES;
+            tr = CGAffineTransformScale(avatar.transform, .432, .432);
+        }
+        else {
+            [avatar generateIdenticonWithShadow:true];
+            avatar.frame = CGRectMake(-70.5+projectVC.carouselOffset, -12+(i-1)*66, avatar.userImage.size.width, avatar.userImage.size.height);
+            tr = CGAffineTransformScale(avatar.transform, .25, .25);
+        }
+
         tr = CGAffineTransformRotate(tr, -M_PI_2);
         avatar.transform = tr;
         if (![self.activeUserIDs containsObject:avatar.userID]) avatar.alpha = 0.5;
-        [avatar addTarget:self action:@selector(avatarTapped:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:avatar];
         [self.avatarButtons addObject:avatar];
     }

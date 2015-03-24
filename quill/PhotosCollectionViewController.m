@@ -8,6 +8,10 @@
 
 #import "PhotosCollectionViewController.h"
 #import "PhotosCollectionViewCell.h"
+#import "AvatarButton.h"
+#import "FirebaseHelper.h"
+#import "PersonalSettingsViewController.h"
+#import "MobileCoreServices/UTCoreTypes.h"
 
 @implementation NSIndexSet (Convenience)
 - (NSArray *)indexPathsFromIndexesWithSection:(NSUInteger)section {
@@ -40,6 +44,12 @@ static CGSize AssetGridThumbnailSize;
     
     self.navigationItem.title = @"Select Avatar";
     
+    UIBarButtonItem *photoItem = [[UIBarButtonItem alloc]
+                                   initWithTitle: @"Take Photo"
+                                   style: UIBarButtonItemStyleBordered
+                                   target:self action:@selector(takePhoto)];
+    [self.navigationItem setRightBarButtonItem:photoItem];
+    
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.imageManager = [[PHCachingImageManager alloc] init];
     [self resetCachedAssets];
@@ -62,12 +72,12 @@ static CGSize AssetGridThumbnailSize;
     [super viewDidAppear:animated];
     [self updateCachedAssets];
     
-    outsideTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside)];
+    tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap)];
     
-    [outsideTapRecognizer setDelegate:self];
-    [outsideTapRecognizer setNumberOfTapsRequired:1];
-    outsideTapRecognizer.cancelsTouchesInView = NO;
-    [self.view.window addGestureRecognizer:outsideTapRecognizer];
+    [tapRecognizer setDelegate:self];
+    [tapRecognizer setNumberOfTapsRequired:1];
+    tapRecognizer.cancelsTouchesInView = NO;
+    [self.view.window addGestureRecognizer:tapRecognizer];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -82,8 +92,8 @@ static CGSize AssetGridThumbnailSize;
         [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
     }
     
-    outsideTapRecognizer.delegate = nil;
-    [self.view.window removeGestureRecognizer:outsideTapRecognizer];
+    tapRecognizer.delegate = nil;
+    [self.view.window removeGestureRecognizer:tapRecognizer];
 }
 
 -(void)showLogo {
@@ -96,27 +106,69 @@ static CGSize AssetGridThumbnailSize;
     }];
 }
 
--(void) tappedOutside {
+-(void) handleTap {
     
-    if (outsideTapRecognizer.state == UIGestureRecognizerStateEnded) {
+    if (tapRecognizer.state == UIGestureRecognizerStateEnded) {
         
-        CGPoint location = [outsideTapRecognizer locationInView:nil];
+        CGPoint location = [tapRecognizer locationInView:nil];
         CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
         
         if (!CGRectContainsPoint(self.view.frame, converted)){
             
-            [outsideTapRecognizer setDelegate:nil];
-            [self.view.window removeGestureRecognizer:outsideTapRecognizer];
+            [tapRecognizer setDelegate:nil];
+            [self.view.window removeGestureRecognizer:tapRecognizer];
             [self dismissViewControllerAnimated:YES completion:nil];
+        }
+        else {
+            
+            CGPoint loc = [tapRecognizer locationInView:self.collectionView];
+                
+            NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:loc];
+
+            if (indexPath != nil) {
+                
+                PersonalSettingsViewController *settingsVC = self.navigationController.viewControllers[0];
+                
+                if (indexPath.item > 0) {
+                    
+                    PHAsset *asset = self.assetsFetchResults[indexPath.item-1];
+                    [self.imageManager requestImageForAsset:asset
+                                                 targetSize:AssetGridThumbnailSize
+                                                contentMode:PHImageContentModeAspectFill
+                                                    options:nil
+                                              resultHandler:^(UIImage *result, NSDictionary *info) {
+                                                  
+                                                  if (result.size.height == 64) {
+                                                      settingsVC.avatarImage = result;
+                                                      settingsVC.imageChanged = true;
+                                                      [self.navigationController popToRootViewControllerAnimated:YES];
+                                                  }
+                                              }];
+                }
+                else {
+                    
+                    settingsVC.avatarImage = nil;
+                    [self.navigationController popToRootViewControllerAnimated:YES];
+                }
+            }
         }
     }
 }
 
+-(void) takePhoto {
+    
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.mediaTypes = @[(NSString *) kUTTypeImage];
+    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    
+    [self presentViewController:picker animated:YES completion:NULL];
+}
 
 #pragma mark - PHPhotoLibraryChangeObserver
 
-- (void)photoLibraryDidChange:(PHChange *)changeInstance
-{
+- (void)photoLibraryDidChange:(PHChange *)changeInstance {
+    
     // Call might come on any background queue. Re-dispatch to the main queue to handle it.
     dispatch_async(dispatch_get_main_queue(), ^{
         
@@ -160,31 +212,49 @@ static CGSize AssetGridThumbnailSize;
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
 
-    return self.assetsFetchResults.count;
+    return self.assetsFetchResults.count+1;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     PhotosCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PhotoCell" forIndexPath:indexPath];
-    
-    // Increment the cell's tag
-    NSInteger currentTag = cell.tag + 1;
-    cell.tag = currentTag;
-    
-    PHAsset *asset = self.assetsFetchResults[indexPath.item];
-    [self.imageManager requestImageForAsset:asset
-                                 targetSize:AssetGridThumbnailSize
-                                contentMode:PHImageContentModeAspectFill
-                                    options:nil
-                              resultHandler:^(UIImage *result, NSDictionary *info) {
-                                  
-                                  // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
-                                  if (cell.tag == currentTag) {
-                                      [cell.imageView setImage:result];
-                                  }
-                                  
-                              }];
 
+    cell.userInteractionEnabled = true;
+    
+    [[cell.imageView viewWithTag:-1] removeFromSuperview];
+    
+    if (indexPath.item > 0) {
+        
+        // Increment the cell's tag
+        NSInteger currentTag = cell.tag + 1;
+        cell.tag = currentTag;
+        
+        PHAsset *asset = self.assetsFetchResults[indexPath.item-1];
+        [self.imageManager requestImageForAsset:asset
+                                     targetSize:AssetGridThumbnailSize
+                                    contentMode:PHImageContentModeAspectFill
+                                        options:nil
+                                  resultHandler:^(UIImage *result, NSDictionary *info) {
+                                      
+                                      // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
+                                      if (cell.tag == currentTag) {
+                                          [cell.imageView setImage:result];
+                                      }
+
+                                  }];
+    }
+    else {
+        
+        AvatarButton *avatarButton = [AvatarButton buttonWithType:UIButtonTypeCustom];
+        avatarButton.userID = [FirebaseHelper sharedHelper].uid;
+        [avatarButton generateIdenticonWithShadow:true];
+        avatarButton.identiconView.tag = -1;
+        [cell.imageView setImage:avatarButton.imageView.image];
+        [cell.imageView addSubview:avatarButton.identiconView];
+        avatarButton.identiconView.transform = CGAffineTransformMakeScale(.51, .51);
+        avatarButton.identiconView.center = CGPointMake(47.7,46);
+    }
+    
     return cell;
 }
 
@@ -194,13 +264,6 @@ static CGSize AssetGridThumbnailSize;
 // Uncomment this method to specify if the specified item should be highlighted during tracking
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
 	return YES;
-}
-*/
-
-/*
-// Uncomment this method to specify if the specified item should be selected
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
 }
 */
 
@@ -314,10 +377,26 @@ static CGSize AssetGridThumbnailSize;
     
     NSMutableArray *assets = [NSMutableArray arrayWithCapacity:indexPaths.count];
     for (NSIndexPath *indexPath in indexPaths) {
-        PHAsset *asset = self.assetsFetchResults[indexPath.item];
+        if (indexPath.item == 0) continue;
+        PHAsset *asset = self.assetsFetchResults[indexPath.item-1];
         [assets addObject:asset];
     }
     return assets;
+}
+
+#pragma mark - UIImagePickerViewController Delegate
+
+-(void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
+    [FirebaseHelper sharedHelper].avatarImage = image;
+    
+    NSLog(@"size is %@", NSStringFromCGSize(image.size));
+    
+    [picker dismissViewControllerAnimated:YES completion:^{
+        
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }];
 }
 
 #pragma mark - UIGestureRecognizer Delegate

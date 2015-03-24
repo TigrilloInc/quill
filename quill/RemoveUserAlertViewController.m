@@ -62,7 +62,7 @@
 
 - (IBAction)removeTapped:(id)sender {
     
-    NSString *deletedString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/deleted", self.userID];
+    NSString *deletedString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/info/deleted", self.userID];
     Firebase *deletedRef = [[Firebase alloc] initWithUrl:deletedString];
     [deletedRef setValue:@(1)];
     

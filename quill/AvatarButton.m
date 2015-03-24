@@ -18,6 +18,12 @@
 
         self.adjustsImageWhenHighlighted = NO;
         
+        self.shadowImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"userbuttonmask3.png"]];
+        self.shadowImage.transform = CGAffineTransformMakeScale(.575, .575);
+        self.shadowImage.center = CGPointMake(125,127);
+        self.shadowImage.hidden = true;
+        [self addSubview:self.shadowImage];
+        
         self.drawingImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"drawing.png"]];
         self.drawingImage.hidden = true;
         self.drawingImage.transform = CGAffineTransformMakeScale(.5, .5);
@@ -137,12 +143,13 @@
             else tileColor = tileColors[hexValue%6];
         }
     }
-
-    IdenticonView *identicon = [[IdenticonView alloc] initWithFrame:CGRectMake(0, 0, self.userImage.size.width/2, self.userImage.size.height/2)];
-    identicon.tileValues = tileValues;
-    identicon.tileColor = tileColor;
-    [self addSubview:identicon];
-    identicon.center = CGPointMake(self.userImage.size.width/2,115);
+    
+    [self.identiconView removeFromSuperview];
+    self.identiconView = [[IdenticonView alloc] initWithFrame:CGRectMake(0, 0, self.userImage.size.width/2, self.userImage.size.height/2)];
+    self.identiconView.tileValues = tileValues;
+    self.identiconView.tileColor = tileColor;
+    [self addSubview:self.identiconView];
+    self.identiconView.center = CGPointMake(self.userImage.size.width/2,115);
 
     [self bringSubviewToFront:self.drawingImage];
 }

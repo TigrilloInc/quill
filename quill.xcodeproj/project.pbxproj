@@ -95,6 +95,8 @@
 		1296676A1ABA6CAE00CB57FA /* PhotosCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 129667691ABA6CAE00CB57FA /* PhotosCollectionViewController.m */; };
 		1296676D1ABA795A00CB57FA /* PhotosCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1296676C1ABA795A00CB57FA /* PhotosCollectionViewCell.m */; };
 		1296676F1ABA954500CB57FA /* userbuttonmask.png in Resources */ = {isa = PBXBuildFile; fileRef = 1296676E1ABA954500CB57FA /* userbuttonmask.png */; };
+		129667711ABAA5E100CB57FA /* userbuttonmask2.png in Resources */ = {isa = PBXBuildFile; fileRef = 129667701ABAA5E100CB57FA /* userbuttonmask2.png */; };
+		129667761AC0EBFC00CB57FA /* userbuttonmask3.png in Resources */ = {isa = PBXBuildFile; fileRef = 129667751AC0EBFC00CB57FA /* userbuttonmask3.png */; };
 		129E127219648A2C00ED9D42 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127119648A2C00ED9D42 /* Foundation.framework */; };
 		129E127419648A2C00ED9D42 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127319648A2C00ED9D42 /* CoreGraphics.framework */; };
 		129E127619648A2C00ED9D42 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127519648A2C00ED9D42 /* UIKit.framework */; };
@@ -381,6 +383,8 @@
 		1296676B1ABA795A00CB57FA /* PhotosCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotosCollectionViewCell.h; sourceTree = "<group>"; };
 		1296676C1ABA795A00CB57FA /* PhotosCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotosCollectionViewCell.m; sourceTree = "<group>"; };
 		1296676E1ABA954500CB57FA /* userbuttonmask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userbuttonmask.png; path = Resources/userbuttonmask.png; sourceTree = "<group>"; };
+		129667701ABAA5E100CB57FA /* userbuttonmask2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userbuttonmask2.png; path = Resources/userbuttonmask2.png; sourceTree = "<group>"; };
+		129667751AC0EBFC00CB57FA /* userbuttonmask3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userbuttonmask3.png; path = Resources/userbuttonmask3.png; sourceTree = "<group>"; };
 		129E126E19648A2C00ED9D42 /* quill.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = quill.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		129E127119648A2C00ED9D42 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		129E127319648A2C00ED9D42 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -783,6 +787,8 @@
 				12C3A7FE1A88567F0022F2AA /* settingsfade.png */,
 				12860FE91A47AF800074B452 /* avatarbackground.png */,
 				1296676E1ABA954500CB57FA /* userbuttonmask.png */,
+				129667701ABAA5E100CB57FA /* userbuttonmask2.png */,
+				129667751AC0EBFC00CB57FA /* userbuttonmask3.png */,
 				12ABCE971A5F214C00C4C7DC /* userbutton1.png */,
 				12ABCE981A5F214C00C4C7DC /* userbutton2.png */,
 				12ABCE991A5F214C00C4C7DC /* userbutton3.png */,
@@ -1032,6 +1038,7 @@
 			files = (
 				12C4E4C71A3B5B3100DB0E23 /* background.png in Resources */,
 				12860FDE1A44D21B0074B452 /* comment.png in Resources */,
+				129667761AC0EBFC00CB57FA /* userbuttonmask3.png in Resources */,
 				123D200D1A5B2B6B004D5743 /* newmessages.png in Resources */,
 				12C4E4D71A3B88D400DB0E23 /* background2.png in Resources */,
 				12860F931A3E29410074B452 /* background5.png in Resources */,
@@ -1073,6 +1080,7 @@
 				12ABCE901A5F0D8400C4C7DC /* viewer.png in Resources */,
 				123D1FF71A52567C004D5743 /* newboardbutton.png in Resources */,
 				123D200A1A5A5365004D5743 /* green.png in Resources */,
+				129667711ABAA5E100CB57FA /* userbuttonmask2.png in Resources */,
 				12ABCEA21A5F214C00C4C7DC /* userbutton6.png in Resources */,
 				12ACFBB71A6C98E8004C298B /* Logo.png in Resources */,
 				12D5DBA81A4A7432003727AC /* plus2.png in Resources */,

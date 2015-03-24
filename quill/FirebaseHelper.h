@@ -14,7 +14,6 @@
 
 @interface FirebaseHelper : NSObject {
     
-    NSInteger userChildrenCount;
     NSInteger projectChildrenCount;
 }
 
@@ -32,7 +31,9 @@
 @property (strong, nonatomic) NSString *currentProjectID;
 @property (strong, nonatomic) NSMutableArray *visibleProjectIDs;
 @property (strong, nonatomic) NSMutableArray *loadedBoardIDs;
+@property (strong, nonatomic) NSMutableDictionary *loadedUsers;
 @property (strong, nonatomic) NSDictionary *invitedProject;
+@property (strong, nonatomic) UIImage *avatarImage;
 @property (strong, nonatomic) NSURL *inviteURL;
 @property BOOL teamLoaded;
 @property BOOL projectsLoaded;

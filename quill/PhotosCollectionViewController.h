@@ -10,10 +10,10 @@
 
 @import Photos;
 
-@interface PhotosCollectionViewController : UICollectionViewController <PHPhotoLibraryChangeObserver, UIGestureRecognizerDelegate> {
+@interface PhotosCollectionViewController : UICollectionViewController <PHPhotoLibraryChangeObserver, UIGestureRecognizerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     
     UIImageView *logoImage;
-    UITapGestureRecognizer *outsideTapRecognizer;
+    UITapGestureRecognizer *tapRecognizer;
 }
 
 @property (strong) PHFetchResult *assetsFetchResults;

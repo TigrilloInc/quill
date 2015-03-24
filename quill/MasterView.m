@@ -159,6 +159,7 @@
         projectVC.boardNameLabel.text = nil;
         projectVC.chatViewed = false;
         projectVC.viewedBoardIDs = [NSMutableArray array];
+        projectVC.editedBoardIDs = [NSMutableArray array];
    
         [[FirebaseHelper sharedHelper] setProjectViewedAt];
         [FirebaseHelper sharedHelper].currentProjectID = projectID;
@@ -178,6 +179,7 @@
 - (IBAction)settingsTapped:(id)sender {
     
     PersonalSettingsViewController *vc = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"Settings"];
+    vc.avatarImage = [FirebaseHelper sharedHelper].avatarImage;
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
     nav.modalPresentationStyle = UIModalPresentationFormSheet;

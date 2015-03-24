@@ -364,8 +364,8 @@
     }
     
     self.projectNameLabel.text = self.projectName;
-    [self.projectNameLabel sizeToFit];
-    self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+292, self.projectNameLabel.center.y+3);
+    CGRect projectRect = [self.projectNameLabel.text boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName:self.projectNameLabel.font} context:nil];
+    self.editButton.center = CGPointMake(MIN(projectRect.size.width+292,650), self.projectNameLabel.center.y+3);
     self.projectNameEditButton.center = self.editButton.center;
     
     UIButton *projectNameButton = (UIButton *)[self.view viewWithTag:101];
@@ -532,10 +532,25 @@
         
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
         avatar.userID = userIDs[i];
-        [avatar generateIdenticonWithShadow:true];
-        avatar.frame = CGRectMake(850-(i*66), -70, avatar.userImage.size.width, avatar.userImage.size.height);
         [avatar addTarget:self action:@selector(avatarTapped:) forControlEvents:UIControlEventTouchUpInside];
-        avatar.transform = CGAffineTransformScale(avatar.transform, .25, .25);
+        
+        UIImage *avatarImage = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"avatar"];
+        
+        if ([avatarImage isKindOfClass:[UIImage class]]) {
+            
+            [avatar setImage:avatarImage forState:UIControlStateNormal];
+            avatar.frame = CGRectMake(911-(i*66), -11, avatarImage.size.width, avatarImage.size.height);
+            avatar.transform = CGAffineTransformMakeScale(.86*64/avatarImage.size.width, .86*64/avatarImage.size.width);
+            avatar.shadowImage.hidden = false;
+            avatar.shadowImage.center = CGPointMake(64, 69);
+            avatar.imageView.layer.cornerRadius = avatarImage.size.width/2;
+            avatar.imageView.layer.masksToBounds = YES;
+        }
+        else {
+            [avatar generateIdenticonWithShadow:true];
+            avatar.frame = CGRectMake(850-(i*66), -70, avatar.userImage.size.width, avatar.userImage.size.height);
+            avatar.transform = CGAffineTransformMakeScale(.25, .25);
+        }
         [self.view insertSubview:avatar aboveSubview:self.avatarBackgroundImage];
         
         NSString *inProjectID = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"inProject"];
@@ -800,6 +815,9 @@
     [(UIButton *)[self.view viewWithTag:7] setBackgroundImage:[UIImage imageNamed:@"black.png"] forState:UIControlStateNormal];
     self.currentBoardView.penType = 0;
     [(UIButton *)[self.view viewWithTag:5] setBackgroundImage:[UIImage imageNamed:@"pen.png"] forState:UIControlStateNormal];
+    if ([self.chatTextField isFirstResponder]) [self.chatTextField resignFirstResponder];
+    if ([[self.view viewWithTag:104] isFirstResponder]) [[self.view viewWithTag:104] resignFirstResponder];
+    if ([self.commentTitleTextField isFirstResponder]) [self.commentTitleTextField resignFirstResponder];
     [self hideDrawMenu];
     
     [self.viewedBoardIDs addObject:self.activeBoardID];
@@ -818,10 +836,6 @@
     self.currentBoardView = nil;
     
     [self.view bringSubviewToFront:self.masterView];
-    
-    if ([self.chatTextField isFirstResponder]) [self.chatTextField resignFirstResponder];
-    if ([[self.view viewWithTag:104] isFirstResponder]) [[self.view viewWithTag:104] resignFirstResponder];
-    if ([self.commentTitleTextField isFirstResponder]) [self.commentTitleTextField resignFirstResponder];
     
     self.commentTitleView.hidden = true;
     self.messages = [NSMutableArray array];
@@ -978,9 +992,10 @@
     Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
     
     NSString *newName = self.editProjectNameTextField.text;
-    [self.projectNameLabel setText:newName];
-    [self.projectNameLabel sizeToFit];
-    self.editButton.center = CGPointMake(self.projectNameLabel.frame.size.width+292, self.projectNameLabel.center.y+3);
+    self.projectNameLabel.text = newName;
+    CGRect projectRect = [self.projectNameLabel.text boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName:self.projectNameLabel.font} context:nil];
+    self.editButton.center = CGPointMake(MIN(projectRect.size.width+292,650), self.projectNameLabel.center.y+3);
+    self.projectNameEditButton.center = self.editButton.center;
     
     [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] setObject:newName forKey:@"name"];
     
@@ -1676,6 +1691,7 @@
             
             NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
             [[FirebaseHelper sharedHelper] setBoard:self.boardIDs[self.carousel.currentItemIndex] UpdatedAt:dateString];
+            [self.editedBoardIDs addObject:self.boardIDs[self.carousel.currentItemIndex]];
         }
         
         [self cancelTapped:nil];
@@ -1732,9 +1748,13 @@
                 Firebase *ref = [[Firebase alloc] initWithUrl:boardNameRefString];
                 [ref setValue:name];
                 [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] setObject:name forKey:@"name"];
-                
-                NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
-                [[FirebaseHelper sharedHelper] setBoard:self.activeBoardID UpdatedAt:dateString];
+
+                if (self.activeBoardID) {
+                    
+                    NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+                    [[FirebaseHelper sharedHelper] setBoard:self.activeBoardID UpdatedAt:dateString];
+                    [self.editedBoardIDs addObject:self.activeBoardID];
+                }
             }
         }
         
@@ -1775,8 +1795,9 @@
         if (noSpacesString.length == 0) self.editProjectNameTextField.text = projectName;
         else self.editProjectNameTextField.textColor = [UIColor blackColor];
         self.projectNameLabel.text = self.editProjectNameTextField.text;
-        [self.projectNameLabel sizeToFit];
-        self.projectNameEditButton.center = CGPointMake(self.projectNameLabel.frame.size.width+292, self.projectNameLabel.center.y+3);
+        CGRect projectRect = [self.projectNameLabel.text boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName:self.projectNameLabel.font} context:nil];
+        self.editButton.center = CGPointMake(MIN(projectRect.size.width+292,650), self.projectNameLabel.center.y+3);
+        self.projectNameEditButton.center = self.editButton.center;
         self.projectNameEditButton.hidden = false;
         self.editProjectNameTextField.userInteractionEnabled = false;
         
@@ -1892,7 +1913,7 @@
     
     UIFont *labelFont;
     
-    if (updatedAt > viewedAt && ![self.viewedBoardIDs containsObject:boardID] && !newBoardCreated) {
+    if (updatedAt > viewedAt && ![self.viewedBoardIDs containsObject:boardID] && !newBoardCreated && ![self.editedBoardIDs containsObject:boardID]) {
         
         labelFont = [UIFont fontWithName:@"SourceSansPro-Semibold" size:24];
     }
@@ -1903,7 +1924,8 @@
     [self.boardNameLabel sizeToFit];
     self.boardNameLabel.center = CGPointMake(self.carousel.center.x, self.boardNameLabel.center.y);
 
-    self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+17, self.boardNameLabel.center.y);
+    if (self.boardNameLabel.text.length > 0) self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+17, self.boardNameLabel.center.y);
+    else self.boardNameEditButton.hidden = true;
 }
 
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event {
@@ -2066,13 +2088,26 @@
             NSDate *date = [NSDate dateWithTimeIntervalSince1970:dateDouble];
             NSString *dateString = [dateFormatter stringFromDate:date];
 
+            
             AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
             avatar.userID = userID;
-            [avatar generateIdenticonWithShadow:false];
-            avatar.frame = CGRectMake(-100, -101, avatar.userImage.size.width, avatar.userImage.size.height);
-            avatar.transform = CGAffineTransformMakeScale(.16, .16);
             avatar.userInteractionEnabled = false;
             avatar.tag = 201;
+            UIImage *avatarImage = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"avatar"];
+            
+            if ([avatarImage isKindOfClass:[UIImage class]]) {
+                
+                [avatar setImage:avatarImage forState:UIControlStateNormal];
+                avatar.frame = CGRectMake(-39, -41.5, avatarImage.size.width, avatarImage.size.height);
+                avatar.imageView.layer.cornerRadius = avatarImage.size.width/2;
+                avatar.imageView.layer.masksToBounds = YES;
+                avatar.transform = CGAffineTransformMakeScale(.28, .28);
+            }
+            else {
+                [avatar generateIdenticonWithShadow:false];
+                avatar.frame = CGRectMake(-100, -101, avatar.userImage.size.width, avatar.userImage.size.height);
+                avatar.transform = CGAffineTransformMakeScale(.16, .16);
+            }
             [cell.contentView addSubview:avatar];
 
             UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];

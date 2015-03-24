@@ -27,7 +27,8 @@
     
     projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
-    NSMutableDictionary *usersDict = (NSMutableDictionary *)CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)[[FirebaseHelper sharedHelper].team objectForKey:@"users"], kCFPropertyListMutableContainers));
+    NSMutableDictionary *usersDict = [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] mutableCopy];
+    
     for (NSString *userID in usersDict.allKeys) {
         
         if ([projectVC.roles.allKeys containsObject:userID] && [[projectVC.roles objectForKey:userID] integerValue] != -1) [usersDict removeObjectForKey:userID];
@@ -441,13 +442,26 @@
         userNameLabel.tag = 408;
         [cell.contentView addSubview:userNameLabel];
         
+        
         AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
         avatar.userID = userID;
-        [avatar generateIdenticonWithShadow:false];
-        avatar.frame = CGRectMake(-93, -99.5, avatar.userImage.size.width, avatar.userImage.size.height);
-        avatar.transform = CGAffineTransformMakeScale(.16, .16);
-        avatar.tag = 406;
+        
+        UIImage *avatarImage = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"avatar"];
+        
+        if ([avatarImage isKindOfClass:[UIImage class]]) {
+            [avatar setImage:avatarImage forState:UIControlStateNormal];
+            avatar.frame = CGRectMake(-32, -40, avatarImage.size.width, avatarImage.size.height);
+            avatar.imageView.layer.cornerRadius = avatarImage.size.width/2;
+            avatar.imageView.layer.masksToBounds = YES;
+            avatar.transform = CGAffineTransformMakeScale(.28, .28);
+        }
+        else {
+            [avatar generateIdenticonWithShadow:false];
+            avatar.frame = CGRectMake(-93, -99.5, avatar.userImage.size.width, avatar.userImage.size.height);
+            avatar.transform = CGAffineTransformMakeScale(.16, .16);
+        }
         avatar.userInteractionEnabled = false;
+        avatar.tag = 406;
         [cell.contentView addSubview:avatar];
         
         UIImageView *checkImageView = [[UIImageView alloc] initWithFrame:CGRectMake(485, 6, 35, 35)];

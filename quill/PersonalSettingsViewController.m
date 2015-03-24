@@ -36,8 +36,6 @@
     self.avatarButton.userID = [FirebaseHelper sharedHelper].uid;
     [self.avatarButton generateIdenticonWithShadow:true];
     self.avatarButton.frame = CGRectMake(0, 0, self.avatarButton.userImage.size.width, self.avatarButton.userImage.size.height);
-    self.avatarButton.transform = CGAffineTransformMakeScale(.25, .25);
-    self.avatarButton.center = CGPointMake(147, 117);
     [self.view addSubview:self.avatarButton];
     
     self.nameTextField.text = [FirebaseHelper sharedHelper].userName;
@@ -87,6 +85,35 @@
         NSString *userName = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"name"];
         if (![userName isEqualToString:[FirebaseHelper sharedHelper].userName]) [teamNames addObject:userName];
     }
+}
+
+-(void) viewWillAppear:(BOOL)animated {
+    
+    if (self.avatarImage == nil) {
+        
+        self.avatarButton.shadowImage.hidden = true;
+        self.avatarButton.center = CGPointMake(147, 117);
+        [self.avatarButton generateIdenticonWithShadow:true];
+        self.avatarButton.transform = CGAffineTransformMakeScale(.25,.25);
+    }
+    else {
+
+        self.avatarButton.center = CGPointMake(147, 115);
+        self.avatarButton.identiconView.hidden = true;
+        self.avatarButton.shadowImage.hidden = false;
+        [self.avatarButton setImage:self.avatarImage forState:UIControlStateNormal];
+        self.avatarButton.transform = CGAffineTransformMakeScale(.86*64/self.avatarImage.size.width, .86*64/self.avatarImage.size.width);
+        if (self.imageChanged) {
+            self.avatarButton.shadowImage.transform = CGAffineTransformMakeScale(16/(self.avatarImage.size.width*.86), 16/(self.avatarImage.size.height*.86));
+        }
+        self.avatarButton.imageView.layer.cornerRadius = self.avatarImage.size.width/2;
+        self.avatarButton.imageView.layer.masksToBounds = YES;
+    }
+    
+    if (![self.avatarImage isEqual:[FirebaseHelper sharedHelper].avatarImage]) [self.applyButton setTitle:@"Apply Changes" forState:UIControlStateNormal];
+    else [self.applyButton setTitle:@"Done" forState:UIControlStateNormal];
+    
+    [super viewWillAppear:animated];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -155,7 +182,7 @@
     
     PhotosCollectionViewController *photosVC = [self.storyboard instantiateViewControllerWithIdentifier:@"Photos"];
     PHFetchOptions *options = [[PHFetchOptions alloc] init];
-    options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+    options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
     photosVC.assetsFetchResults = [PHAsset fetchAssetsWithOptions:options];
     
     logoImage.hidden = true;
@@ -164,7 +191,6 @@
     [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
     
     [self.navigationController pushViewController:photosVC animated:YES];
-    
 }
 
 - (IBAction)nameTapped:(id)sender {
@@ -236,7 +262,7 @@
     BOOL emailChanged = false;
     
     if (![self.emailTextField.text isEqualToString:[FirebaseHelper sharedHelper].email] && self.passwordTextField.text.length > 0) emailChanged = true;
-    if (![self.nameTextField.text isEqualToString:[FirebaseHelper sharedHelper].userName] && self.passwordTextField.text.length > 0) emailChanged = true;
+    if (![self.nameTextField.text isEqualToString:[FirebaseHelper sharedHelper].userName]) nameChanged = true;
     
     if (!nameChanged && !emailChanged) [self dismissViewControllerAnimated:YES completion:nil];
     else if (emailChanged && nameChanged) {
@@ -245,23 +271,27 @@
         __block BOOL nameReady = false;
         
         self.settingsLabel.text = @"";
-        Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com"];
+        
+        NSString *infoString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/info/", [FirebaseHelper sharedHelper].uid];
+        Firebase *ref = [[Firebase alloc] initWithUrl:infoString];
         [ref changeEmailForUser:[FirebaseHelper sharedHelper].uid password:self.passwordTextField.text toNewEmail:self.emailTextField.text withCompletionBlock:^(NSError *error) {
             
             if (error) self.settingsLabel.text = @"Something went wrong.";
             else {
-                
-                emailReady = true;
-                [FirebaseHelper sharedHelper].email = self.emailTextField.text;
-                if (nameReady) {
-                    self.settingsLabel.text = @"Name and email updated!";
-                    [self performSelector:@selector(infoUpdated) withObject:nil afterDelay:.5];
-                }
+            
+                [[ref childByAppendingPath:@"email"] setValue:self.emailTextField.text withCompletionBlock:^(NSError *error, Firebase *ref) {
+                    
+                    emailReady = true;
+                    [FirebaseHelper sharedHelper].email = self.emailTextField.text;
+                    if (nameReady) {
+                        self.settingsLabel.text = @"Name and email updated!";
+                        [self performSelector:@selector(infoUpdated) withObject:nil afterDelay:.5];
+                    }
+                }];
             }
         }];
         
-        NSString *nameString = [NSString stringWithFormat:@"/users/%@/name", [FirebaseHelper sharedHelper].uid];
-        [[ref childByAppendingPath:nameString] setValue:self.nameTextField.text withCompletionBlock:^(NSError *error, Firebase *ref) {
+        [[ref childByAppendingPath:@"name"] setValue:self.nameTextField.text withCompletionBlock:^(NSError *error, Firebase *ref) {
             
             if (error) self.settingsLabel.text = @"Something went wrong - try again.";
             else {
@@ -269,6 +299,7 @@
                 nameReady = true;
                 [FirebaseHelper sharedHelper].userName = self.nameTextField.text;
                 if (emailReady) {
+                    [[FirebaseHelper sharedHelper] updateMasterView];
                     self.settingsLabel.text = @"Name and email updated!";
                     [self performSelector:@selector(infoUpdated) withObject:nil afterDelay:.5];
                 }
@@ -277,21 +308,25 @@
     }
     else if (emailChanged) {
         
-        Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com"];
+        NSString *emailString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/info/email", [FirebaseHelper sharedHelper].uid];
+        Firebase *ref = [[Firebase alloc] initWithUrl:emailString];
         [ref changeEmailForUser:[FirebaseHelper sharedHelper].uid password:self.passwordTextField.text toNewEmail:self.emailTextField.text withCompletionBlock:^(NSError *error) {
             
             if (error) self.settingsLabel.text = @"Something went wrong - try again.";
             else {
                 
-                [FirebaseHelper sharedHelper].email = self.emailTextField.text;
-                self.settingsLabel.text = @"Email updated!";
-                [self performSelector:@selector(infoUpdated) withObject:nil afterDelay:.5];
+                [ref setValue:self.emailTextField.text withCompletionBlock:^(NSError *error, Firebase *ref) {
+                    
+                    [FirebaseHelper sharedHelper].email = self.emailTextField.text;
+                    self.settingsLabel.text = @"Email updated!";
+                    [self performSelector:@selector(infoUpdated) withObject:nil afterDelay:.5];
+                }];
             }
         }];
     }
     else if (nameChanged) {
         
-        NSString *nameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/name", [FirebaseHelper sharedHelper].uid];
+        NSString *nameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/info/name", [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:nameString];
         [ref setValue:self.nameTextField.text withCompletionBlock:^(NSError *error, Firebase *ref) {
             
@@ -299,10 +334,27 @@
             else {
                 
                 [FirebaseHelper sharedHelper].userName = self.nameTextField.text;
+                [[FirebaseHelper sharedHelper] updateMasterView];
                 self.settingsLabel.text = @"Name updated!";
                 [self performSelector:@selector(infoUpdated) withObject:nil afterDelay:.5];
             }
         }];
+    }
+    
+    if (![self.avatarImage isEqual:[FirebaseHelper sharedHelper].avatarImage]) {
+        
+        [FirebaseHelper sharedHelper].avatarImage = self.avatarImage;
+
+        NSString *avatarString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/avatar", [FirebaseHelper sharedHelper].uid];
+        Firebase *ref = [[Firebase alloc] initWithUrl:avatarString];
+        
+        if (self.avatarImage != nil) {
+            
+            NSData *data = UIImageJPEGRepresentation(self.avatarImage, 1.0);
+            NSString *base64String = [data base64EncodedStringWithOptions:0];
+            [ref setValue:base64String];
+        }
+        else [ref setValue:@"none"];
     }
 }
 
@@ -439,7 +491,7 @@
         self.passwordButton.frame = CGRectMake(115, 186, 310, 50);
     }
     
-    if (changesMade) [self.applyButton setTitle:@"Apply" forState:UIControlStateNormal];
+    if (changesMade) [self.applyButton setTitle:@"Apply Changes" forState:UIControlStateNormal];
     else [self.applyButton setTitle:@"Done" forState:UIControlStateNormal];
     
 }

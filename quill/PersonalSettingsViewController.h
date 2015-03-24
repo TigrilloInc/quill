@@ -18,6 +18,7 @@
     NSMutableArray *teamEmails;
 }
 
+@property BOOL imageChanged;
 @property (weak, nonatomic) IBOutlet UITextField *nameTextField;
 @property (weak, nonatomic) IBOutlet UITextField *emailTextField;
 @property (weak, nonatomic) IBOutlet UIButton *nameButton;
@@ -25,6 +26,7 @@
 @property (weak, nonatomic) IBOutlet RoundedButton *passwordButton;
 @property (weak, nonatomic) IBOutlet RoundedButton *applyButton;
 @property (strong, nonatomic) AvatarButton *avatarButton;
+@property (strong, nonatomic) UIImage *avatarImage;
 @property (weak, nonatomic) IBOutlet UILabel *settingsLabel;
 @property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
 
