@@ -25,8 +25,8 @@
         [self addSubview:self.shadowImage];
         
         self.drawingImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"drawing.png"]];
-        self.drawingImage.hidden = true;
         self.drawingImage.transform = CGAffineTransformMakeScale(.5, .5);
+        self.drawingImage.hidden = true;
         self.drawingImage.center = CGPointMake(125,117);
         [self addSubview:self.drawingImage];
         

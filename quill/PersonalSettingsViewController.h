@@ -12,13 +12,16 @@
 
 @interface PersonalSettingsViewController : UIViewController <UIGestureRecognizerDelegate, UITextFieldDelegate> {
     
+    BOOL nameChanged;
+    BOOL emailChanged;
+
     UIImageView *logoImage;
     UITapGestureRecognizer *outsideTapRecognizer;
     NSMutableArray *teamNames;
     NSMutableArray *teamEmails;
 }
 
-@property BOOL imageChanged;
+@property BOOL avatarChanged;
 @property (weak, nonatomic) IBOutlet UITextField *nameTextField;
 @property (weak, nonatomic) IBOutlet UITextField *emailTextField;
 @property (weak, nonatomic) IBOutlet UIButton *nameButton;
@@ -27,6 +30,7 @@
 @property (weak, nonatomic) IBOutlet RoundedButton *applyButton;
 @property (strong, nonatomic) AvatarButton *avatarButton;
 @property (strong, nonatomic) UIImage *avatarImage;
+@property (strong, nonatomic) UIImageView *avatarShadow;
 @property (weak, nonatomic) IBOutlet UILabel *settingsLabel;
 @property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
 

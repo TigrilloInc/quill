@@ -538,13 +538,18 @@
         
         if ([avatarImage isKindOfClass:[UIImage class]]) {
             
-            [avatar setImage:avatarImage forState:UIControlStateNormal];
-            avatar.frame = CGRectMake(911-(i*66), -11, avatarImage.size.width, avatarImage.size.height);
-            avatar.transform = CGAffineTransformMakeScale(.86*64/avatarImage.size.width, .86*64/avatarImage.size.width);
             avatar.shadowImage.hidden = false;
-            avatar.shadowImage.center = CGPointMake(64, 69);
+            [avatar setImage:avatarImage forState:UIControlStateNormal];
             avatar.imageView.layer.cornerRadius = avatarImage.size.width/2;
             avatar.imageView.layer.masksToBounds = YES;
+            avatar.frame = CGRectMake(911-(i*66), -11, avatarImage.size.width, avatarImage.size.height);
+            avatar.transform = CGAffineTransformMakeScale(.86*64/avatarImage.size.width, .86*64/avatarImage.size.width);
+            avatar.shadowImage.center = CGPointMake(64, 69);
+            
+            if (avatar.imageView.frame.size.height == 64) {
+                avatar.frame = CGRectMake(943-(i*66), 21, avatarImage.size.width, avatarImage.size.height);
+                avatar.shadowImage.frame = CGRectMake(2, 5, 70, 70);
+            }
         }
         else {
             [avatar generateIdenticonWithShadow:true];
@@ -2098,10 +2103,17 @@
             if ([avatarImage isKindOfClass:[UIImage class]]) {
                 
                 [avatar setImage:avatarImage forState:UIControlStateNormal];
-                avatar.frame = CGRectMake(-39, -41.5, avatarImage.size.width, avatarImage.size.height);
                 avatar.imageView.layer.cornerRadius = avatarImage.size.width/2;
                 avatar.imageView.layer.masksToBounds = YES;
-                avatar.transform = CGAffineTransformMakeScale(.28, .28);
+                
+                if (avatarImage.size.height == 64) {
+                    avatar.frame = CGRectMake(-7, -9, avatarImage.size.width, avatarImage.size.height);
+                    avatar.transform = CGAffineTransformMakeScale(.56, .56);
+                }
+                else {
+                    avatar.frame = CGRectMake(-39, -41.5, avatarImage.size.width, avatarImage.size.height);
+                    avatar.transform = CGAffineTransformMakeScale(.28, .28);
+                }
             }
             else {
                 [avatar generateIdenticonWithShadow:false];

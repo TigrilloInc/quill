@@ -38,6 +38,10 @@
     self.avatarButton.frame = CGRectMake(0, 0, self.avatarButton.userImage.size.width, self.avatarButton.userImage.size.height);
     [self.view addSubview:self.avatarButton];
     
+    self.avatarShadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"userbuttonmask3.png"]];
+    self.avatarShadow.frame = CGRectMake(116, 86, 62, 62);
+    [self.view addSubview:self.avatarShadow];
+    
     self.nameTextField.text = [FirebaseHelper sharedHelper].userName;
     self.emailTextField.text = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"email"];
     
@@ -91,21 +95,18 @@
     
     if (self.avatarImage == nil) {
         
-        self.avatarButton.shadowImage.hidden = true;
+        self.avatarShadow.hidden = true;
         self.avatarButton.center = CGPointMake(147, 117);
         [self.avatarButton generateIdenticonWithShadow:true];
         self.avatarButton.transform = CGAffineTransformMakeScale(.25,.25);
     }
     else {
 
+        self.avatarShadow.hidden = false;
         self.avatarButton.center = CGPointMake(147, 115);
         self.avatarButton.identiconView.hidden = true;
-        self.avatarButton.shadowImage.hidden = false;
         [self.avatarButton setImage:self.avatarImage forState:UIControlStateNormal];
         self.avatarButton.transform = CGAffineTransformMakeScale(.86*64/self.avatarImage.size.width, .86*64/self.avatarImage.size.width);
-        if (self.imageChanged) {
-            self.avatarButton.shadowImage.transform = CGAffineTransformMakeScale(16/(self.avatarImage.size.width*.86), 16/(self.avatarImage.size.height*.86));
-        }
         self.avatarButton.imageView.layer.cornerRadius = self.avatarImage.size.width/2;
         self.avatarButton.imageView.layer.masksToBounds = YES;
     }
@@ -142,6 +143,7 @@
     self.passwordTextField.delegate = nil;
     self.nameTextField.delegate = nil;
     self.emailTextField.delegate = nil;
+
 }
 
 -(void) signOutTapped {
@@ -152,6 +154,7 @@
     projectVC.masterView.teamMenuButton.hidden = true;
     projectVC.masterView.nameButton.hidden = true;
     projectVC.masterView.avatarButton.hidden = true;
+    projectVC.masterView.avatarShadow.hidden = true;
     
     Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
     FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
@@ -258,9 +261,9 @@
         return;
     }
     
-    BOOL nameChanged = false;
-    BOOL emailChanged = false;
-    
+    nameChanged = false;
+    emailChanged = false;
+
     if (![self.emailTextField.text isEqualToString:[FirebaseHelper sharedHelper].email] && self.passwordTextField.text.length > 0) emailChanged = true;
     if (![self.nameTextField.text isEqualToString:[FirebaseHelper sharedHelper].userName]) nameChanged = true;
     
@@ -298,8 +301,8 @@
                 
                 nameReady = true;
                 [FirebaseHelper sharedHelper].userName = self.nameTextField.text;
+                [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:self.nameTextField.text forKey:@"name"];
                 if (emailReady) {
-                    [[FirebaseHelper sharedHelper] updateMasterView];
                     self.settingsLabel.text = @"Name and email updated!";
                     [self performSelector:@selector(infoUpdated) withObject:nil afterDelay:.5];
                 }
@@ -334,17 +337,26 @@
             else {
                 
                 [FirebaseHelper sharedHelper].userName = self.nameTextField.text;
-                [[FirebaseHelper sharedHelper] updateMasterView];
+                [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:self.nameTextField.text forKey:@"name"];
                 self.settingsLabel.text = @"Name updated!";
                 [self performSelector:@selector(infoUpdated) withObject:nil afterDelay:.5];
             }
         }];
     }
     
-    if (![self.avatarImage isEqual:[FirebaseHelper sharedHelper].avatarImage]) {
+
+    if ([FirebaseHelper sharedHelper].avatarImage == nil && self.avatarImage == nil) return;
+    
+    else if (self.avatarChanged) {
+
         
         [FirebaseHelper sharedHelper].avatarImage = self.avatarImage;
-
+        
+        NSMutableDictionary *userDict = [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid];
+        
+        if (self.avatarImage == nil) [userDict setObject:@"none" forKey:@"avatar"];
+        else [userDict setObject:self.avatarImage forKey:@"avatar"];
+        
         NSString *avatarString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/avatar", [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:avatarString];
         
@@ -355,6 +367,8 @@
             [ref setValue:base64String];
         }
         else [ref setValue:@"none"];
+        
+        if (!nameChanged && !emailChanged) [self infoUpdated];
     }
 }
 
@@ -375,6 +389,54 @@
 }
 
 -(void)infoUpdated {
+    
+    ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    
+    if (nameChanged) {
+        
+        [projectVC.masterView.nameButton setTitle:[FirebaseHelper sharedHelper].userName forState:UIControlStateNormal];
+        projectVC.masterView.nameButton.center = CGPointMake(projectVC.masterView.nameButton.center.x, 107-60/projectVC.masterView.nameButton.titleLabel.font.pointSize);
+        [projectVC.masterView.nameButton layoutIfNeeded];
+    }
+    
+    else if (self.avatarChanged) {
+        
+        [[FirebaseHelper sharedHelper] updateMasterView];
+        
+//        if (self.avatarImage == nil) {
+//            
+//            [[FirebaseHelper sharedHelper] updateMasterView];
+//            [projectVC.masterView.avatarButton generateIdenticonWithShadow:true];
+//            projectVC.masterView.avatarButton.frame = CGRectMake(0, 0, projectVC.masterView.avatarButton.userImage.size.width, projectVC.masterView.avatarButton.userImage.size.height);
+//            projectVC.masterView.avatarButton.transform = CGAffineTransformMakeScale(.25, .25);
+//            projectVC.masterView.avatarButton.center = CGPointMake(40, 109);
+//            projectVC.masterView.avatarButton.shadowImage.hidden = true;
+//            projectVC.masterView.avatarButton.identiconView.center = CGPointMake(145, 134);
+//            
+//            [projectVC.chatAvatar generateIdenticonWithShadow:false];
+//            projectVC.chatAvatar.frame = CGRectMake(-100,-100, projectVC.chatAvatar.userImage.size.width, projectVC.chatAvatar.userImage.size.height);
+//            projectVC.chatAvatar.identiconView.center = CGPointMake(780, 773);
+//            projectVC.chatAvatar.transform = CGAffineTransformMakeScale(.16, .16);
+//        }
+//        else {
+//
+//            projectVC.masterView.avatarShadow.hidden = false;
+//            projectVC.masterView.avatarButton.identiconView.hidden = true;
+//            projectVC.masterView.avatarButton.imageView.contentMode = UIViewContentModeScaleAspectFill;
+//            [projectVC.masterView.avatarButton setImage:self.avatarImage forState:UIControlStateNormal];
+//            //projectVC.masterView.avatarButton.imageView.frame = CGPointMake(<#CGFloat x#>, <#CGFloat y#>)
+//            projectVC.masterView.avatarButton.shadowImage.transform = CGAffineTransformMakeScale(16/(self.avatarImage.size.width*.865), 16/(self.avatarImage.size.height*.865));
+//            projectVC.masterView.avatarButton.imageView.layer.cornerRadius = self.avatarImage.size.width/2;
+//            projectVC.masterView.avatarButton.imageView.layer.masksToBounds = YES;
+//            
+//            [projectVC.chatAvatar setImage:self.avatarImage forState:UIControlStateNormal];
+//            projectVC.chatAvatar.frame = CGRectMake(-34,-35, self.avatarImage.size.width, self.avatarImage.size.height);
+//            projectVC.chatAvatar.identiconView.hidden = true;
+//            //projectVC.chatAvatar.transform = CGAffineTransformMakeScale(.16, .16);
+//        }
+        
+        if ([FirebaseHelper sharedHelper].currentProjectID) [projectVC layoutAvatars];
+    }
     
     [self dismissViewControllerAnimated:YES completion:nil];
 }

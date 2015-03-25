@@ -23,6 +23,7 @@
 @property (strong, nonatomic) AvatarButton *avatarButton;
 @property (strong, nonatomic) NSIndexPath *defaultRow;
 @property (strong, nonatomic) NSArray *orderedProjectNames;
+@property (strong, nonatomic) UIImageView *avatarShadow;
 
 -(void)updateProjects;
 -(IBAction)settingsTapped:(id)sender;

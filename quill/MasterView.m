@@ -33,6 +33,11 @@
     if (self) {
         
         self.defaultRow = [NSIndexPath indexPathForRow:0 inSection:0];
+        self.avatarShadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"userbuttonmask3.png"]];
+        self.avatarShadow.frame = CGRectMake(9, 78, 62, 62);
+        self.avatarShadow.hidden = true;
+        [self addSubview:self.avatarShadow];
+        
         projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     }
     

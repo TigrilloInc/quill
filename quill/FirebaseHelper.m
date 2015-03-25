@@ -179,6 +179,9 @@ static FirebaseHelper *sharedHelper = nil;
     NSString *uidString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@", self.uid];
     Firebase *ref = [[Firebase alloc] initWithUrl:uidString];
     
+    [[ref childByAppendingPath:@"status/inProject"] setValue:@"none"];
+    [[ref childByAppendingPath:@"status/inBoard"] setValue:@"none"];
+    
     [ref observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         NSDictionary *infoDict = [snapshot.value objectForKey:@"info"];
@@ -276,68 +279,6 @@ static FirebaseHelper *sharedHelper = nil;
     
     NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/", userID];
     Firebase *ref = [[Firebase alloc] initWithUrl:userString];
-    
-//    [ref observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
-//
-//        NSDictionary *oldUserDict = CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)[[self.team objectForKey:@"users"] objectForKey:userID], kCFPropertyListMutableContainers));
-//        NSMutableDictionary *newUserDict = snapshot.value;
-//        
-//        for (NSString *key in newUserDict.allKeys) {
-//            
-//            [[[self.team objectForKey:@"users"] objectForKey:userID] setObject:[newUserDict objectForKey:key] forKey:key];
-//        }
-//        
-//        if (!self.teamLoaded && [[self.team objectForKey:@"users"] allKeys].count == userChildrenCount) {
-//            
-//            self.teamLoaded = true;
-//            if (self.projectsLoaded) [self updateMasterView];
-//        }
-//        
-//        if ([userID isEqualToString:self.uid]) return;
-//
-//        NSString *newProjectID = [newUserDict objectForKey:@"inProject"];
-//        NSString *oldProjectID = [oldUserDict objectForKey:@"inProject"];
-//
-//        if ([self.currentProjectID isEqualToString:newProjectID] || [self.currentProjectID isEqualToString:oldProjectID]) [self.projectVC layoutAvatars];
-//        else return;
-//        
-//        NSString *newBoardID = [newUserDict objectForKey:@"inBoard"];
-//        NSString *oldBoardID = [oldUserDict objectForKey:@"inBoard"];
-//        
-//        NSString *boardID;
-//        BOOL inBoard;
-//        
-//        if (![newBoardID isEqualToString:oldBoardID]) {
-//            
-//            if ([oldBoardID isEqualToString:@"none"]) {
-//                boardID = newBoardID;
-//                inBoard = true;
-//            }
-//            else {
-//                boardID = oldBoardID;
-//                inBoard = false;
-//            }
-//            
-//        } else {
-//            
-//            boardID = newBoardID;
-//            
-//            if ([newBoardID isEqualToString:@"none"]) inBoard = false;
-//            else inBoard = true;
-//        }
-//        
-//        if ([self.projectVC.boardIDs containsObject:boardID]){
-//            
-//            NSInteger boardIndex = [self.projectVC.boardIDs indexOfObject:boardID];
-//            BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
-//            
-//            if (inBoard && ![boardView.activeUserIDs containsObject:userID]) [boardView.activeUserIDs addObject:userID];
-//            else if (!inBoard) [boardView.activeUserIDs removeObject:userID];
-//            
-//            [boardView layoutAvatars];
-//            
-//        }
-//    }];
 
     [[ref childByAppendingPath:@"status"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
 
@@ -353,7 +294,10 @@ static FirebaseHelper *sharedHelper = nil;
         
         if (!self.teamLoaded) [self checkUsersLoaded];
         
-        if ([userID isEqualToString:self.uid]) return;
+        if ([userID isEqualToString:self.uid]) {
+            [[ref childByAppendingPath:@"status"] removeAllObservers];
+            return;
+        }
         
         NSString *newProjectID = [newUserDict objectForKey:@"inProject"];
         NSString *oldProjectID = [oldUserDict objectForKey:@"inProject"];
@@ -409,6 +353,8 @@ static FirebaseHelper *sharedHelper = nil;
         
         if (!self.teamLoaded) [self checkUsersLoaded];
         
+        if ([userID isEqualToString:self.uid]) [[ref childByAppendingPath:@"info"] removeAllObservers];
+
     }];
     
     [[ref childByAppendingPath:@"avatar"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
@@ -423,9 +369,33 @@ static FirebaseHelper *sharedHelper = nil;
             if ([userID isEqualToString:self.uid]) self.avatarImage = image;
         }
         
+        if (self.currentProjectID && [[[[self.projects objectForKey:self.currentProjectID] objectForKey:@"roles"] allKeys] containsObject:userID]) {
+            
+            [self.projectVC layoutAvatars];
+            
+            for (NSDictionary *messageDict in self.projectVC.messages) {
+                
+                if ([[messageDict objectForKey:@"user"] isEqualToString:userID]) {
+                    [self.projectVC.chatTable reloadData];
+                    break;
+                }
+            }
+            
+            if (self.projectVC.activeBoardID && [[[[self.boards objectForKey:self.projectVC.activeBoardID] objectForKey:@"subpaths"] allKeys] containsObject:userID]) {
+                
+                NSInteger boardIndex = [self.projectVC.boardIDs indexOfObject:self.projectVC.activeBoardID];
+                BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
+                [boardView layoutAvatars];
+            }
+        }
+        
+        
         [[self.loadedUsers objectForKey:userID] setObject:@1 forKey:@"avatar"];
         
         if (!self.teamLoaded) [self checkUsersLoaded];
+        
+        if ([userID isEqualToString:self.uid]) [[ref childByAppendingPath:@"avatar"] removeAllObservers];
+
     }];
 }
 
@@ -559,6 +529,7 @@ static FirebaseHelper *sharedHelper = nil;
     
     if (self.avatarImage == nil) {
         
+        self.projectVC.masterView.avatarShadow.hidden = true;
         [self.projectVC.masterView.avatarButton generateIdenticonWithShadow:true];
         self.projectVC.masterView.avatarButton.frame = CGRectMake(0, 0, self.projectVC.masterView.avatarButton.userImage.size.width, self.projectVC.masterView.avatarButton.userImage.size.height);
         self.projectVC.masterView.avatarButton.transform = CGAffineTransformMakeScale(.25, .25);
@@ -574,17 +545,25 @@ static FirebaseHelper *sharedHelper = nil;
         self.projectVC.masterView.avatarButton.frame = CGRectMake(0, 0, self.avatarImage.size.width, self.avatarImage.size.height);
         self.projectVC.masterView.avatarButton.transform = CGAffineTransformMakeScale(.86*64/self.avatarImage.size.width, .86*64/self.avatarImage.size.width);
         
-        self.projectVC.masterView.avatarButton.shadowImage.hidden = false;
-        self.projectVC.masterView.avatarButton.shadowImage.center = CGPointMake(64, 69);
+        self.projectVC.masterView.avatarShadow.hidden = false;
         self.projectVC.masterView.avatarButton.imageView.layer.cornerRadius = self.avatarImage.size.width/2;
         self.projectVC.masterView.avatarButton.imageView.layer.masksToBounds = YES;
         self.projectVC.masterView.avatarButton.center = CGPointMake(40, 107);
         
         [self.projectVC.chatAvatar setImage:self.avatarImage forState:UIControlStateNormal];
-        self.projectVC.chatAvatar.frame = CGRectMake(-39, -40, self.avatarImage.size.width, self.avatarImage.size.height);
         self.projectVC.chatAvatar.imageView.layer.cornerRadius = self.avatarImage.size.width/2;
         self.projectVC.chatAvatar.imageView.layer.masksToBounds = YES;
-        self.projectVC.chatAvatar.transform = CGAffineTransformMakeScale(.28, .28);
+        
+        if (self.avatarImage.size.height == 64) {
+            
+            self.projectVC.chatAvatar.frame = CGRectMake(-7, -8, self.avatarImage.size.width, self.avatarImage.size.height);
+            self.projectVC.chatAvatar.transform = CGAffineTransformMakeScale(.56, .56);
+        }
+        else {
+            
+            self.projectVC.chatAvatar.frame = CGRectMake(-39, -40, self.avatarImage.size.width, self.avatarImage.size.height);
+            self.projectVC.chatAvatar.transform = CGAffineTransformMakeScale(.28, .28);
+        }
     }
     
     [self.projectVC.masterView addSubview:self.projectVC.masterView.avatarButton];
@@ -715,7 +694,7 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void) observeBoardWithID:(NSString *)boardID {
 
-    NSLog(@"observing Board %@", boardID);
+    //NSLog(@"observing Board %@", boardID);
     
     NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
     Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
@@ -910,8 +889,6 @@ static FirebaseHelper *sharedHelper = nil;
     
     NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
     Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
-    
-    NSLog(@"loading board %@", boardID);
     
     [ref observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
@@ -1150,7 +1127,7 @@ static FirebaseHelper *sharedHelper = nil;
     
     [[[self.team objectForKey:@"users"] objectForKey:self.uid] setObject:boardID forKey:@"inBoard"];
     
-    NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/status/%@",self.uid];
+    NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/status",self.uid];
     Firebase *ref = [[Firebase alloc] initWithUrl:teamString];
     [[ref childByAppendingPath:@"inBoard"] setValue:boardID];
 }
@@ -1260,7 +1237,9 @@ static FirebaseHelper *sharedHelper = nil;
 
         NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/", userID];
         Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
-        [userRef removeAllObservers];
+        [[userRef childByAppendingPath:@"avatar"] removeAllObservers];
+        [[userRef childByAppendingPath:@"info"] removeAllObservers];
+        [[userRef childByAppendingPath:@"status"] removeAllObservers];
     }
     
     for (NSString *projectID in self.projects.allKeys) {

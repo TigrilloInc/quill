@@ -124,17 +124,29 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         
         CGAffineTransform tr;
         
-        if (i==0) {
+        if ([avatarImage isKindOfClass:[UIImage class]]) {
             
             [avatar setImage:avatarImage forState:UIControlStateNormal];
             avatar.frame = CGRectMake(-11.5+projectVC.carouselOffset, 49+(i-1)*66, avatarImage.size.width, avatarImage.size.height);
             avatar.shadowImage.hidden = false;
-            avatar.shadowImage.center = CGPointMake(64, 69);
-            avatar.drawingImage.transform = avatar.highlightedImage.transform = CGAffineTransformMakeScale(.2875, .2875);
-            avatar.drawingImage.center = avatar.highlightedImage.center = CGPointMake(64, 64);
             avatar.imageView.layer.cornerRadius = avatarImage.size.width/2;
             avatar.imageView.layer.masksToBounds = YES;
-            tr = CGAffineTransformScale(avatar.transform, .432, .432);
+            
+            if (avatar.imageView.frame.size.height == 64) {
+                
+                avatar.frame = CGRectMake(21+projectVC.carouselOffset, 80+(i-1)*66, avatarImage.size.width, avatarImage.size.height);
+                avatar.shadowImage.frame = CGRectMake(-3, 0, 70, 70);
+                avatar.drawingImage.transform = avatar.highlightedImage.transform = CGAffineTransformMakeScale(.145, .145);
+                avatar.drawingImage.center = avatar.highlightedImage.center = CGPointMake(32,32);
+                tr = CGAffineTransformScale(avatar.transform, .86, .86);
+            }
+            else {
+                
+                avatar.shadowImage.center = CGPointMake(64, 69);
+                avatar.drawingImage.transform = avatar.highlightedImage.transform = CGAffineTransformMakeScale(.29, .29);
+                avatar.drawingImage.center = avatar.highlightedImage.center = CGPointMake(64.1, 64.1);
+                tr = CGAffineTransformScale(avatar.transform, .432, .432);
+            }
         }
         else {
             [avatar generateIdenticonWithShadow:true];

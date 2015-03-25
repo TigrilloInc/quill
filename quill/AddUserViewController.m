@@ -449,11 +449,19 @@
         UIImage *avatarImage = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"avatar"];
         
         if ([avatarImage isKindOfClass:[UIImage class]]) {
+            
             [avatar setImage:avatarImage forState:UIControlStateNormal];
-            avatar.frame = CGRectMake(-32, -40, avatarImage.size.width, avatarImage.size.height);
             avatar.imageView.layer.cornerRadius = avatarImage.size.width/2;
             avatar.imageView.layer.masksToBounds = YES;
-            avatar.transform = CGAffineTransformMakeScale(.28, .28);
+            
+            if (avatarImage.size.height == 64) {
+                avatar.frame = CGRectMake(0, -8, avatarImage.size.width, avatarImage.size.height);
+                avatar.transform = CGAffineTransformMakeScale(.56, .56);
+            }
+            else {
+                avatar.frame = CGRectMake(-32, -40, avatarImage.size.width, avatarImage.size.height);
+                avatar.transform = CGAffineTransformMakeScale(.28, .28);
+            }
         }
         else {
             [avatar generateIdenticonWithShadow:false];

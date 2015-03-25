@@ -140,7 +140,7 @@ static CGSize AssetGridThumbnailSize;
                                                   
                                                   if (result.size.height == 64) {
                                                       settingsVC.avatarImage = result;
-                                                      settingsVC.imageChanged = true;
+                                                      settingsVC.avatarChanged = true;
                                                       [self.navigationController popToRootViewControllerAnimated:YES];
                                                   }
                                               }];
@@ -148,6 +148,7 @@ static CGSize AssetGridThumbnailSize;
                 else {
                     
                     settingsVC.avatarImage = nil;
+                    settingsVC.avatarChanged = true;
                     [self.navigationController popToRootViewControllerAnimated:YES];
                 }
             }

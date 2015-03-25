@@ -62,9 +62,12 @@
 
 - (IBAction)removeTapped:(id)sender {
     
-    NSString *deletedString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/info/deleted", self.userID];
-    Firebase *deletedRef = [[Firebase alloc] initWithUrl:deletedString];
-    [deletedRef setValue:@(1)];
+    NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/", self.userID];
+    Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
+    [[userRef childByAppendingPath:@"avatar"] removeAllObservers];
+    [[userRef childByAppendingPath:@"info"] removeAllObservers];
+    [[userRef childByAppendingPath:@"status"] removeAllObservers];
+    [[userRef childByAppendingPath:@"info/deleted"] setValue:@(1)];
     
     [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:self.userID] setObject:@(1) forKey:@"deleted"];
     
