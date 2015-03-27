@@ -65,7 +65,7 @@
         
         if ([self.nameField.text isEqualToString:projectName]) {
             
-            self.projectLabel.text = @"There is already a project with that name.";
+            self.projectLabel.text = @"Your team already has a project with that name.";
             return;
         }
     }

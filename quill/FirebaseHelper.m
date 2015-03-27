@@ -115,9 +115,22 @@ static FirebaseHelper *sharedHelper = nil;
             
             self.loggedIn = true;
             self.uid = user.uid;
+            [self setAdmin];
             [self observeLocalUser];
         }
     }];
+}
+
+-(void) setAdmin {
+    
+    NSArray *adminIDs = @[ @"simplelogin:100",
+                           @"simplelogin:101",
+                           @"simplelogin:102",
+                           @"simplelogin:103",
+                           @"simplelogin:104"
+                           ];
+    
+    self.isAdmin = [adminIDs containsObject:self.uid];
 }
 
 -(void) createUser {
@@ -140,42 +153,64 @@ static FirebaseHelper *sharedHelper = nil;
         
         self.inviteURL = nil;
         
-        self.teamID = [snapshot.value objectForKey:@"teamID"];
-        self.teamName = [snapshot.value objectForKey:@"teamName"];
-        self.email = [snapshot.value objectForKey:@"email"];
+        NSLog(@"snapshot is %@", snapshot.value);
         
-        [self.team setObject:[NSMutableDictionary dictionary] forKey:@"users"];
-        
-        for (NSString *userID in [[snapshot.value objectForKey:@"users"] allKeys]) {
+        if ([[snapshot.value allKeys] containsObject:@"newOwner"]) {
             
-            NSString *userName = [[snapshot.value objectForKey:@"users"] objectForKey:userID];
-            NSMutableDictionary *nameDict = [@{@"name" : userName} mutableCopy];
-            [[self.team objectForKey:@"users"] setObject:nameDict forKey:userID];
+            self.email = [snapshot.value objectForKey:@"newOwner"];
+            
+            SignInViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignIn"];
+            
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+            nav.modalPresentationStyle = UIModalPresentationFormSheet;
+            nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            
+            UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+            logoImageView.frame = CGRectMake(155, 8, 32, 32);
+            logoImageView.tag = 800;
+            [nav.navigationBar addSubview:logoImageView];
+            
+            [self.projectVC presentViewController:nav animated:YES completion:nil];
         }
+        else {
+            
+            self.teamID = [snapshot.value objectForKey:@"teamID"];
+            self.teamName = [snapshot.value objectForKey:@"teamName"];
+            self.email = [snapshot.value objectForKey:@"email"];
+            
+            [self.team setObject:[NSMutableDictionary dictionary] forKey:@"users"];
+            
+            for (NSString *userID in [[snapshot.value objectForKey:@"users"] allKeys]) {
+                
+                NSString *userName = [[snapshot.value objectForKey:@"users"] objectForKey:userID];
+                NSMutableDictionary *nameDict = [@{@"name" : userName} mutableCopy];
+                [[self.team objectForKey:@"users"] setObject:nameDict forKey:userID];
+            }
 
-        if ([snapshot.value objectForKey:@"project"]) self.invitedProject = [snapshot.value objectForKey:@"project"];
-        
-        [Instabug setDefaultEmail:self.email];
-        
-        SignUpFromInviteViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignUpFromInvite"];
-        vc.invitedBy = [snapshot.value objectForKey:@"invitedBy"];
-        
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
-        nav.modalPresentationStyle = UIModalPresentationFormSheet;
-        nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-
-        UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
-        logoImageView.frame = CGRectMake(155, 8, 32, 32);
-        logoImageView.tag = 800;
-        [nav.navigationBar addSubview:logoImageView];
-        
-        [self.projectVC presentViewController:nav animated:YES completion:nil];
+            if ([snapshot.value objectForKey:@"project"]) self.invitedProject = [snapshot.value objectForKey:@"project"];
+            
+            [Instabug setDefaultEmail:self.email];
+            
+            SignUpFromInviteViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignUpFromInvite"];
+            vc.invitedBy = [snapshot.value objectForKey:@"invitedBy"];
+            
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+            nav.modalPresentationStyle = UIModalPresentationFormSheet;
+            nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            
+            UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+            logoImageView.frame = CGRectMake(155, 8, 32, 32);
+            logoImageView.tag = 800;
+            [nav.navigationBar addSubview:logoImageView];
+            
+            [self.projectVC presentViewController:nav animated:YES completion:nil];
+        }
     }];
 }
 
 
 -(void) observeLocalUser {
-
+    
     NSString *uidString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@", self.uid];
     Firebase *ref = [[Firebase alloc] initWithUrl:uidString];
     
@@ -267,7 +302,7 @@ static FirebaseHelper *sharedHelper = nil;
                 }
             }
 
-            [self.loadedUsers setObject:@{@"avatar":@1,@"info":@1,@"status":@1} forKey:self.uid];
+            [self.loadedUsers setObject:[@{@"avatar":@1,@"info":@1,@"status":@1} mutableCopy] forKey:self.uid];
 
             [self observeTeam];
             [self observeProjects];
@@ -1318,6 +1353,7 @@ static FirebaseHelper *sharedHelper = nil;
     self.loadedUsers = [NSMutableDictionary dictionary];
     self.teamLoaded = false;
     self.projectsLoaded = false;
+    self.isAdmin = false;
     
     projectChildrenCount = 0;
     

@@ -97,6 +97,8 @@
 		1296676F1ABA954500CB57FA /* userbuttonmask.png in Resources */ = {isa = PBXBuildFile; fileRef = 1296676E1ABA954500CB57FA /* userbuttonmask.png */; };
 		129667711ABAA5E100CB57FA /* userbuttonmask2.png in Resources */ = {isa = PBXBuildFile; fileRef = 129667701ABAA5E100CB57FA /* userbuttonmask2.png */; };
 		129667761AC0EBFC00CB57FA /* userbuttonmask3.png in Resources */ = {isa = PBXBuildFile; fileRef = 129667751AC0EBFC00CB57FA /* userbuttonmask3.png */; };
+		1296677A1AC3C7E600CB57FA /* InviteNewOwnerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 129667791AC3C7E600CB57FA /* InviteNewOwnerViewController.m */; };
+		129667831AC5049200CB57FA /* NewOwnerEmail.m in Sources */ = {isa = PBXBuildFile; fileRef = 129667821AC5049200CB57FA /* NewOwnerEmail.m */; };
 		129E127219648A2C00ED9D42 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127119648A2C00ED9D42 /* Foundation.framework */; };
 		129E127419648A2C00ED9D42 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127319648A2C00ED9D42 /* CoreGraphics.framework */; };
 		129E127619648A2C00ED9D42 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127519648A2C00ED9D42 /* UIKit.framework */; };
@@ -385,6 +387,10 @@
 		1296676E1ABA954500CB57FA /* userbuttonmask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userbuttonmask.png; path = Resources/userbuttonmask.png; sourceTree = "<group>"; };
 		129667701ABAA5E100CB57FA /* userbuttonmask2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userbuttonmask2.png; path = Resources/userbuttonmask2.png; sourceTree = "<group>"; };
 		129667751AC0EBFC00CB57FA /* userbuttonmask3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userbuttonmask3.png; path = Resources/userbuttonmask3.png; sourceTree = "<group>"; };
+		129667781AC3C7E600CB57FA /* InviteNewOwnerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteNewOwnerViewController.h; sourceTree = "<group>"; };
+		129667791AC3C7E600CB57FA /* InviteNewOwnerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteNewOwnerViewController.m; sourceTree = "<group>"; };
+		129667811AC5049200CB57FA /* NewOwnerEmail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewOwnerEmail.h; sourceTree = "<group>"; };
+		129667821AC5049200CB57FA /* NewOwnerEmail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewOwnerEmail.m; sourceTree = "<group>"; };
 		129E126E19648A2C00ED9D42 /* quill.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = quill.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		129E127119648A2C00ED9D42 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		129E127319648A2C00ED9D42 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -712,6 +718,8 @@
 				12CAB1221A9D4EC800136AB1 /* UserDeletedAlertViewController.m */,
 				129667651AB7DD1800CB57FA /* InvalidNameAlertViewController.h */,
 				129667661AB7DD1800CB57FA /* InvalidNameAlertViewController.m */,
+				129667781AC3C7E600CB57FA /* InviteNewOwnerViewController.h */,
+				129667791AC3C7E600CB57FA /* InviteNewOwnerViewController.m */,
 				12F4F9D11AA808DA00C8FC31 /* InstabugViewController.h */,
 				12F4F9D21AA808DA00C8FC31 /* InstabugViewController.m */,
 				128DC3051A1E8C7000FF6076 /* ChatTableViewCell.h */,
@@ -724,6 +732,8 @@
 				12A310EC1980BE4300E03E9E /* iCarousel.m */,
 				124943C31A93C4F300C1BEA4 /* InviteEmail.h */,
 				124943C41A93C4F300C1BEA4 /* InviteEmail.m */,
+				129667811AC5049200CB57FA /* NewOwnerEmail.h */,
+				129667821AC5049200CB57FA /* NewOwnerEmail.m */,
 				124E5CF419AE83CB00442963 /* NSDate+ServerDate.h */,
 				124E5CF519AE83CB00442963 /* NSDate+ServerDate.m */,
 				12860FB11A4024910074B452 /* NSString+MD5.h */,
@@ -1200,6 +1210,7 @@
 				129E128819648A2C00ED9D42 /* AppDelegate.m in Sources */,
 				12BE8D68196BA1B100503F84 /* NewTeamViewController.m in Sources */,
 				12C3780C19FEE9FC000C0DB4 /* CommentButton.m in Sources */,
+				129667831AC5049200CB57FA /* NewOwnerEmail.m in Sources */,
 				1216D99D19A275980095DBD8 /* DraggableCollectionViewFlowLayout.m in Sources */,
 				12860FCD1A423EDA0074B452 /* PenTypePopoverViewController.m in Sources */,
 				12BE8D1D196A616000503F84 /* SignInViewController.m in Sources */,
@@ -1211,6 +1222,7 @@
 				12A3FA101979861800E03E9E /* ProjectDetailViewController.m in Sources */,
 				129667671AB7DD1800CB57FA /* InvalidNameAlertViewController.m in Sources */,
 				12DC97A41A83060A00CC4616 /* ChangePasswordViewController.m in Sources */,
+				1296677A1AC3C7E600CB57FA /* InviteNewOwnerViewController.m in Sources */,
 				12AA5FAB19E7904700F6D552 /* AddUserViewController.m in Sources */,
 				128DC3071A1E8C7000FF6076 /* ChatTableViewCell.m in Sources */,
 				12DC97981A7C158900CC4616 /* NewNameViewController.m in Sources */,

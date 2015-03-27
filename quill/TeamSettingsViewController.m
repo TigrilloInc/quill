@@ -11,6 +11,7 @@
 #import "InviteToTeamViewController.h"
 #import "RemoveUserAlertViewController.h"
 #import "ProjectDetailViewController.h"
+#import "InviteNewOwnerViewController.h"
 
 @implementation TeamSettingsViewController
 
@@ -34,7 +35,16 @@
                                    style: UIBarButtonItemStyleBordered
                                    target:self action:nil];
     [self.navigationItem setBackBarButtonItem: backButton];
-
+    
+    if ([FirebaseHelper sharedHelper].isAdmin) {
+        
+        UIBarButtonItem *signOutButton = [[UIBarButtonItem alloc]
+                                          initWithTitle: @"Invite Owner"
+                                          style: UIBarButtonItemStyleBordered
+                                          target: self action: @selector(inviteOwnerTapped)];
+        [self.navigationItem setRightBarButtonItems:@[signOutButton] animated:NO];
+    }
+    
     for (NSString *userID in [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys]) {
         
         if ([[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:userID] objectForKey:@"deleted"] integerValue] == 1) continue;
@@ -124,6 +134,17 @@
         }
     }
     else [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)inviteOwnerTapped {
+    
+    logoImage.hidden = true;
+    logoImage.frame = CGRectMake(129, 8, 32, 32);
+    
+    [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
+    
+    InviteNewOwnerViewController *inviteVC = [self.storyboard instantiateViewControllerWithIdentifier:@"InviteNewOwner"];
+    [self.navigationController pushViewController:inviteVC animated:YES];
 }
 
 -(void)tappedOutside {

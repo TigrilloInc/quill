@@ -35,6 +35,7 @@
 @property (strong, nonatomic) NSDictionary *invitedProject;
 @property (strong, nonatomic) UIImage *avatarImage;
 @property (strong, nonatomic) NSURL *inviteURL;
+@property BOOL isAdmin;
 @property BOOL teamLoaded;
 @property BOOL projectsLoaded;
 @property BOOL connected;
@@ -43,6 +44,7 @@
 + (FirebaseHelper *)sharedHelper;
 - (void) testConnection;
 - (void) createUser;
+- (void) setAdmin;
 - (void) observeLocalUser;
 - (void) observeCurrentProjectBoards;
 - (void) observeProjectWithID:(NSString *)projectID;

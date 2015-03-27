@@ -389,10 +389,42 @@ static CGSize AssetGridThumbnailSize;
 
 -(void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
-    UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
-    [FirebaseHelper sharedHelper].avatarImage = image;
+    UIImage *cameraImage = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
     
-    NSLog(@"size is %@", NSStringFromCGSize(image.size));
+    double ratio;
+    double delta;
+    CGPoint offset;
+    
+    CGSize squareSize = CGSizeMake(64, 64);
+
+    if (cameraImage.size.width > cameraImage.size.height) {
+        ratio = 64 / cameraImage.size.width;
+        delta = (ratio*cameraImage.size.width - ratio*cameraImage.size.height);
+        offset = CGPointMake(delta/2, 0);
+    } else {
+        ratio = 64 / cameraImage.size.height;
+        delta = (ratio*cameraImage.size.height - ratio*cameraImage.size.width);
+        offset = CGPointMake(0, delta/2);
+    }
+    
+    CGRect clipRect = CGRectMake(-offset.x, -offset.y,
+                                 (ratio * cameraImage.size.width) + delta,
+                                 (ratio * cameraImage.size.height) + delta);
+    
+    
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)])
+        UIGraphicsBeginImageContextWithOptions(squareSize, YES, 0.0);
+    else
+        UIGraphicsBeginImageContext(squareSize);
+    
+    UIRectClip(clipRect);
+    [cameraImage drawInRect:clipRect];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    PersonalSettingsViewController *settingsVC = self.navigationController.viewControllers[0];
+    settingsVC.avatarImage = newImage;
+    settingsVC.avatarChanged = true;
     
     [picker dismissViewControllerAnimated:YES completion:^{
         

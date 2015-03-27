@@ -44,15 +44,25 @@
     self.passwordField.layer.borderWidth = 1;
     self.passwordField.layer.cornerRadius = 10;
     
-    self.signingIn = true;
+    if ([FirebaseHelper sharedHelper].email) {
+        
+        self.signingIn = false;
+        self.emailField.text = [FirebaseHelper sharedHelper].email;
+    }
+    else self.signingIn = true;
+    
     //self.signingIn = [[[NSUserDefaults standardUserDefaults] objectForKey:@"registered"] integerValue];
     
     [self updateDetails];
+
 }
 
 -(void) updateDetails {
     
     [UIView setAnimationsEnabled:NO];
+
+    NSLog(@"updating details, signingIn is %i", self.signingIn);
+    
     
     if (self.signingIn) {
         
@@ -62,6 +72,8 @@
         //self.passwordResetButton.hidden = false;
         
     } else {
+        
+        NSLog(@"signing up!");
         
         [self.switchButton setTitle:@"Already have an account?" forState:UIControlStateNormal];
         [self.signInButton setTitle:@"Sign Up" forState:UIControlStateNormal];
@@ -144,6 +156,7 @@
                        [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:@"registered"];
                        [FirebaseHelper sharedHelper].loggedIn = true;
                        [FirebaseHelper sharedHelper].uid = user.uid;
+                       [[FirebaseHelper sharedHelper] setAdmin];
                        [[FirebaseHelper sharedHelper] observeLocalUser];
                    }
                }];

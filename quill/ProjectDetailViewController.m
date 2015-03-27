@@ -331,6 +331,7 @@
     self.chatOpenButton.hidden = true;
     self.chatAvatar.hidden = true;
     self.sendMessageButton.hidden = true;
+    self.chatTextField.hidden = true;
     
     self.addBoardBackgroundImage.hidden = true;
     self.addBoardButton.hidden = true;
@@ -1682,8 +1683,6 @@
                 self.boardNameLabel.alpha = 1;
             }
             self.boardNameLabel.text = name;
-            if ([self.boardNameLabel.text isEqualToString:@"Untitled"]) self.boardNameLabel.alpha = .2;
-            else self.boardNameLabel.alpha = 1;
             [self.boardNameLabel sizeToFit];
             self.boardNameLabel.center = CGPointMake(self.carousel.center.x, self.boardNameLabel.center.y);
             
@@ -1723,7 +1722,12 @@
         
         NSString *name;
         
-        if ([boardNames containsObject:boardNameTextField.text]) {
+        NSString *noSpacesString = [boardNameTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        
+        if (noSpacesString.length == 0) name = @"Untitled";
+        else name = editBoardNameTextField.text;
+        
+        if ([boardNames containsObject:name] && ![name isEqualToString:@"Untitled"]) {
             
             name = oldBoardName;
             
@@ -1740,33 +1744,24 @@
             
             [self presentViewController:nav animated:YES completion:nil];
         }
-        else {
-            
-            NSString *noSpacesString = [boardNameTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-            
-            if (noSpacesString.length == 0) name = @"Untitled";
-            else name = editBoardNameTextField.text;
-            
-            if (![boardNameTextField.text isEqualToString:oldBoardName]) {
+        else if (![boardNameTextField.text isEqualToString:oldBoardName]) {
                 
-                NSString *boardNameRefString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/name", self.boardIDs[self.carousel.currentItemIndex]];
-                Firebase *ref = [[Firebase alloc] initWithUrl:boardNameRefString];
-                [ref setValue:name];
-                [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] setObject:name forKey:@"name"];
+            NSString *boardNameRefString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/name", self.boardIDs[self.carousel.currentItemIndex]];
+            Firebase *ref = [[Firebase alloc] initWithUrl:boardNameRefString];
+            [ref setValue:name];
+            [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] setObject:name forKey:@"name"];
 
-                if (self.activeBoardID) {
-                    
-                    NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
-                    [[FirebaseHelper sharedHelper] setBoard:self.activeBoardID UpdatedAt:dateString];
-                    [self.editedBoardIDs addObject:self.activeBoardID];
-                }
+            if (self.activeBoardID) {
+                
+                NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+                [[FirebaseHelper sharedHelper] setBoard:self.activeBoardID UpdatedAt:dateString];
+                [self.editedBoardIDs addObject:self.activeBoardID];
             }
         }
         
         UILabel *boardNameLabel = (UILabel *)[self.view viewWithTag:102];
         
         if ([name isEqualToString:@"Untitled"]) {
-            boardNameTextField.alpha = .2;
             boardNameLabel.alpha = .2;
             self.boardNameLabel.alpha = .2;
         }
@@ -2002,6 +1997,11 @@
     }
     
     return NO;
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    
+    textField.alpha = 1;
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
