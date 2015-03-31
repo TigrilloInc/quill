@@ -19,6 +19,7 @@
 #import "Reachability.h"
 #import "NameFromInviteViewController.h"
 #import "UserDeletedAlertViewController.h"
+#import "SignedOutAlertViewController.h"
 #import <Instabug/Instabug.h>
 
 @implementation FirebaseHelper
@@ -40,7 +41,7 @@ static FirebaseHelper *sharedHelper = nil;
         sharedHelper.visibleProjectIDs = [NSMutableArray array];
         sharedHelper.loadedBoardIDs = [NSMutableArray array];
         sharedHelper.loadedUsers = [NSMutableDictionary dictionary];
-        
+
         sharedHelper.projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     }
     return sharedHelper;
@@ -152,9 +153,7 @@ static FirebaseHelper *sharedHelper = nil;
     [tokenRef observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         self.inviteURL = nil;
-        
-        NSLog(@"snapshot is %@", snapshot.value);
-        
+
         if ([[snapshot.value allKeys] containsObject:@"newOwner"]) {
             
             self.email = [snapshot.value objectForKey:@"newOwner"];
@@ -208,16 +207,52 @@ static FirebaseHelper *sharedHelper = nil;
     }];
 }
 
-
 -(void) observeLocalUser {
     
     NSString *uidString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@", self.uid];
-    Firebase *ref = [[Firebase alloc] initWithUrl:uidString];
+    Firebase *userRef = [[Firebase alloc] initWithUrl:uidString];
     
-    [[ref childByAppendingPath:@"status/inProject"] setValue:@"none"];
-    [[ref childByAppendingPath:@"status/inBoard"] setValue:@"none"];
+    NSDictionary *statusDict = @{ @"device" : [[UIDevice currentDevice] identifierForVendor].UUIDString,
+                                  @"inProject" : @"none",
+                                  @"inBoard" : @"none"
+                                 };
     
-    [ref observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+    [[userRef childByAppendingPath:@"status"] setValue:statusDict withCompletionBlock:^(NSError *error, Firebase *ref) {
+        
+        [ref observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+            
+            NSString *deviceID = [snapshot.value objectForKey:@"device"];
+            
+            if (![deviceID isEqualToString:[[UIDevice currentDevice] identifierForVendor].UUIDString] && ![deviceID isEqualToString:@"none"]) {
+                
+                if (self.projectVC.presentedViewController && ![((UINavigationController *)self.projectVC.presentedViewController).viewControllers[0] isKindOfClass:[SignedOutAlertViewController class]]) [self.projectVC.presentedViewController dismissViewControllerAnimated:YES completion:nil];
+                
+                if (self.projectVC.activeBoardID) [self.projectVC closeTapped];
+                else {
+                    
+                    NSString *email = self.email;
+                    
+                    [self signOut];
+                    
+                    SignedOutAlertViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignedOut"];
+                    vc.email = email;
+                    
+                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+                    nav.modalPresentationStyle = UIModalPresentationFormSheet;
+                    nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+                    
+                    UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+                    logoImageView.frame = CGRectMake(162, 8, 32, 32);
+                    logoImageView.tag = 800;
+                    [nav.navigationBar addSubview:logoImageView];
+
+                    [self.projectVC presentViewController:nav animated:YES completion:nil];
+                }
+            }
+        }];
+    }];
+    
+    [userRef observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         NSDictionary *infoDict = [snapshot.value objectForKey:@"info"];
         
@@ -442,7 +477,7 @@ static FirebaseHelper *sharedHelper = nil;
     [ref observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         projectChildrenCount = snapshot.childrenCount;
-        
+
         if (projectChildrenCount > 0) {
             
             for (FDataSnapshot *child in snapshot.children) {
@@ -520,7 +555,7 @@ static FirebaseHelper *sharedHelper = nil;
         if (snapshot.value == [NSNull null]) return;
         
         [[self.projects objectForKey:projectID] setObject:snapshot.value forKey:@"updatedAt"];
-        if (self.projectsLoaded && self.userName) {
+        if (self.projectsLoaded && self.teamLoaded && self.userName) {
             
             [self.projectVC.masterView.projectsTable reloadData];
             [self.projectVC.masterView.projectsTable selectRowAtIndexPath:self.projectVC.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
@@ -1255,6 +1290,32 @@ static FirebaseHelper *sharedHelper = nil;
         self.teamLoaded = true;
         if (self.projectsLoaded) [self updateMasterView];
     }
+}
+
+- (void) signOut {
+    
+    [self.projectVC hideAll];
+    self.projectVC.masterView.teamButton.hidden = true;
+    self.projectVC.masterView.teamMenuButton.hidden = true;
+    self.projectVC.masterView.nameButton.hidden = true;
+    self.projectVC.masterView.avatarButton.hidden = true;
+    self.projectVC.masterView.avatarShadow.hidden = true;
+    
+    NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/status", self.uid];
+    Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
+    
+    NSDictionary *statusDict = @{ @"device" : @"none",
+                                  @"inProject" : @"none",
+                                  @"inBoard" : @"none"
+                                  };
+    [[userRef childByAppendingPath:@"status"] setValue:statusDict];
+    
+    FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:userRef];
+    [authClient logout];
+    
+    self.loggedIn = false;
+    [self clearData];
+    
 }
 
 - (void) removeAllObservers {

@@ -3,7 +3,7 @@
 //  quill
 //
 //  Created by Alex Costantini on 12/17/14.
-//  Copyright (c) 2014 chalk. All rights reserved.
+//  Copyright (c) 2014 Tigrillo. All rights reserved.
 //
 
 #import "PenTypePopoverViewController.h"

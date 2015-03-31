@@ -3,7 +3,7 @@
 //  quill
 //
 //  Created by Alex Costantini on 3/18/15.
-//  Copyright (c) 2015 chalk. All rights reserved.
+//  Copyright (c) 2015 Tigrillo. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

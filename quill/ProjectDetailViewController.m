@@ -22,6 +22,7 @@
 #import "InstabugViewController.h"
 #import "DeleteProjectAlertViewController.h"
 #import "InvalidNameAlertViewController.h"
+#import "SignedOutAlertViewController.h"
 
 @implementation ProjectDetailViewController
 
@@ -879,8 +880,24 @@
                          [self.view bringSubviewToFront:self.addBoardBackgroundImage];
                          [self.view bringSubviewToFront:self.addBoardButton];
                          
-                         if ([[FirebaseHelper sharedHelper].projects.allKeys containsObject:[FirebaseHelper sharedHelper].currentProjectID]) {
-
+                         if (![FirebaseHelper sharedHelper].loggedIn) {
+                             
+                             [[FirebaseHelper sharedHelper] signOut];
+                             
+                             SignedOutAlertViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"SignedOut"];
+                             
+                             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+                             nav.modalPresentationStyle = UIModalPresentationFormSheet;
+                             nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+                             
+                             UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+                             logoImageView.frame = CGRectMake(155, 8, 32, 32);
+                             logoImageView.tag = 800;
+                             [nav.navigationBar addSubview:logoImageView];
+                         }
+                         
+                         else if ([[FirebaseHelper sharedHelper].projects.allKeys containsObject:[FirebaseHelper sharedHelper].currentProjectID]) {
+                             
                              [self.masterView.projectsTable reloadData];
                              [self.masterView.projectsTable selectRowAtIndexPath:self.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
                          }

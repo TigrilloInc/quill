@@ -47,6 +47,7 @@
     if ([FirebaseHelper sharedHelper].email) {
         
         self.signingIn = false;
+        self.switchButton.hidden = false;
         self.emailField.text = [FirebaseHelper sharedHelper].email;
     }
     else self.signingIn = true;
@@ -60,9 +61,6 @@
 -(void) updateDetails {
     
     [UIView setAnimationsEnabled:NO];
-
-    NSLog(@"updating details, signingIn is %i", self.signingIn);
-    
     
     if (self.signingIn) {
         
@@ -72,8 +70,6 @@
         //self.passwordResetButton.hidden = false;
         
     } else {
-        
-        NSLog(@"signing up!");
         
         [self.switchButton setTitle:@"Already have an account?" forState:UIControlStateNormal];
         [self.signInButton setTitle:@"Sign Up" forState:UIControlStateNormal];

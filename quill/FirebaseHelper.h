@@ -61,6 +61,7 @@
 - (void) setCommentThread:(NSString *)commentThreadID updatedAt:(NSString *)dateString;
 - (void) resetUndo;
 - (NSIndexPath *) getLastViewedProjectIndexPath;
+- (void) signOut;
 - (void) removeAllObservers;
 - (void) clearData;
 - (void) updateMasterView;
