@@ -20,6 +20,7 @@
 #import "NameFromInviteViewController.h"
 #import "UserDeletedAlertViewController.h"
 #import "SignedOutAlertViewController.h"
+#import "OfflineAlertViewController.h"
 #import <Instabug/Instabug.h>
 
 @implementation FirebaseHelper
@@ -56,11 +57,20 @@ static FirebaseHelper *sharedHelper = nil;
     reachability.reachableBlock = ^(Reachability*reach) {
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            
+
             weakSelf.connected = true;
             [NSDate serverDate];
             if (self.inviteURL) [self createUser];
             else if (!self.loggedIn) [self checkAuthStatus];
+            else if (self.loggedIn && [((UINavigationController *)self.projectVC.presentedViewController).viewControllers[0] isKindOfClass:[OfflineAlertViewController class]]) {
+                
+                OfflineAlertViewController *vc = (OfflineAlertViewController *)((UINavigationController *)self.projectVC.presentedViewController).viewControllers[0];
+                vc.offlineLabel.alpha = .5;
+                vc.offlineLabel.text = @"Reconnecting...";
+                
+                
+                [self checkAuthStatus];
+            }
             
             NSLog(@"Yayyy, we have the interwebs!");
         });
@@ -72,6 +82,35 @@ static FirebaseHelper *sharedHelper = nil;
             
             weakSelf.connected = false;
             NSLog(@"Someone broke the internet :(");
+            
+            if (self.loggedIn) {
+                
+                if (self.projectVC.activeBoardID) [self.projectVC closeTapped];
+                    
+                else {
+                    
+                    [self clearData];
+                    
+                    [self.projectVC hideAll];
+                    self.projectVC.masterView.teamButton.hidden = true;
+                    self.projectVC.masterView.teamMenuButton.hidden = true;
+                    self.projectVC.masterView.nameButton.hidden = true;
+                    self.projectVC.masterView.avatarButton.hidden = true;
+                    self.projectVC.masterView.avatarShadow.hidden = true;
+                    
+                    OfflineAlertViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"Offline"];
+                    
+                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+                    nav.modalPresentationStyle = UIModalPresentationFormSheet;
+                    nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+                    
+                    UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+                    logoImageView.frame = CGRectMake(162, 8, 32, 32);
+                    [nav.navigationBar addSubview:logoImageView];
+                    
+                    [self.projectVC presentViewController:nav animated:YES completion:nil];
+                }
+            }
         });
     };
     
@@ -83,7 +122,7 @@ static FirebaseHelper *sharedHelper = nil;
     Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
     FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
     
-    if (self.projectVC.presentedViewController) [self.projectVC dismissViewControllerAnimated:YES completion:nil];
+    //if (self.projectVC.presentedViewController) [self.projectVC dismissViewControllerAnimated:YES completion:nil];
     
     //[authClient logout];
     
@@ -305,7 +344,7 @@ static FirebaseHelper *sharedHelper = nil;
         }
         else {
          
-            [signInVC dismissViewControllerAnimated:YES completion:nil];
+            //[signInVC dismissViewControllerAnimated:YES completion:nil];
             
             [self.team setObject:[@{self.uid:[NSMutableDictionary dictionary]} mutableCopy] forKey:@"users"];
             
@@ -567,6 +606,8 @@ static FirebaseHelper *sharedHelper = nil;
     
     NSLog(@"master view updated");
 
+    if (self.projectVC.presentedViewController) [self.projectVC.presentedViewController dismissViewControllerAnimated:YES completion:nil];
+    
     self.projectVC.masterView.nameButton.titleLabel.numberOfLines = 1;
     self.projectVC.masterView.nameButton.titleLabel.adjustsFontSizeToFitWidth = YES;
     self.projectVC.masterView.nameButton.titleLabel.lineBreakMode = NSLineBreakByClipping;

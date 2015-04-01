@@ -63,6 +63,7 @@
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
+            <string>SourceSansPro-Regular</string>
         </mutableArray>
         <mutableArray key="SourceSansPro-Semibold.ttf">
             <string>SourceSansPro-Semibold</string>
@@ -836,7 +837,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You've been signed out because the email %@ has been used to sign into a different device." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="K2n-m6-3rI">
-                                <rect key="frame" x="58" y="72" width="425" height="158"/>
+                                <rect key="frame" x="30" y="71" width="481" height="158"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="16"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -1070,6 +1071,34 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ces-zY-zk2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-6303" y="554"/>
+        </scene>
+        <!--Offline Alert View Controller-->
+        <scene sceneID="93A-5z-Ukq">
+            <objects>
+                <viewController storyboardIdentifier="Offline" id="War-uT-gP1" customClass="OfflineAlertViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Dvm-RY-6aC">
+                        <rect key="frame" x="0.0" y="0.0" width="540" height="360"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You're connection to the internet has been lost." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="bO1-oS-wLI">
+                                <rect key="frame" x="-29" y="136" width="599" height="158"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="20"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="540" height="360"/>
+                    <connections>
+                        <outlet property="offlineLabel" destination="bO1-oS-wLI" id="DPG-Q8-vjh"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="g4C-yw-d0g" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-6303" y="986"/>
         </scene>
         <!--Change Password View Controller-->
         <scene sceneID="12j-fu-6cq">

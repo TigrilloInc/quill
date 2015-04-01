@@ -23,6 +23,7 @@
 #import "DeleteProjectAlertViewController.h"
 #import "InvalidNameAlertViewController.h"
 #import "SignedOutAlertViewController.h"
+#import "OfflineAlertViewController.h"
 
 @implementation ProjectDetailViewController
 
@@ -46,11 +47,11 @@
     
     carouselFadeLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfadeleft.png"]];
     [self.carousel addSubview:carouselFadeLeft];
-    carouselFadeLeft.frame = CGRectMake(0, -5, 30, 400);
+    carouselFadeLeft.frame = CGRectMake(0, -5, 15, 400);
     
     carouselFadeRight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfaderight.png"]];
     [self.carousel addSubview:carouselFadeRight];
-    carouselFadeRight.frame = CGRectMake(784, -5, 30, 400);
+    carouselFadeRight.frame = CGRectMake(799, -5, 15, 400);
     
     editFadeLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"editfadeleft.png"]];
     [self.view addSubview:editFadeLeft];
@@ -880,7 +881,30 @@
                          [self.view bringSubviewToFront:self.addBoardBackgroundImage];
                          [self.view bringSubviewToFront:self.addBoardButton];
                          
-                         if (![FirebaseHelper sharedHelper].loggedIn) {
+                         if (![FirebaseHelper sharedHelper].connected) {
+                             
+                             [[FirebaseHelper sharedHelper] clearData];
+                             
+                             [self hideAll];
+                             self.masterView.teamButton.hidden = true;
+                             self.masterView.teamMenuButton.hidden = true;
+                             self.masterView.nameButton.hidden = true;
+                             self.masterView.avatarButton.hidden = true;
+                             self.masterView.avatarShadow.hidden = true;
+                             
+                             OfflineAlertViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"Offline"];
+                             
+                             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+                             nav.modalPresentationStyle = UIModalPresentationFormSheet;
+                             nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+                             
+                             UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+                             logoImageView.frame = CGRectMake(162, 8, 32, 32);
+                             [nav.navigationBar addSubview:logoImageView];
+                             
+                             [self presentViewController:nav animated:YES completion:nil];
+                         }
+                         else if (![FirebaseHelper sharedHelper].loggedIn) {
                              
                              [[FirebaseHelper sharedHelper] signOut];
                              
@@ -891,7 +915,7 @@
                              nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
                              
                              UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
-                             logoImageView.frame = CGRectMake(155, 8, 32, 32);
+                             logoImageView.frame = CGRectMake(162, 8, 32, 32);
                              logoImageView.tag = 800;
                              [nav.navigationBar addSubview:logoImageView];
                          }

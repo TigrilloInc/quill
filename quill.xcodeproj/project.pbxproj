@@ -151,6 +151,7 @@
 		12ACFBAF1A6C9262004C298B /* formsheetbackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ACFBAE1A6C9262004C298B /* formsheetbackground.png */; };
 		12ACFBB71A6C98E8004C298B /* Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ACFBB61A6C98E8004C298B /* Logo.png */; };
 		12B17DA01AC9F8A8003C9E9D /* SignedOutAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12B17D9F1AC9F8A8003C9E9D /* SignedOutAlertViewController.m */; };
+		12B17DA31ACB7A46003C9E9D /* OfflineAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12B17DA21ACB7A46003C9E9D /* OfflineAlertViewController.m */; };
 		12B79EF01A8367E700437CC8 /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12B79EEF1A8367E700437CC8 /* Firebase.framework */; };
 		12BCAF5B1A4C0EA500FC327E /* down.png in Resources */ = {isa = PBXBuildFile; fileRef = 12BCAF5A1A4C0EA500FC327E /* down.png */; };
 		12BDC6A21A95AF28001160AF /* LeaveProjectAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BDC6A11A95AF28001160AF /* LeaveProjectAlertViewController.m */; };
@@ -455,6 +456,8 @@
 		12ACFBB61A6C98E8004C298B /* Logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Logo.png; path = Resources/Logo.png; sourceTree = "<group>"; };
 		12B17D9E1AC9F8A8003C9E9D /* SignedOutAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignedOutAlertViewController.h; sourceTree = "<group>"; };
 		12B17D9F1AC9F8A8003C9E9D /* SignedOutAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignedOutAlertViewController.m; sourceTree = "<group>"; };
+		12B17DA11ACB7A46003C9E9D /* OfflineAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OfflineAlertViewController.h; sourceTree = "<group>"; };
+		12B17DA21ACB7A46003C9E9D /* OfflineAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OfflineAlertViewController.m; sourceTree = "<group>"; };
 		12B79EEF1A8367E700437CC8 /* Firebase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Firebase.framework; path = quill/Resources/Firebase/Firebase.framework; sourceTree = "<group>"; };
 		12BCAF5A1A4C0EA500FC327E /* down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = down.png; path = Resources/down.png; sourceTree = "<group>"; };
 		12BDC6A01A95AF28001160AF /* LeaveProjectAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = LeaveProjectAlertViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -723,6 +726,8 @@
 				129667661AB7DD1800CB57FA /* InvalidNameAlertViewController.m */,
 				12B17D9E1AC9F8A8003C9E9D /* SignedOutAlertViewController.h */,
 				12B17D9F1AC9F8A8003C9E9D /* SignedOutAlertViewController.m */,
+				12B17DA11ACB7A46003C9E9D /* OfflineAlertViewController.h */,
+				12B17DA21ACB7A46003C9E9D /* OfflineAlertViewController.m */,
 				129667781AC3C7E600CB57FA /* InviteNewOwnerViewController.h */,
 				129667791AC3C7E600CB57FA /* InviteNewOwnerViewController.m */,
 				12F4F9D11AA808DA00C8FC31 /* InstabugViewController.h */,
@@ -1193,6 +1198,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				124943C21A91E11300C1BEA4 /* NameFromInviteViewController.m in Sources */,
+				12B17DA31ACB7A46003C9E9D /* OfflineAlertViewController.m in Sources */,
 				12BDC6AB1A95B14A001160AF /* RemoveUserAlertViewController.m in Sources */,
 				1216D99E19A275980095DBD8 /* UICollectionView+Draggable.m in Sources */,
 				12BE8D74196CF04D00503F84 /* NewProjectViewController.m in Sources */,
