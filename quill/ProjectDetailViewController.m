@@ -55,11 +55,11 @@
     
     editFadeLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"editfadeleft.png"]];
     [self.view addSubview:editFadeLeft];
-    editFadeLeft.frame = CGRectMake(210, 0, 21, 768);
+    editFadeLeft.frame = CGRectMake(210, 0, 15, 768);
 
     editFadeRight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"editfaderight.png"]];
     [self.view addSubview:editFadeRight];
-    editFadeRight.frame = CGRectMake(1003, 0, 21, 768);
+    editFadeRight.frame = CGRectMake(1009, 0, 15, 768);
     
     self.chatTable.transform = CGAffineTransformMakeRotation(M_PI);
     [self showChat];
@@ -636,6 +636,50 @@
     [[FirebaseHelper sharedHelper] observeBoardWithID:boardID];
 }
 
+-(void) deleteBoardWithID:(NSString *)boardID {
+    
+    NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"commentsID"];
+    NSString *commentsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
+    Firebase *commentsRef = [[Firebase alloc] initWithUrl:commentsString];
+    [commentsRef removeAllObservers];
+    
+    for (NSString *commentThreadID in [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] allKeys]) {
+        
+        NSString *infoString = [NSString stringWithFormat:@"%@/info", commentThreadID];
+        [[commentsRef childByAppendingPath:infoString] removeAllObservers];
+        
+        NSString *messageString = [NSString stringWithFormat:@"%@/messages", commentThreadID];
+        [[commentsRef childByAppendingPath:messageString] removeAllObservers];
+        
+        NSString *updatedString = [NSString stringWithFormat:@"%@/updatedAt", commentThreadID];
+        [[commentsRef childByAppendingPath:updatedString] removeAllObservers];
+    }
+    
+    [commentsRef removeValue];
+    
+    [[FirebaseHelper sharedHelper].comments removeObjectForKey:commentsID];
+    
+    NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
+    Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
+    [[boardRef childByAppendingPath:@"name"] removeAllObservers];
+    [[boardRef childByAppendingPath:@"updatedAt"] removeAllObservers];
+    
+    for (NSString *userID in [[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"undo"] allKeys]) {
+        
+        NSString *undoString = [NSString stringWithFormat:@"undo/%@", userID];
+        [[boardRef childByAppendingPath:undoString] removeAllObservers];
+    }
+    
+    for (NSString *userID in [[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"subpaths"] allKeys]) {
+        
+        NSString *subpathsString = [NSString stringWithFormat:@"subpaths/%@", userID];
+        [[boardRef childByAppendingPath:subpathsString] removeAllObservers];
+    }
+    
+    [boardRef removeValue];
+    [[FirebaseHelper sharedHelper].boards removeObjectForKey:boardID];
+}
+
 -(void) drawBoard:(BoardView *)boardView {
     
     [boardView clear];
@@ -828,7 +872,8 @@
     if ([self.commentTitleTextField isFirstResponder]) [self.commentTitleTextField resignFirstResponder];
     [self hideDrawMenu];
     
-    [self.viewedBoardIDs addObject:self.activeBoardID];
+    NSString *boardID = self.activeBoardID;
+    [self.viewedBoardIDs addObject:boardID];
     self.activeBoardID = nil;
     self.activeCommentThreadID = nil;
     
@@ -920,17 +965,12 @@
                              [nav.navigationBar addSubview:logoImageView];
                          }
                          
-                         else if ([[FirebaseHelper sharedHelper].projects.allKeys containsObject:[FirebaseHelper sharedHelper].currentProjectID]) {
-                             
-                             [self.masterView.projectsTable reloadData];
-                             [self.masterView.projectsTable selectRowAtIndexPath:self.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
-                         }
-                         else {
+                         else if (![[FirebaseHelper sharedHelper].projects.allKeys containsObject:[FirebaseHelper sharedHelper].currentProjectID]) {
                              
                              [self.masterView.projectsTable reloadData];
                              
                              if ([FirebaseHelper sharedHelper].visibleProjectIDs.count > 0) {
-
+                                 
                                  NSIndexPath *mostRecent = [[FirebaseHelper sharedHelper] getLastViewedProjectIndexPath];
                                  [self.masterView tableView:self.masterView.projectsTable didSelectRowAtIndexPath:mostRecent];
                              }
@@ -939,6 +979,40 @@
                                  [self hideAll];
                                  [FirebaseHelper sharedHelper].currentProjectID = nil;
                              }
+                         }
+                         else if (![self.boardIDs containsObject:boardID]) {
+                             
+                             [[FirebaseHelper sharedHelper].boards removeObjectForKey:boardID];
+                             
+                             NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
+                             Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
+                             [[boardRef childByAppendingPath:@"name"] removeAllObservers];
+                             [[boardRef childByAppendingPath:@"updatedAt"] removeAllObservers];
+                             
+                             for (NSString *userID in [[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"undo"] allKeys]) {
+                                 
+                                 NSString *undoString = [NSString stringWithFormat:@"undo/%@", userID];
+                                 [[boardRef childByAppendingPath:undoString] removeAllObservers];
+                             }
+                             
+                             for (NSString *userID in [[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"subpaths"] allKeys]) {
+                                 
+                                 NSString *subpathsString = [NSString stringWithFormat:@"subpaths/%@", userID];
+                                 [[boardRef childByAppendingPath:subpathsString] removeAllObservers];
+                             }
+                             
+                             NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"commentsID"];
+                             
+                             if ([[FirebaseHelper sharedHelper].comments.allKeys containsObject:commentsID]) [[FirebaseHelper sharedHelper].comments removeObjectForKey:commentsID];
+                             
+                             NSString *commentsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
+                             Firebase *commentsRef = [[Firebase alloc] initWithUrl:commentsString];
+                             [commentsRef removeAllObservers];
+                         }
+                         else {
+                             
+                             [self.masterView.projectsTable reloadData];
+                             [self.masterView.projectsTable selectRowAtIndexPath:self.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
                          }
                      }
      ];
@@ -1065,49 +1139,7 @@
         
         for (NSString *boardID in self.boardIDs) {
             
-            if (![self.editBoardIDs containsObject:boardID]) {
-                
-                NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"commentsID"];
-                NSString *commentsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
-                Firebase *commentsRef = [[Firebase alloc] initWithUrl:commentsString];
-                [commentsRef removeAllObservers];
-                
-                for (NSString *commentThreadID in [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] allKeys]) {
-                    
-                    NSString *infoString = [NSString stringWithFormat:@"%@/info", commentThreadID];
-                    [[commentsRef childByAppendingPath:infoString] removeAllObservers];
-                    
-                    NSString *messageString = [NSString stringWithFormat:@"%@/messages", commentThreadID];
-                    [[commentsRef childByAppendingPath:messageString] removeAllObservers];
-                    
-                    NSString *updatedString = [NSString stringWithFormat:@"%@/updatedAt", commentThreadID];
-                    [[commentsRef childByAppendingPath:updatedString] removeAllObservers];
-                }
-                
-                [commentsRef removeValue];
-                
-                [[FirebaseHelper sharedHelper].comments removeObjectForKey:commentsID];
-                
-                NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
-                Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
-                [[boardRef childByAppendingPath:@"name"] removeAllObservers];
-                [[boardRef childByAppendingPath:@"updatedAt"] removeAllObservers];
-                
-                for (NSString *userID in [[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"undo"] allKeys]) {
-                    
-                    NSString *undoString = [NSString stringWithFormat:@"undo/%@", userID];
-                    [[boardRef childByAppendingPath:undoString] removeAllObservers];
-                }
-                
-                for (NSString *userID in [[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"subpaths"] allKeys]) {
-                    
-                    NSString *subpathsString = [NSString stringWithFormat:@"subpaths/%@", userID];
-                    [[boardRef childByAppendingPath:subpathsString] removeAllObservers];
-                }
-                
-                [boardRef removeValue];
-                [[FirebaseHelper sharedHelper].boards removeObjectForKey:boardID];
-            }
+            if (![self.editBoardIDs containsObject:boardID]) [self deleteBoardWithID:boardID];
         }
         
         self.boardIDs = [self.editBoardIDs mutableCopy];
