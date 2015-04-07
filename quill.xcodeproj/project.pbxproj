@@ -152,6 +152,8 @@
 		12ACFBB71A6C98E8004C298B /* Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ACFBB61A6C98E8004C298B /* Logo.png */; };
 		12B17DA01AC9F8A8003C9E9D /* SignedOutAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12B17D9F1AC9F8A8003C9E9D /* SignedOutAlertViewController.m */; };
 		12B17DA31ACB7A46003C9E9D /* OfflineAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12B17DA21ACB7A46003C9E9D /* OfflineAlertViewController.m */; };
+		12B17DA71AD21874003C9E9D /* libFlurry_6.3.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 12B17DA61AD21874003C9E9D /* libFlurry_6.3.0.a */; };
+		12B17DAA1AD31DDD003C9E9D /* ResetPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12B17DA91AD31DDD003C9E9D /* ResetPasswordViewController.m */; };
 		12B79EF01A8367E700437CC8 /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12B79EEF1A8367E700437CC8 /* Firebase.framework */; };
 		12BCAF5B1A4C0EA500FC327E /* down.png in Resources */ = {isa = PBXBuildFile; fileRef = 12BCAF5A1A4C0EA500FC327E /* down.png */; };
 		12BDC6A21A95AF28001160AF /* LeaveProjectAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BDC6A11A95AF28001160AF /* LeaveProjectAlertViewController.m */; };
@@ -458,6 +460,10 @@
 		12B17D9F1AC9F8A8003C9E9D /* SignedOutAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignedOutAlertViewController.m; sourceTree = "<group>"; };
 		12B17DA11ACB7A46003C9E9D /* OfflineAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OfflineAlertViewController.h; sourceTree = "<group>"; };
 		12B17DA21ACB7A46003C9E9D /* OfflineAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OfflineAlertViewController.m; sourceTree = "<group>"; };
+		12B17DA51AD21874003C9E9D /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
+		12B17DA61AD21874003C9E9D /* libFlurry_6.3.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_6.3.0.a; sourceTree = "<group>"; };
+		12B17DA81AD31DDD003C9E9D /* ResetPasswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResetPasswordViewController.h; sourceTree = "<group>"; };
+		12B17DA91AD31DDD003C9E9D /* ResetPasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResetPasswordViewController.m; sourceTree = "<group>"; };
 		12B79EEF1A8367E700437CC8 /* Firebase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Firebase.framework; path = quill/Resources/Firebase/Firebase.framework; sourceTree = "<group>"; };
 		12BCAF5A1A4C0EA500FC327E /* down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = down.png; path = Resources/down.png; sourceTree = "<group>"; };
 		12BDC6A01A95AF28001160AF /* LeaveProjectAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = LeaveProjectAlertViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -548,6 +554,7 @@
 				12F4F9BC1AA7ECB800C8FC31 /* Instabug.framework in Frameworks */,
 				12B79EF01A8367E700437CC8 /* Firebase.framework in Frameworks */,
 				12564B62196A5C4000F8F3D2 /* Social.framework in Frameworks */,
+				12B17DA71AD21874003C9E9D /* libFlurry_6.3.0.a in Frameworks */,
 				F3012919198C3F0800A596DA /* FirebaseSimpleLogin.framework in Frameworks */,
 				12564B60196A5C3600F8F3D2 /* Accounts.framework in Frameworks */,
 				129E12C61964DB4300ED9D42 /* libc++.dylib in Frameworks */,
@@ -728,6 +735,8 @@
 				12B17D9F1AC9F8A8003C9E9D /* SignedOutAlertViewController.m */,
 				12B17DA11ACB7A46003C9E9D /* OfflineAlertViewController.h */,
 				12B17DA21ACB7A46003C9E9D /* OfflineAlertViewController.m */,
+				12B17DA81AD31DDD003C9E9D /* ResetPasswordViewController.h */,
+				12B17DA91AD31DDD003C9E9D /* ResetPasswordViewController.m */,
 				129667781AC3C7E600CB57FA /* InviteNewOwnerViewController.h */,
 				129667791AC3C7E600CB57FA /* InviteNewOwnerViewController.m */,
 				12F4F9D11AA808DA00C8FC31 /* InstabugViewController.h */,
@@ -865,6 +874,7 @@
 				12ACFBAE1A6C9262004C298B /* formsheetbackground.png */,
 				1225C431199B194F0061027B /* close.png */,
 				12DC97911A7AD63E00CC4616 /* welcometoquill.png */,
+				12B17DA41AD21874003C9E9D /* Flurry */,
 				129E129419648A2C00ED9D42 /* Images.xcassets */,
 				12860F9A1A3E62870074B452 /* SourceSansPro-ExtraLight.otf */,
 				12860F9C1A3E64A60074B452 /* SourceSansPro-Light.otf */,
@@ -902,6 +912,16 @@
 				129E12A419648A2C00ED9D42 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		12B17DA41AD21874003C9E9D /* Flurry */ = {
+			isa = PBXGroup;
+			children = (
+				12B17DA51AD21874003C9E9D /* Flurry.h */,
+				12B17DA61AD21874003C9E9D /* libFlurry_6.3.0.a */,
+			);
+			name = Flurry;
+			path = Resources/Flurry;
 			sourceTree = "<group>";
 		};
 		12FF4C111A15459C008A6001 /* Products */ = {
@@ -1204,6 +1224,7 @@
 				12BE8D74196CF04D00503F84 /* NewProjectViewController.m in Sources */,
 				124E5CF619AE83CB00442963 /* NSDate+ServerDate.m in Sources */,
 				12DC979B1A80073100CC4616 /* InviteToTeamViewController.m in Sources */,
+				12B17DAA1AD31DDD003C9E9D /* ResetPasswordViewController.m in Sources */,
 				12BDC6A21A95AF28001160AF /* LeaveProjectAlertViewController.m in Sources */,
 				12BDC6A81A95B12B001160AF /* DeleteProjectAlertViewController.m in Sources */,
 				12A310E4197DC65B00E03E9E /* SignUpFromInviteViewController.m in Sources */,
@@ -1401,7 +1422,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "quill/quill-Prefix.pch";
 				INFOPLIST_FILE = "quill/quill-Info.plist";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/quill/Resources/Flurry",
+				);
 				OTHER_LDFLAGS = (
 					"-luchardet-ios",
 					"-lctemplate-ios",
@@ -1442,7 +1466,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "quill/quill-Prefix.pch";
 				INFOPLIST_FILE = "quill/quill-Info.plist";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/quill/Resources/Flurry",
+				);
 				OTHER_LDFLAGS = (
 					"-luchardet-ios",
 					"-lctemplate-ios",

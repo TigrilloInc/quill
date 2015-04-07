@@ -124,7 +124,7 @@ static FirebaseHelper *sharedHelper = nil;
     
     //if (self.projectVC.presentedViewController) [self.projectVC dismissViewControllerAnimated:YES completion:nil];
     
-    //[authClient logout];
+    [authClient logout];
     
     [authClient checkAuthStatusWithBlock:^(NSError *error, FAUser *user) {
         
@@ -198,6 +198,7 @@ static FirebaseHelper *sharedHelper = nil;
             self.email = [snapshot.value objectForKey:@"newOwner"];
             
             SignInViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignIn"];
+            vc.switchButton.hidden = false;
             
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
             nav.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -290,6 +291,8 @@ static FirebaseHelper *sharedHelper = nil;
             }
         }];
     }];
+    
+    NSLog(@"observing local user");
     
     [userRef observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
@@ -559,10 +562,10 @@ static FirebaseHelper *sharedHelper = nil;
                 
                 for (NSString *boardID in child.value) {
                     
-                    if (![self.boards objectForKey:boardID] && [self.currentProjectID isEqualToString:projectID]) {
+                    if (![self.boards objectForKey:boardID] && [self.currentProjectID isEqualToString:projectID] && self.projectVC.activeBoardID == nil) {
 
-                        if (![self.projectVC.boardIDs containsObject:boardID]) [self.projectVC.boardIDs addObject:boardID];
-                        if (self.projectVC.activeBoardID == nil) [self.projectVC.carousel reloadData];
+                            if (![self.projectVC.boardIDs containsObject:boardID]) [self.projectVC.boardIDs addObject:boardID];
+                            [self.projectVC.carousel reloadData];
                     }
                 }
                 
@@ -571,7 +574,7 @@ static FirebaseHelper *sharedHelper = nil;
                     if (![child.value containsObject:boardID]) {
                         
                         if ([self.projectVC.activeBoardID isEqualToString:boardID]) {
-                         
+                            
                             [self.projectVC.boardIDs removeObject:boardID];
                             [self.projectVC closeTapped];
                         }
@@ -742,6 +745,11 @@ static FirebaseHelper *sharedHelper = nil;
         
         if (projectsDict) [self.team setObject:projectsDict forKey:@"projects"];
 
+        if ([[[snapshot.value objectForKey:@"users"] allKeys] isEqual:@[self.uid]]) {
+            [self checkUsersLoaded];
+            return;
+        }
+        
         if (!self.teamLoaded) {
             for (NSString *userID in [[snapshot.value objectForKey:@"users"] allKeys]) {
                 if (![userID isEqualToString:self.uid]) [self.loadedUsers setObject:[NSMutableDictionary dictionary] forKey:userID];
@@ -1050,10 +1058,9 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void)observeChatWithID:(NSString *)chatID {
     
-    NSLog(@"observing chat %@", chatID);
+    [self.chats setObject:[NSMutableDictionary dictionary] forKey:chatID];
     
     NSString *chatString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/chats/%@", chatID];
-    
     Firebase *ref = [[Firebase alloc] initWithUrl:chatString];
 
     [ref observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot) {
@@ -1370,6 +1377,7 @@ static FirebaseHelper *sharedHelper = nil;
     }
 
     if (usersLoaded) {
+
         self.teamLoaded = true;
         if (self.projectsLoaded) [self updateMasterView];
     }

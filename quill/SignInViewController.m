@@ -13,6 +13,8 @@
 #import "NewNameViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "NameFromInviteViewController.h"
+#import "ResetPasswordViewController.h"
+#import "Flurry.h"
 
 @implementation SignInViewController
 
@@ -22,7 +24,15 @@
     
     self.passwordField.secureTextEntry = true;
     
+    logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
+    
     self.navigationItem.title = @"Welcome to Quill!";
+    
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc]
+                                   initWithTitle: @"Sign In"
+                                   style: UIBarButtonItemStyleBordered
+                                   target: nil action: nil];
+    [self.navigationItem setBackBarButtonItem: backButton];
     
     self.emailField.delegate = self;
     self.passwordField.delegate = self;
@@ -67,7 +77,7 @@
         [self.switchButton setTitle:@"Want to create an account?" forState:UIControlStateNormal];
         [self.signInButton setTitle:@"Sign In" forState:UIControlStateNormal];
         [self.signInLabel setText:@"Sign in with your email."];
-        //self.passwordResetButton.hidden = false;
+        self.passwordResetButton.hidden = false;
         
     } else {
         
@@ -149,6 +159,9 @@
                    }
                    else {
                        
+                       if (![FirebaseHelper sharedHelper].isAdmin)
+                       [Flurry logEvent:@"Sign_in-Complete"];
+                       
                        [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:@"registered"];
                        [FirebaseHelper sharedHelper].loggedIn = true;
                        [FirebaseHelper sharedHelper].uid = user.uid;
@@ -191,9 +204,9 @@
             }
             else {
                 
-                [[ref childByAppendingPath:@"users"] updateChildValues:@{ user.uid :
-                                                                              @{ @"email" : self.emailField.text}
-                                                                          }];
+                NSString *userString = [NSString stringWithFormat:@"users/%@/info", user.uid];
+                
+                [[ref childByAppendingPath:userString] updateChildValues:@{@"email":self.emailField.text}];
                 
                 [FirebaseHelper sharedHelper].uid = user.uid;
                 
@@ -223,7 +236,6 @@
 
 -(void)showLogo {
     
-    UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
     logoImage.alpha = 0;
     logoImage.hidden = false;
     
@@ -239,12 +251,23 @@
     NewNameViewController *newNameVC = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"NewName"];
 //    NameFromInviteViewController *newNameVC = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"NameFromInvite"];
     
-    UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
     logoImage.hidden = true;
     logoImage.frame = CGRectMake(154, 8, 32, 32);
     
     [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
     [self.navigationController pushViewController:newNameVC animated:YES];
+}
+
+- (IBAction)passwordResetTapped:(id)sender {
+
+    ResetPasswordViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ResetPassword"];
+    
+    logoImage.hidden = true;
+    logoImage.frame = CGRectMake(163, 8, 32, 32);
+    
+    [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
+    
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (IBAction)switchTapped:(id)sender {

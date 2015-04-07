@@ -10,12 +10,15 @@
 #import <Firebase/Firebase.h>
 #import "FirebaseHelper.h"
 #import <Instabug/Instabug.h>
+#import "Flurry.h"
 
 @implementation AppDelegate
 
 -(BOOL) application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     [FirebaseHelper sharedHelper];
+    
+    [Flurry startSession:@"N48PSX4PWZ6527X6GZVV"];
     
     [Instabug startWithToken:@"9a674b675e5dd033bc995a4d7a4a231f" captureSource:IBGCaptureSourceUIKit invocationEvent:IBGInvocationEventNone];
     [Instabug setEmailIsRequired:NO];
@@ -38,7 +41,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     if (![FirebaseHelper sharedHelper].uid) return;
     
-    NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/", [FirebaseHelper sharedHelper].uid];
+    NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/status", [FirebaseHelper sharedHelper].uid];
     Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
     [[userRef childByAppendingPath:@"inProject"] setValue:@"none"];
     [[userRef childByAppendingPath:@"inBoard"] setValue:@"none"];
@@ -48,7 +51,7 @@ void signalHandler(int signal) {
     
     if (![FirebaseHelper sharedHelper].uid) return;
     
-    NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/", [FirebaseHelper sharedHelper].uid];
+    NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/status", [FirebaseHelper sharedHelper].uid];
     Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
     [[userRef childByAppendingPath:@"inProject"] setValue:@"none"];
     [[userRef childByAppendingPath:@"inBoard"] setValue:@"none"];

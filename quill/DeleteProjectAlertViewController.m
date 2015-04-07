@@ -9,6 +9,8 @@
 #import "DeleteProjectAlertViewController.h"
 #import "FirebaseHelper.h"
 #import "ProjectDetailViewController.h"
+#import "Flurry.h"
+
 
 @implementation DeleteProjectAlertViewController
 
@@ -71,6 +73,9 @@
 
 - (IBAction)deleteTapped:(id)sender {
 
+    if (![FirebaseHelper sharedHelper].isAdmin)
+    [Flurry logEvent:@"Delete_Project" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
+    
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
     NSString *chatID = [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID ] objectForKey:@"chatID"];
@@ -90,9 +95,7 @@
     for (NSString *boardID in projectVC.boardIDs) {
         
         NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"commentsID"];
-        
-        NSLog(@"commentsID is %@", commentsID);
-        
+
         NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
         Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
         [boardRef removeValue];

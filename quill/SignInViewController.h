@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "RoundedButton.h"
 
-@interface SignInViewController : UIViewController <UITextFieldDelegate>
+@interface SignInViewController : UIViewController <UITextFieldDelegate> {
+    
+    UIImageView *logoImage;
+}
 
 @property BOOL signingIn;
 @property (weak, nonatomic) IBOutlet UILabel *signInLabel;

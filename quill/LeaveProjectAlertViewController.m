@@ -8,6 +8,7 @@
 
 #import "LeaveProjectAlertViewController.h"
 #import "FirebaseHelper.h"
+#import "Flurry.h"
 
 @implementation LeaveProjectAlertViewController
 
@@ -65,6 +66,9 @@
 }
 
 - (IBAction)leaveTapped:(id)sender {
+    
+    if (![FirebaseHelper sharedHelper].isAdmin)
+    [Flurry logEvent:@"Leave_Project" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
     
     [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"roles"] setObject:@(-1) forKey:[FirebaseHelper sharedHelper].uid];
     [[FirebaseHelper sharedHelper].visibleProjectIDs removeObject:[FirebaseHelper sharedHelper].currentProjectID];

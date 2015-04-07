@@ -9,10 +9,7 @@
 #import "NameFromInviteViewController.h"
 #import "FirebaseHelper.h"
 #import "ProjectDetailViewController.h"
-
-@interface NameFromInviteViewController ()
-
-@end
+#import "Flurry.h"
 
 @implementation NameFromInviteViewController
 
@@ -69,7 +66,7 @@
         return;
     }
     
-    NSString *nameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/name/", [FirebaseHelper sharedHelper].uid];
+    NSString *nameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/info/name", [FirebaseHelper sharedHelper].uid];
     Firebase *nameRef = [[Firebase alloc] initWithUrl:nameString];
     [nameRef setValue:self.nameTextField.text];
     

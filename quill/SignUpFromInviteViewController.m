@@ -14,6 +14,7 @@
 #import "ProjectDetailViewController.h"
 #import "SignInViewController.h"
 #import "NSDate+ServerDate.h"
+#import "Flurry.h"
 
 @implementation SignUpFromInviteViewController
 
@@ -122,10 +123,11 @@
         
             [FirebaseHelper sharedHelper].uid = user.uid;
             
-            [[ref childByAppendingPath:@"users"] updateChildValues:@{ user.uid :
-                                                                          @{ @"team" : [FirebaseHelper sharedHelper].teamID,
-                                                                             @"email" : [FirebaseHelper sharedHelper].email }
-                                                                      }];
+            NSString *userString = [NSString stringWithFormat:@"users/%@/info", user.uid];
+            
+            [[ref childByAppendingPath:userString] updateChildValues: @{@"team":[FirebaseHelper sharedHelper].teamID,
+                                                                        @"email" : [FirebaseHelper sharedHelper].email
+                                                                        }];
             
             if ([FirebaseHelper sharedHelper].invitedProject != nil) {
                 
@@ -172,6 +174,9 @@
                        NSLog(@"%@", error);
                        
                    } else {
+                       
+                       if (![FirebaseHelper sharedHelper].isAdmin)
+                       [Flurry logEvent:@"Sign_up-Step_1-Email_Complete" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
                        
                        NameFromInviteViewController *nameVC = [self.storyboard instantiateViewControllerWithIdentifier:@"NameFromInvite"];
                        [self.navigationController pushViewController:nameVC animated:YES];

@@ -12,6 +12,8 @@
 
 @interface InviteToTeamViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate> {
     
+    BOOL invitesSent;
+    
     UIImageView *logoImage;
     ProjectDetailViewController *projectVC;
     NSMutableArray *editedText;

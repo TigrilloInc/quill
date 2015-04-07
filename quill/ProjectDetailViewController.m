@@ -24,6 +24,7 @@
 #import "InvalidNameAlertViewController.h"
 #import "SignedOutAlertViewController.h"
 #import "OfflineAlertViewController.h"
+#import "Flurry.h"
 
 @implementation ProjectDetailViewController
 
@@ -1012,7 +1013,15 @@
                          else {
                              
                              [self.masterView.projectsTable reloadData];
-                             [self.masterView.projectsTable selectRowAtIndexPath:self.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
+                             
+                             if (![self.boardIDs isEqual:[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"boards"]]) {
+                                 
+                                 NSUInteger currentIndex = self.carousel.currentItemIndex;
+                                 [self.masterView tableView:self.masterView.projectsTable didSelectRowAtIndexPath:self.masterView.defaultRow];
+                                 [self.carousel scrollToItemAtIndex:currentIndex animated:NO];
+                             }
+                             else [self.masterView.projectsTable selectRowAtIndexPath:self.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
+                             
                          }
                      }
      ];
@@ -1384,6 +1393,9 @@
 
 - (IBAction)newBoardTapped:(id)sender {
     
+    if (![FirebaseHelper sharedHelper].isAdmin)
+    [Flurry logEvent:@"New_Board-Created" withParameters: @{ @"projectID" : [FirebaseHelper sharedHelper].currentProjectID, @"teamID" : [FirebaseHelper sharedHelper].teamID }];
+    
     newBoardCreated = true;
 
     [self createBoard];
@@ -1744,6 +1756,9 @@
         }
         else if (![self.editBoardNameTextField.text isEqualToString:oldBoardName]) {
             
+            if (![FirebaseHelper sharedHelper].isAdmin)
+            [Flurry logEvent:@"Board-Renamed" withParameters:@{@"teamID" : [FirebaseHelper sharedHelper].teamID}];
+            
             NSString *name;
             
             NSString *noSpacesString = [self.editBoardNameTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
@@ -1818,7 +1833,10 @@
             [self presentViewController:nav animated:YES completion:nil];
         }
         else if (![boardNameTextField.text isEqualToString:oldBoardName]) {
-                
+            
+            if (![FirebaseHelper sharedHelper].isAdmin)
+            [Flurry logEvent:@"Board-Renamed" withParameters:@{@"teamID" : [FirebaseHelper sharedHelper].teamID}];
+            
             NSString *boardNameRefString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/name", self.boardIDs[self.carousel.currentItemIndex]];
             Firebase *ref = [[Firebase alloc] initWithUrl:boardNameRefString];
             [ref setValue:name];
@@ -1911,21 +1929,22 @@
         tr = CGAffineTransformScale(tr, .5, .5);
         tr = CGAffineTransformRotate(tr, M_PI_2);
         view.transform = tr;
+        
+        UIImage *gradientImage = [UIImage imageNamed:@"board8.png"];
+        UIButton *gradientButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        gradientButton.frame = CGRectMake(0.0f, 0.0f, gradientImage.size.width, gradientImage.size.height);
+        gradientButton.center = view.center;
+        gradientButton.adjustsImageWhenHighlighted = NO;
+        [gradientButton setBackgroundImage:gradientImage forState:UIControlStateNormal];
+        [gradientButton addTarget:self action:@selector(boardTapped:) forControlEvents:UIControlEventTouchUpInside];
+        if (((BoardView *)view).gradientButton == nil) [view addSubview:gradientButton];
+        ((BoardView *)view).gradientButton = gradientButton;
+        gradientButton.tag = 1;
     }
     
-    UIImage *gradientImage = [UIImage imageNamed:@"board8.png"];
-    UIButton *gradientButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    gradientButton.frame = CGRectMake(0.0f, 0.0f, gradientImage.size.width, gradientImage.size.height);
-    gradientButton.center = view.center;
-    gradientButton.adjustsImageWhenHighlighted = NO;
-    [gradientButton setBackgroundImage:gradientImage forState:UIControlStateNormal];
-    [gradientButton addTarget:self action:@selector(boardTapped:) forControlEvents:UIControlEventTouchUpInside];
-    if (((BoardView *)view).gradientButton == nil) [view addSubview:gradientButton];
-    ((BoardView *)view).gradientButton = gradientButton;
-    gradientButton.tag = 1;
-    
     ((BoardView *)view).boardID = self.boardIDs[index];
-
+    [((BoardView *)view).loadingView removeFromSuperview];
+    
     if ([[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.boardIDs[index]]) {
         
         [self drawBoard:(BoardView *)view];
@@ -1941,8 +1960,6 @@
     else {
         
         ((BoardView *)view).fadeView.hidden = false;
-        
-        [((BoardView *)view).loadingView removeFromSuperview];
         ((BoardView *)view).loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         ((BoardView *)view).loadingView.transform = CGAffineTransformMakeScale(5, 5);
         [((BoardView *)view).loadingView setCenter:((BoardView *)view).center];
@@ -2029,11 +2046,21 @@
         
         if (self.activeCommentThreadID != nil) {
             
+            if (![FirebaseHelper sharedHelper].isAdmin)
+            [Flurry logEvent:@"Comment_Thread-Comment_Left" withParameters:
+                                                            @{ @"userID":[FirebaseHelper sharedHelper].uid,
+                                                               @"boardID":self.currentBoardView.boardID,
+                                                               @"projectID":[FirebaseHelper sharedHelper].currentProjectID,
+                                                               @"teamID":[FirebaseHelper sharedHelper].teamID
+                                                               }];
+            
             NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"commentsID"];
             chatString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@/%@/messages", commentsID, self.activeCommentThreadID];
             [[FirebaseHelper sharedHelper] setCommentThread:self.activeCommentThreadID updatedAt:dateString];
         }
         else {
+            
+            //[Flurry logEvent:@"Chat_Message-Posted" withParameters:@{ @"userID" : [FirebaseHelper sharedHelper].uid, @""}];
             
             chatString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/chats/%@", self.chatID];
             [[FirebaseHelper sharedHelper] setProjectUpdatedAt:dateString];

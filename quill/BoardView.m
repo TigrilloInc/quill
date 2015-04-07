@@ -17,6 +17,7 @@
 #import "ProjectDetailViewController.h"
 #import "NSDate+ServerDate.h"
 #import "AvatarButton.h"
+#import "Flurry.h"
 
 #define DEFAULT_COLOR               [UIColor blackColor]
 #define DEFAULT_BACKGROUND_COLOR    [UIColor whiteColor]
@@ -633,6 +634,13 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 }
 
 -(void) addCommentAtPoint:(CGPoint)point {
+    
+    if (![FirebaseHelper sharedHelper].isAdmin)
+    [Flurry logEvent:@"Comment_Thread-Created" withParameters:@{@"userID":[FirebaseHelper sharedHelper].uid,
+                                                                @"boardID":self.boardID,
+                                                                @"projectID":[FirebaseHelper sharedHelper].currentProjectID,
+                                                                @"teamID":[FirebaseHelper sharedHelper].teamID
+                                                                }];
     
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:projectVC.activeBoardID] objectForKey:@"commentsID"];
     

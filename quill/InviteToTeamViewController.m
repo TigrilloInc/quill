@@ -208,14 +208,12 @@
         if (self.creatingTeam) {
             
             //////////Create Name
-            NSString *nameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/name", [FirebaseHelper sharedHelper].uid];
+            NSString *nameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/info/name", [FirebaseHelper sharedHelper].uid];
             Firebase *nameRef = [[Firebase alloc] initWithUrl:nameString];
             [nameRef setValue:[FirebaseHelper sharedHelper].userName withCompletionBlock:^(NSError *error, Firebase *ref) {
                 nameCreated = true;
-                if (teamCreated && teamSet && emailsSent) [self invitesSent];
+                if (teamCreated && teamSet && emailsSent && !invitesSent) [self invitesSent];
             }];
-            
-            NSLog(@"teamID is %@", [FirebaseHelper sharedHelper].userName);
             
             //////////Create Team
             Firebase *teamRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/teams"];
@@ -230,20 +228,20 @@
                                                     @"name" : [FirebaseHelper sharedHelper].teamName
                                                     }
                                              };
+            
             [teamRef updateChildValues:newTeamValues withCompletionBlock:^(NSError *error, Firebase *ref) {
                 teamCreated = true;
-                if (nameCreated && teamSet && emailsSent) [self invitesSent];
+                if (nameCreated && teamSet && emailsSent && !invitesSent) [self invitesSent];
             }];
 
             //////////Set Team
-            NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/team", [FirebaseHelper sharedHelper].uid];
+            NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/info/team", [FirebaseHelper sharedHelper].uid];
             Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
             [userRef setValue:[FirebaseHelper sharedHelper].teamID withCompletionBlock:^(NSError *error, Firebase *ref) {
+                
                 teamSet = true;
-                
-                NSLog(@"team set!");
-                
-                if (nameCreated && teamCreated && emailsSent) [self invitesSent];
+
+                if (nameCreated && teamCreated && emailsSent && !invitesSent) [self invitesSent];
             }];
         }
             
@@ -318,7 +316,7 @@
                         emailCount++;
                         if (emailCount == self.inviteEmails.count) {
                             emailsSent = true;
-                            if ((teamCreated && teamSet && nameCreated) || !self.creatingTeam) [self invitesSent];
+                            if ((teamCreated && teamSet && nameCreated && !invitesSent) || (!self.creatingTeam && !invitesSent)) [self invitesSent];
                         }
                     }
                 }];
@@ -333,6 +331,8 @@
 }
 
 -(void) invitesSent {
+    
+    invitesSent = true;
     
     if (self.creatingTeam) {
         

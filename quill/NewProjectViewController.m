@@ -8,9 +8,8 @@
 
 #import "NewProjectViewController.h"
 #import "NSDate+ServerDate.h"
-
-#import <Firebase/Firebase.h>
 #import "FirebaseHelper.h"
+#import "Flurry.h"
 
 @implementation NewProjectViewController
 
@@ -58,6 +57,9 @@
 - (IBAction)createProjectTapped:(id)sender {
     
     if (self.nameField.text.length <= 0) return;
+    
+    if (![FirebaseHelper sharedHelper].isAdmin)
+    [Flurry logEvent:@"New_Project-Created" withParameters:@{@"teamID" : [FirebaseHelper sharedHelper].teamID}];
     
     for (NSString *projectID in [FirebaseHelper sharedHelper].projects.allKeys) {
         
