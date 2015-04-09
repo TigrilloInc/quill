@@ -105,7 +105,8 @@
         [randomString appendFormat: @"%C", [alphanum characterAtIndex: arc4random_uniform([alphanum length]) % [alphanum length]]];
     }
     
-    return randomString;
+    if ([FirebaseHelper sharedHelper].isDev) return @"tEsTtOkEn";
+    else return randomString;
 }
 
 -(void) updateInviteEmails {
@@ -208,7 +209,7 @@
         if (self.creatingTeam) {
             
             //////////Create Name
-            NSString *nameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/info/name", [FirebaseHelper sharedHelper].uid];
+            NSString *nameString = [NSString stringWithFormat:@"https://%@.firebaseio.com/users/%@/info/name", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].uid];
             Firebase *nameRef = [[Firebase alloc] initWithUrl:nameString];
             [nameRef setValue:[FirebaseHelper sharedHelper].userName withCompletionBlock:^(NSError *error, Firebase *ref) {
                 nameCreated = true;
@@ -216,7 +217,8 @@
             }];
             
             //////////Create Team
-            Firebase *teamRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/teams"];
+            NSString *teamString = [NSString stringWithFormat:@"https://%@.firebaseio.com/teams", [FirebaseHelper sharedHelper].db];
+            Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
             
             [FirebaseHelper sharedHelper].teamID = [teamRef childByAutoId].key;
             
@@ -235,7 +237,7 @@
             }];
 
             //////////Set Team
-            NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/info/team", [FirebaseHelper sharedHelper].uid];
+            NSString *userString = [NSString stringWithFormat:@"https://%@.firebaseio.com/users/%@/info/team",[FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].uid];
             Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
             [userRef setValue:[FirebaseHelper sharedHelper].teamID withCompletionBlock:^(NSError *error, Firebase *ref) {
                 
@@ -279,7 +281,7 @@
                 NSString *token = [self generateToken];
                 NSString *tokenURL = [NSString stringWithFormat:@"quill://%@", token];
                 
-                NSString *tokenString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/tokens/%@", token];
+                NSString *tokenString = [NSString stringWithFormat:@"https://%@.firebaseio.com/tokens/%@",[FirebaseHelper sharedHelper].db, token];
                 Firebase *tokenRef = [[Firebase alloc] initWithUrl:tokenString];
                 
                 NSDictionary *tokenDict = @{ @"teamID" : [FirebaseHelper sharedHelper].teamID,

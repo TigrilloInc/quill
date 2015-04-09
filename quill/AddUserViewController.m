@@ -81,7 +81,8 @@
         [randomString appendFormat: @"%C", [alphanum characterAtIndex: arc4random_uniform([alphanum length]) % [alphanum length]]];
     }
     
-    return randomString;
+    if ([FirebaseHelper sharedHelper].isDev) return @"tEsTtOkEn";
+    else return randomString;
 }
 
 -(void) updateInviteEmails {
@@ -212,14 +213,14 @@
             for (NSString *boardID in projectVC.boardIDs) {
                 
                 [[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"undo"] setObject:[newUndoDict mutableCopy] forKey:userID];
-                NSString *undoString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@", boardID, userID];
+                NSString *undoString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/undo/%@", [FirebaseHelper sharedHelper].db, boardID, userID];
                 Firebase *undoRef = [[Firebase alloc] initWithUrl:undoString];
                 [undoRef setValue:newUndoDict withCompletionBlock:^(NSError *error, Firebase *ref) {
                     [[FirebaseHelper sharedHelper] observeUndoForUser:userID onBoard:boardID];
                 }];
                 
                 [[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"subpaths"] setObject:[newSubpathsDict mutableCopy] forKey:userID];
-                NSString *subpathsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", boardID, userID];
+                NSString *subpathsString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/subpaths/%@", [FirebaseHelper sharedHelper].db, boardID, userID];
                 Firebase *subpathsRef = [[Firebase alloc] initWithUrl:subpathsString];
                 [subpathsRef setValue:newSubpathsDict withCompletionBlock:^(NSError *error, Firebase *ref) {
                     [[FirebaseHelper sharedHelper] observeSubpathsForUser:userID onBoard:boardID];
@@ -227,7 +228,7 @@
             }
         }
         
-        NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles", [FirebaseHelper sharedHelper].currentProjectID];
+        NSString *projectString = [NSString stringWithFormat:@"https://%@.firebaseio.com/projects/%@/info/roles",[FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].currentProjectID];
         Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
         [projectRef updateChildValues:projectVC.roles];
         
@@ -254,7 +255,7 @@
                 NSString *token = [self generateToken];
                 NSString *tokenURL = [NSString stringWithFormat:@"quill://%@", token];
                 
-                NSString *tokenString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/tokens/%@", token];
+                NSString *tokenString = [NSString stringWithFormat:@"https://%@.firebaseio.com/tokens/%@", [FirebaseHelper sharedHelper].db,token];
                 Firebase *tokenRef = [[Firebase alloc] initWithUrl:tokenString];
  
                 NSDictionary *tokenDict = @{ @"teamID" : [FirebaseHelper sharedHelper].teamID,

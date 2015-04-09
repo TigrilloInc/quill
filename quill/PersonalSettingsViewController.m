@@ -42,6 +42,11 @@
     self.avatarShadow.frame = CGRectMake(116, 86, 62, 62);
     [self.view addSubview:self.avatarShadow];
     
+    self.avatarEdit = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"editavatar.png"]];
+    self.avatarEdit.frame = CGRectMake(129, 98, 36, 36);
+    self.avatarEdit.alpha = .4;
+    [self.view addSubview:self.avatarEdit];
+    
     self.nameTextField.text = [FirebaseHelper sharedHelper].userName;
     self.emailTextField.text = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"email"];
     
@@ -259,7 +264,7 @@
         
         self.settingsLabel.text = @"";
         
-        NSString *infoString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/info/", [FirebaseHelper sharedHelper].uid];
+        NSString *infoString = [NSString stringWithFormat:@"https://%@.firebaseio.com/users/%@/info/", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:infoString];
         [ref changeEmailForUser:[FirebaseHelper sharedHelper].uid password:self.passwordTextField.text toNewEmail:self.emailTextField.text withCompletionBlock:^(NSError *error) {
             
@@ -295,7 +300,7 @@
     }
     else if (emailChanged) {
         
-        NSString *emailString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/info/email", [FirebaseHelper sharedHelper].uid];
+        NSString *emailString = [NSString stringWithFormat:@"https://%@.firebaseio.com/users/%@/info/email", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:emailString];
         [ref changeEmailForUser:[FirebaseHelper sharedHelper].uid password:self.passwordTextField.text toNewEmail:self.emailTextField.text withCompletionBlock:^(NSError *error) {
             
@@ -313,7 +318,7 @@
     }
     else if (nameChanged) {
         
-        NSString *nameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/info/name", [FirebaseHelper sharedHelper].uid];
+        NSString *nameString = [NSString stringWithFormat:@"https://%@.firebaseio.com/users/%@/info/name", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:nameString];
         [ref setValue:self.nameTextField.text withCompletionBlock:^(NSError *error, Firebase *ref) {
             
@@ -341,7 +346,7 @@
         if (self.avatarImage == nil) [userDict setObject:@"none" forKey:@"avatar"];
         else [userDict setObject:self.avatarImage forKey:@"avatar"];
         
-        NSString *avatarString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/avatar", [FirebaseHelper sharedHelper].uid];
+        NSString *avatarString = [NSString stringWithFormat:@"https://%@.firebaseio.com/users/%@/avatar", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:avatarString];
         
         if (self.avatarImage != nil) {
@@ -482,6 +487,8 @@
         self.passwordTextField.hidden = false;
         self.settingsLabel.frame = CGRectMake(0, 216, 540, 21);
         self.avatarButton.center = CGPointMake(147, 97);
+        self.avatarShadow.frame = CGRectMake(116, 66, 62, 62);
+        self.avatarEdit.frame = CGRectMake(129, 78, 36, 36);
         self.nameTextField.frame = CGRectMake(200, 66, 340, 30);
         self.emailTextField.frame = CGRectMake(200, 96, 340, 30);
         self.nameButton.frame = CGRectMake(self.nameButton.frame.origin.x, 58, 40, 40);
@@ -498,6 +505,8 @@
         self.passwordTextField.hidden = true;
         self.settingsLabel.frame = CGRectMake(0, 271, 540, 21);
         self.avatarButton.center = CGPointMake(147, 117);
+        self.avatarShadow.frame = CGRectMake(116, 86, 62, 62);
+        self.avatarEdit.frame = CGRectMake(129, 98, 36, 36);
         self.nameTextField.frame = CGRectMake(200, 86, 340, 30);
         self.emailTextField.frame = CGRectMake(200, 116, 340, 30);
         self.nameButton.frame = CGRectMake(self.nameButton.frame.origin.x, 78, 40, 40);

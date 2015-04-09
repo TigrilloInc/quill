@@ -21,6 +21,7 @@
 @property (nonatomic, assign) BOOL commenting;
 @property (nonatomic, assign) BOOL hideComments;
 @property (nonatomic, assign) BOOL shouldRedraw;
+@property (nonatomic, assign) BOOL drawingBoard;
 @property (nonatomic, assign) NSString *boardID;
 @property (nonatomic, assign) NSString *selectedAvatarUserID;
 @property (nonatomic, assign) NSString *drawingUserID;
@@ -34,9 +35,6 @@
 @property (nonatomic, strong) CommentButton *movingCommentButton;
 @property (strong, nonatomic) UIImageView *avatarBackgroundImage;
 @property (strong, nonatomic) UILabel *userLabel;
-@property (nonatomic, strong) NSMutableArray *paths;
-//@property (nonatomic, strong) NSMutableArray *waitingPaths;
-@property (strong, nonatomic) UIColor *backgroundColor;
 
 -(void)clear;
 -(void)drawSubpath:(NSDictionary *)subpathValues;

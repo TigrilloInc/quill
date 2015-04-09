@@ -58,7 +58,7 @@
     
     if (self.nameField.text.length <= 0) return;
     
-    if (![FirebaseHelper sharedHelper].isAdmin)
+    if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
     [Flurry logEvent:@"New_Project-Created" withParameters:@{@"teamID" : [FirebaseHelper sharedHelper].teamID}];
     
     for (NSString *projectID in [FirebaseHelper sharedHelper].projects.allKeys) {
@@ -72,22 +72,26 @@
         }
     }
     
-    NSString *teamRefString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@/projects", [FirebaseHelper sharedHelper].teamID];
+    NSString *teamRefString = [NSString stringWithFormat:@"https://%@.firebaseio.com/teams/%@/projects", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].teamID];
     Firebase *teamRef = [[Firebase alloc] initWithUrl:teamRefString];
     
-    Firebase *projectRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/projects"];
+    NSString *projectString = [NSString stringWithFormat:@"https://%@.firebaseio.com/projects", [FirebaseHelper sharedHelper].db];
+    Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
     Firebase *projectRefWithID = [projectRef childByAutoId];
     NSString *projectID = projectRefWithID.key;
     
-    Firebase *boardRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/boards"];
+    NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards", [FirebaseHelper sharedHelper].db];
+    Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
     Firebase *boardRefWithID = [boardRef childByAutoId];
     NSString *boardID = boardRefWithID.key;
     
-    Firebase *chatRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/chats"];
+    NSString *chatString = [NSString stringWithFormat:@"https://%@.firebaseio.com/chats", [FirebaseHelper sharedHelper].db];
+    Firebase *chatRef = [[Firebase alloc] initWithUrl:chatString];
     Firebase *chatRefWithID = [chatRef childByAutoId];
     NSString *chatID = chatRefWithID.key;
     
-    Firebase *commentsRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/comments"];
+    NSString *commentsString = [NSString stringWithFormat:@"https://%@.firebaseio.com/comments", [FirebaseHelper sharedHelper].db];
+    Firebase *commentsRef = [[Firebase alloc] initWithUrl:commentsString];
     Firebase *commentsRefWithID = [commentsRef childByAutoId];
     NSString *commentsID = commentsRefWithID.key;
     

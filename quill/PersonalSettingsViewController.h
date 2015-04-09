@@ -31,6 +31,7 @@
 @property (strong, nonatomic) AvatarButton *avatarButton;
 @property (strong, nonatomic) UIImage *avatarImage;
 @property (strong, nonatomic) UIImageView *avatarShadow;
+@property (strong, nonatomic) UIImageView *avatarEdit;
 @property (weak, nonatomic) IBOutlet UILabel *settingsLabel;
 @property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
 

@@ -7,7 +7,7 @@
 //
 
 #import "ResetPasswordViewController.h"
-#import <Firebase/Firebase.h>
+#import "FirebaseHelper.h"
 
 @implementation ResetPasswordViewController
 
@@ -62,7 +62,9 @@
     self.emailTextField.userInteractionEnabled = false;
     self.resetLabel.text = @"Sending email...";
 
-    Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
+    
+    NSString *refString = [NSString stringWithFormat:@"https://%@.firebaseio.com/", [FirebaseHelper sharedHelper].db];
+    Firebase *ref = [[Firebase alloc] initWithUrl:refString];
     [ref resetPasswordForUser:self.emailTextField.text withCompletionBlock:^(NSError *error) {
         
         if (error) {

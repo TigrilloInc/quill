@@ -67,13 +67,13 @@
 
 - (IBAction)leaveTapped:(id)sender {
     
-    if (![FirebaseHelper sharedHelper].isAdmin)
+    if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
     [Flurry logEvent:@"Leave_Project" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
     
     [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"roles"] setObject:@(-1) forKey:[FirebaseHelper sharedHelper].uid];
     [[FirebaseHelper sharedHelper].visibleProjectIDs removeObject:[FirebaseHelper sharedHelper].currentProjectID];
     
-    NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].currentProjectID, [FirebaseHelper sharedHelper].uid];
+    NSString *projectString = [NSString stringWithFormat:@"https://%@.firebaseio.com/projects/%@/info/roles/%@",[FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].currentProjectID, [FirebaseHelper sharedHelper].uid];
     Firebase *ref = [[Firebase alloc] initWithUrl:projectString];
     [ref setValue:@(-1)];
     

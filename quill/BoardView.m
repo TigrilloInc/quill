@@ -19,9 +19,6 @@
 #import "AvatarButton.h"
 #import "Flurry.h"
 
-#define DEFAULT_COLOR               [UIColor blackColor]
-#define DEFAULT_BACKGROUND_COLOR    [UIColor whiteColor]
-
 static const CGFloat kPointMinDistance = 2.0f;
 static const CGFloat kPointMinDistanceSquared = kPointMinDistance * kPointMinDistance;
 
@@ -38,6 +35,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
 @private
     
     ProjectDetailViewController *projectVC;
+    UIImage *incrementalImage;
+    NSMutableArray *paths;
 }
 
 #pragma mark UIView lifecycle methods
@@ -47,7 +46,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     
     if (self) {
         
-        self.backgroundColor = DEFAULT_BACKGROUND_COLOR;
         self.penType = 1;
         self.lineColorNumber = @1;
         _empty = YES;
@@ -73,10 +71,9 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         
         if (projectVC.userRole > 0) self.drawable = true;
         else self.drawable = false;
-        
+
         self.selectedAvatarUserID = nil;
         self.drawingTimers = [NSMutableDictionary dictionary];
-        //self.waitingPaths = [NSMutableArray array];
     }
     
     return self;
@@ -236,6 +233,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     UITouch *touch = [touches anyObject];
     
+    self.drawingBoard = false;
+    
     if (self.selectedAvatarUserID) {
         
         self.userLabel.text = nil;
@@ -302,12 +301,12 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     // compute the rect containing the new segment plus padding for drawn line
     CGRect bounds = CGPathGetBoundingBox(subpath);
-    CGRect drawBox = CGRectInset(bounds, -2.0 * lineWidth, -2.0 * lineWidth);
+    CGRect drawBox = CGRectInset(bounds, -1 * lineWidth, -1 * lineWidth);
     
-    [self.paths addObject:subpathValues];
+    [paths addObject:subpathValues];
     [self setNeedsDisplayInRect:drawBox];
     
-    NSString *subpathsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", self.boardID, [FirebaseHelper sharedHelper].uid];
+    NSString *subpathsString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/subpaths/%@", [FirebaseHelper sharedHelper].db, self.boardID, [FirebaseHelper sharedHelper].uid];
     Firebase *subpathsRef = [[Firebase alloc] initWithUrl:subpathsString];
     [subpathsRef updateChildValues:@{ dateString  :  subpathValues }];
     [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:subpathValues forKey:dateString];
@@ -376,14 +375,14 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                               mid2.x, mid2.y);
     
     CGRect bounds = CGPathGetBoundingBox(subpath);
-    CGRect drawBox = CGRectInset(bounds, -2.0 * lineWidth, -2.0 * lineWidth);
+    CGRect drawBox = CGRectInset(bounds, -1 * lineWidth, -1 * lineWidth);
     
-    [self.paths addObject:subpathValues];
+    [paths addObject:subpathValues];
     [self setNeedsDisplayInRect:drawBox];
 
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     
-    NSString *subpathsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", self.boardID, [FirebaseHelper sharedHelper].uid];
+    NSString *subpathsString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/subpaths/%@", [FirebaseHelper sharedHelper].db, self.boardID, [FirebaseHelper sharedHelper].uid];
     Firebase *subpathsRef = [[Firebase alloc] initWithUrl:subpathsString];
     [subpathsRef updateChildValues:@{ dateString  :  subpathValues }];
     [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:subpathValues forKey:dateString];
@@ -448,12 +447,12 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     }
     
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
-    NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", self.boardID];
+    NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@", [FirebaseHelper sharedHelper].db, self.boardID];
     Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
     
     NSDictionary *penUpDict = @{dateString : @"penUp"};
     
-    [self.paths addObject:penUpDict];
+    [paths addObject:penUpDict];
     
     NSString *subpathsString = [NSString stringWithFormat:@"subpaths/%@", [FirebaseHelper sharedHelper].uid];
     [[boardRef childByAppendingPath:subpathsString] updateChildValues:penUpDict];
@@ -477,11 +476,24 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [[FirebaseHelper sharedHelper] setBoard:self.boardID UpdatedAt:dateString];
 }
 
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    [self touchesEnded:touches withEvent:event];
+}
+
 - (void)drawRect:(CGRect)rect {
 
     // clear rect
-    [self.backgroundColor set];
+    [[UIColor whiteColor] set];
     UIRectFill(rect);
+
+//    if (!self.drawingBoard) {
+//        
+//        CGImageRef imageRef = CGImageCreateWithImageInRect(incrementalImage.CGImage, rect);
+//        UIImage *incrementalImageCropped = [UIImage imageWithCGImage:imageRef];
+//        [incrementalImageCropped drawInRect:rect];
+//        incrementalImageCropped = nil;
+//    }
     
     // get the graphics context and draw the path
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -490,7 +502,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     UIColor *lineColor;
     CGFloat lineWidth = 0;
     
-    for (NSDictionary *subpathValues in self.paths) {
+    for (NSDictionary *subpathValues in paths) {
 
         if (subpathValues.allKeys.count == 1) {
             
@@ -498,6 +510,12 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
             CGContextSetLineWidth(context, lineWidth);
             CGContextStrokePath(context);
             CGContextBeginPath(context);
+
+//            if (!self.drawingBoard) {
+//                
+//                incrementalImage = [UIImage imageWithCGImage:CGBitmapContextCreateImage(context)];
+//                paths = [NSMutableArray array];
+//            }
             
             continue;
         }
@@ -553,7 +571,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
             else lineColor = [UIColor colorWithRed:(255.0f/255.0f) green:(246.0f/255.0f) blue:0.0f alpha:alpha];
         }
         
-        if ([subpathValues isEqual:self.paths.lastObject]) {
+        if ([subpathValues isEqual:paths.lastObject]) {
             
             CGContextSetStrokeColorWithColor(context, lineColor.CGColor);
             CGContextSetLineWidth(context, lineWidth);
@@ -590,9 +608,9 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                               mid2.x, mid2.y);
     
     CGRect bounds = CGPathGetBoundingBox(subpath);
-    CGRect drawBox = CGRectInset(bounds, -2.0 * lineWidth, -2.0 * lineWidth);
+    CGRect drawBox = CGRectInset(bounds, -1 * lineWidth, -1 * lineWidth);
     
-    [self.paths addObject:subpathValues];
+    [paths addObject:subpathValues];
     [self setNeedsDisplayInRect:drawBox];
     
 }
@@ -635,7 +653,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 
 -(void) addCommentAtPoint:(CGPoint)point {
     
-    if (![FirebaseHelper sharedHelper].isAdmin)
+    if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
     [Flurry logEvent:@"Comment_Thread-Created" withParameters:@{@"userID":[FirebaseHelper sharedHelper].uid,
                                                                 @"boardID":self.boardID,
                                                                 @"projectID":[FirebaseHelper sharedHelper].currentProjectID,
@@ -653,7 +671,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     
-    NSString *commentThreadString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
+    NSString *commentThreadString = [NSString stringWithFormat:@"https://%@.firebaseio.com/comments/%@", [FirebaseHelper sharedHelper].db, commentsID];
     Firebase *commentThreadRef = [[Firebase alloc] initWithUrl:commentThreadString];
     
     Firebase *commentThreadRefWithID = [commentThreadRef childByAutoId];
@@ -764,7 +782,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                              
                              [[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:button.commentThreadID] setObject:[locationDict mutableCopy] forKey:@"location"];
                              
-                             NSString *locationString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@/%@/info/location", commentsID, button.commentThreadID];
+                             NSString *locationString = [NSString stringWithFormat:@"https://%@.firebaseio.com/comments/%@/%@/info/location", [FirebaseHelper sharedHelper].db, commentsID, button.commentThreadID];
                              Firebase *locationRef = [[Firebase alloc] initWithUrl:locationString];
                              [locationRef setValue:locationDict];
                          }];
@@ -1042,7 +1060,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 
 -(void)clear {
     
-    self.paths = [NSMutableArray array];
+    paths = [NSMutableArray array];
+    incrementalImage = nil;
     [self setNeedsDisplay];
 }
 

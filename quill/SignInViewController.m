@@ -132,7 +132,11 @@
     self.signInButton.userInteractionEnabled = false;
     self.signInButton.alpha = .5;
     
-    Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
+    [FirebaseHelper sharedHelper].email = self.emailField.text;
+    [[FirebaseHelper sharedHelper] setRoles];
+    
+    NSString *refString = [NSString stringWithFormat:@"https://%@.firebaseio.com/", [FirebaseHelper sharedHelper].db];
+    Firebase *ref = [[Firebase alloc] initWithUrl:refString];
     FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
         
     if (self.signingIn == true) {
@@ -159,13 +163,11 @@
                    }
                    else {
                        
-                       if (![FirebaseHelper sharedHelper].isAdmin)
-                       [Flurry logEvent:@"Sign_in-Complete"];
-                       
                        [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:@"registered"];
                        [FirebaseHelper sharedHelper].loggedIn = true;
                        [FirebaseHelper sharedHelper].uid = user.uid;
-                       [[FirebaseHelper sharedHelper] setAdmin];
+                       [FirebaseHelper sharedHelper].email = user.email;
+                       [[FirebaseHelper sharedHelper] setRoles];
                        [[FirebaseHelper sharedHelper] observeLocalUser];
                    }
                }];
@@ -225,6 +227,7 @@
                         [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:@"registered"];
                         [FirebaseHelper sharedHelper].loggedIn = true;
                         [FirebaseHelper sharedHelper].uid = user.uid;
+                        [FirebaseHelper sharedHelper].email = user.email;
                         
                         [self performSelector:@selector(accountCreated) withObject:nil afterDelay:.5];
                     }

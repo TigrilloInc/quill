@@ -584,12 +584,14 @@
 
 -(void) createBoard {
     
-    Firebase *boardRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/boards"];
+    NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards", [FirebaseHelper sharedHelper].db];
+    Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
     
-    NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/boards", [FirebaseHelper sharedHelper].currentProjectID];
+    NSString *projectString = [NSString stringWithFormat:@"https://%@.firebaseio.com/projects/%@/info/boards", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].currentProjectID];
     Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
     
-    Firebase *commentsRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/comments"];
+    NSString *commentsString = [NSString stringWithFormat:@"https://%@.firebaseio.com/comments", [FirebaseHelper sharedHelper].db];
+    Firebase *commentsRef = [[Firebase alloc] initWithUrl:commentsString];
     Firebase *commentsRefWithID = [commentsRef childByAutoId];
     NSString *commentsID = commentsRefWithID.key;
     
@@ -640,7 +642,7 @@
 -(void) deleteBoardWithID:(NSString *)boardID {
     
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"commentsID"];
-    NSString *commentsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
+    NSString *commentsString = [NSString stringWithFormat:@"https://%@.firebaseio.com/comments/%@", [FirebaseHelper sharedHelper].db, commentsID];
     Firebase *commentsRef = [[Firebase alloc] initWithUrl:commentsString];
     [commentsRef removeAllObservers];
     
@@ -660,7 +662,7 @@
     
     [[FirebaseHelper sharedHelper].comments removeObjectForKey:commentsID];
     
-    NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
+    NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@", [FirebaseHelper sharedHelper].db, boardID];
     Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
     [[boardRef childByAppendingPath:@"name"] removeAllObservers];
     [[boardRef childByAppendingPath:@"updatedAt"] removeAllObservers];
@@ -683,8 +685,10 @@
 
 -(void) drawBoard:(BoardView *)boardView {
     
-    [boardView clear];
+    boardView.drawingBoard = true;
     
+    [boardView clear];
+
     NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"subpaths"];
     
     NSDictionary *dictRef = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"undo"];
@@ -985,7 +989,7 @@
                              
                              [[FirebaseHelper sharedHelper].boards removeObjectForKey:boardID];
                              
-                             NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
+                             NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@", [FirebaseHelper sharedHelper].db, boardID];
                              Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
                              [[boardRef childByAppendingPath:@"name"] removeAllObservers];
                              [[boardRef childByAppendingPath:@"updatedAt"] removeAllObservers];
@@ -1006,7 +1010,7 @@
                              
                              if ([[FirebaseHelper sharedHelper].comments.allKeys containsObject:commentsID]) [[FirebaseHelper sharedHelper].comments removeObjectForKey:commentsID];
                              
-                             NSString *commentsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
+                             NSString *commentsString = [NSString stringWithFormat:@"https://%@.firebaseio.com/comments/%@", [FirebaseHelper sharedHelper].db, commentsID];
                              Firebase *commentsRef = [[Firebase alloc] initWithUrl:commentsString];
                              [commentsRef removeAllObservers];
                          }
@@ -1118,7 +1122,7 @@
 
 -(IBAction) applyChangesTapped:(id)sender {
     
-    NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info", [FirebaseHelper sharedHelper].currentProjectID];
+    NSString *projectString = [NSString stringWithFormat:@"https://%@.firebaseio.com/projects/%@/info", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].currentProjectID];
     Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
     
     NSString *newName = self.editProjectNameTextField.text;
@@ -1242,7 +1246,7 @@
         
         [undoDict setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
         
-        NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@", self.currentBoardView.boardID, [FirebaseHelper sharedHelper].uid];
+        NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/undo/%@", [FirebaseHelper sharedHelper].db, self.currentBoardView.boardID, [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
         [ref setValue:undoDict];
         
@@ -1270,7 +1274,7 @@
         
         [undoDict setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
         
-        NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/undo/%@/", self.currentBoardView.boardID, [FirebaseHelper sharedHelper].uid];
+        NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/undo/%@/", [FirebaseHelper sharedHelper].db, self.currentBoardView.boardID, [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
         [ref setValue:undoDict];
         
@@ -1291,7 +1295,7 @@
     
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     
-    NSString *refString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/subpaths/%@", self.currentBoardView.boardID, [FirebaseHelper sharedHelper].uid];
+    NSString *refString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/subpaths/%@", [FirebaseHelper sharedHelper].db, self.currentBoardView.boardID, [FirebaseHelper sharedHelper].uid];
     Firebase *ref = [[Firebase alloc] initWithUrl:refString];
     NSDictionary *clearDict = @{ dateString : @"clear" };
     [ref updateChildValues:clearDict];
@@ -1393,7 +1397,7 @@
 
 - (IBAction)newBoardTapped:(id)sender {
     
-    if (![FirebaseHelper sharedHelper].isAdmin)
+    if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
     [Flurry logEvent:@"New_Board-Created" withParameters: @{ @"projectID" : [FirebaseHelper sharedHelper].currentProjectID, @"teamID" : [FirebaseHelper sharedHelper].teamID }];
     
     newBoardCreated = true;
@@ -1756,7 +1760,7 @@
         }
         else if (![self.editBoardNameTextField.text isEqualToString:oldBoardName]) {
             
-            if (![FirebaseHelper sharedHelper].isAdmin)
+            if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
             [Flurry logEvent:@"Board-Renamed" withParameters:@{@"teamID" : [FirebaseHelper sharedHelper].teamID}];
             
             NSString *name;
@@ -1774,7 +1778,7 @@
             [self.boardNameLabel sizeToFit];
             self.boardNameLabel.center = CGPointMake(self.carousel.center.x, self.boardNameLabel.center.y);
             
-            NSString *boardNameString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/name", self.boardIDs[self.carousel.currentItemIndex]];
+            NSString *boardNameString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/name", [FirebaseHelper sharedHelper].db, self.boardIDs[self.carousel.currentItemIndex]];
             Firebase *ref = [[Firebase alloc] initWithUrl:boardNameString];
             [ref setValue:name];
             [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] setObject:name forKey:@"name"];
@@ -1834,10 +1838,10 @@
         }
         else if (![boardNameTextField.text isEqualToString:oldBoardName]) {
             
-            if (![FirebaseHelper sharedHelper].isAdmin)
+            if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
             [Flurry logEvent:@"Board-Renamed" withParameters:@{@"teamID" : [FirebaseHelper sharedHelper].teamID}];
             
-            NSString *boardNameRefString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@/name", self.boardIDs[self.carousel.currentItemIndex]];
+            NSString *boardNameRefString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/name", [FirebaseHelper sharedHelper].db, self.boardIDs[self.carousel.currentItemIndex]];
             Firebase *ref = [[Firebase alloc] initWithUrl:boardNameRefString];
             [ref setValue:name];
             [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] setObject:name forKey:@"name"];
@@ -2046,7 +2050,7 @@
         
         if (self.activeCommentThreadID != nil) {
             
-            if (![FirebaseHelper sharedHelper].isAdmin)
+            if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
             [Flurry logEvent:@"Comment_Thread-Comment_Left" withParameters:
                                                             @{ @"userID":[FirebaseHelper sharedHelper].uid,
                                                                @"boardID":self.currentBoardView.boardID,
@@ -2055,14 +2059,19 @@
                                                                }];
             
             NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"commentsID"];
-            chatString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@/%@/messages", commentsID, self.activeCommentThreadID];
+            chatString = [NSString stringWithFormat:@"https://%@.firebaseio.com/comments/%@/%@/messages", [FirebaseHelper sharedHelper].db, commentsID, self.activeCommentThreadID];
             [[FirebaseHelper sharedHelper] setCommentThread:self.activeCommentThreadID updatedAt:dateString];
         }
         else {
             
-            //[Flurry logEvent:@"Chat_Message-Posted" withParameters:@{ @"userID" : [FirebaseHelper sharedHelper].uid, @""}];
+            if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
+                [Flurry logEvent:@"Chat_Message-Posted" withParameters:
+                 @{ @"userID":[FirebaseHelper sharedHelper].uid,
+                    @"projectID":[FirebaseHelper sharedHelper].currentProjectID,
+                    @"teamID":[FirebaseHelper sharedHelper].teamID
+                    }];
             
-            chatString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/chats/%@", self.chatID];
+            chatString = [NSString stringWithFormat:@"https://%@.firebaseio.com/chats/%@", [FirebaseHelper sharedHelper].db, self.chatID];
             [[FirebaseHelper sharedHelper] setProjectUpdatedAt:dateString];
         }
         
@@ -2086,7 +2095,7 @@
         NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"commentsID"];
         [[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] setObject:self.commentTitleTextField.text forKey:@"title"];
 
-        NSString *titleString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@/%@/info/title", commentsID, self.activeCommentThreadID];
+        NSString *titleString = [NSString stringWithFormat:@"https://%@.firebaseio.com/comments/%@/%@/info/title", [FirebaseHelper sharedHelper].db, commentsID, self.activeCommentThreadID];
         Firebase *titleRef = [[Firebase alloc] initWithUrl:titleString];
         [titleRef setValue:self.commentTitleTextField.text];
         

@@ -41,7 +41,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     if (![FirebaseHelper sharedHelper].uid) return;
     
-    NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/status", [FirebaseHelper sharedHelper].uid];
+    NSString *userString = [NSString stringWithFormat:@"https://%@.firebaseio.com/users/%@/status", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].uid];
     Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
     [[userRef childByAppendingPath:@"inProject"] setValue:@"none"];
     [[userRef childByAppendingPath:@"inBoard"] setValue:@"none"];
@@ -51,7 +51,7 @@ void signalHandler(int signal) {
     
     if (![FirebaseHelper sharedHelper].uid) return;
     
-    NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/status", [FirebaseHelper sharedHelper].uid];
+    NSString *userString = [NSString stringWithFormat:@"https://%@.firebaseio.com/users/%@/status", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].uid];
     Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
     [[userRef childByAppendingPath:@"inProject"] setValue:@"none"];
     [[userRef childByAppendingPath:@"inBoard"] setValue:@"none"];
@@ -79,8 +79,8 @@ void signalHandler(int signal) {
     return YES;
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application
-{
+- (void)applicationWillResignActive:(UIApplication *)application {
+    
     [self removeUserPresence];
     
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

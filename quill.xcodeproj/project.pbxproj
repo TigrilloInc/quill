@@ -154,6 +154,7 @@
 		12B17DA31ACB7A46003C9E9D /* OfflineAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12B17DA21ACB7A46003C9E9D /* OfflineAlertViewController.m */; };
 		12B17DA71AD21874003C9E9D /* libFlurry_6.3.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 12B17DA61AD21874003C9E9D /* libFlurry_6.3.0.a */; };
 		12B17DAA1AD31DDD003C9E9D /* ResetPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12B17DA91AD31DDD003C9E9D /* ResetPasswordViewController.m */; };
+		12B222C51AD70387002F45E3 /* editavatar.png in Resources */ = {isa = PBXBuildFile; fileRef = 12B222C41AD70387002F45E3 /* editavatar.png */; };
 		12B79EF01A8367E700437CC8 /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12B79EEF1A8367E700437CC8 /* Firebase.framework */; };
 		12BCAF5B1A4C0EA500FC327E /* down.png in Resources */ = {isa = PBXBuildFile; fileRef = 12BCAF5A1A4C0EA500FC327E /* down.png */; };
 		12BDC6A21A95AF28001160AF /* LeaveProjectAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BDC6A11A95AF28001160AF /* LeaveProjectAlertViewController.m */; };
@@ -464,6 +465,7 @@
 		12B17DA61AD21874003C9E9D /* libFlurry_6.3.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_6.3.0.a; sourceTree = "<group>"; };
 		12B17DA81AD31DDD003C9E9D /* ResetPasswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResetPasswordViewController.h; sourceTree = "<group>"; };
 		12B17DA91AD31DDD003C9E9D /* ResetPasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResetPasswordViewController.m; sourceTree = "<group>"; };
+		12B222C41AD70387002F45E3 /* editavatar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = editavatar.png; path = Resources/editavatar.png; sourceTree = "<group>"; };
 		12B79EEF1A8367E700437CC8 /* Firebase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Firebase.framework; path = quill/Resources/Firebase/Firebase.framework; sourceTree = "<group>"; };
 		12BCAF5A1A4C0EA500FC327E /* down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = down.png; path = Resources/down.png; sourceTree = "<group>"; };
 		12BDC6A01A95AF28001160AF /* LeaveProjectAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = LeaveProjectAlertViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -786,6 +788,7 @@
 				123D20001A5A5027004D5743 /* color.png */,
 				12AA5FB219EC44F400F6D552 /* drawing.png */,
 				12860FD31A43CECD0074B452 /* edit.png */,
+				12B222C41AD70387002F45E3 /* editavatar.png */,
 				12860FD11A43CEC50074B452 /* erase.png */,
 				1213D7A31A6453B9001FDEA9 /* eraser.png */,
 				12726C1F1A898F8F001F0346 /* arrow1.png */,
@@ -1126,6 +1129,7 @@
 				12D5DBA81A4A7432003727AC /* plus2.png in Resources */,
 				123D20111A5B4EDB004D5743 /* editfaderight.png in Resources */,
 				12ABCE871A5E0A3700C4C7DC /* Icon152.png in Resources */,
+				12B222C51AD70387002F45E3 /* editavatar.png in Resources */,
 				12860F9B1A3E62870074B452 /* SourceSansPro-ExtraLight.otf in Resources */,
 				1213D7B41A681915001FDEA9 /* chatfade5.png in Resources */,
 				12726C211A898F8F001F0346 /* arrow1.png in Resources */,
@@ -1507,6 +1511,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "chalkTests/quillTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PRODUCT_NAME = quillTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -1526,6 +1531,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "quill/quill-Prefix.pch";
 				INFOPLIST_FILE = "chalkTests/quillTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PRODUCT_NAME = quillTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;

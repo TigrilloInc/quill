@@ -62,7 +62,7 @@
 
 - (IBAction)removeTapped:(id)sender {
     
-    NSString *userString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/users/%@/", self.userID];
+    NSString *userString = [NSString stringWithFormat:@"https://%@.firebaseio.com/users/%@/", [FirebaseHelper sharedHelper].db, self.userID];
     Firebase *userRef = [[Firebase alloc] initWithUrl:userString];
     [[userRef childByAppendingPath:@"avatar"] removeAllObservers];
     [[userRef childByAppendingPath:@"info"] removeAllObservers];

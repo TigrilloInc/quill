@@ -102,7 +102,11 @@
     self.emailField.userInteractionEnabled = false;
     self.emailField.alpha = .5;
     
-    Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
+    [FirebaseHelper sharedHelper].email = self.emailField.text;
+    [[FirebaseHelper sharedHelper] setRoles];
+    
+    NSString *refString = [NSString stringWithFormat:@"https://%@.firebaseio.com/", [FirebaseHelper sharedHelper].db];
+    Firebase *ref = [[Firebase alloc] initWithUrl:refString];
     FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
 
     [authClient createUserWithEmail:self.emailField.text password:self.passwordField.text andCompletionBlock:^(NSError* error, FAUser* user) {
@@ -122,6 +126,7 @@
         else {
         
             [FirebaseHelper sharedHelper].uid = user.uid;
+            [FirebaseHelper sharedHelper].email = user.email;
             
             NSString *userString = [NSString stringWithFormat:@"users/%@/info", user.uid];
             
@@ -175,7 +180,7 @@
                        
                    } else {
                        
-                       if (![FirebaseHelper sharedHelper].isAdmin)
+                       if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
                        [Flurry logEvent:@"Sign_up-Step_1-Email_Complete" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
                        
                        NameFromInviteViewController *nameVC = [self.storyboard instantiateViewControllerWithIdentifier:@"NameFromInvite"];

@@ -88,7 +88,8 @@
         self.applyButton.userInteractionEnabled = false;
         self.applyButton.alpha = .5;
         
-        Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
+        NSString *urlString = [NSString stringWithFormat:@"https://%@.firebaseio.com/", [FirebaseHelper sharedHelper].db];
+        Firebase *ref = [[Firebase alloc] initWithUrl:urlString];
         [ref changePasswordForUser:[FirebaseHelper sharedHelper].uid fromOld:self.currentTextField.text toNew:self.passwordTextField.text withCompletionBlock:^(NSError *error) {
             
             if (error) {

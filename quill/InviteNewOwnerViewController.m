@@ -86,7 +86,8 @@
         [randomString appendFormat: @"%C", [alphanum characterAtIndex: arc4random_uniform([alphanum length]) % [alphanum length]]];
     }
     
-    return randomString;
+    if ([FirebaseHelper sharedHelper].isDev) return @"tEsTtOkEn";
+    else return randomString;
 }
 
 -(void) tappedOutside {
@@ -132,7 +133,7 @@
     NSString *token = [self generateToken];
     NSString *tokenURL = [NSString stringWithFormat:@"quill://%@", token];
     
-    NSString *tokenString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/tokens/%@", token];
+    NSString *tokenString = [NSString stringWithFormat:@"https://quillapp.firebaseio.com/tokens/%@", token];
     Firebase *tokenRef = [[Firebase alloc] initWithUrl:tokenString];
     
     [tokenRef setValue:@{ @"newOwner" : self.emailTextField.text }];

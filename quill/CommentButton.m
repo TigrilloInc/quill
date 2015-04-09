@@ -50,7 +50,7 @@
     BoardView *boardView = (BoardView *)self.superview;
     
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"commentsID"];
-    NSString *commentThreadString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@/%@/", commentsID, self.commentThreadID];
+    NSString *commentThreadString = [NSString stringWithFormat:@"https://%@.firebaseio.com/comments/%@/%@/",[FirebaseHelper sharedHelper].db, commentsID, self.commentThreadID];
     Firebase *commentThreadRef = [[Firebase alloc] initWithUrl:commentThreadString];
     [[commentThreadRef childByAppendingPath:@"info"] removeAllObservers];
     [[commentThreadRef childByAppendingPath:@"messages"] removeAllObservers];

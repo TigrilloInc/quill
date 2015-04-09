@@ -36,7 +36,7 @@
                                    target:self action:nil];
     [self.navigationItem setBackBarButtonItem: backButton];
     
-    if ([FirebaseHelper sharedHelper].isAdmin) {
+    if ([FirebaseHelper sharedHelper].isAdmin || [FirebaseHelper sharedHelper].isDev) {
         
         UIBarButtonItem *signOutButton = [[UIBarButtonItem alloc]
                                           initWithTitle: @"Invite Owner"
@@ -124,7 +124,7 @@
             self.teamLabel.text = @"Team names must be at least 2 characters long.";
         }
         else {
-            NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@/name", [FirebaseHelper sharedHelper].teamID];
+            NSString *teamString = [NSString stringWithFormat:@"https://%@.firebaseio.com/teams/%@/name", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].teamID];
             Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
             
             [FirebaseHelper sharedHelper].teamName = self.teamNameTextField.text;

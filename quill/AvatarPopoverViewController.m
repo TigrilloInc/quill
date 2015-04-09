@@ -115,7 +115,7 @@
     UIButton *button = (UIButton *)sender;
     NSInteger role = button.tag;
     
-    NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].currentProjectID, self.userID];
+    NSString *projectString = [NSString stringWithFormat:@"https://%@.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].currentProjectID, self.userID];
     Firebase *ref = [[Firebase alloc] initWithUrl:projectString];
     
     [ref setValue:@(role)];
@@ -172,7 +172,7 @@
         
         [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"roles"] removeObjectForKey:self.userID];
         
-        NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].currentProjectID, self.userID];
+        NSString *projectString = [NSString stringWithFormat:@"https://%@.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].currentProjectID, self.userID];
         Firebase *ref = [[Firebase alloc] initWithUrl:projectString];
         [ref removeValue];
         

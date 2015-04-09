@@ -72,14 +72,14 @@
 
     if (self.selectedUserID == nil) return;
     
-    NSString *leaveString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].currentProjectID, [FirebaseHelper sharedHelper].uid];
+    NSString *leaveString = [NSString stringWithFormat:@"https://%@.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].currentProjectID, [FirebaseHelper sharedHelper].uid];
     Firebase *leaveRef = [[Firebase alloc] initWithUrl:leaveString];
     [leaveRef setValue:@(-1)];
     
     [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"roles"] setObject:@(-1) forKey:[FirebaseHelper sharedHelper].uid];
     [[FirebaseHelper sharedHelper].visibleProjectIDs removeObject:[FirebaseHelper sharedHelper].currentProjectID];
     
-    NSString *ownerString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].currentProjectID, self.selectedUserID];
+    NSString *ownerString = [NSString stringWithFormat:@"https://%@.firebaseio.com/projects/%@/info/roles/%@", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].currentProjectID, self.selectedUserID];
     Firebase *ownerRef = [[Firebase alloc] initWithUrl:ownerString];
     [ownerRef setValue:@(2)];
     

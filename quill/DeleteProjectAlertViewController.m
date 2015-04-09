@@ -73,14 +73,14 @@
 
 - (IBAction)deleteTapped:(id)sender {
 
-    if (![FirebaseHelper sharedHelper].isAdmin)
+    if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
     [Flurry logEvent:@"Delete_Project" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
     
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
     NSString *chatID = [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID ] objectForKey:@"chatID"];
     
-    NSString *projectString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/projects/%@/", [FirebaseHelper sharedHelper].currentProjectID];
+    NSString *projectString = [NSString stringWithFormat:@"https://%@.firebaseio.com/projects/%@/", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].currentProjectID];
     Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
     [projectRef removeValue];
     [projectRef removeAllObservers];
@@ -88,7 +88,7 @@
     [[projectRef childByAppendingPath:@"viewedAt"] removeAllObservers];
     [[projectRef childByAppendingPath:@"updatedAt"] removeAllObservers];
     
-    NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams/%@/projects/%@", [FirebaseHelper sharedHelper].teamID, [FirebaseHelper sharedHelper].currentProjectID];
+    NSString *teamString = [NSString stringWithFormat:@"https://%@.firebaseio.com/teams/%@/projects/%@", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].teamID, [FirebaseHelper sharedHelper].currentProjectID];
     Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
     [teamRef removeValue];
     
@@ -96,7 +96,7 @@
         
         NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"commentsID"];
 
-        NSString *boardString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/boards/%@", boardID];
+        NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@", [FirebaseHelper sharedHelper].db, boardID];
         Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
         [boardRef removeValue];
         
@@ -117,7 +117,7 @@
             [[boardRef childByAppendingPath:subpathsString] removeAllObservers];
         }
         
-        NSString *commentsString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/comments/%@", commentsID];
+        NSString *commentsString = [NSString stringWithFormat:@"https://%@.firebaseio.com/comments/%@", [FirebaseHelper sharedHelper].db, commentsID];
         Firebase *commentsRef = [[Firebase alloc] initWithUrl:commentsString];
         [commentsRef removeAllObservers];
         
@@ -135,7 +135,7 @@
         [[FirebaseHelper sharedHelper].comments removeObjectForKey:commentsID];
     }
 
-    NSString *chatString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/chats/%@", chatID];
+    NSString *chatString = [NSString stringWithFormat:@"https://%@.firebaseio.com/chats/%@", [FirebaseHelper sharedHelper].db, chatID];
     Firebase *chatRef = [[Firebase alloc] initWithUrl:chatString];
     [chatRef removeValue];
     [chatRef removeAllObservers];

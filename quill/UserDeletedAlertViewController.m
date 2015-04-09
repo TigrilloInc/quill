@@ -55,9 +55,13 @@
     logoImageView.tag = 800;
     [nav.navigationBar addSubview:logoImageView];
     
-    Firebase *ref = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
+    Firebase *ref = [[Firebase alloc] initWithUrl:@"https://quillapp.firebaseio.com/"];
     FirebaseSimpleLogin *auth = [[FirebaseSimpleLogin alloc] initWithRef:ref];
     [auth logout];
+    
+    Firebase *devRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
+    FirebaseSimpleLogin *devAuth = [[FirebaseSimpleLogin alloc] initWithRef:devRef];
+    [devAuth logout];
     
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     

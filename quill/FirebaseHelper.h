@@ -23,6 +23,7 @@
 @property (strong, nonatomic) NSString *email;
 @property (strong, nonatomic) NSString *teamID;
 @property (strong, nonatomic) NSString *teamName;
+@property (strong, nonatomic) NSString *db;
 @property (strong, nonatomic) NSMutableDictionary *team;
 @property (strong, nonatomic) NSMutableDictionary *projects;
 @property (strong, nonatomic) NSMutableDictionary *boards;
@@ -36,6 +37,7 @@
 @property (strong, nonatomic) UIImage *avatarImage;
 @property (strong, nonatomic) NSURL *inviteURL;
 @property BOOL isAdmin;
+@property BOOL isDev;
 @property BOOL teamLoaded;
 @property BOOL projectsLoaded;
 @property BOOL connected;
@@ -44,7 +46,7 @@
 + (FirebaseHelper *)sharedHelper;
 - (void) testConnection;
 - (void) createUser;
-- (void) setAdmin;
+- (void) setRoles;
 - (void) observeLocalUser;
 - (void) observeCurrentProjectBoards;
 - (void) observeProjectWithID:(NSString *)projectID;
