@@ -73,7 +73,6 @@
 
 - (IBAction)deleteTapped:(id)sender {
 
-    if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
     [Flurry logEvent:@"Delete_Project" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
     
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;

@@ -180,7 +180,6 @@
                        
                    } else {
                        
-                       if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
                        [Flurry logEvent:@"Sign_up-Step_1-Email_Complete" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
                        
                        NameFromInviteViewController *nameVC = [self.storyboard instantiateViewControllerWithIdentifier:@"NameFromInvite"];

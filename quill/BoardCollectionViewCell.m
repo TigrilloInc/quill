@@ -62,6 +62,8 @@
 
 -(void) updateSubpathsForBoardID:(NSString *)boardID {
     
+    self.boardView.drawingBoard = true;
+    
     [self.boardView clear];
     
     NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"subpaths"];

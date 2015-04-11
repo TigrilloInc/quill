@@ -58,7 +58,6 @@
     
     if (self.nameField.text.length <= 0) return;
     
-    if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
     [Flurry logEvent:@"New_Project-Created" withParameters:@{@"teamID" : [FirebaseHelper sharedHelper].teamID}];
     
     for (NSString *projectID in [FirebaseHelper sharedHelper].projects.allKeys) {

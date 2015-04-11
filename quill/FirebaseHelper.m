@@ -162,7 +162,7 @@ static FirebaseHelper *sharedHelper = nil;
             self.uid = user.uid;
             self.email = user.email;
             [self setRoles];
-            if (!self.isAdmin && !self.isDev) [Flurry logEvent:@"Sign_in-Complete"];
+            [Flurry logEvent:@"Sign_in-Complete"];
             [self observeLocalUser];
         }
     }];
@@ -232,8 +232,7 @@ static FirebaseHelper *sharedHelper = nil;
         }
         else {
             
-            if (!self.isAdmin && ![FirebaseHelper sharedHelper].isDev)
-                [Flurry logEvent:@"Invite_User-Invite_Used" withParameters: @{@"teamID" : self.teamID}];
+            [Flurry logEvent:@"Invite_User-Invite_Used" withParameters: @{@"teamID" : self.teamID}];
             
             self.teamID = [snapshot.value objectForKey:@"teamID"];
             self.teamName = [snapshot.value objectForKey:@"teamName"];
@@ -1517,6 +1516,7 @@ static FirebaseHelper *sharedHelper = nil;
     self.uid = nil;
     self.email = nil;
     self.userName = nil;
+    self.avatarImage = nil;
     self.teamID = nil;
     self.teamName = nil;
     self.db = nil;

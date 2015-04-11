@@ -528,6 +528,7 @@
     CGRect imageRect = CGRectMake(0, 0, 345+userIDs.count*(66*4), 280);
     CGImageRef imageRef = CGImageCreateWithImageInRect([[UIImage imageNamed:@"avatarbackground.png"] CGImage], imageRect);
     self.avatarBackgroundImage = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:imageRef]];
+    CGImageRelease(imageRef);
     self.avatarBackgroundImage.transform = CGAffineTransformScale(self.avatarBackgroundImage.transform, .25, .25);
     self.avatarBackgroundImage.frame = CGRectMake(1024-self.avatarBackgroundImage.frame.size.width, 18, self.avatarBackgroundImage.frame.size.width, self.avatarBackgroundImage.frame.size.height);
     [self.view addSubview:self.avatarBackgroundImage];
@@ -1397,7 +1398,6 @@
 
 - (IBAction)newBoardTapped:(id)sender {
     
-    if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
     [Flurry logEvent:@"New_Board-Created" withParameters: @{ @"projectID" : [FirebaseHelper sharedHelper].currentProjectID, @"teamID" : [FirebaseHelper sharedHelper].teamID }];
     
     newBoardCreated = true;
@@ -1760,7 +1760,6 @@
         }
         else if (![self.editBoardNameTextField.text isEqualToString:oldBoardName]) {
             
-            if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
             [Flurry logEvent:@"Board-Renamed" withParameters:@{@"teamID" : [FirebaseHelper sharedHelper].teamID}];
             
             NSString *name;
@@ -1838,7 +1837,6 @@
         }
         else if (![boardNameTextField.text isEqualToString:oldBoardName]) {
             
-            if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
             [Flurry logEvent:@"Board-Renamed" withParameters:@{@"teamID" : [FirebaseHelper sharedHelper].teamID}];
             
             NSString *boardNameRefString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/name", [FirebaseHelper sharedHelper].db, self.boardIDs[self.carousel.currentItemIndex]];
@@ -2050,7 +2048,6 @@
         
         if (self.activeCommentThreadID != nil) {
             
-            if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
             [Flurry logEvent:@"Comment_Thread-Comment_Left" withParameters:
                                                             @{ @"userID":[FirebaseHelper sharedHelper].uid,
                                                                @"boardID":self.currentBoardView.boardID,
@@ -2064,8 +2061,7 @@
         }
         else {
             
-            if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
-                [Flurry logEvent:@"Chat_Message-Posted" withParameters:
+            [Flurry logEvent:@"Chat_Message-Posted" withParameters:
                  @{ @"userID":[FirebaseHelper sharedHelper].uid,
                     @"projectID":[FirebaseHelper sharedHelper].currentProjectID,
                     @"teamID":[FirebaseHelper sharedHelper].teamID

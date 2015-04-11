@@ -18,7 +18,9 @@
     
     [FirebaseHelper sharedHelper];
     
-    [Flurry startSession:@"N48PSX4PWZ6527X6GZVV"];
+    if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
+        [Flurry startSession:@"N48PSX4PWZ6527X6GZVV"];
+    //else [Flurry startSession:@"9M3GHVGV2KGXCVN4BD8Y"];
     
     [Instabug startWithToken:@"9a674b675e5dd033bc995a4d7a4a231f" captureSource:IBGCaptureSourceUIKit invocationEvent:IBGInvocationEventNone];
     [Instabug setEmailIsRequired:NO];

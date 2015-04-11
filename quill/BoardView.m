@@ -37,6 +37,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     ProjectDetailViewController *projectVC;
     UIImage *incrementalImage;
     NSMutableArray *paths;
+    BOOL touchMoved;
+    CGRect dotRect;
 }
 
 #pragma mark UIView lifecycle methods
@@ -105,6 +107,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         CGRect imageRect = CGRectMake(0, 0, 325+(userIDs.count-1)*(66*4), 280);
         CGImageRef imageRef = CGImageCreateWithImageInRect([[UIImage imageNamed:@"avatarbackground.png"] CGImage], imageRect);
         self.avatarBackgroundImage = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:imageRef]];
+        CGImageRelease(imageRef);
         CGAffineTransform bgtr = CGAffineTransformScale(self.avatarBackgroundImage.transform, .25, .25);
         bgtr = CGAffineTransformRotate(bgtr, -M_PI_2);
         self.avatarBackgroundImage.transform = bgtr;
@@ -261,6 +264,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     }
     
     if (projectVC.userRole > 0) [self addUserDrawing:[FirebaseHelper sharedHelper].uid];
+    
+    touchMoved = false;
     
     // initializes our point records to current location
     self.previousPreviousPoint = [touch previousLocationInView:self];
@@ -453,6 +458,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     NSDictionary *penUpDict = @{dateString : @"penUp"};
     
     [paths addObject:penUpDict];
+    [self setNeedsDisplay];
     
     NSString *subpathsString = [NSString stringWithFormat:@"subpaths/%@", [FirebaseHelper sharedHelper].uid];
     [[boardRef childByAppendingPath:subpathsString] updateChildValues:penUpDict];
@@ -487,13 +493,14 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [[UIColor whiteColor] set];
     UIRectFill(rect);
 
-//    if (!self.drawingBoard) {
-//        
-//        CGImageRef imageRef = CGImageCreateWithImageInRect(incrementalImage.CGImage, rect);
-//        UIImage *incrementalImageCropped = [UIImage imageWithCGImage:imageRef];
-//        [incrementalImageCropped drawInRect:rect];
-//        incrementalImageCropped = nil;
-//    }
+    if (!self.drawingBoard) {
+    
+        CGImageRef imageRef = CGImageCreateWithImageInRect(incrementalImage.CGImage, rect);
+        UIImage *incrementalImageCropped = [UIImage imageWithCGImage:imageRef];
+        CGImageRelease(imageRef);
+        [incrementalImageCropped drawInRect:rect];
+        incrementalImageCropped = nil;
+    }
     
     // get the graphics context and draw the path
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -502,24 +509,31 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     UIColor *lineColor;
     CGFloat lineWidth = 0;
     
-    for (NSDictionary *subpathValues in paths) {
+    //NSLog(@"paths is %@", paths);
 
+    for (int i=0; i<paths.count; i++) {
+        
+        NSDictionary *subpathValues = paths[i];
+        
         if (subpathValues.allKeys.count == 1) {
-            
+
             CGContextSetStrokeColorWithColor(context, lineColor.CGColor);
             CGContextSetLineWidth(context, lineWidth);
             CGContextStrokePath(context);
             CGContextBeginPath(context);
 
-//            if (!self.drawingBoard) {
-//                
-//                incrementalImage = [UIImage imageWithCGImage:CGBitmapContextCreateImage(context)];
-//                paths = [NSMutableArray array];
-//            }
+            if (!self.drawingBoard) {
+
+                CGImageRef imageRef = CGBitmapContextCreateImage(context);
+                incrementalImage = [UIImage imageWithCGImage:imageRef];
+                CGImageRelease(imageRef);
+                
+                paths = [NSMutableArray array];
+            }
             
             continue;
         }
-        
+
         CGMutablePathRef subpath = CGPathCreateMutable();
         CGPathMoveToPoint(subpath, NULL, [[subpathValues objectForKey:@"mid1x"] floatValue], [[subpathValues objectForKey:@"mid1y"] floatValue]);
         CGPathAddQuadCurveToPoint(subpath, NULL,
@@ -571,8 +585,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
             else lineColor = [UIColor colorWithRed:(255.0f/255.0f) green:(246.0f/255.0f) blue:0.0f alpha:alpha];
         }
         
-        if ([subpathValues isEqual:paths.lastObject]) {
-            
+        if (i == paths.count-1) {
+
             CGContextSetStrokeColorWithColor(context, lineColor.CGColor);
             CGContextSetLineWidth(context, lineWidth);
             CGContextStrokePath(context);
@@ -653,7 +667,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 
 -(void) addCommentAtPoint:(CGPoint)point {
     
-    if (![FirebaseHelper sharedHelper].isAdmin && ![FirebaseHelper sharedHelper].isDev)
     [Flurry logEvent:@"Comment_Thread-Created" withParameters:@{@"userID":[FirebaseHelper sharedHelper].uid,
                                                                 @"boardID":self.boardID,
                                                                 @"projectID":[FirebaseHelper sharedHelper].currentProjectID,
