@@ -19,10 +19,8 @@
     
     BOOL newBoardCreated;
     UIButton *boardButton;
-    UIImageView *carouselFadeLeft;
-    UIImageView *carouselFadeRight;
-    UIImageView *editFadeLeft;
-    UIImageView *editFadeRight;
+    UIImageView *carouselFade;
+    UIImageView *editFade;
     
     MasterViewController *masterVC;
     

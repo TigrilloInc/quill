@@ -46,21 +46,13 @@
     self.carousel.type = iCarouselTypeCoverFlow2;
     self.carousel.bounceDistance = 0.1f;
     
-    carouselFadeLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfadeleft.png"]];
-    [self.carousel addSubview:carouselFadeLeft];
-    carouselFadeLeft.frame = CGRectMake(0, -5, 15, 400);
+    carouselFade = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfadeleft.png"]];
+    [self.carousel addSubview:carouselFade];
+    carouselFade.frame = CGRectMake(0, -5, 15, 400);
     
-    carouselFadeRight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfaderight.png"]];
-    [self.carousel addSubview:carouselFadeRight];
-    carouselFadeRight.frame = CGRectMake(799, -5, 15, 400);
-    
-    editFadeLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"editfadeleft.png"]];
-    [self.view addSubview:editFadeLeft];
-    editFadeLeft.frame = CGRectMake(210, 0, 15, 768);
-
-    editFadeRight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"editfaderight.png"]];
-    [self.view addSubview:editFadeRight];
-    editFadeRight.frame = CGRectMake(1009, 0, 15, 768);
+    editFade = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"editfadeleft.png"]];
+    [self.view addSubview:editFade];
+    editFade.frame = CGRectMake(210, 0, 15, 768);
     
     self.chatTable.transform = CGAffineTransformMakeRotation(M_PI);
     [self showChat];
@@ -319,8 +311,7 @@
     self.editBoardNameTextField.hidden = true;
     
     self.carousel.hidden = true;
-    carouselFadeLeft.hidden = false;
-    carouselFadeRight.hidden = false;
+    carouselFade.hidden = false;
     
     for (AvatarButton *avatar in self.avatars) avatar.hidden = true;
     self.avatarBackgroundImage.hidden = true;
@@ -344,8 +335,7 @@
     self.applyChangesButton.hidden = true;
     self.cancelButton.hidden = true;
     self.deleteProjectButton.hidden = true;
-    editFadeLeft.hidden = true;
-    editFadeRight.hidden = true;
+    editFade.hidden = true;
     self.editing = false;
 }
 
@@ -1045,8 +1035,7 @@
     
     self.editProjectNameTextField.text = self.projectName;
     
-    editFadeLeft.hidden = false;
-    editFadeRight.hidden = false;
+    editFade.hidden = false;
     
     self.editButton.hidden = true;
     self.carousel.hidden = true;
@@ -1171,8 +1160,7 @@
 
 - (IBAction)cancelTapped:(id)sender {
     
-    editFadeLeft.hidden = true;
-    editFadeRight.hidden = true;
+    editFade.hidden = true;
     
     self.projectNameLabel.hidden = false;
     self.projectNameEditButton.hidden = true;

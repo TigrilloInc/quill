@@ -182,13 +182,32 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         float y = [[[[commentDict objectForKey:commentThreadID] objectForKey:@"location"] objectForKey:@"y"] floatValue];
         button.point = CGPointMake(x, y);
         button.userID = [[commentDict objectForKey:commentThreadID] objectForKey:@"owner"];
+        
         [button generateIdenticon];
         button.frame = CGRectMake(0, 0, button.userImage.size.width, button.userImage.size.height);
         button.center = CGPointMake(button.point.x-40, button.point.y+22);
         CGAffineTransform tr = CGAffineTransformScale(button.transform, .25, .25);
         tr = CGAffineTransformRotate(tr, -M_PI_2);
         button.transform = tr;
-        [button addTarget:self action:@selector(commentTapped:) forControlEvents:UIControlEventTouchUpInside];
+        //[button addTarget:self action:@selector(commentTapped:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIImage *avatarImage = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:button.userID] objectForKey:@"avatar"];
+        
+        if ([avatarImage isKindOfClass:[UIImage class]]) {
+            
+            UIImage *scaledImage = [UIImage imageWithCGImage:avatarImage.CGImage
+                                                            scale:.3
+                                                      orientation:avatarImage.imageOrientation];
+            
+            [button setImage:scaledImage forState:UIControlStateNormal];
+            button.imageView.center = CGPointMake(125, 112);
+            
+            //NSLog(@"avatarImage size is %@", NSStringFromCGSize(avatarImage.size));
+            
+            button.imageView.layer.cornerRadius = scaledImage.size.width*.4;
+            button.imageView.layer.masksToBounds = YES;
+            button.identiconView.hidden = true;
+        }
         
         NSString *viewedAtString = [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid];
         NSString *updatedAtString = [[commentDict objectForKey:commentThreadID] objectForKey:@"updatedAt"];
@@ -709,7 +728,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     CGAffineTransform tr = CGAffineTransformScale(button.transform, .25, .25);
     tr = CGAffineTransformRotate(tr, -M_PI_2);
     button.transform = tr;
-    [button addTarget:self action:@selector(commentTapped:) forControlEvents:UIControlEventTouchUpInside];
+    //[button addTarget:self action:@selector(commentTapped:) forControlEvents:UIControlEventTouchUpInside];
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(commentLongPress:)];
     longPress.minimumPressDuration = .2;
     [button addGestureRecognizer:longPress];
@@ -718,14 +737,14 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     [self.commentButtons addObject:button];
     
-    [self commentTapped:button];
+    [button commentTapped];
 }
 
 -(void) commentLongPress:(UILongPressGestureRecognizer*)sender {
     
     CommentButton *button = (CommentButton *)sender.view;
     CGPoint point = [sender locationInView:self];
-    
+
     CGPoint pointForTargetView = [button.deleteButton convertPoint:point fromView:self];
     if (CGRectContainsPoint(button.deleteButton.bounds, pointForTargetView)) return;
     
@@ -924,88 +943,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     }
     
     [projectVC drawBoard:self];
-}
-
--(void) commentTapped:(id)sender {
-    
-    CommentButton *comment = (CommentButton *)sender;
-    
-    [comment.commentImage setImage:[UIImage imageNamed:@"usercomment3.png"]];
-    projectVC.erasing = false;
-    
-    for (int i=5; i<=8; i++) {
-        
-        if (i==7) continue;
-        
-        UIView *button = [projectVC.view viewWithTag:i];
-        if (i==8) [button viewWithTag:50].hidden = false;
-        else [button viewWithTag:50].hidden = true;
-    }
-    
-    for (CommentButton *commentButton in self.commentButtons) {
-        
-        commentButton.deleteButton.hidden = true;
-        commentButton.commentImage.hidden = false;
-        commentButton.highlightedImage.hidden = true;
-    }
-    
-    NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"commentsID"];
-    NSDictionary *commentDict = [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:comment.commentThreadID];
-    NSString *ownerID = [commentDict objectForKey:@"owner"];
-    NSString *title = [commentDict objectForKey:@"title"];
-    NSDictionary *messages = [commentDict objectForKey:@"messages"];
-    
-    if ([ownerID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
-        comment.deleteButton.hidden = false;
-        projectVC.commentTitleView.userInteractionEnabled = true;
-    }
-    else projectVC.commentTitleView.userInteractionEnabled = false;
-
-    comment.commentImage.hidden = true;
-    comment.highlightedImage.hidden = false;
-    
-    projectVC.activeCommentThreadID = comment.commentThreadID;
-    
-    if (title.length == 0 && ![[FirebaseHelper sharedHelper].uid isEqualToString:ownerID]) projectVC.commentTitleView.hidden = true;
-    else projectVC.commentTitleView.hidden = false;
-    
-    projectVC.commentTitleTextField.text = title;
-    
-    [projectVC updateMessages];
-    [projectVC.chatTable reloadData];
-    
-    if (projectVC.userRole > 0) {
-        
-        if (title.length == 0 && messages.allKeys.count == 0) [projectVC.commentTitleTextField becomeFirstResponder];
-        else [projectVC.chatTextField becomeFirstResponder];
-    }
-    else {
-        
-        float tableHeight = 10;
-        for (int i=0; i<projectVC.messages.count; i++) {
-            tableHeight += [projectVC tableView:projectVC.chatTable heightForRowAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]];
-        }
-        
-        float chatHeight = MIN(384, MAX(tableHeight,156));
-        float titleOffset = 0;
-        if (!projectVC.commentTitleView.hidden) titleOffset = 41;
-        
-        [UIView beginAnimations:nil context:NULL];
-        [UIView setAnimationDuration:.25];
-        [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-        [UIView setAnimationBeginsFromCurrentState:YES];
-        
-        projectVC.chatTable.frame = CGRectMake(projectVC.chatTable.frame.origin.x, 768-chatHeight+titleOffset, projectVC.chatTable.frame.size.width, chatHeight-titleOffset);
-        projectVC.chatOpenButton.center = CGPointMake(512, 754-chatHeight);
-        projectVC.chatFadeImage.center = CGPointMake(512, 772-chatHeight);
-        projectVC.commentTitleView.center = CGPointMake(512, 794-chatHeight);
-        
-        [UIView commitAnimations];
-        
-        [projectVC showChat];
-    }
-    
-    [self updateCarouselOffsetWithPoint:comment.point];
 }
 
 -(void) updateCarouselOffsetWithPoint:(CGPoint)point {

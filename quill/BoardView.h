@@ -43,5 +43,6 @@
 -(void)hideChat;
 -(void)layoutAvatars;
 -(void)layoutComments;
+-(void) updateCarouselOffsetWithPoint:(CGPoint)point;
 
 @end
