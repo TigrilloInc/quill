@@ -10,6 +10,7 @@
 #import "FirebaseHelper.h"
 #import <MailCore/mailcore.h>
 #import "InviteEmail.h"
+#import "Flurry.h"
 
 @implementation InviteToTeamViewController
 
@@ -68,7 +69,11 @@
     if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
         
         logoImage.hidden = true;
-        if (self.creatingTeam) logoImage.frame = CGRectMake(149, 8, 32, 32);
+        if (self.creatingTeam) {
+            
+            [Flurry logEvent:@"New_Owner-Sign_up-Step_3-Back_to_Team_Name" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
+            logoImage.frame = CGRectMake(149, 8, 32, 32);
+        }
         else logoImage.frame = CGRectMake(173, 8, 32, 32);
         
         [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
@@ -337,6 +342,8 @@
     invitesSent = true;
     
     if (self.creatingTeam) {
+        
+        [Flurry logEvent:@"New_Owner-Sign_up-Step_3-Invitation_Complete" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
         
         [[FirebaseHelper sharedHelper] observeLocalUser];
         

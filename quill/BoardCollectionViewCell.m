@@ -122,6 +122,9 @@
     for (int i=0; i<allOrderedKeys.count; i++) {
         
         NSDictionary *subpathDict = [subpathsToDraw objectForKey:allOrderedKeys[i]];
+        
+        if (i==subpathsToDraw.count-1) self.boardView.drawingBoard = false;
+        
         [self.boardView drawSubpath:subpathDict];
     }
 }

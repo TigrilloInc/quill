@@ -10,9 +10,9 @@
 #import <Firebase/Firebase.h>
 #import "FirebaseHelper.h"
 #import "InviteToTeamViewController.h"
+#import "Flurry.h"
 
 @implementation NewTeamViewController
-
 
 - (void)viewDidLoad
 {
@@ -54,6 +54,7 @@
         return;
     }
 
+    [Flurry logEvent:@"New_Owner-Sign_up-Step_2-Team_Name_Complete" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
     
     [FirebaseHelper sharedHelper].teamName = self.teamField.text;
     
@@ -71,6 +72,8 @@
     
     if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
 
+        [Flurry logEvent:@"New_Owner-Sign_up-Step_2-Back_to_Username" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
+        
         logoImage.hidden = true;
         logoImage.frame = CGRectMake(154, 8, 32, 32);
         

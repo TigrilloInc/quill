@@ -37,12 +37,13 @@
 @property (strong, nonatomic) UILabel *userLabel;
 
 -(void)clear;
+-(void)resetPaths;
 -(void)drawSubpath:(NSDictionary *)subpathValues;
 -(void)addUserDrawing:(NSString *)userID;
 -(void)removeUserDrawing:(NSString *)userID;
 -(void)hideChat;
 -(void)layoutAvatars;
 -(void)layoutComments;
--(void) updateCarouselOffsetWithPoint:(CGPoint)point;
+-(void)updateCarouselOffsetWithPoint:(CGPoint)point;
 
 @end

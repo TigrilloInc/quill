@@ -676,10 +676,10 @@
 
 -(void) drawBoard:(BoardView *)boardView {
     
-    boardView.drawingBoard = true;
-    
     [boardView clear];
 
+    boardView.drawingBoard = true;
+    
     NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"subpaths"];
     
     NSDictionary *dictRef = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"undo"];
@@ -752,9 +752,12 @@
         NSMutableArray *subpathsOrderedKeys = [pathDict.allKeys mutableCopy];
         [subpathsOrderedKeys sortUsingDescriptors:@[ascendingSorter]];
         
-        for (int i=0; i<subpathsOrderedKeys.count; i++) {
+        for (int j=0; j<subpathsOrderedKeys.count; j++) {
             
-            NSDictionary *subpathDict = [pathDict objectForKey:subpathsOrderedKeys[i]];
+            NSDictionary *subpathDict = [pathDict objectForKey:subpathsOrderedKeys[j]];
+            
+            if (j==subpathsOrderedKeys.count-1 && i==pathsOrderedKeys.count-1) boardView.drawingBoard = false;
+            
             [boardView drawSubpath:subpathDict];
         }
     }

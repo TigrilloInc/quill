@@ -996,9 +996,7 @@ static FirebaseHelper *sharedHelper = nil;
                     boardView.shouldRedraw = true;
                 }
                 else {
-                    
-                    boardView.drawingBoard = false;
-                    
+
                     if([snapshot.value respondsToSelector:@selector(objectForKey:)]) [boardView drawSubpath:snapshot.value];
                     else [boardView drawSubpath:@{snapshot.key : snapshot.value}];
                     

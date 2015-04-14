@@ -10,6 +10,7 @@
 #import <Firebase/Firebase.h>
 #import "FirebaseHelper.h"
 #import "NewTeamViewController.h"
+#import "Flurry.h"
 
 @implementation NewNameViewController
 
@@ -23,7 +24,7 @@
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc]
                                    initWithTitle: @"Your Name"
                                    style: UIBarButtonItemStyleBordered
-                                   target:self action: @selector(backTapped)];
+                                   target:nil action:nil];
     [self.navigationItem setBackBarButtonItem: backButton];
     
     
@@ -59,6 +60,8 @@
         return;
     }
     
+    [Flurry logEvent:@"New_Owner-Sign_up-Step_1-Username_Complete" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
+    
     [FirebaseHelper sharedHelper].userName = self.nameTextField.text;
     
     UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
@@ -69,15 +72,6 @@
     
     NewTeamViewController *newTeamVC = [self.storyboard instantiateViewControllerWithIdentifier:@"NewTeam"];
     [self.navigationController pushViewController:newTeamVC animated:YES];
-}
-
--(void)backTapped {
-    
-    UIImageView *logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
-    logoImage.hidden = true;
-    logoImage.frame = CGRectMake(154, 8, 32, 32);
-    
-    [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
 }
 
 -(void)showLogo {

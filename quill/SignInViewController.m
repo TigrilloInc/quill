@@ -249,6 +249,12 @@
 
 -(void)accountCreated {
     
+    NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams"];
+    Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
+    [FirebaseHelper sharedHelper].teamID = [teamRef childByAutoId].key;
+    
+    [Flurry logEvent:@"New_Owner-Sign_up-Step_0-Email_Complete" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
+    
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
     NewNameViewController *newNameVC = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"NewName"];

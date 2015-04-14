@@ -37,7 +37,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     ProjectDetailViewController *projectVC;
     UIImage *incrementalImage;
     NSMutableArray *paths;
-    BOOL touchMoved;
     CGRect dotRect;
 }
 
@@ -132,7 +131,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
             avatar.shadowImage.hidden = false;
             avatar.imageView.layer.cornerRadius = avatarImage.size.width/2;
             avatar.imageView.layer.masksToBounds = YES;
-            
+
             if (avatar.imageView.frame.size.height == 64) {
                 
                 avatar.frame = CGRectMake(21+projectVC.carouselOffset, 80+(i-1)*66, avatarImage.size.width, avatarImage.size.height);
@@ -201,10 +200,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
             
             [button setImage:scaledImage forState:UIControlStateNormal];
             button.imageView.center = CGPointMake(125, 112);
-            
-            //NSLog(@"avatarImage size is %@", NSStringFromCGSize(avatarImage.size));
-            
-            button.imageView.layer.cornerRadius = scaledImage.size.width*.4;
+
+            button.imageView.layer.cornerRadius = scaledImage.size.width*.35;
             button.imageView.layer.masksToBounds = YES;
             button.identiconView.hidden = true;
         }
@@ -254,9 +251,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     if (allTouches.count > 1 || !self.drawable) return;
     
     UITouch *touch = [touches anyObject];
-    
-    self.drawingBoard = false;
-    
+
     if (self.selectedAvatarUserID) {
         
         self.userLabel.text = nil;
@@ -283,8 +278,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     }
     
     if (projectVC.userRole > 0) [self addUserDrawing:[FirebaseHelper sharedHelper].uid];
-    
-    touchMoved = false;
     
     // initializes our point records to current location
     self.previousPreviousPoint = [touch previousLocationInView:self];
@@ -508,41 +501,40 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 
 - (void)drawRect:(CGRect)rect {
 
-    // clear rect
     [[UIColor whiteColor] set];
     UIRectFill(rect);
 
+    //NSLog(@"paths is %@", paths);
+    
     if (!self.drawingBoard) {
     
-        CGImageRef imageRef = CGImageCreateWithImageInRect(incrementalImage.CGImage, rect);
+        CGFloat scale = [UIScreen mainScreen].scale;
+        
+        CGImageRef imageRef = CGImageCreateWithImageInRect(incrementalImage.CGImage, CGRectMake(rect.origin.x*scale, rect.origin.y*scale, rect.size.width*scale, rect.size.height*scale));
         UIImage *incrementalImageCropped = [UIImage imageWithCGImage:imageRef];
         CGImageRelease(imageRef);
         [incrementalImageCropped drawInRect:rect];
-        incrementalImageCropped = nil;
     }
     
-    // get the graphics context and draw the path
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetLineCap(context, kCGLineCapRound);
     
     UIColor *lineColor;
     CGFloat lineWidth = 0;
-    
-    //NSLog(@"paths is %@", paths);
 
     for (int i=0; i<paths.count; i++) {
         
         NSDictionary *subpathValues = paths[i];
         
         if (subpathValues.allKeys.count == 1) {
-
+            
             CGContextSetStrokeColorWithColor(context, lineColor.CGColor);
             CGContextSetLineWidth(context, lineWidth);
             CGContextStrokePath(context);
             CGContextBeginPath(context);
 
-            if (!self.drawingBoard) {
-
+            if (!self.drawingBoard && i == paths.count-1) {
+                
                 CGImageRef imageRef = CGBitmapContextCreateImage(context);
                 incrementalImage = [UIImage imageWithCGImage:imageRef];
                 CGImageRelease(imageRef);
@@ -728,6 +720,23 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     CGAffineTransform tr = CGAffineTransformScale(button.transform, .25, .25);
     tr = CGAffineTransformRotate(tr, -M_PI_2);
     button.transform = tr;
+    
+    UIImage *avatarImage = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:button.userID] objectForKey:@"avatar"];
+    
+    if ([avatarImage isKindOfClass:[UIImage class]]) {
+        
+        UIImage *scaledImage = [UIImage imageWithCGImage:avatarImage.CGImage
+                                                   scale:.3
+                                             orientation:avatarImage.imageOrientation];
+        
+        [button setImage:scaledImage forState:UIControlStateNormal];
+        button.imageView.center = CGPointMake(125, 112);
+        
+        button.imageView.layer.cornerRadius = scaledImage.size.width*.35;
+        button.imageView.layer.masksToBounds = YES;
+        button.identiconView.hidden = true;
+    }
+    
     //[button addTarget:self action:@selector(commentTapped:) forControlEvents:UIControlEventTouchUpInside];
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(commentLongPress:)];
     longPress.minimumPressDuration = .2;
@@ -1013,6 +1022,31 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     paths = [NSMutableArray array];
     incrementalImage = nil;
     [self setNeedsDisplay];
+}
+
+-(void)resetPaths {
+    
+//    NSMutableArray *newPaths = [NSMutableArray array];
+//    
+//    BOOL pathDrawn = false;
+//    
+//    for (int i=0; i<paths.count; i++) {
+//        
+//        NSDictionary *subpathValues = paths[paths.count-1-i];
+//        
+//        if (subpathValues.allKeys.count == 1 && pathDrawn) {
+//            
+//            paths = newPaths;
+//            NSLog(@"i is %i - new paths is %@", i, paths);
+//            
+//            return;
+//        }
+//        else {
+//            
+//            [paths insertObject:subpathValues atIndex:0];
+//            pathDrawn = true;
+//        }
+//    }
 }
 
 @end

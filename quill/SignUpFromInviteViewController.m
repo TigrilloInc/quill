@@ -180,7 +180,7 @@
                        
                    } else {
                        
-                       [Flurry logEvent:@"Sign_up-Step_1-Email_Complete" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
+                       [Flurry logEvent:@"New_User-Sign_up-Step_0-Email_Complete" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
                        
                        NameFromInviteViewController *nameVC = [self.storyboard instantiateViewControllerWithIdentifier:@"NameFromInvite"];
                        [self.navigationController pushViewController:nameVC animated:YES];
