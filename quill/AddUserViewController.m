@@ -11,6 +11,7 @@
 #import "NSDate+ServerDate.h"
 #import <MailCore/mailcore.h>
 #import "InviteEmail.h"
+#import "Flurry.h"
 
 @implementation AddUserViewController
 
@@ -210,6 +211,18 @@
             
             [projectVC.roles setObject:[self.roles objectForKey:userName] forKey:userID];
             
+            NSString *roleString;
+            
+            if ([[self.roles objectForKey:userName] integerValue] == 0) roleString = @"viewer";
+            else roleString = @"collaborator";
+
+            NSDictionary *flurryDict = @{ @"role" : roleString,
+                                          @"projectID" : [FirebaseHelper sharedHelper].currentProjectID,
+                                          @"teamID" : [FirebaseHelper sharedHelper].teamID
+                                          };
+            
+            [Flurry logEvent:@"User_Added" withParameters:flurryDict];
+            
             for (NSString *boardID in projectVC.boardIDs) {
                 
                 [[[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"undo"] setObject:[newUndoDict mutableCopy] forKey:userID];
@@ -233,7 +246,7 @@
         [projectRef updateChildValues:projectVC.roles];
         
         if (self.inviteEmails.count > 0) {
-
+            
             MCOSMTPSession *smtpSession = [[MCOSMTPSession alloc] init];
             smtpSession.hostname = @"smtp.gmail.com";
             smtpSession.port = 465;
@@ -289,6 +302,13 @@
                 [sendOperation start:^(NSError *error) {
                     if(error) NSLog(@"Error sending email: %@", error);
                     else {
+                        
+                        [Flurry logEvent:@"Invite_User-Invites_Sent" withParameters:
+                         @{ @"userID":[FirebaseHelper sharedHelper].uid,
+                            @"teamID":[FirebaseHelper sharedHelper].teamID,
+                            @"invites":@(self.inviteEmails.count),
+                            @"source": @"addUser"
+                            }];
                         
                         self.inviteLabel.text = @"Invites Sent!";
                         [projectVC updateDetails];

@@ -12,6 +12,7 @@
 #import "RemoveUserAlertViewController.h"
 #import "ProjectDetailViewController.h"
 #import "InviteNewOwnerViewController.h"
+#import "Flurry.h"
 
 @implementation TeamSettingsViewController
 
@@ -271,6 +272,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     if (indexPath.row == self.usersDict.allKeys.count) {
+        
+        [Flurry logEvent:@"Invite_User-Add_User_From_Settings" withParameters:
+         @{ @"userID":[FirebaseHelper sharedHelper].uid,
+            @"teamID":[FirebaseHelper sharedHelper].teamID
+            }];
         
         logoImage.hidden = true;
         logoImage.frame = CGRectMake(182, 8, 32, 32);

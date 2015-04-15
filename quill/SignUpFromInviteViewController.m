@@ -143,6 +143,18 @@
                 NSNumber *roleNum = [[FirebaseHelper sharedHelper].invitedProject objectForKey:projectID];
                 [[ref childByAppendingPath:rolesString] setValue:roleNum];
                 
+                NSString *roleString;
+
+                if (roleNum.integerValue == 0) roleString = @"viewer";
+                else roleString = @"collaborator";
+
+                NSDictionary *flurryDict = @{ @"role" : roleString,
+                                              @"projectID" : projectID,
+                                              @"teamID" : [FirebaseHelper sharedHelper].teamID
+                                              };
+
+                [Flurry logEvent:@"User_Added" withParameters:flurryDict];
+                
                 [[ref childByAppendingPath:boardsString] observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
                     
                     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];

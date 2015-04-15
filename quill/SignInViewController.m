@@ -131,6 +131,8 @@
     self.passwordField.alpha = .5;
     self.signInButton.userInteractionEnabled = false;
     self.signInButton.alpha = .5;
+    self.passwordResetButton.userInteractionEnabled = false;
+    self.passwordResetButton.alpha = .5;
     
     [FirebaseHelper sharedHelper].email = self.emailField.text;
     [[FirebaseHelper sharedHelper] setRoles];
@@ -138,7 +140,7 @@
     NSString *refString = [NSString stringWithFormat:@"https://%@.firebaseio.com/", [FirebaseHelper sharedHelper].db];
     Firebase *ref = [[Firebase alloc] initWithUrl:refString];
     FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
-        
+    
     if (self.signingIn == true) {
         
         self.signInLabel.text = @"Authenticating user...";
@@ -160,8 +162,12 @@
                        self.passwordField.alpha = 1;
                        self.signInButton.userInteractionEnabled = true;
                        self.signInButton.alpha = 1;
+                       self.passwordResetButton.userInteractionEnabled = true;
+                       self.passwordResetButton.alpha = 1;
                    }
                    else {
+                       
+                        [Flurry logEvent:@"Sign_in-Complete"];
                        
                        [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:@"registered"];
                        [FirebaseHelper sharedHelper].loggedIn = true;
@@ -184,6 +190,8 @@
             self.passwordField.alpha = 1;
             self.signInButton.userInteractionEnabled = true;
             self.signInButton.alpha = 1;
+            self.passwordResetButton.userInteractionEnabled = true;
+            self.passwordResetButton.alpha = 1;
             
             return;
         }
@@ -248,10 +256,6 @@
 }
 
 -(void)accountCreated {
-    
-    NSString *teamString = [NSString stringWithFormat:@"https://chalkto.firebaseio.com/teams"];
-    Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
-    [FirebaseHelper sharedHelper].teamID = [teamRef childByAutoId].key;
     
     [Flurry logEvent:@"New_Owner-Sign_up-Step_0-Email_Complete" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
     

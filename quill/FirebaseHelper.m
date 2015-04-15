@@ -129,7 +129,7 @@ static FirebaseHelper *sharedHelper = nil;
     
     //if (self.projectVC.presentedViewController) [self.projectVC dismissViewControllerAnimated:YES completion:nil];
     
-    //[authClient logout];
+    [prodAuthClient logout];
     
     [prodAuthClient checkAuthStatusWithBlock:^(NSError *error, FAUser *user) {
         
@@ -162,7 +162,6 @@ static FirebaseHelper *sharedHelper = nil;
             self.uid = user.uid;
             self.email = user.email;
             [self setRoles];
-            [Flurry logEvent:@"Sign_in-Complete"];
             [self observeLocalUser];
         }
     }];
@@ -175,15 +174,18 @@ static FirebaseHelper *sharedHelper = nil;
                               ];
     
     self.isAdmin = [adminEmails containsObject:self.email];
-    
-    NSArray *devEmails = @[ @"therealcos@gmail.com",
-                            @"drecos1@gmail.com",
-                            @"cos+testing@tigrillo.co",
-                            @"max+testing@tigrillo.co",
-                            @"max.engel@me.com",
-                            ];
-    
-    self.isDev = [devEmails containsObject:self.email];
+
+    if (!self.isDev) {
+
+        NSArray *devEmails = @[ @"therealcos@gmail.com",
+                                @"drecos1@gmail.com",
+                                @"cos+testing@tigrillo.co",
+                                @"max+testing@tigrillo.co",
+                                @"max.engel@me.com",
+                                ];
+        
+        self.isDev = [devEmails containsObject:self.email];
+    }
     
     if (self.isDev) self.db = @"chalkto";
     else self.db = @"quillapp";
@@ -193,14 +195,22 @@ static FirebaseHelper *sharedHelper = nil;
     
     if (self.projectVC.presentedViewController) [self.projectVC dismissViewControllerAnimated:YES completion:nil];
     
-    [[FirebaseHelper sharedHelper] removeAllObservers];
-    [[FirebaseHelper sharedHelper] clearData];
-    
-    [self.projectVC hideAll];
+    BOOL isDev;
     
     NSString *token = [self.inviteURL.host stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    if ([token isEqualToString:@"tEsTtOkEn"]) self.db = @"chalkto";
-    else self.db = @"quillapp";
+    if ([token isEqualToString:@"tEsTtOkEn"]) isDev = true;
+    else isDev = false;
+
+    self.isDev = isDev;
+    [self setRoles];
+    
+    [self removeAllObservers];
+    [self clearData];
+    
+    self.isDev = isDev;
+    [self setRoles];
+    
+    [self.projectVC hideAll];
     
     NSString *tokenString = [NSString stringWithFormat:@"https://%@.firebaseio.com/tokens/%@", self.db, token];
     Firebase *tokenRef = [[Firebase alloc] initWithUrl:tokenString];
@@ -215,6 +225,7 @@ static FirebaseHelper *sharedHelper = nil;
         if ([[snapshot.value allKeys] containsObject:@"newOwner"]) {
             
             self.email = [snapshot.value objectForKey:@"newOwner"];
+            self.teamID = [snapshot.value objectForKey:@"teamID"];
             
             SignInViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignIn"];
             vc.switchButton.hidden = false;
@@ -232,11 +243,11 @@ static FirebaseHelper *sharedHelper = nil;
         }
         else {
             
-            [Flurry logEvent:@"Invite_User-Invite_Used" withParameters: @{@"teamID" : self.teamID}];
-            
             self.teamID = [snapshot.value objectForKey:@"teamID"];
             self.teamName = [snapshot.value objectForKey:@"teamName"];
             self.email = [snapshot.value objectForKey:@"email"];
+            
+            [Flurry logEvent:@"Invite_User-Invite_Used" withParameters: @{@"teamID" : self.teamID}];
             
             [self.team setObject:[NSMutableDictionary dictionary] forKey:@"users"];
             
@@ -1429,8 +1440,8 @@ static FirebaseHelper *sharedHelper = nil;
     
 }
 
-- (void) removeAllObservers {
-    
+-(void) removeAllObservers {
+
     NSString *uidString = [NSString stringWithFormat:@"https://%@.firebaseio.com/users/%@", self.db, self.uid];
     Firebase *uidRef = [[Firebase alloc] initWithUrl:uidString];
     [uidRef removeAllObservers];

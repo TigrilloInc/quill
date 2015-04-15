@@ -225,9 +225,7 @@
             NSString *teamString = [NSString stringWithFormat:@"https://%@.firebaseio.com/teams", [FirebaseHelper sharedHelper].db];
             Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
             
-            [FirebaseHelper sharedHelper].teamID = [teamRef childByAutoId].key;
-            
-            NSLog(@"teamID is %@", [FirebaseHelper sharedHelper].teamID);
+            if (![FirebaseHelper sharedHelper].teamID) [FirebaseHelper sharedHelper].teamID = [teamRef childByAutoId].key;
             
             NSDictionary *newTeamValues = @{ [FirebaseHelper sharedHelper].teamID :
                                                  @{ @"users" :
@@ -309,9 +307,7 @@
                 inviteEmail.inviteURL = tokenURL;
                 [inviteEmail updateHTML];
                 [builder setHTMLBody:inviteEmail.htmlBody];
-                
-                NSLog(@"HTML is %@", builder.htmlBodyRendering);
-                
+
                 //[builder setTextBody:tokenURL];
                 NSData * rfc822Data = [builder data];
                 
@@ -340,6 +336,13 @@
 -(void) invitesSent {
     
     invitesSent = true;
+    
+    [Flurry logEvent:@"Invite_User-Invites_Sent" withParameters:
+     @{ @"userID":[FirebaseHelper sharedHelper].uid,
+        @"teamID":[FirebaseHelper sharedHelper].teamID,
+        @"invites":@(self.inviteEmails.count),
+        @"source": @"inviteToTeam"
+        }];
     
     if (self.creatingTeam) {
         

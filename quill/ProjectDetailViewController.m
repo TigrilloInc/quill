@@ -1403,6 +1403,11 @@
 
 - (void)addUserTapped {
     
+    [Flurry logEvent:@"Invite_User-Add_User_From_Project" withParameters:
+     @{ @"userID":[FirebaseHelper sharedHelper].uid,
+        @"teamID":[FirebaseHelper sharedHelper].teamID
+        }];
+    
     AddUserViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"AddUser"];
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];

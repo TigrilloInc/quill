@@ -133,10 +133,17 @@
     NSString *token = [self generateToken];
     NSString *tokenURL = [NSString stringWithFormat:@"quill://%@", token];
     
-    NSString *tokenString = [NSString stringWithFormat:@"https://quillapp.firebaseio.com/tokens/%@", token];
+    NSString *tokenString = [NSString stringWithFormat:@"https://%@.firebaseio.com/tokens/%@", [FirebaseHelper sharedHelper].db, token];
     Firebase *tokenRef = [[Firebase alloc] initWithUrl:tokenString];
     
-    [tokenRef setValue:@{ @"newOwner" : self.emailTextField.text }];
+    Firebase *teamRef = [[Firebase alloc] initWithUrl:@"https://quillapp.firebaseio.com/teams/"];
+    NSString *teamID = [teamRef childByAutoId].key;
+    
+    NSDictionary *teamDict = @{ @"newOwner" : self.emailTextField.text,
+                                @"teamID" : teamID
+                                };
+    
+    [tokenRef setValue:teamDict];
     
     MCOMessageBuilder *builder = [[MCOMessageBuilder alloc] init];
     MCOAddress *from = [MCOAddress addressWithDisplayName:@"Quill" mailbox:@"cos@tigrillo.co"];

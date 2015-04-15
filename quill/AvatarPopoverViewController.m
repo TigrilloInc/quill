@@ -10,6 +10,7 @@
 #import "FirebaseHelper.h"
 #import "LeaveProjectAlertViewController.h"
 #import "TransferOwnerViewController.h"
+#import "Flurry.h"
 
 @implementation AvatarPopoverViewController
 
@@ -136,7 +137,6 @@
         UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
         logoImageView.tag = 800;
         
-        
         if (projectVC.userRole == 2) {
             
             if (projectVC.roles.allKeys.count == 1) {
@@ -169,6 +169,8 @@
         [projectVC presentViewController:nav animated:YES completion:nil];
     }
     else {
+        
+        [Flurry logEvent:@"User_Removed" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
         
         [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"roles"] removeObjectForKey:self.userID];
         

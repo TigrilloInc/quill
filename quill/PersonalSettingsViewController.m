@@ -271,6 +271,9 @@
             if (error) self.settingsLabel.text = @"Something went wrong.";
             else {
             
+                [FirebaseHelper sharedHelper].email = self.emailTextField.text;
+                [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:[FirebaseHelper sharedHelper].email forKey:@"email"];
+                
                 [[ref childByAppendingPath:@"email"] setValue:self.emailTextField.text withCompletionBlock:^(NSError *error, Firebase *ref) {
                     
                     emailReady = true;
@@ -306,6 +309,9 @@
             
             if (error) self.settingsLabel.text = @"Something went wrong - try again.";
             else {
+                
+                [FirebaseHelper sharedHelper].email = self.emailTextField.text;
+                [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:[FirebaseHelper sharedHelper].email forKey:@"email"];
                 
                 [ref setValue:self.emailTextField.text withCompletionBlock:^(NSError *error, Firebase *ref) {
                     
@@ -527,14 +533,48 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     
-    if (![textField isEqual:self.nameTextField]) return YES;
-    
-    if(range.length + range.location > textField.text.length) return NO;
-    
-    NSUInteger newLength = [textField.text length] + [string length] - range.length;
-    
-    if (newLength > 16) return NO;
-    else return YES;
+    if ([textField isEqual:self.emailTextField]) {
+        
+        NSString *oldEmail = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"email"];
+        
+        if (![self.emailTextField.text isEqualToString:oldEmail]) {
+            
+            self.passwordTextField.hidden = false;
+            self.settingsLabel.frame = CGRectMake(0, 216, 540, 21);
+            self.avatarButton.center = CGPointMake(147, 97);
+            self.avatarShadow.frame = CGRectMake(116, 66, 62, 62);
+            self.avatarEdit.frame = CGRectMake(129, 78, 36, 36);
+            self.nameTextField.frame = CGRectMake(200, 66, 340, 30);
+            self.emailTextField.frame = CGRectMake(200, 96, 340, 30);
+            self.nameButton.frame = CGRectMake(self.nameButton.frame.origin.x, 58, 40, 40);
+            self.emailButton.frame = CGRectMake(self.emailButton.frame.origin.x, 88, 40, 40);
+            self.passwordButton.frame = CGRectMake(115, 146, 310, 50);
+        }
+        else {
+            
+            self.passwordTextField.hidden = true;
+            self.settingsLabel.frame = CGRectMake(0, 271, 540, 21);
+            self.avatarButton.center = CGPointMake(147, 117);
+            self.avatarShadow.frame = CGRectMake(116, 86, 62, 62);
+            self.avatarEdit.frame = CGRectMake(129, 98, 36, 36);
+            self.nameTextField.frame = CGRectMake(200, 86, 340, 30);
+            self.emailTextField.frame = CGRectMake(200, 116, 340, 30);
+            self.nameButton.frame = CGRectMake(self.nameButton.frame.origin.x, 78, 40, 40);
+            self.emailButton.frame = CGRectMake(self.emailButton.frame.origin.x, 108, 40, 40);
+            self.passwordButton.frame = CGRectMake(115, 186, 310, 50);
+        }
+        
+        return YES;
+    }
+    else {
+        
+        if(range.length + range.location > textField.text.length) return NO;
+        
+        NSUInteger newLength = [textField.text length] + [string length] - range.length;
+        
+        if (newLength > 16) return NO;
+        else return YES;
+    }
 }
 
 #pragma mark - Gesture recognizer
