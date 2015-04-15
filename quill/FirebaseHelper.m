@@ -129,7 +129,7 @@ static FirebaseHelper *sharedHelper = nil;
     
     //if (self.projectVC.presentedViewController) [self.projectVC dismissViewControllerAnimated:YES completion:nil];
     
-    [prodAuthClient logout];
+    //[prodAuthClient logout];
     
     [prodAuthClient checkAuthStatusWithBlock:^(NSError *error, FAUser *user) {
         

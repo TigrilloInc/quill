@@ -504,7 +504,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [[UIColor whiteColor] set];
     UIRectFill(rect);
 
-    //NSLog(@"paths is %@", paths);
+    NSLog(@"paths is %@", paths);
     
     if (!self.drawingBoard) {
     
