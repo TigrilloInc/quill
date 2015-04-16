@@ -24,7 +24,7 @@
     
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc]
                                    initWithTitle: @"Team Name"
-                                   style: UIBarButtonItemStyleBordered
+                                   style: UIBarButtonItemStylePlain
                                    target: nil action: nil];
     [self.navigationItem setBackBarButtonItem: backButton];
     

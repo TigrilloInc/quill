@@ -33,7 +33,7 @@
     
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc]
                                    initWithTitle: @"Settings"
-                                   style: UIBarButtonItemStyleBordered
+                                   style: UIBarButtonItemStylePlain
                                    target:self action:nil];
     [self.navigationItem setBackBarButtonItem: backButton];
     
@@ -41,7 +41,7 @@
         
         UIBarButtonItem *signOutButton = [[UIBarButtonItem alloc]
                                           initWithTitle: @"Invite Owner"
-                                          style: UIBarButtonItemStyleBordered
+                                          style: UIBarButtonItemStylePlain
                                           target: self action: @selector(inviteOwnerTapped)];
         [self.navigationItem setRightBarButtonItems:@[signOutButton] animated:NO];
     }

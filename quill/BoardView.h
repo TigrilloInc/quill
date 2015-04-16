@@ -37,7 +37,6 @@
 @property (strong, nonatomic) UILabel *userLabel;
 
 -(void)clear;
--(void)resetPaths;
 -(void)drawSubpath:(NSDictionary *)subpathValues;
 -(void)addUserDrawing:(NSString *)userID;
 -(void)removeUserDrawing:(NSString *)userID;

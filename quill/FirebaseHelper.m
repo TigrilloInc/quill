@@ -1055,6 +1055,8 @@ static FirebaseHelper *sharedHelper = nil;
         NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
         if ([boardIDs containsObject:boardID]) {
             
+            NSLog(@"drawing board from undo");
+            
             NSUInteger boardIndex = [boardIDs indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
             [self.projectVC drawBoard:boardView];

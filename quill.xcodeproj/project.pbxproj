@@ -1426,6 +1426,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "quill/quill-Prefix.pch";
 				INFOPLIST_FILE = "quill/quill-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/quill/Resources/Flurry",
@@ -1470,6 +1471,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "quill/quill-Prefix.pch";
 				INFOPLIST_FILE = "quill/quill-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/quill/Resources/Flurry",

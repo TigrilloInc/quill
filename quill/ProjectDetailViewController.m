@@ -589,12 +589,19 @@
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     
     NSMutableDictionary *subpathsDict = [NSMutableDictionary dictionary];
+    NSMutableDictionary *undoDict = [NSMutableDictionary dictionary];
     
     NSMutableArray *userIDs = [self.roles.allKeys mutableCopy];
 
     for (NSString *userID in userIDs) {
         
         [subpathsDict setObject:[@{ dateString : @"penUp"} mutableCopy] forKey:userID];
+        
+        [undoDict  setObject:[@{ @"currentIndex" : @0,
+                                  @"currentIndexDate" : dateString,
+                                  @"total" : @0
+                                } mutableCopy]
+                    forKey:userID];
     }
     
     NSString *boardNum = [NSString stringWithFormat:@"%lu", (unsigned long)self.boardIDs.count];
@@ -604,12 +611,7 @@
                                   @"commentsID" : commentsID,
                                   @"subpaths" : subpathsDict,
                                   @"updatedAt" : dateString,
-                                  @"undo" :  [@{ [FirebaseHelper sharedHelper].uid :
-                                                     [@{ @"currentIndex" : @0,
-                                                         @"currentIndexDate" : dateString,
-                                                         @"total" : @0
-                                                         } mutableCopy]
-                                                 } mutableCopy]
+                                  @"undo" : undoDict
                                   };
     
     Firebase *boardRefWithID = [boardRef childByAutoId];

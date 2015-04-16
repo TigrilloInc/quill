@@ -75,7 +75,7 @@
     
     UIBarButtonItem *signOutButton = [[UIBarButtonItem alloc]
                                    initWithTitle: @"Sign Out"
-                                   style: UIBarButtonItemStyleBordered
+                                   style: UIBarButtonItemStylePlain
                                    target: self action: @selector(signOutTapped)];
     [self.navigationItem setRightBarButtonItems:@[signOutButton] animated:NO];
     

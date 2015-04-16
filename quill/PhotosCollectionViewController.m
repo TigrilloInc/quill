@@ -46,7 +46,7 @@ static CGSize AssetGridThumbnailSize;
     
     UIBarButtonItem *photoItem = [[UIBarButtonItem alloc]
                                    initWithTitle: @"Take Photo"
-                                   style: UIBarButtonItemStyleBordered
+                                   style: UIBarButtonItemStylePlain
                                    target:self action:@selector(takePhoto)];
     [self.navigationItem setRightBarButtonItem:photoItem];
     

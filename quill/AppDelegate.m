@@ -21,7 +21,8 @@
     NSLog(@"DEVICE ID IS %@", [[UIDevice currentDevice] identifierForVendor].UUIDString);
     
     NSArray *flurryTestIDs = @[ @"9FF7BD92-6A2D-4123-8810-EBF709FDE6C7",
-                                @"8E91B7CC-3374-4C1E-B643-510202D77C35"
+                                @"8E91B7CC-3374-4C1E-B643-510202D77C35",
+                                @"AC646D82-40BE-479F-92E0-291D6A30929D"
                                 ];
     
     if ([flurryTestIDs containsObject:[[UIDevice currentDevice] identifierForVendor].UUIDString] || [[UIDevice currentDevice].model isEqualToString:@"iPad Simulator"])

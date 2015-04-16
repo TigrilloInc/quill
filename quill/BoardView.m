@@ -608,6 +608,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 
 -(void) drawSubpath:(NSDictionary *)subpathValues {
 
+    NSLog(@"drawing subpath values %@", subpathValues);
+    
     CGPoint mid1;
     CGPoint mid2;
     CGPoint prev;
@@ -1022,31 +1024,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     paths = [NSMutableArray array];
     incrementalImage = nil;
     [self setNeedsDisplay];
-}
-
--(void)resetPaths {
-    
-//    NSMutableArray *newPaths = [NSMutableArray array];
-//    
-//    BOOL pathDrawn = false;
-//    
-//    for (int i=0; i<paths.count; i++) {
-//        
-//        NSDictionary *subpathValues = paths[paths.count-1-i];
-//        
-//        if (subpathValues.allKeys.count == 1 && pathDrawn) {
-//            
-//            paths = newPaths;
-//            NSLog(@"i is %i - new paths is %@", i, paths);
-//            
-//            return;
-//        }
-//        else {
-//            
-//            [paths insertObject:subpathValues atIndex:0];
-//            pathDrawn = true;
-//        }
-//    }
 }
 
 @end
