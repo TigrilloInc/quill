@@ -188,21 +188,19 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         CGAffineTransform tr = CGAffineTransformScale(button.transform, .25, .25);
         tr = CGAffineTransformRotate(tr, -M_PI_2);
         button.transform = tr;
-        //[button addTarget:self action:@selector(commentTapped:) forControlEvents:UIControlEventTouchUpInside];
-        
+ 
         UIImage *avatarImage = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:button.userID] objectForKey:@"avatar"];
         
         if ([avatarImage isKindOfClass:[UIImage class]]) {
             
-            UIImage *scaledImage = [UIImage imageWithCGImage:avatarImage.CGImage
-                                                            scale:.3
-                                                      orientation:avatarImage.imageOrientation];
+            UIImageView *customAvatar = [[UIImageView alloc] initWithImage:avatarImage];
+            customAvatar.frame = CGRectMake(15, 0, 225, 225);
+            [button addSubview:customAvatar];
+            [button sendSubviewToBack:customAvatar];
+            customAvatar.layer.cornerRadius = 110;
+            customAvatar.layer.masksToBounds = YES;
             
-            [button setImage:scaledImage forState:UIControlStateNormal];
-            button.imageView.center = CGPointMake(125, 112);
-
-            button.imageView.layer.cornerRadius = scaledImage.size.width*.35;
-            button.imageView.layer.masksToBounds = YES;
+            button.imageView.hidden = true;
             button.identiconView.hidden = true;
         }
         
@@ -210,7 +208,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         NSString *updatedAtString = [[commentDict objectForKey:commentThreadID] objectForKey:@"updatedAt"];
         
         if (([updatedAtString doubleValue] > [viewedAtString doubleValue] || updatedAtString == nil) && ![projectVC.viewedCommentThreadIDs containsObject:commentThreadID] && ![projectVC.viewedBoardIDs containsObject:self.boardID]) {
-            
             [button.commentImage setImage:[UIImage imageNamed:@"usercomment4.png"]];
         }
         
@@ -504,8 +501,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [[UIColor whiteColor] set];
     UIRectFill(rect);
 
-    NSLog(@"paths is %@", paths);
-    
     if (!self.drawingBoard) {
     
         CGFloat scale = [UIScreen mainScreen].scale;
@@ -608,8 +603,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 
 -(void) drawSubpath:(NSDictionary *)subpathValues {
 
-    NSLog(@"drawing subpath values %@", subpathValues);
-    
     CGPoint mid1;
     CGPoint mid2;
     CGPoint prev;
@@ -727,19 +720,17 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     if ([avatarImage isKindOfClass:[UIImage class]]) {
         
-        UIImage *scaledImage = [UIImage imageWithCGImage:avatarImage.CGImage
-                                                   scale:.3
-                                             orientation:avatarImage.imageOrientation];
+        UIImageView *customAvatar = [[UIImageView alloc] initWithImage:avatarImage];
+        customAvatar.frame = CGRectMake(15, 0, 225, 225);
+        [button addSubview:customAvatar];
+        [button sendSubviewToBack:customAvatar];
+        customAvatar.layer.cornerRadius = 110;
+        customAvatar.layer.masksToBounds = YES;
         
-        [button setImage:scaledImage forState:UIControlStateNormal];
-        button.imageView.center = CGPointMake(125, 112);
-        
-        button.imageView.layer.cornerRadius = scaledImage.size.width*.35;
-        button.imageView.layer.masksToBounds = YES;
+        button.imageView.hidden = true;
         button.identiconView.hidden = true;
     }
     
-    //[button addTarget:self action:@selector(commentTapped:) forControlEvents:UIControlEventTouchUpInside];
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(commentLongPress:)];
     longPress.minimumPressDuration = .2;
     [button addGestureRecognizer:longPress];

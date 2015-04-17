@@ -10,6 +10,7 @@
 #import "BoardCollectionViewCell.h"
 #import "AddUserViewController.h"
 #import "AvatarButton.h"
+#import "CommentButton.h"
 #import <Firebase/Firebase.h>
 #import "FirebaseHelper.h"
 #import "NSDate+ServerDate.h"
@@ -1966,7 +1967,7 @@
         [((BoardView *)view).loadingView startAnimating];
         [((BoardView *)view) addSubview:((BoardView *)view).loadingView];
     }
-
+    
     return view;
 }
 

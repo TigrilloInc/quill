@@ -18,8 +18,6 @@
     
     [FirebaseHelper sharedHelper];
     
-    NSLog(@"DEVICE ID IS %@", [[UIDevice currentDevice] identifierForVendor].UUIDString);
-    
     NSArray *flurryTestIDs = @[ @"9FF7BD92-6A2D-4123-8810-EBF709FDE6C7",
                                 @"8E91B7CC-3374-4C1E-B643-510202D77C35",
                                 @"AC646D82-40BE-479F-92E0-291D6A30929D"
@@ -27,7 +25,7 @@
     
     if ([flurryTestIDs containsObject:[[UIDevice currentDevice] identifierForVendor].UUIDString] || [[UIDevice currentDevice].model isEqualToString:@"iPad Simulator"])
         [Flurry startSession:@"N48PSX4PWZ6527X6GZVV"];
-    //else [Flurry startSession:@"9M3GHVGV2KGXCVN4BD8Y"];
+    else [Flurry startSession:@"9M3GHVGV2KGXCVN4BD8Y"];
     
     [Instabug startWithToken:@"9a674b675e5dd033bc995a4d7a4a231f" captureSource:IBGCaptureSourceUIKit invocationEvent:IBGInvocationEventNone];
     [Instabug setEmailIsRequired:NO];

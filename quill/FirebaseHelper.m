@@ -125,13 +125,13 @@ static FirebaseHelper *sharedHelper = nil;
     
     Firebase *devRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
     FirebaseSimpleLogin *devAuthClient = [[FirebaseSimpleLogin alloc] initWithRef:devRef];
-    [devAuthClient logout];
+    //[devAuthClient logout];
     
     //if (self.projectVC.presentedViewController) [self.projectVC dismissViewControllerAnimated:YES completion:nil];
     
     //[prodAuthClient logout];
     
-    [prodAuthClient checkAuthStatusWithBlock:^(NSError *error, FAUser *user) {
+    [devAuthClient checkAuthStatusWithBlock:^(NSError *error, FAUser *user) {
         
         if (error != nil) {
             NSLog(@"%@", error);
@@ -1054,8 +1054,6 @@ static FirebaseHelper *sharedHelper = nil;
         
         NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
         if ([boardIDs containsObject:boardID]) {
-            
-            NSLog(@"drawing board from undo");
             
             NSUInteger boardIndex = [boardIDs indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];

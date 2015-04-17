@@ -40,6 +40,8 @@
         [self addSubview:self.deleteButton];
         [self bringSubviewToFront:self.deleteButton];
         self.deleteButton.hidden = true;
+        
+        [self addTarget:self action:@selector(commentTapped) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;
 }
@@ -260,17 +262,6 @@
     }
     
     [boardView updateCarouselOffsetWithPoint:self.point];
-}
-
--(void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    
-    if ([FirebaseHelper sharedHelper].avatarImage) self.imageView.center = CGPointMake(125, 112);
-    
-}
-
--(void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    
-    [self commentTapped];
 }
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
