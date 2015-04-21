@@ -40,6 +40,11 @@
     self.nameTextField.layer.cornerRadius = 10;
 }
 
+-(void) viewWillAppear:(BOOL)animated {
+    
+    [self.nameTextField becomeFirstResponder];
+}
+
 -(IBAction)nextTapped:(id)sender {
     
     if (self.nameTextField.text.length == 0) {

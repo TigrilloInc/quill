@@ -69,7 +69,6 @@ static FirebaseHelper *sharedHelper = nil;
                 vc.offlineLabel.alpha = .5;
                 vc.offlineLabel.text = @"Reconnecting...";
                 
-                
                 [self checkAuthStatus];
             }
             
@@ -125,13 +124,13 @@ static FirebaseHelper *sharedHelper = nil;
     
     Firebase *devRef = [[Firebase alloc] initWithUrl:@"https://chalkto.firebaseio.com/"];
     FirebaseSimpleLogin *devAuthClient = [[FirebaseSimpleLogin alloc] initWithRef:devRef];
-    //[devAuthClient logout];
+    [devAuthClient logout];
     
     //if (self.projectVC.presentedViewController) [self.projectVC dismissViewControllerAnimated:YES completion:nil];
     
     //[prodAuthClient logout];
     
-    [devAuthClient checkAuthStatusWithBlock:^(NSError *error, FAUser *user) {
+    [prodAuthClient checkAuthStatusWithBlock:^(NSError *error, FAUser *user) {
         
         if (error != nil) {
             NSLog(@"%@", error);
@@ -280,7 +279,6 @@ static FirebaseHelper *sharedHelper = nil;
 }
 
 -(void) observeLocalUser {
-    
     
     NSString *uidString = [NSString stringWithFormat:@"https://%@.firebaseio.com/users/%@", self.db, self.uid];
     Firebase *userRef = [[Firebase alloc] initWithUrl:uidString];
@@ -766,7 +764,7 @@ static FirebaseHelper *sharedHelper = nil;
     NSString *teamString = [NSString stringWithFormat:@"https://%@.firebaseio.com/teams/%@", self.db, self.teamID];
 
     Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
-    
+
     [teamRef observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         self.teamName = [snapshot.value objectForKey:@"name"];
@@ -778,6 +776,7 @@ static FirebaseHelper *sharedHelper = nil;
 
         if ([[[snapshot.value objectForKey:@"users"] allKeys] isEqual:@[self.uid]]) {
             [self checkUsersLoaded];
+            [[[self.team objectForKey:@"users"] objectForKey:self.uid] setObject:[[snapshot.value objectForKey:@"users"] objectForKey:self.uid] forKey:@"teamOwner"];
             return;
         }
         
@@ -786,7 +785,7 @@ static FirebaseHelper *sharedHelper = nil;
                 if (![userID isEqualToString:self.uid]) [self.loadedUsers setObject:[NSMutableDictionary dictionary] forKey:userID];
             }
         }
-  
+        
         for (NSString *userID in [[snapshot.value objectForKey:@"users"] allKeys]) {
             
             if (![userID isEqualToString:self.uid]) [[self.team objectForKey:@"users"] setObject:[NSMutableDictionary dictionary] forKey:userID];
@@ -1436,6 +1435,8 @@ static FirebaseHelper *sharedHelper = nil;
     [authClient logout];
     
     self.loggedIn = false;
+    
+    [self removeAllObservers];
     [self clearData];
     
 }

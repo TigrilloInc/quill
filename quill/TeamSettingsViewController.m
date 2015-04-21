@@ -22,6 +22,8 @@
     
     isOwner = [[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"teamOwner"] integerValue];
     
+    NSLog(@"ownerdict is %@", [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid]);
+    
     self.usersDict = [NSMutableDictionary dictionary];
     
     self.navigationItem.title = @"Team Settings";
@@ -65,7 +67,10 @@
     CGRect nameRect = [self.teamNameTextField.text boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Regular" size:28]} context:nil];
     
     self.editNameButton.center = CGPointMake(nameRect.size.width+50, self.editNameButton.center.y);
-    if (!isOwner) self.editNameButton.hidden = true;
+    if (!isOwner) {
+        self.editNameButton.hidden = true;
+        self.teamNameTextField.userInteractionEnabled = false;
+    }
 }
 
 - (void) viewDidAppear:(BOOL)animated {

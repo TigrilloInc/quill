@@ -24,7 +24,8 @@
     self.inviteButton.layer.cornerRadius = 10;
     self.inviteButton.layer.borderColor = [UIColor grayColor].CGColor;
     
-    self.inviteEmails = [NSMutableArray array];
+    if (self.creatingTeam) self.inviteEmails = [@[@""] mutableCopy];
+    else self.inviteEmails = [NSMutableArray array];
     
     editedText = [NSMutableArray array];
     
@@ -43,7 +44,20 @@
     
     [super viewWillAppear:animated];
     
-    if (self.creatingTeam) self.navigationItem.title = @"Step 3: Send Invites";
+    if (self.creatingTeam) {
+        
+        self.navigationItem.title = @"Step 3: Send Invites";
+        self.inviteButton.frame = CGRectMake(115, 272, 310, 50);
+        self.inviteTable.frame = CGRectMake(0, 0, 540, 212);
+        self.inviteLabel.frame = CGRectMake(0, 219, 540, 48);
+        self.inviteFade.frame = CGRectMake(0, 196, 540, 112);
+        
+        [self.inviteTable reloadData];
+        
+        UITableViewCell *cell = [self.inviteTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+        UITextField *textField = (UITextField *)[cell.contentView viewWithTag:401];
+        [textField becomeFirstResponder];
+    }
     else {
         self.navigationItem.title = @"Send Invites";
         self.stepLabel.hidden = true;

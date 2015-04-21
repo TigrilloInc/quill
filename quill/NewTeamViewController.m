@@ -40,6 +40,11 @@
     self.teamField.layer.cornerRadius = 10;
 }
 
+-(void) viewWillAppear:(BOOL)animated {
+    
+    [self.teamField becomeFirstResponder];
+}
+
 - (IBAction)createTeamTapped:(id)sender {
     
     if (self.teamField.text.length == 0) {

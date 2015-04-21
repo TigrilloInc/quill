@@ -27,5 +27,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *inviteLabel;
 @property (weak, nonatomic) IBOutlet RoundedButton *inviteButton;
 @property (weak, nonatomic) IBOutlet UILabel *stepLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *inviteFade;
 
 @end

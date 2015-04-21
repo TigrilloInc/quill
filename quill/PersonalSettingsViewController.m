@@ -98,23 +98,29 @@
 
 -(void) viewWillAppear:(BOOL)animated {
     
+    [[self.avatarButton viewWithTag:123] removeFromSuperview];
+    
     if (self.avatarImage == nil) {
-        
         self.avatarShadow.hidden = true;
-        self.avatarButton.center = CGPointMake(147, 117);
         [self.avatarButton generateIdenticonWithShadow:true];
-        self.avatarButton.transform = CGAffineTransformMakeScale(.25,.25);
     }
     else {
-
-        self.avatarShadow.hidden = false;
-        self.avatarButton.center = CGPointMake(147, 115);
+        
+        UIImageView *customAvatar = [[UIImageView alloc] initWithImage:self.avatarImage];
+        customAvatar.frame = CGRectMake(12, 2, 226, 226);
+        [self.avatarButton addSubview:customAvatar];
+        customAvatar.layer.cornerRadius = 226/2;
+        customAvatar.layer.masksToBounds = YES;
+        customAvatar.tag = 123;
+        
+        self.avatarButton.imageView.hidden = true;
         self.avatarButton.identiconView.hidden = true;
-        [self.avatarButton setImage:self.avatarImage forState:UIControlStateNormal];
-        self.avatarButton.transform = CGAffineTransformMakeScale(.86*64/self.avatarImage.size.width, .86*64/self.avatarImage.size.width);
-        self.avatarButton.imageView.layer.cornerRadius = self.avatarImage.size.width/2;
-        self.avatarButton.imageView.layer.masksToBounds = YES;
+        
+        self.avatarShadow.hidden = false;
     }
+    
+    self.avatarButton.center = CGPointMake(147, 117);
+    self.avatarButton.transform = CGAffineTransformMakeScale(.25,.25);
     
     if (![self.avatarImage isEqual:[FirebaseHelper sharedHelper].avatarImage]) [self.applyButton setTitle:@"Apply Changes" forState:UIControlStateNormal];
     else [self.applyButton setTitle:@"Done" forState:UIControlStateNormal];

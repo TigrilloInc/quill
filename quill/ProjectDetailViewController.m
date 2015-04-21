@@ -127,7 +127,7 @@
 -(void) setUpDrawMenu {
     
     UIButton *closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    closeButton.frame = CGRectMake(10, 28, 30, 30);
+    closeButton.frame = CGRectMake(10, 13, 30, 60);
     [closeButton setImage:[UIImage imageNamed:@"back.png"] forState:UIControlStateNormal];
     closeButton.adjustsImageWhenHighlighted = NO;
     closeButton.tintColor = [UIColor blackColor];
@@ -1631,7 +1631,7 @@
 
 -(void)keyboardWillHide:(NSNotification *)notification {
 
-    if (!self.editing && self.boardNameLabel.text.length > 0) {
+    if (!self.editing && self.boardNameLabel.text.length > 0 && [FirebaseHelper sharedHelper].loggedIn) {
         
         self.editBoardNameTextField.hidden = true;
         self.boardNameLabel.hidden = false;
