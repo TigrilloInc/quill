@@ -64,6 +64,7 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *addBoardButton;
 @property (weak, nonatomic) IBOutlet UIImageView *addBoardBackgroundImage;
+@property (weak, nonatomic) IBOutlet UIButton *shareButton;
 
 @property (weak, nonatomic) IBOutlet UIButton *sendMessageButton;
 

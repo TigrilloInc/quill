@@ -209,6 +209,8 @@
 		12F4F9D31AA808DA00C8FC31 /* InstabugViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12F4F9D21AA808DA00C8FC31 /* InstabugViewController.m */; };
 		12FF4C281A1545D7008A6001 /* libMailCore-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 12FF4C1D1A15459D008A6001 /* libMailCore-ios.a */; };
 		F3012919198C3F0800A596DA /* FirebaseSimpleLogin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3012918198C3F0800A596DA /* FirebaseSimpleLogin.framework */; };
+		F37687E91AF2D2A3005ECE60 /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = F37687E81AF2D2A3005ECE60 /* share.png */; };
+		F37687F11AF2E36F005ECE60 /* board-riffs.png in Resources */ = {isa = PBXBuildFile; fileRef = F37687F01AF2E36F005ECE60 /* board-riffs.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -536,6 +538,8 @@
 		12F4F9D21AA808DA00C8FC31 /* InstabugViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = InstabugViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		12FF4C101A15459C008A6001 /* mailcore2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = mailcore2.xcodeproj; path = "Resources/mailcore2/build-mac/mailcore2.xcodeproj"; sourceTree = "<group>"; };
 		F3012918198C3F0800A596DA /* FirebaseSimpleLogin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseSimpleLogin.framework; path = quill/Resources/Firebase/FirebaseSimpleLogin.framework; sourceTree = "<group>"; };
+		F37687E81AF2D2A3005ECE60 /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = share.png; path = Resources/share.png; sourceTree = "<group>"; };
+		F37687F01AF2E36F005ECE60 /* board-riffs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-riffs.png"; path = "Resources/iCarousel/board-riffs.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -770,11 +774,13 @@
 				12C4E4D41A3B83A800DB0E23 /* board6.png */,
 				12C4E4D81A3B8AD400DB0E23 /* board7.png */,
 				124943B81A9174F800C1BEA4 /* board8.png */,
+				F37687F01AF2E36F005ECE60 /* board-riffs.png */,
 				12CE89691A70A24F00983FBE /* feather.png */,
 				123D20041A5A5359004D5743 /* black.png */,
 				123D20051A5A5359004D5743 /* blue.png */,
 				12ABCE891A5E3F7500C4C7DC /* apply.png */,
 				12ABCE8A1A5E3F7500C4C7DC /* cancel.png */,
+				F37687E81AF2D2A3005ECE60 /* share.png */,
 				12ABCE8D1A5E491A00C4C7DC /* delete.png */,
 				12ABCE8F1A5F0D8400C4C7DC /* viewer.png */,
 				12ABCE911A5F11CC00C4C7DC /* collaborator.png */,
@@ -1088,6 +1094,7 @@
 				12ABCE821A5E0A3700C4C7DC /* Icon40.png in Resources */,
 				12860FCA1A420AF20074B452 /* usercommenthighlight.png in Resources */,
 				12ABCE861A5E0A3700C4C7DC /* Icon120.png in Resources */,
+				F37687F11AF2E36F005ECE60 /* board-riffs.png in Resources */,
 				129E129519648A2C00ED9D42 /* Images.xcassets in Resources */,
 				1213D7B21A67ABF2001FDEA9 /* chatfade4.png in Resources */,
 				12860FBE1A40C8CD0074B452 /* userbutton2shadow.png in Resources */,
@@ -1136,6 +1143,7 @@
 				12860FD41A43CECD0074B452 /* edit.png in Resources */,
 				12C4E4CF1A3B6CD300DB0E23 /* board3.png in Resources */,
 				12860FC81A414FF70074B452 /* userhighlight2.png in Resources */,
+				F37687E91AF2D2A3005ECE60 /* share.png in Resources */,
 				12ABCE8B1A5E3F7500C4C7DC /* apply.png in Resources */,
 				12DC978A1A796FEA00CC4616 /* background6.png in Resources */,
 				12860FC41A41170E0074B452 /* usercomment.png in Resources */,

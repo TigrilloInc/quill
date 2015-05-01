@@ -44,8 +44,15 @@
     self.editBoardNameTextField.delegate = self;
     self.carousel.delegate = self;
     
+    
     self.carousel.type = iCarouselTypeCoverFlow2;
     self.carousel.bounceDistance = 0.1f;
+//    self.carousel.type = iCarouselTypeInvertedTimeMachine;
+//    self.carousel.viewpointOffset = CGSizeMake(0, -2750);
+//    self.carousel.contentOffset = CGSizeMake(0, -2750);
+//    self.carousel.vertical = YES;
+//    self.carousel.scrollSpeed = 4;
+//    self.carousel.perspective = -0.0001;
     
     carouselFade = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfadeleft.png"]];
     [self.carousel addSubview:carouselFade];
@@ -2274,6 +2281,13 @@
     
     return self.editBoardIDs.count;
 }
+
+//-(CGFloat)carousel:(iCarousel *)carousel valueForOption:(iCarouselOption)option withDefault:(CGFloat)value {
+//    
+//    if (option == iCarouselOptionOffsetMultiplier) value = 10.0f;
+//    
+//    return value;
+//}
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
