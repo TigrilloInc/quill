@@ -117,7 +117,6 @@
     
     NSDictionary *boardDict =  @{ @"name" : @"Untitled",
                                   @"project" : projectID,
-                                  @"number" : @0,
                                   @"commentsID" : commentsID,
                                   @"subpaths" : [@{ [FirebaseHelper sharedHelper].uid :
                                                         [@{ dateString : @"penUp" } mutableCopy]
@@ -128,7 +127,8 @@
                                                         @"currentIndexDate" : dateString,
                                                         @"total" : @0
                                                         } mutableCopy]
-                                                } mutableCopy]
+                                                } mutableCopy],
+                                  @"versions" : [@[boardID] mutableCopy]
                                 };
     
     [[FirebaseHelper sharedHelper].boards setObject:[boardDict mutableCopy] forKey:boardRefWithID.key];

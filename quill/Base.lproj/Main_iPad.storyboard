@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="u5o-7l-ZfK">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="u5o-7l-ZfK">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
     </dependencies>
     <customFonts key="customFonts">
         <mutableArray key="SourceSansPro-ExtraLight.otf">
@@ -19,6 +19,7 @@
             <string>SourceSansPro-Light</string>
         </mutableArray>
         <mutableArray key="SourceSansPro-Regular.ttf">
+            <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
@@ -1526,6 +1527,13 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="32"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version 1 of" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="eCq-mt-XlS">
+                                <rect key="frame" x="568" y="89" width="100" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" placeholder="Board Name" textAlignment="center" minimumFontSize="17" id="wFY-iY-Scc">
                                 <rect key="frame" x="210" y="111" width="814" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1535,6 +1543,14 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="3Yb-Sn-Nyj"/>
                                 </connections>
                             </textField>
+                            <view contentMode="scaleToFill" id="s9f-SR-zLr" customClass="iCarousel">
+                                <rect key="frame" x="210" y="150" width="814" height="380"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="u5o-7l-ZfK" id="U98-vF-n6H"/>
+                                    <outlet property="delegate" destination="u5o-7l-ZfK" id="ebI-ms-IQ3"/>
+                                </connections>
+                            </view>
                             <view contentMode="scaleToFill" id="gXb-FZ-4hw" customClass="iCarousel">
                                 <rect key="frame" x="210" y="150" width="814" height="380"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1543,8 +1559,8 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="HZI-dR-56J"/>
                                 </connections>
                             </view>
-                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="newboardbutton.png" id="1n7-6k-4XC">
-                                <rect key="frame" x="845" y="505" width="70" height="70"/>
+                            <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.25" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="boardbuttonsbackground-rounded.png" id="1n7-6k-4XC">
+                                <rect key="frame" x="715" y="505" width="200" height="70"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="N38-cw-Ht6">
@@ -1557,12 +1573,25 @@
                                     <action selector="newBoardTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="fvw-jL-Sw1"/>
                                 </connections>
                             </button>
-                            <button hidden="YES" opaque="NO" alpha="0.5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="tbP-tk-4fE">
-                                <rect key="frame" x="704" y="550" width="40" height="40"/>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="tbP-tk-4fE">
+                                <rect key="frame" x="732" y="520" width="40" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="share.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="shareTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="cXX-fa-zGd"/>
+                                </connections>
+                            </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Rla-Rc-2p3">
+                                <rect key="frame" x="790" y="520" width="40" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="iterations.png">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="versionsTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="svB-MG-BdS"/>
+                                </connections>
                             </button>
                             <view contentMode="scaleToFill" id="kDh-qU-DmB">
                                 <rect key="frame" x="210" y="719" width="814" height="49"/>
@@ -1793,13 +1822,6 @@
                                     </textField>
                                 </subviews>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Rla-Rc-2p3">
-                                <rect key="frame" x="432" y="555" width="46" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
@@ -1830,6 +1852,9 @@
                         <outlet property="projectNameLabel" destination="7VA-hg-eFW" id="l8V-jU-Oxv"/>
                         <outlet property="sendMessageButton" destination="Q79-Vz-pZV" id="tD9-nF-8V2"/>
                         <outlet property="shareButton" destination="tbP-tk-4fE" id="PQB-9j-ItL"/>
+                        <outlet property="versionsButton" destination="Rla-Rc-2p3" id="oLI-ok-SPN"/>
+                        <outlet property="versionsCarousel" destination="s9f-SR-zLr" id="ErW-Lu-GsE"/>
+                        <outlet property="versionsLabel" destination="eCq-mt-XlS" id="PUt-dm-rXD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4fj-nZ-uv7" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1841,6 +1866,7 @@
         <image name="apply.png" width="378" height="100"/>
         <image name="arrow2.png" width="120" height="120"/>
         <image name="background5.png" width="1024" height="768"/>
+        <image name="boardbuttonsbackground-rounded.png" width="800" height="280"/>
         <image name="cancel.png" width="378" height="100"/>
         <image name="chatfade5.png" width="1528" height="60"/>
         <image name="commenttitle.png" width="1024" height="40"/>
@@ -1849,7 +1875,7 @@
         <image name="feather.png" width="1024" height="1024"/>
         <image name="gear1.png" width="324" height="323"/>
         <image name="invitefade.png" width="540" height="112"/>
-        <image name="newboardbutton.png" width="280" height="280"/>
+        <image name="iterations.png" width="700" height="700"/>
         <image name="plus1.png" width="232" height="231"/>
         <image name="projectsshadow.png" width="210" height="70"/>
         <image name="settingsfade.png" width="540" height="112"/>

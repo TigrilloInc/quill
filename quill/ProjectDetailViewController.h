@@ -56,6 +56,7 @@
 
 @property (weak, nonatomic) IBOutlet MasterView *masterView;
 @property (weak, nonatomic) IBOutlet iCarousel *carousel;
+@property (weak, nonatomic) IBOutlet iCarousel *versionsCarousel;
 @property (weak, nonatomic) IBOutlet UILabel *projectNameLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImage;
 @property (strong, nonatomic) UIImageView *avatarBackgroundImage;
@@ -65,6 +66,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *addBoardButton;
 @property (weak, nonatomic) IBOutlet UIImageView *addBoardBackgroundImage;
 @property (weak, nonatomic) IBOutlet UIButton *shareButton;
+@property (weak, nonatomic) IBOutlet UIButton *versionsButton;
 
 @property (weak, nonatomic) IBOutlet UIButton *sendMessageButton;
 
@@ -72,6 +74,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *projectNameEditButton;
 @property (weak, nonatomic) IBOutlet UIButton *boardNameEditButton;
 @property (weak, nonatomic) IBOutlet UILabel *boardNameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *versionsLabel;
 
 @property (strong, nonatomic) UIButton *addUserButton;
 @property (strong, nonatomic) NSMutableArray *avatars;

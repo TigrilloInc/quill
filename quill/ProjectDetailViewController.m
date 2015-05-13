@@ -43,16 +43,18 @@
     self.chatTextField.delegate = self;
     self.editBoardNameTextField.delegate = self;
     self.carousel.delegate = self;
-    
+    self.versionsCarousel.delegate = self;
     
     self.carousel.type = iCarouselTypeCoverFlow2;
     self.carousel.bounceDistance = 0.1f;
-//    self.carousel.type = iCarouselTypeInvertedTimeMachine;
-//    self.carousel.viewpointOffset = CGSizeMake(0, -2750);
-//    self.carousel.contentOffset = CGSizeMake(0, -2750);
-//    self.carousel.vertical = YES;
-//    self.carousel.scrollSpeed = 4;
-//    self.carousel.perspective = -0.0001;
+    
+    self.versionsCarousel.type = iCarouselTypeInvertedTimeMachine;
+    self.versionsCarousel.bounceDistance = 0.15f;
+    self.versionsCarousel.viewpointOffset = CGSizeMake(0, -2750);
+    self.versionsCarousel.contentOffset = CGSizeMake(0, -2750);
+    self.versionsCarousel.vertical = YES;
+    self.versionsCarousel.scrollSpeed = 4;
+    self.versionsCarousel.perspective = -0.0001;
     
     carouselFade = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfadeleft.png"]];
     [self.carousel addSubview:carouselFade];
@@ -337,6 +339,8 @@
     
     self.addBoardBackgroundImage.hidden = true;
     self.addBoardButton.hidden = true;
+    self.shareButton.hidden = true;
+    self.versionsButton.hidden = true;
     self.projectNameEditButton.hidden = true;
     self.draggableCollectionView.hidden = true;
     
@@ -586,55 +590,76 @@
     NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards", [FirebaseHelper sharedHelper].db];
     Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
     
-    NSString *projectString = [NSString stringWithFormat:@"https://%@.firebaseio.com/projects/%@/info/boards", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].currentProjectID];
-    Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
-    
     NSString *commentsString = [NSString stringWithFormat:@"https://%@.firebaseio.com/comments", [FirebaseHelper sharedHelper].db];
     Firebase *commentsRef = [[Firebase alloc] initWithUrl:commentsString];
     Firebase *commentsRefWithID = [commentsRef childByAutoId];
     NSString *commentsID = commentsRefWithID.key;
+    [[FirebaseHelper sharedHelper].comments setObject:[NSMutableDictionary dictionary] forKey:commentsID];
+    
+    Firebase *boardRefWithID = [boardRef childByAutoId];
+    NSString *boardID = boardRefWithID.key;
     
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     
-    NSMutableDictionary *subpathsDict = [NSMutableDictionary dictionary];
-    NSMutableDictionary *undoDict = [NSMutableDictionary dictionary];
-    
-    NSMutableArray *userIDs = [self.roles.allKeys mutableCopy];
+    NSMutableDictionary *subpathsDict;
+    NSMutableDictionary *undoDict;
 
-    for (NSString *userID in userIDs) {
+    if (self.carousel.hidden) {
         
-        [subpathsDict setObject:[@{ dateString : @"penUp"} mutableCopy] forKey:userID];
+        NSMutableDictionary *currentBoardDict = [[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]];
         
-        [undoDict  setObject:[@{ @"currentIndex" : @0,
-                                  @"currentIndexDate" : dateString,
-                                  @"total" : @0
-                                } mutableCopy]
-                    forKey:userID];
+        subpathsDict = [currentBoardDict objectForKey:@"subpaths"];
+        undoDict = [currentBoardDict objectForKey:@"undo"];
+        NSUInteger boardNum = [[currentBoardDict objectForKey:@"versions"] count];
+        
+        NSString *currentBoardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/versions/%lu", [FirebaseHelper sharedHelper].db, self.boardIDs[self.carousel.currentItemIndex], (unsigned long)boardNum];
+        Firebase *currentBoardRef = [[Firebase alloc] initWithUrl:currentBoardString];
+        [currentBoardRef setValue:boardID];
+        [[currentBoardDict objectForKey:@"versions"] addObject:boardID];
+    }
+    else {
+        
+        NSString *boardNum = [NSString stringWithFormat:@"%lu", (unsigned long)self.boardIDs.count];
+        
+        [self.boardIDs addObject:boardID];
+        
+        subpathsDict = [NSMutableDictionary dictionary];
+        undoDict = [NSMutableDictionary dictionary];
+        
+        NSMutableArray *userIDs = [self.roles.allKeys mutableCopy];
+        
+        for (NSString *userID in userIDs) {
+            
+            [subpathsDict setObject:[@{ dateString : @"penUp"} mutableCopy] forKey:userID];
+            
+            [undoDict  setObject:[@{ @"currentIndex" : @0,
+                                     @"currentIndexDate" : dateString,
+                                     @"total" : @0
+                                     } mutableCopy]
+                          forKey:userID];
+        }
+        
+        NSString *projectString = [NSString stringWithFormat:@"https://%@.firebaseio.com/projects/%@/info/boards", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].currentProjectID];
+        Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
+        [projectRef updateChildValues:@{ boardNum : boardID}];
+        [[[FirebaseHelper sharedHelper].projects objectForKey:@"boards"] setObject:boardID forKey:boardNum];
     }
     
-    NSString *boardNum = [NSString stringWithFormat:@"%lu", (unsigned long)self.boardIDs.count];
+    
     NSDictionary *boardDict =  @{ @"name" : @"Untitled",
                                   @"project" : self.projectName,
-                                  @"number" : boardNum,
                                   @"commentsID" : commentsID,
                                   @"subpaths" : subpathsDict,
                                   @"updatedAt" : dateString,
-                                  @"undo" : undoDict
+                                  @"undo" : undoDict,
+                                  @"versions" : [@[boardID] mutableCopy]
                                   };
     
-    Firebase *boardRefWithID = [boardRef childByAutoId];
     [boardRefWithID updateChildValues:boardDict];
-    
-    [projectRef updateChildValues:@{ boardNum : boardRefWithID.key}];
-    
-    NSString *boardID = boardRefWithID.key;
-    
-    [self.boardIDs addObject:boardID];
+    [[FirebaseHelper sharedHelper].boards setObject:[boardDict mutableCopy] forKey:boardID];
     [self.viewedBoardIDs addObject:boardID];
     [[FirebaseHelper sharedHelper].loadedBoardIDs addObject:boardID];
-    [[FirebaseHelper sharedHelper].boards setObject:[boardDict mutableCopy] forKey:boardID];
-    [[FirebaseHelper sharedHelper].comments setObject:[NSMutableDictionary dictionary] forKey:commentsID];
-    [[[FirebaseHelper sharedHelper].projects objectForKey:@"boards"] setObject:boardID forKey:boardNum];
+
     
     [[FirebaseHelper sharedHelper] setProjectUpdatedAt:dateString];
     [[FirebaseHelper sharedHelper] observeBoardWithID:boardID];
@@ -781,6 +806,11 @@
 
 -(void) boardTapped:(id)sender {
     
+    iCarousel *carousel;
+    
+    if (self.carousel.hidden) carousel = self.versionsCarousel;
+    else carousel = self.carousel;
+    
     if([self.editBoardNameTextField isFirstResponder]) {
         [self textFieldShouldReturn:self.editBoardNameTextField];
         [self.editBoardNameTextField resignFirstResponder];
@@ -788,7 +818,7 @@
     }
     
     if (self.carouselMoving) {
-        [self.carousel scrollToItemAtIndex:self.carousel.currentItemIndex animated:YES];
+        [carousel scrollToItemAtIndex:carousel.currentItemIndex animated:YES];
         return;
     }
     
@@ -797,7 +827,7 @@
     
     if (![[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.currentBoardView.boardID]) return;
     
-    [self.carousel setScrollEnabled:NO];
+    [carousel setScrollEnabled:NO];
     self.carouselOffset = 0;
     NSString *boardID = self.currentBoardView.boardID;
     self.boardNameLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:24];
@@ -827,6 +857,8 @@
     [self.chatTable reloadData];
     [self hideChat];
     [self.view sendSubviewToBack:self.addBoardButton];
+    [self.view sendSubviewToBack:self.shareButton];
+    [self.view sendSubviewToBack:self.versionsButton];
     [self.view sendSubviewToBack:self.addBoardBackgroundImage];
     [self hideAvatars];
     
@@ -835,9 +867,9 @@
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          
-                         self.carousel.center = CGPointMake(self.view.center.x, self.view.center.y);
-                         CGAffineTransform tr = CGAffineTransformScale(self.carousel.transform, 2, 2);
-                         self.carousel.transform = tr;
+                         carousel.center = CGPointMake(self.view.center.x, self.view.center.y);
+                         CGAffineTransform tr = CGAffineTransformScale(carousel.transform, 2, 2);
+                         carousel.transform = tr;
                          
                          self.masterView.center = CGPointMake(-105, self.masterView.center.y);
                          
@@ -854,19 +886,22 @@
                      completion:^(BOOL finished) {
                          
                          boardButton.hidden = true;
-                         
+
                          [self showDrawMenu];
                          
-                         if (newBoardCreated) {
-                             
-                             [self showEditBoardName];
-                             newBoardCreated = false;
-                         }
+                         if (newBoardCreated && self.versionsCarousel.hidden) [self showEditBoardName];
+                         
+                         newBoardCreated = false;
                      }
      ];
 }
 
 -(void)closeTapped {
+    
+    iCarousel *carousel;
+    
+    if (self.carousel.hidden) carousel = self.versionsCarousel;
+    else carousel = self.carousel;
     
     boardButton.hidden = false;
     self.currentBoardView.commenting = false;
@@ -918,9 +953,9 @@
                          self.chatFadeImage.frame = CGRectMake(210, 603, 1024, 25);
                          self.commentTitleView.frame = CGRectMake(210, 613, 1024, 50);
                          
-                         CGAffineTransform tr = CGAffineTransformScale(self.carousel.transform, .5, .5);
-                         self.carousel.transform = tr;
-                         self.carousel.center = CGPointMake(self.view.center.x+masterWidth/2, self.view.frame.size.height/2-44);
+                         CGAffineTransform tr = CGAffineTransformScale(carousel.transform, .5, .5);
+                         carousel.transform = tr;
+                         carousel.center = CGPointMake(self.view.center.x+masterWidth/2, self.view.frame.size.height/2-44);
                          
                          self.masterView.center = CGPointMake(masterWidth/2, self.masterView.center.y);
                          
@@ -928,12 +963,14 @@
                      }
                      completion:^(BOOL finished) {
 
-                         [self.carousel setScrollEnabled:YES];
+                         [carousel setScrollEnabled:YES];
                          [self updateDetails];
                          
                          [self showChat];
                          [self.view bringSubviewToFront:self.addBoardBackgroundImage];
                          [self.view bringSubviewToFront:self.addBoardButton];
+                         [self.view bringSubviewToFront:self.shareButton];
+                         [self.view bringSubviewToFront:self.versionsButton];
                          
                          if (![FirebaseHelper sharedHelper].connected) {
                              
@@ -1024,9 +1061,9 @@
                              
                              if (![self.boardIDs isEqual:[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"boards"]]) {
                                  
-                                 NSUInteger currentIndex = self.carousel.currentItemIndex;
+                                 NSUInteger currentIndex = carousel.currentItemIndex;
                                  [self.masterView tableView:self.masterView.projectsTable didSelectRowAtIndexPath:self.masterView.defaultRow];
-                                 [self.carousel scrollToItemAtIndex:currentIndex animated:NO];
+                                 [carousel scrollToItemAtIndex:currentIndex animated:NO];
                              }
                              else [self.masterView.projectsTable selectRowAtIndexPath:self.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
                              
@@ -1052,9 +1089,12 @@
     
     self.editButton.hidden = true;
     self.carousel.hidden = true;
+    self.versionsCarousel.hidden = true;
     self.draggableCollectionView.hidden = false;
     self.boardNameLabel.hidden = true;
     self.addBoardButton.hidden = true;
+    self.shareButton.hidden = true;
+    self.versionsButton.hidden = true;
     self.addBoardBackgroundImage.hidden = true;
     
     self.projectNameEditButton.hidden = false;
@@ -1178,14 +1218,19 @@
     self.projectNameLabel.hidden = false;
     self.projectNameEditButton.hidden = true;
     self.carousel.hidden = false;
+    self.versionsCarousel.hidden = true;
     self.draggableCollectionView.hidden = true;
     self.boardNameLabel.hidden = false;
+    self.versionsLabel.hidden = true;
     
     if (self.userRole > 0) {
 
         if (self.userRole > 1) self.editButton.hidden = false;
         else self.editButton.hidden = true;
         self.addBoardButton.hidden = false;
+        self.shareButton.hidden = false;
+        self.versionsButton.hidden = false;
+        [self.versionsButton setImage:[UIImage imageNamed:@"iterations.png"] forState:UIControlStateNormal];
         self.addBoardBackgroundImage.hidden = false;
         self.chatView.hidden = false;
         if (self.boardNameLabel.text.length > 0) self.boardNameEditButton.hidden = false;
@@ -1194,6 +1239,8 @@
         
         self.editButton.hidden = true;
         self.addBoardButton.hidden = true;
+        self.shareButton.hidden = true;
+        self.versionsButton.hidden = true;
         self.addBoardBackgroundImage.hidden = true;
         self.chatView.hidden = true;
         self.boardNameEditButton.hidden = true;
@@ -1402,13 +1449,48 @@
     [Flurry logEvent:@"New_Board-Created" withParameters: @{ @"projectID" : [FirebaseHelper sharedHelper].currentProjectID, @"teamID" : [FirebaseHelper sharedHelper].teamID }];
     
     newBoardCreated = true;
-
+    
     [self createBoard];
     
-    self.activeBoardID = [self.boardIDs lastObject];
+    if (self.carousel.hidden) {
+        
+        self.activeBoardID = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"] lastObject];
+        
+        [self.versionsCarousel reloadData];
+        [self.versionsCarousel scrollByNumberOfItems:self.versionsCarousel.numberOfItems duration:.5];
+    }
+    else {
+        
+        self.activeBoardID = [self.boardIDs lastObject];
+        
+        [self.carousel reloadData];
+        [self.carousel scrollByNumberOfItems:self.carousel.numberOfItems duration:.5];
+    }
+}
+
+- (IBAction)versionsTapped:(id)sender {
+
+    if (self.carousel.hidden) {
+        
+        self.carousel.hidden = false;
+        self.versionsLabel.hidden = true;
+        [self.carousel reloadData];
+        self.versionsCarousel.hidden = true;
+        [self.versionsButton setImage:[UIImage imageNamed:@"versions.png"] forState:UIControlStateNormal];
+    }
+    else {
+        
+        self.carousel.hidden = true;
+        self.versionsLabel.hidden = false;
+        self.versionsCarousel.hidden = false;
+        [[FirebaseHelper sharedHelper] observeCurrentBoardVersions];
+        [self.versionsCarousel reloadData];
+        [self.versionsButton setImage:[UIImage imageNamed:@"carousel.png"] forState:UIControlStateNormal];
+    }
+}
+
+- (IBAction)shareTapped:(id)sender {
     
-    [self.carousel reloadData];
-    [self.carousel scrollByNumberOfItems:self.carousel.numberOfItems duration:.5];
 }
 
 - (void)addUserTapped {
@@ -1924,7 +2006,13 @@
 
 - (NSUInteger)numberOfItemsInCarousel:(iCarousel *)carousel {
     
-    return self.boardIDs.count;
+    if ([carousel isEqual:self.versionsCarousel]) {
+        
+        NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"];
+
+        return versionsArray.count;
+    }
+    else return self.boardIDs.count;
 }
 
 - (UIView *)carousel:(iCarousel *)carousel viewForItemAtIndex:(NSUInteger)index reusingView:(UIView *)view {
@@ -1950,10 +2038,12 @@
         gradientButton.tag = 1;
     }
     
-    ((BoardView *)view).boardID = self.boardIDs[index];
+    if ([carousel isEqual:self.carousel]) ((BoardView *)view).boardID = self.boardIDs[index];
+    else ((BoardView *)view).boardID = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"] objectAtIndex:index];
+    
     [((BoardView *)view).loadingView removeFromSuperview];
     
-    if ([[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.boardIDs[index]]) {
+    if ([[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:((BoardView *)view).boardID]) {
         
         [self drawBoard:(BoardView *)view];
         [((BoardView *)view) layoutComments];
@@ -1993,37 +2083,46 @@
 - (void)carouselCurrentItemIndexDidChange:(iCarousel *)carousel {
     
     if (self.boardIDs.count == 0) return;
-    
-    NSString *boardID = self.boardIDs[carousel.currentItemIndex];
-    NSDictionary *boardDict = [[FirebaseHelper sharedHelper].boards objectForKey:boardID];
-    
-    NSString *boardName = [boardDict objectForKey:@"name"];
-    
-    if (boardName) {
-    
-        self.boardNameLabel.text = boardName;
-        if ([boardName isEqualToString:@"Untitled"]) self.boardNameLabel.alpha = .2;
-        else self.boardNameLabel.alpha = 1;
-    }
-    
-    double viewedAt = [[[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid] doubleValue];
-    double updatedAt = [[boardDict objectForKey:@"updatedAt"] doubleValue];
-    
-    UIFont *labelFont;
-    
-    if (updatedAt > viewedAt && ![self.viewedBoardIDs containsObject:boardID] && !newBoardCreated && ![self.editedBoardIDs containsObject:boardID]) {
-        
-        labelFont = [UIFont fontWithName:@"SourceSansPro-Semibold" size:24];
-    }
-    else
-        labelFont = [UIFont fontWithName:@"SourceSansPro-Light" size:24];
-    
-    self.boardNameLabel.font = labelFont;
-    [self.boardNameLabel sizeToFit];
-    self.boardNameLabel.center = CGPointMake(self.carousel.center.x, self.boardNameLabel.center.y);
 
-    if (self.boardNameLabel.text.length > 0) self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+17, self.boardNameLabel.center.y);
-    else self.boardNameEditButton.hidden = true;
+    if ([carousel isEqual:self.carousel]) {
+        
+        NSString *boardID = self.boardIDs[carousel.currentItemIndex];
+        NSDictionary *boardDict = [[FirebaseHelper sharedHelper].boards objectForKey:boardID];
+        
+        NSString *boardName = [boardDict objectForKey:@"name"];
+        
+        if (boardName) {
+        
+            self.boardNameLabel.text = boardName;
+            if ([boardName isEqualToString:@"Untitled"]) self.boardNameLabel.alpha = .2;
+            else self.boardNameLabel.alpha = 1;
+        }
+        
+        double viewedAt = [[[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid] doubleValue];
+        double updatedAt = [[boardDict objectForKey:@"updatedAt"] doubleValue];
+        
+        UIFont *labelFont;
+        
+        if (updatedAt > viewedAt && ![self.viewedBoardIDs containsObject:boardID] && !newBoardCreated && ![self.editedBoardIDs containsObject:boardID]) {
+            
+            labelFont = [UIFont fontWithName:@"SourceSansPro-Semibold" size:24];
+        }
+        else
+            labelFont = [UIFont fontWithName:@"SourceSansPro-Light" size:24];
+        
+        self.boardNameLabel.font = labelFont;
+        [self.boardNameLabel sizeToFit];
+        self.boardNameLabel.center = CGPointMake(self.carousel.center.x, self.boardNameLabel.center.y);
+
+        if (self.boardNameLabel.text.length > 0) self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+17, self.boardNameLabel.center.y);
+        else self.boardNameEditButton.hidden = true;
+    }
+    else {
+        
+        NSString *versionString = [NSString stringWithFormat:@"Version %i of", carousel.currentItemIndex+1];
+        
+        self.versionsLabel.text = versionString;
+    }
 }
 
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event {
@@ -2282,12 +2381,12 @@
     return self.editBoardIDs.count;
 }
 
-//-(CGFloat)carousel:(iCarousel *)carousel valueForOption:(iCarouselOption)option withDefault:(CGFloat)value {
-//    
-//    if (option == iCarouselOptionOffsetMultiplier) value = 10.0f;
-//    
-//    return value;
-//}
+-(CGFloat)carousel:(iCarousel *)carousel valueForOption:(iCarouselOption)option withDefault:(CGFloat)value {
+    
+    if (option == iCarouselOptionOffsetMultiplier && [carousel isEqual:self.versionsCarousel]) value = 5.0f;
+    
+    return value;
+}
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     

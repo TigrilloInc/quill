@@ -49,6 +49,7 @@
 - (void) setRoles;
 - (void) observeLocalUser;
 - (void) observeCurrentProjectBoards;
+- (void) observeCurrentBoardVersions;
 - (void) observeProjectWithID:(NSString *)projectID;
 - (void) observeBoardWithID:(NSString *)boardID;
 - (void) observeSubpathsForUser:(NSString *)userID onBoard:(NSString *)boardID;

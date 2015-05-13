@@ -209,6 +209,10 @@
 		12F4F9D31AA808DA00C8FC31 /* InstabugViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12F4F9D21AA808DA00C8FC31 /* InstabugViewController.m */; };
 		12FF4C281A1545D7008A6001 /* libMailCore-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 12FF4C1D1A15459D008A6001 /* libMailCore-ios.a */; };
 		F3012919198C3F0800A596DA /* FirebaseSimpleLogin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3012918198C3F0800A596DA /* FirebaseSimpleLogin.framework */; };
+		F30F002C1AF43C6D0082D7D6 /* boardbuttonsbackground.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F002B1AF43C6C0082D7D6 /* boardbuttonsbackground.png */; };
+		F30F00341AF4437B0082D7D6 /* versions.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F00331AF4437B0082D7D6 /* versions.png */; };
+		F30F00361AF445D90082D7D6 /* boardbuttonsbackground-rounded.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F00351AF445D90082D7D6 /* boardbuttonsbackground-rounded.png */; };
+		F30F00381AF44E3B0082D7D6 /* carousel.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F00371AF44E3B0082D7D6 /* carousel.png */; };
 		F37687E91AF2D2A3005ECE60 /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = F37687E81AF2D2A3005ECE60 /* share.png */; };
 		F37687F11AF2E36F005ECE60 /* board-riffs.png in Resources */ = {isa = PBXBuildFile; fileRef = F37687F01AF2E36F005ECE60 /* board-riffs.png */; };
 /* End PBXBuildFile section */
@@ -538,6 +542,10 @@
 		12F4F9D21AA808DA00C8FC31 /* InstabugViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = InstabugViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		12FF4C101A15459C008A6001 /* mailcore2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = mailcore2.xcodeproj; path = "Resources/mailcore2/build-mac/mailcore2.xcodeproj"; sourceTree = "<group>"; };
 		F3012918198C3F0800A596DA /* FirebaseSimpleLogin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseSimpleLogin.framework; path = quill/Resources/Firebase/FirebaseSimpleLogin.framework; sourceTree = "<group>"; };
+		F30F002B1AF43C6C0082D7D6 /* boardbuttonsbackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = boardbuttonsbackground.png; path = Resources/boardbuttonsbackground.png; sourceTree = "<group>"; };
+		F30F00331AF4437B0082D7D6 /* versions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = versions.png; path = Resources/versions.png; sourceTree = "<group>"; };
+		F30F00351AF445D90082D7D6 /* boardbuttonsbackground-rounded.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "boardbuttonsbackground-rounded.png"; path = "Resources/boardbuttonsbackground-rounded.png"; sourceTree = "<group>"; };
+		F30F00371AF44E3B0082D7D6 /* carousel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = carousel.png; path = Resources/carousel.png; sourceTree = "<group>"; };
 		F37687E81AF2D2A3005ECE60 /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = share.png; path = Resources/share.png; sourceTree = "<group>"; };
 		F37687F01AF2E36F005ECE60 /* board-riffs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-riffs.png"; path = "Resources/iCarousel/board-riffs.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -775,12 +783,16 @@
 				12C4E4D81A3B8AD400DB0E23 /* board7.png */,
 				124943B81A9174F800C1BEA4 /* board8.png */,
 				F37687F01AF2E36F005ECE60 /* board-riffs.png */,
+				F30F002B1AF43C6C0082D7D6 /* boardbuttonsbackground.png */,
+				F30F00351AF445D90082D7D6 /* boardbuttonsbackground-rounded.png */,
 				12CE89691A70A24F00983FBE /* feather.png */,
 				123D20041A5A5359004D5743 /* black.png */,
 				123D20051A5A5359004D5743 /* blue.png */,
 				12ABCE891A5E3F7500C4C7DC /* apply.png */,
 				12ABCE8A1A5E3F7500C4C7DC /* cancel.png */,
 				F37687E81AF2D2A3005ECE60 /* share.png */,
+				F30F00331AF4437B0082D7D6 /* versions.png */,
+				F30F00371AF44E3B0082D7D6 /* carousel.png */,
 				12ABCE8D1A5E491A00C4C7DC /* delete.png */,
 				12ABCE8F1A5F0D8400C4C7DC /* viewer.png */,
 				12ABCE911A5F11CC00C4C7DC /* collaborator.png */,
@@ -1152,6 +1164,7 @@
 				12ABCE851A5E0A3700C4C7DC /* Icon80.png in Resources */,
 				12ABCE811A5E0A3700C4C7DC /* Icon29.png in Resources */,
 				123D20061A5A5359004D5743 /* black.png in Resources */,
+				F30F00341AF4437B0082D7D6 /* versions.png in Resources */,
 				123D20101A5B4EDB004D5743 /* editfadeleft.png in Resources */,
 				1230ABCA1972093300EB2389 /* Main_iPad.storyboard in Resources */,
 				12ABCE921A5F11CC00C4C7DC /* collaborator.png in Resources */,
@@ -1159,6 +1172,7 @@
 				12C4E4D51A3B83A800DB0E23 /* board6.png in Resources */,
 				12ABCE961A5F17D500C4C7DC /* remove.png in Resources */,
 				12899BB21A1AEC3B00AF95BD /* carouselfade.png in Resources */,
+				F30F00381AF44E3B0082D7D6 /* carousel.png in Resources */,
 				12ABCEA11A5F214C00C4C7DC /* userbutton5.png in Resources */,
 				1231BEBE1A6DC52C00E09914 /* checked.png in Resources */,
 				12D5DBA61A48F20B003727AC /* highlighterselected.png in Resources */,
@@ -1166,6 +1180,7 @@
 				123D20071A5A5359004D5743 /* blue.png in Resources */,
 				124943B91A9174F800C1BEA4 /* board8.png in Resources */,
 				1213D7AA1A65BF51001FDEA9 /* yellow.png in Resources */,
+				F30F002C1AF43C6D0082D7D6 /* boardbuttonsbackground.png in Resources */,
 				1231BEC21A6DFAB400E09914 /* mail.png in Resources */,
 				129E128B19648A2C00ED9D42 /* Main_iPhone.storyboard in Resources */,
 				12D5DBA51A48F20B003727AC /* highlighter.png in Resources */,
@@ -1200,6 +1215,7 @@
 				12860FC61A4140310074B452 /* usercommenthighlight2.png in Resources */,
 				12860FA91A3FBE750074B452 /* SourceSansPro-Regular.ttf in Resources */,
 				12D5DBA21A48F173003727AC /* penselected.png in Resources */,
+				F30F00361AF445D90082D7D6 /* boardbuttonsbackground-rounded.png in Resources */,
 				12ABCE881A5E0A3700C4C7DC /* Icon180.png in Resources */,
 				1265B18C1984533500349817 /* board.png in Resources */,
 				12860FC01A40C8CD0074B452 /* userbutton4shadow.png in Resources */,

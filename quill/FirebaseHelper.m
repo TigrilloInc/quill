@@ -890,6 +890,8 @@ static FirebaseHelper *sharedHelper = nil;
     
     [[ref childByAppendingPath:@"commentsID"] observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
+        NSLog(@"board ID is %@", boardID);
+        
         [[self.boards objectForKey:boardID] setObject:snapshot.value forKey:@"commentsID"];
         [self.comments setObject:[NSMutableDictionary dictionary] forKey:snapshot.value];
         [self observeCommentsOnBoardWithID:boardID];
@@ -1073,6 +1075,18 @@ static FirebaseHelper *sharedHelper = nil;
     }
 }
 
+-(void) observeCurrentBoardVersions {
+    
+    NSArray *boardIDs = [[self.boards objectForKey:self.projectVC.boardIDs[self.projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
+    
+    NSLog(@"boardIDs is %@", boardIDs);
+    
+    for (NSString *boardID in boardIDs) {
+        
+        if (![self.loadedBoardIDs containsObject:boardID]) [self loadBoardWithID:boardID];
+    }
+}
+
 -(void) loadBoardWithID:(NSString *)boardID {
     
     NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@", self.db, boardID];
@@ -1147,12 +1161,18 @@ static FirebaseHelper *sharedHelper = nil;
         }
         
         NSArray *currentProjectBoardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
+        NSArray *currentVersionboardIDs = [[self.boards objectForKey:self.projectVC.boardIDs[self.projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
         
-        if (![self.loadedBoardIDs containsObject:boardID] && [currentProjectBoardIDs containsObject:boardID]) {
+        if (![self.loadedBoardIDs containsObject:boardID] && ([currentProjectBoardIDs containsObject:boardID] || [currentVersionboardIDs containsObject:boardID])) {
             
             [self.loadedBoardIDs addObject:boardID];
-            NSInteger boardIndex = [currentProjectBoardIDs indexOfObject:boardID];
-            BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
+            BoardView *boardView;
+            if ([currentProjectBoardIDs containsObject:boardID]) {
+                boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:[currentProjectBoardIDs indexOfObject:boardID]];
+            }
+            else {
+                boardView = (BoardView *)[self.projectVC.versionsCarousel itemViewAtIndex:[currentVersionboardIDs indexOfObject:boardID]];
+            }
             boardView.loadingView.hidden = true;
             boardView.fadeView.hidden = true;
             [boardView layoutComments];
