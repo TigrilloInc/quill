@@ -1079,8 +1079,6 @@ static FirebaseHelper *sharedHelper = nil;
     
     NSArray *boardIDs = [[self.boards objectForKey:self.projectVC.boardIDs[self.projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
     
-    NSLog(@"boardIDs is %@", boardIDs);
-    
     for (NSString *boardID in boardIDs) {
         
         if (![self.loadedBoardIDs containsObject:boardID]) [self loadBoardWithID:boardID];
@@ -1177,6 +1175,18 @@ static FirebaseHelper *sharedHelper = nil;
             boardView.fadeView.hidden = true;
             [boardView layoutComments];
             [self.projectVC drawBoard:boardView];
+            
+            int versionsNum = ((NSArray *)[[self.boards objectForKey:boardID] objectForKey:@"versions"]).count;
+            
+            if (versionsNum > 1 && versionsNum < 10) {
+                
+                NSString *boardString = [NSString stringWithFormat:@"board-versions%i.png", versionsNum];
+                [boardView.gradientButton setBackgroundImage:[UIImage imageNamed:boardString] forState:UIControlStateNormal];
+            }
+            else if (versionsNum >= 10) {
+                
+                [boardView.gradientButton setBackgroundImage:[UIImage imageNamed:@"board-versions10.png"] forState:UIControlStateNormal];
+            }
             
             for (NSString *userID in [[self.team objectForKey:@"users"] allKeys]) {
                 

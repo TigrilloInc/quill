@@ -1080,7 +1080,7 @@
     
     if ([self.chatTextField isFirstResponder]) [self.chatTextField resignFirstResponder];
     if ([self.editBoardNameTextField isFirstResponder]) [self.editBoardNameTextField resignFirstResponder];
-    
+
     self.editBoardIDs = [self.boardIDs mutableCopy];
     
     self.editProjectNameTextField.text = self.projectName;
@@ -1090,6 +1090,7 @@
     self.editButton.hidden = true;
     self.carousel.hidden = true;
     self.versionsCarousel.hidden = true;
+    self.versionsLabel.hidden = true;
     self.draggableCollectionView.hidden = false;
     self.boardNameLabel.hidden = true;
     self.addBoardButton.hidden = true;
@@ -1470,21 +1471,24 @@
 
 - (IBAction)versionsTapped:(id)sender {
 
+//    if (self.carouselMoving) return;
+    
     if (self.carousel.hidden) {
         
         self.carousel.hidden = false;
         self.versionsLabel.hidden = true;
-        [self.carousel reloadData];
         self.versionsCarousel.hidden = true;
         [self.versionsButton setImage:[UIImage imageNamed:@"versions.png"] forState:UIControlStateNormal];
     }
     else {
         
-        self.carousel.hidden = true;
-        self.versionsLabel.hidden = false;
-        self.versionsCarousel.hidden = false;
-        [[FirebaseHelper sharedHelper] observeCurrentBoardVersions];
         [self.versionsCarousel reloadData];
+        [self.versionsCarousel scrollToItemAtIndex:0 animated:NO];
+
+        self.versionsCarousel.hidden = false;
+        self.versionsLabel.hidden = false;
+        self.carousel.hidden = true;
+        [[FirebaseHelper sharedHelper] observeCurrentBoardVersions];
         [self.versionsButton setImage:[UIImage imageNamed:@"carousel.png"] forState:UIControlStateNormal];
     }
 }
@@ -2026,7 +2030,7 @@
         tr = CGAffineTransformRotate(tr, M_PI_2);
         view.transform = tr;
         
-        UIImage *gradientImage = [UIImage imageNamed:@"board8.png"];
+        UIImage *gradientImage = [UIImage imageNamed:@"board-versions0.png"];
         UIButton *gradientButton = [UIButton buttonWithType:UIButtonTypeCustom];
         gradientButton.frame = CGRectMake(0.0f, 0.0f, gradientImage.size.width, gradientImage.size.height);
         gradientButton.center = view.center;
@@ -2038,8 +2042,25 @@
         gradientButton.tag = 1;
     }
     
-    if ([carousel isEqual:self.carousel]) ((BoardView *)view).boardID = self.boardIDs[index];
-    else ((BoardView *)view).boardID = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"] objectAtIndex:index];
+    if ([carousel isEqual:self.carousel]) {
+        
+        ((BoardView *)view).boardID = self.boardIDs[index];
+        
+        int versionsNum = ((NSArray *)[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[index]] objectForKey:@"versions"]).count;
+        
+        if (versionsNum > 1 && versionsNum < 10) {
+            
+            NSString *boardString = [NSString stringWithFormat:@"board-versions%i.png", versionsNum];
+            [((BoardView *)view).gradientButton setBackgroundImage:[UIImage imageNamed:boardString] forState:UIControlStateNormal];
+        }
+        else if (versionsNum >= 10) {
+            
+            [((BoardView *)view).gradientButton setBackgroundImage:[UIImage imageNamed:@"board-versions10.png"] forState:UIControlStateNormal];
+        }
+    }
+    else {
+        ((BoardView *)view).boardID = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"] objectAtIndex:index];
+    }
     
     [((BoardView *)view).loadingView removeFromSuperview];
     
@@ -2073,6 +2094,7 @@
     self.carouselMoving = false;
     
     if (newBoardCreated) [self boardTapped:[carousel.currentItemView viewWithTag:1]];
+
 }
 
 - (void)carouselDidScroll:(iCarousel *)carousel {
@@ -2116,6 +2138,7 @@
 
         if (self.boardNameLabel.text.length > 0) self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+17, self.boardNameLabel.center.y);
         else self.boardNameEditButton.hidden = true;
+        
     }
     else {
         

@@ -214,7 +214,16 @@
 		F30F00361AF445D90082D7D6 /* boardbuttonsbackground-rounded.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F00351AF445D90082D7D6 /* boardbuttonsbackground-rounded.png */; };
 		F30F00381AF44E3B0082D7D6 /* carousel.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F00371AF44E3B0082D7D6 /* carousel.png */; };
 		F37687E91AF2D2A3005ECE60 /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = F37687E81AF2D2A3005ECE60 /* share.png */; };
-		F37687F11AF2E36F005ECE60 /* board-riffs.png in Resources */ = {isa = PBXBuildFile; fileRef = F37687F01AF2E36F005ECE60 /* board-riffs.png */; };
+		F3E4E5CF1B04647F00301E3D /* board-versions2.png in Resources */ = {isa = PBXBuildFile; fileRef = F3E4E5CC1B04647F00301E3D /* board-versions2.png */; };
+		F3E4E5D01B04647F00301E3D /* board-versions3.png in Resources */ = {isa = PBXBuildFile; fileRef = F3E4E5CD1B04647F00301E3D /* board-versions3.png */; };
+		F3E4E5D11B04647F00301E3D /* board-versions4.png in Resources */ = {isa = PBXBuildFile; fileRef = F3E4E5CE1B04647F00301E3D /* board-versions4.png */; };
+		F3F66F841B04FF2A00B6D184 /* board-versions0.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F831B04FF2A00B6D184 /* board-versions0.png */; };
+		F3F66F8C1B0515E700B6D184 /* board-versions5.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F8B1B0515E700B6D184 /* board-versions5.png */; };
+		F3F66F8E1B05175B00B6D184 /* board-versions6.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F8D1B05175B00B6D184 /* board-versions6.png */; };
+		F3F66F901B0521B000B6D184 /* board-versions7.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F8F1B0521B000B6D184 /* board-versions7.png */; };
+		F3F66F921B05264D00B6D184 /* board-versions8.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F911B05264D00B6D184 /* board-versions8.png */; };
+		F3F66F941B0529ED00B6D184 /* board-versions9.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F931B0529ED00B6D184 /* board-versions9.png */; };
+		F3F66F961B052B5800B6D184 /* board-versions10.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F951B052B5800B6D184 /* board-versions10.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -547,7 +556,16 @@
 		F30F00351AF445D90082D7D6 /* boardbuttonsbackground-rounded.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "boardbuttonsbackground-rounded.png"; path = "Resources/boardbuttonsbackground-rounded.png"; sourceTree = "<group>"; };
 		F30F00371AF44E3B0082D7D6 /* carousel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = carousel.png; path = Resources/carousel.png; sourceTree = "<group>"; };
 		F37687E81AF2D2A3005ECE60 /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = share.png; path = Resources/share.png; sourceTree = "<group>"; };
-		F37687F01AF2E36F005ECE60 /* board-riffs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-riffs.png"; path = "Resources/iCarousel/board-riffs.png"; sourceTree = "<group>"; };
+		F3E4E5CC1B04647F00301E3D /* board-versions2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions2.png"; path = "Resources/iCarousel/board-versions2.png"; sourceTree = "<group>"; };
+		F3E4E5CD1B04647F00301E3D /* board-versions3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions3.png"; path = "Resources/iCarousel/board-versions3.png"; sourceTree = "<group>"; };
+		F3E4E5CE1B04647F00301E3D /* board-versions4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions4.png"; path = "Resources/iCarousel/board-versions4.png"; sourceTree = "<group>"; };
+		F3F66F831B04FF2A00B6D184 /* board-versions0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions0.png"; path = "Resources/iCarousel/board-versions0.png"; sourceTree = "<group>"; };
+		F3F66F8B1B0515E700B6D184 /* board-versions5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions5.png"; path = "Resources/iCarousel/board-versions5.png"; sourceTree = "<group>"; };
+		F3F66F8D1B05175B00B6D184 /* board-versions6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions6.png"; path = "Resources/iCarousel/board-versions6.png"; sourceTree = "<group>"; };
+		F3F66F8F1B0521B000B6D184 /* board-versions7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions7.png"; path = "Resources/iCarousel/board-versions7.png"; sourceTree = "<group>"; };
+		F3F66F911B05264D00B6D184 /* board-versions8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions8.png"; path = "Resources/iCarousel/board-versions8.png"; sourceTree = "<group>"; };
+		F3F66F931B0529ED00B6D184 /* board-versions9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions9.png"; path = "Resources/iCarousel/board-versions9.png"; sourceTree = "<group>"; };
+		F3F66F951B052B5800B6D184 /* board-versions10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions10.png"; path = "Resources/iCarousel/board-versions10.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -782,7 +800,16 @@
 				12C4E4D41A3B83A800DB0E23 /* board6.png */,
 				12C4E4D81A3B8AD400DB0E23 /* board7.png */,
 				124943B81A9174F800C1BEA4 /* board8.png */,
-				F37687F01AF2E36F005ECE60 /* board-riffs.png */,
+				F3F66F831B04FF2A00B6D184 /* board-versions0.png */,
+				F3E4E5CC1B04647F00301E3D /* board-versions2.png */,
+				F3E4E5CD1B04647F00301E3D /* board-versions3.png */,
+				F3E4E5CE1B04647F00301E3D /* board-versions4.png */,
+				F3F66F8B1B0515E700B6D184 /* board-versions5.png */,
+				F3F66F8D1B05175B00B6D184 /* board-versions6.png */,
+				F3F66F8F1B0521B000B6D184 /* board-versions7.png */,
+				F3F66F911B05264D00B6D184 /* board-versions8.png */,
+				F3F66F931B0529ED00B6D184 /* board-versions9.png */,
+				F3F66F951B052B5800B6D184 /* board-versions10.png */,
 				F30F002B1AF43C6C0082D7D6 /* boardbuttonsbackground.png */,
 				F30F00351AF445D90082D7D6 /* boardbuttonsbackground-rounded.png */,
 				12CE89691A70A24F00983FBE /* feather.png */,
@@ -1106,7 +1133,6 @@
 				12ABCE821A5E0A3700C4C7DC /* Icon40.png in Resources */,
 				12860FCA1A420AF20074B452 /* usercommenthighlight.png in Resources */,
 				12ABCE861A5E0A3700C4C7DC /* Icon120.png in Resources */,
-				F37687F11AF2E36F005ECE60 /* board-riffs.png in Resources */,
 				129E129519648A2C00ED9D42 /* Images.xcassets in Resources */,
 				1213D7B21A67ABF2001FDEA9 /* chatfade4.png in Resources */,
 				12860FBE1A40C8CD0074B452 /* userbutton2shadow.png in Resources */,
@@ -1125,6 +1151,7 @@
 				1225C432199B194F0061027B /* close.png in Resources */,
 				12A9485719F814330042A036 /* chatfade1.png in Resources */,
 				12ABCE941A5F159600C4C7DC /* leave.png in Resources */,
+				F3E4E5D01B04647F00301E3D /* board-versions3.png in Resources */,
 				12C3A7FF1A88567F0022F2AA /* settingsfade.png in Resources */,
 				1231BEB91A6D8D2B00E09914 /* minus1.png in Resources */,
 				12ABCE9F1A5F214C00C4C7DC /* userbutton3.png in Resources */,
@@ -1142,12 +1169,14 @@
 				12ABCE901A5F0D8400C4C7DC /* viewer.png in Resources */,
 				123D1FF71A52567C004D5743 /* newboardbutton.png in Resources */,
 				123D200A1A5A5365004D5743 /* green.png in Resources */,
+				F3F66F941B0529ED00B6D184 /* board-versions9.png in Resources */,
 				129667711ABAA5E100CB57FA /* userbuttonmask2.png in Resources */,
 				12ABCEA21A5F214C00C4C7DC /* userbutton6.png in Resources */,
 				12ACFBB71A6C98E8004C298B /* Logo.png in Resources */,
 				12D5DBA81A4A7432003727AC /* plus2.png in Resources */,
 				123D20111A5B4EDB004D5743 /* editfaderight.png in Resources */,
 				12ABCE871A5E0A3700C4C7DC /* Icon152.png in Resources */,
+				F3F66F901B0521B000B6D184 /* board-versions7.png in Resources */,
 				12B222C51AD70387002F45E3 /* editavatar.png in Resources */,
 				12860F9B1A3E62870074B452 /* SourceSansPro-ExtraLight.otf in Resources */,
 				1213D7B41A681915001FDEA9 /* chatfade5.png in Resources */,
@@ -1185,6 +1214,7 @@
 				129E128B19648A2C00ED9D42 /* Main_iPhone.storyboard in Resources */,
 				12D5DBA51A48F20B003727AC /* highlighter.png in Resources */,
 				1213D7AC1A65EE22001FDEA9 /* chatfade2.png in Resources */,
+				F3F66F921B05264D00B6D184 /* board-versions8.png in Resources */,
 				12ABCE831A5E0A3700C4C7DC /* Icon58.png in Resources */,
 				12C4E4DB1A3B8D3300DB0E23 /* background3.png in Resources */,
 				12860FC11A40C8CD0074B452 /* userbutton5shadow.png in Resources */,
@@ -1192,9 +1222,12 @@
 				12AA5FB319EC44F400F6D552 /* drawing.png in Resources */,
 				12860F9D1A3E64A60074B452 /* SourceSansPro-Light.otf in Resources */,
 				1213D7B01A67535A001FDEA9 /* chatfade3.png in Resources */,
+				F3E4E5D11B04647F00301E3D /* board-versions4.png in Resources */,
+				F3F66F8E1B05175B00B6D184 /* board-versions6.png in Resources */,
 				1213D7B91A6B1538001FDEA9 /* newmessagesdivider.png in Resources */,
 				12ABCE841A5E0A3700C4C7DC /* Icon76.png in Resources */,
 				12860FAA1A3FBE750074B452 /* SourceSansPro-Semibold.ttf in Resources */,
+				F3F66F841B04FF2A00B6D184 /* board-versions0.png in Resources */,
 				12C4E4D91A3B8AD400DB0E23 /* board7.png in Resources */,
 				12ABCE8C1A5E3F7500C4C7DC /* cancel.png in Resources */,
 				129E128219648A2C00ED9D42 /* InfoPlist.strings in Resources */,
@@ -1204,6 +1237,7 @@
 				12F4F9C41AA7ECDF00C8FC31 /* Instabug.bundle in Resources */,
 				12ACFBAF1A6C9262004C298B /* formsheetbackground.png in Resources */,
 				1213D7AE1A664FB6001FDEA9 /* commenttitle.png in Resources */,
+				F3F66F8C1B0515E700B6D184 /* board-versions5.png in Resources */,
 				12BCAF5B1A4C0EA500FC327E /* down.png in Resources */,
 				12ABCE9E1A5F214C00C4C7DC /* userbutton2.png in Resources */,
 				1213D7A81A647C69001FDEA9 /* usercommenthighlight4.png in Resources */,
@@ -1213,6 +1247,7 @@
 				129667581AAE335200CB57FA /* usercomment4.png in Resources */,
 				12860FDC1A44AE040074B452 /* redo.png in Resources */,
 				12860FC61A4140310074B452 /* usercommenthighlight2.png in Resources */,
+				F3F66F961B052B5800B6D184 /* board-versions10.png in Resources */,
 				12860FA91A3FBE750074B452 /* SourceSansPro-Regular.ttf in Resources */,
 				12D5DBA21A48F173003727AC /* penselected.png in Resources */,
 				F30F00361AF445D90082D7D6 /* boardbuttonsbackground-rounded.png in Resources */,
@@ -1222,6 +1257,7 @@
 				1213D7A41A6453BA001FDEA9 /* eraser.png in Resources */,
 				1225C434199D4AB30061027B /* board2.png in Resources */,
 				12860FD61A43CEE60074B452 /* clear.png in Resources */,
+				F3E4E5CF1B04647F00301E3D /* board-versions2.png in Resources */,
 				123D200B1A5A5365004D5743 /* red.png in Resources */,
 				129667501AAE297000CB57FA /* usercomment3.png in Resources */,
 				12D5DBAA1A4A8619003727AC /* gear1.png in Resources */,
