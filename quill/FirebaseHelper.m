@@ -890,8 +890,6 @@ static FirebaseHelper *sharedHelper = nil;
     
     [[ref childByAppendingPath:@"commentsID"] observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
-        NSLog(@"board ID is %@", boardID);
-        
         [[self.boards objectForKey:boardID] setObject:snapshot.value forKey:@"commentsID"];
         [self.comments setObject:[NSMutableDictionary dictionary] forKey:snapshot.value];
         [self observeCommentsOnBoardWithID:boardID];

@@ -111,6 +111,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         bgtr = CGAffineTransformRotate(bgtr, -M_PI_2);
         self.avatarBackgroundImage.transform = bgtr;
         self.avatarBackgroundImage.frame = CGRectMake(18+projectVC.carouselOffset, self.avatarBackgroundImage.frame.size.width-70, self.avatarBackgroundImage.frame.size.width, self.avatarBackgroundImage.frame.size.height);
+        self.avatarBackgroundImage.alpha = .25;
         [self addSubview:self.avatarBackgroundImage];
     }
 

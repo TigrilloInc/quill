@@ -93,7 +93,13 @@
     
     if (indexPath.row == [FirebaseHelper sharedHelper].visibleProjectIDs.count && [FirebaseHelper sharedHelper].projectsLoaded) {
         
-        cell.imageView.image = [UIImage imageNamed:@"plus2.png"];
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(28, 28), NO, 0.0);
+        UIImage *plusImage = [UIImage imageNamed:@"plus5.png"];
+        [plusImage drawInRect:CGRectMake(0,0,28,28)];
+        UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        cell.imageView.image = newImage;
         cell.textLabel.text = @"New Project";
         cell.textLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:20];
         cell.textLabel.textColor = self.backgroundColor;

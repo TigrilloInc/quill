@@ -35,7 +35,6 @@
 		1231BEC01A6DC53A00E09914 /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = 1231BEBF1A6DC53A00E09914 /* unchecked.png */; };
 		1231BEC21A6DFAB400E09914 /* mail.png in Resources */ = {isa = PBXBuildFile; fileRef = 1231BEC11A6DFAB400E09914 /* mail.png */; };
 		1231BEC51A6EE2F200E09914 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 1231BEC41A6EE2F200E09914 /* Reachability.m */; };
-		123D1FF71A52567C004D5743 /* newboardbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D1FF61A52567C004D5743 /* newboardbutton.png */; };
 		123D1FFF1A5385C2004D5743 /* selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D1FFE1A5385C2004D5743 /* selected.png */; };
 		123D20021A5A5028004D5743 /* color.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D20001A5A5027004D5743 /* color.png */; };
 		123D20061A5A5359004D5743 /* black.png in Resources */ = {isa = PBXBuildFile; fileRef = 123D20041A5A5359004D5743 /* black.png */; };
@@ -137,7 +136,6 @@
 		12ABCE881A5E0A3700C4C7DC /* Icon180.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ABCE801A5E0A3700C4C7DC /* Icon180.png */; };
 		12ABCE8B1A5E3F7500C4C7DC /* apply.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ABCE891A5E3F7500C4C7DC /* apply.png */; };
 		12ABCE8C1A5E3F7500C4C7DC /* cancel.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ABCE8A1A5E3F7500C4C7DC /* cancel.png */; };
-		12ABCE8E1A5E491A00C4C7DC /* delete.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ABCE8D1A5E491A00C4C7DC /* delete.png */; };
 		12ABCE901A5F0D8400C4C7DC /* viewer.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ABCE8F1A5F0D8400C4C7DC /* viewer.png */; };
 		12ABCE921A5F11CC00C4C7DC /* collaborator.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ABCE911A5F11CC00C4C7DC /* collaborator.png */; };
 		12ABCE941A5F159600C4C7DC /* leave.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ABCE931A5F159600C4C7DC /* leave.png */; };
@@ -209,7 +207,6 @@
 		12F4F9D31AA808DA00C8FC31 /* InstabugViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12F4F9D21AA808DA00C8FC31 /* InstabugViewController.m */; };
 		12FF4C281A1545D7008A6001 /* libMailCore-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 12FF4C1D1A15459D008A6001 /* libMailCore-ios.a */; };
 		F3012919198C3F0800A596DA /* FirebaseSimpleLogin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3012918198C3F0800A596DA /* FirebaseSimpleLogin.framework */; };
-		F30F002C1AF43C6D0082D7D6 /* boardbuttonsbackground.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F002B1AF43C6C0082D7D6 /* boardbuttonsbackground.png */; };
 		F30F00341AF4437B0082D7D6 /* versions.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F00331AF4437B0082D7D6 /* versions.png */; };
 		F30F00361AF445D90082D7D6 /* boardbuttonsbackground-rounded.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F00351AF445D90082D7D6 /* boardbuttonsbackground-rounded.png */; };
 		F30F00381AF44E3B0082D7D6 /* carousel.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F00371AF44E3B0082D7D6 /* carousel.png */; };
@@ -224,6 +221,20 @@
 		F3F66F921B05264D00B6D184 /* board-versions8.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F911B05264D00B6D184 /* board-versions8.png */; };
 		F3F66F941B0529ED00B6D184 /* board-versions9.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F931B0529ED00B6D184 /* board-versions9.png */; };
 		F3F66F961B052B5800B6D184 /* board-versions10.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F951B052B5800B6D184 /* board-versions10.png */; };
+		F3F66F991B06A46D00B6D184 /* newboard.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F971B06A46D00B6D184 /* newboard.png */; };
+		F3F66F9A1B06A46D00B6D184 /* newboardbackground.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F981B06A46D00B6D184 /* newboardbackground.png */; };
+		F3F66F9C1B06B02C00B6D184 /* buttonsbackgound.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F9B1B06B02C00B6D184 /* buttonsbackgound.png */; };
+		F3F66F9E1B06C97000B6D184 /* plus4.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F9D1B06C97000B6D184 /* plus4.png */; };
+		F3F66FA01B07FA9400B6D184 /* deleteproject.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F9F1B07FA9400B6D184 /* deleteproject.png */; };
+		F3F66FA21B07FD4600B6D184 /* delete.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66FA11B07FD4600B6D184 /* delete.png */; };
+		F3F66FA41B09284900B6D184 /* deleteProjectBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66FA31B09284900B6D184 /* deleteProjectBackground.png */; };
+		F3F66FA61B093B8D00B6D184 /* gear2.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66FA51B093B8D00B6D184 /* gear2.png */; };
+		F3F66FA81B09418D00B6D184 /* gear3.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66FA71B09418D00B6D184 /* gear3.png */; };
+		F3F66FAA1B09458700B6D184 /* plus5.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66FA91B09458700B6D184 /* plus5.png */; };
+		F3F66FAC1B095C6F00B6D184 /* buttonsbackgound2.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66FAB1B095C6F00B6D184 /* buttonsbackgound2.png */; };
+		F3F66FAF1B0AAAB900B6D184 /* DeleteBoardAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F3F66FAE1B0AAAB900B6D184 /* DeleteBoardAlertViewController.m */; };
+		F3F66FB11B0AE95F00B6D184 /* newversionbackground.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66FB01B0AE95E00B6D184 /* newversionbackground.png */; };
+		F3F66FB31B0AF15D00B6D184 /* newversion.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66FB21B0AF15D00B6D184 /* newversion.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -331,7 +342,6 @@
 		1231BEC11A6DFAB400E09914 /* mail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mail.png; path = Resources/mail.png; sourceTree = "<group>"; };
 		1231BEC31A6EE2F200E09914 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reachability.h; path = Resources/Reachability/Reachability.h; sourceTree = "<group>"; };
 		1231BEC41A6EE2F200E09914 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Reachability.m; path = Resources/Reachability/Reachability.m; sourceTree = "<group>"; };
-		123D1FF61A52567C004D5743 /* newboardbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = newboardbutton.png; path = Resources/newboardbutton.png; sourceTree = "<group>"; };
 		123D1FFE1A5385C2004D5743 /* selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = selected.png; path = Resources/selected.png; sourceTree = "<group>"; };
 		123D20001A5A5027004D5743 /* color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = color.png; path = Resources/color.png; sourceTree = "<group>"; };
 		123D20041A5A5359004D5743 /* black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = black.png; path = Resources/black.png; sourceTree = "<group>"; };
@@ -459,7 +469,6 @@
 		12ABCE801A5E0A3700C4C7DC /* Icon180.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon180.png; path = Resources/Icon180.png; sourceTree = "<group>"; };
 		12ABCE891A5E3F7500C4C7DC /* apply.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = apply.png; path = Resources/apply.png; sourceTree = "<group>"; };
 		12ABCE8A1A5E3F7500C4C7DC /* cancel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cancel.png; path = Resources/cancel.png; sourceTree = "<group>"; };
-		12ABCE8D1A5E491A00C4C7DC /* delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = delete.png; path = Resources/delete.png; sourceTree = "<group>"; };
 		12ABCE8F1A5F0D8400C4C7DC /* viewer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = viewer.png; path = Resources/viewer.png; sourceTree = "<group>"; };
 		12ABCE911A5F11CC00C4C7DC /* collaborator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = collaborator.png; path = Resources/collaborator.png; sourceTree = "<group>"; };
 		12ABCE931A5F159600C4C7DC /* leave.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = leave.png; path = Resources/leave.png; sourceTree = "<group>"; };
@@ -551,7 +560,6 @@
 		12F4F9D21AA808DA00C8FC31 /* InstabugViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = InstabugViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		12FF4C101A15459C008A6001 /* mailcore2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = mailcore2.xcodeproj; path = "Resources/mailcore2/build-mac/mailcore2.xcodeproj"; sourceTree = "<group>"; };
 		F3012918198C3F0800A596DA /* FirebaseSimpleLogin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseSimpleLogin.framework; path = quill/Resources/Firebase/FirebaseSimpleLogin.framework; sourceTree = "<group>"; };
-		F30F002B1AF43C6C0082D7D6 /* boardbuttonsbackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = boardbuttonsbackground.png; path = Resources/boardbuttonsbackground.png; sourceTree = "<group>"; };
 		F30F00331AF4437B0082D7D6 /* versions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = versions.png; path = Resources/versions.png; sourceTree = "<group>"; };
 		F30F00351AF445D90082D7D6 /* boardbuttonsbackground-rounded.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "boardbuttonsbackground-rounded.png"; path = "Resources/boardbuttonsbackground-rounded.png"; sourceTree = "<group>"; };
 		F30F00371AF44E3B0082D7D6 /* carousel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = carousel.png; path = Resources/carousel.png; sourceTree = "<group>"; };
@@ -566,6 +574,21 @@
 		F3F66F911B05264D00B6D184 /* board-versions8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions8.png"; path = "Resources/iCarousel/board-versions8.png"; sourceTree = "<group>"; };
 		F3F66F931B0529ED00B6D184 /* board-versions9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions9.png"; path = "Resources/iCarousel/board-versions9.png"; sourceTree = "<group>"; };
 		F3F66F951B052B5800B6D184 /* board-versions10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions10.png"; path = "Resources/iCarousel/board-versions10.png"; sourceTree = "<group>"; };
+		F3F66F971B06A46D00B6D184 /* newboard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = newboard.png; path = Resources/newboard.png; sourceTree = "<group>"; };
+		F3F66F981B06A46D00B6D184 /* newboardbackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = newboardbackground.png; path = Resources/newboardbackground.png; sourceTree = "<group>"; };
+		F3F66F9B1B06B02C00B6D184 /* buttonsbackgound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = buttonsbackgound.png; path = Resources/buttonsbackgound.png; sourceTree = "<group>"; };
+		F3F66F9D1B06C97000B6D184 /* plus4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = plus4.png; path = Resources/plus4.png; sourceTree = "<group>"; };
+		F3F66F9F1B07FA9400B6D184 /* deleteproject.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = deleteproject.png; path = Resources/deleteproject.png; sourceTree = "<group>"; };
+		F3F66FA11B07FD4600B6D184 /* delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = delete.png; path = Resources/delete.png; sourceTree = "<group>"; };
+		F3F66FA31B09284900B6D184 /* deleteProjectBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = deleteProjectBackground.png; path = Resources/deleteProjectBackground.png; sourceTree = "<group>"; };
+		F3F66FA51B093B8D00B6D184 /* gear2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = gear2.png; path = Resources/gear2.png; sourceTree = "<group>"; };
+		F3F66FA71B09418D00B6D184 /* gear3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = gear3.png; path = Resources/gear3.png; sourceTree = "<group>"; };
+		F3F66FA91B09458700B6D184 /* plus5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = plus5.png; path = Resources/plus5.png; sourceTree = "<group>"; };
+		F3F66FAB1B095C6F00B6D184 /* buttonsbackgound2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = buttonsbackgound2.png; path = Resources/buttonsbackgound2.png; sourceTree = "<group>"; };
+		F3F66FAD1B0AAAB900B6D184 /* DeleteBoardAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeleteBoardAlertViewController.h; sourceTree = "<group>"; };
+		F3F66FAE1B0AAAB900B6D184 /* DeleteBoardAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeleteBoardAlertViewController.m; sourceTree = "<group>"; };
+		F3F66FB01B0AE95E00B6D184 /* newversionbackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = newversionbackground.png; path = Resources/newversionbackground.png; sourceTree = "<group>"; };
+		F3F66FB21B0AF15D00B6D184 /* newversion.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = newversion.png; path = Resources/newversion.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -755,6 +778,8 @@
 				12BDC6A11A95AF28001160AF /* LeaveProjectAlertViewController.m */,
 				12BDC6A61A95B12B001160AF /* DeleteProjectAlertViewController.h */,
 				12BDC6A71A95B12B001160AF /* DeleteProjectAlertViewController.m */,
+				F3F66FAD1B0AAAB900B6D184 /* DeleteBoardAlertViewController.h */,
+				F3F66FAE1B0AAAB900B6D184 /* DeleteBoardAlertViewController.m */,
 				12BDC6A91A95B14A001160AF /* RemoveUserAlertViewController.h */,
 				12BDC6AA1A95B14A001160AF /* RemoveUserAlertViewController.m */,
 				12BDC6AC1A96ECBB001160AF /* TransferOwnerViewController.h */,
@@ -810,17 +835,18 @@
 				F3F66F911B05264D00B6D184 /* board-versions8.png */,
 				F3F66F931B0529ED00B6D184 /* board-versions9.png */,
 				F3F66F951B052B5800B6D184 /* board-versions10.png */,
-				F30F002B1AF43C6C0082D7D6 /* boardbuttonsbackground.png */,
+				F3F66F9B1B06B02C00B6D184 /* buttonsbackgound.png */,
+				F3F66FAB1B095C6F00B6D184 /* buttonsbackgound2.png */,
 				F30F00351AF445D90082D7D6 /* boardbuttonsbackground-rounded.png */,
 				12CE89691A70A24F00983FBE /* feather.png */,
 				123D20041A5A5359004D5743 /* black.png */,
 				123D20051A5A5359004D5743 /* blue.png */,
 				12ABCE891A5E3F7500C4C7DC /* apply.png */,
 				12ABCE8A1A5E3F7500C4C7DC /* cancel.png */,
+				F3F66F9F1B07FA9400B6D184 /* deleteproject.png */,
 				F37687E81AF2D2A3005ECE60 /* share.png */,
 				F30F00331AF4437B0082D7D6 /* versions.png */,
 				F30F00371AF44E3B0082D7D6 /* carousel.png */,
-				12ABCE8D1A5E491A00C4C7DC /* delete.png */,
 				12ABCE8F1A5F0D8400C4C7DC /* viewer.png */,
 				12ABCE911A5F11CC00C4C7DC /* collaborator.png */,
 				12ABCE931A5F159600C4C7DC /* leave.png */,
@@ -832,6 +858,8 @@
 				12860FD51A43CEE60074B452 /* clear.png */,
 				123D20001A5A5027004D5743 /* color.png */,
 				12AA5FB219EC44F400F6D552 /* drawing.png */,
+				F3F66FA11B07FD4600B6D184 /* delete.png */,
+				F3F66FA31B09284900B6D184 /* deleteProjectBackground.png */,
 				12860FD31A43CECD0074B452 /* edit.png */,
 				12B222C41AD70387002F45E3 /* editavatar.png */,
 				12860FD11A43CEC50074B452 /* erase.png */,
@@ -839,11 +867,16 @@
 				12726C1F1A898F8F001F0346 /* arrow1.png */,
 				12726C201A898F8F001F0346 /* arrow2.png */,
 				12D5DBA91A4A8619003727AC /* gear1.png */,
+				F3F66FA51B093B8D00B6D184 /* gear2.png */,
+				F3F66FA71B09418D00B6D184 /* gear3.png */,
 				12D5DB9F1A48F172003727AC /* pen.png */,
 				12D5DBA01A48F172003727AC /* penselected.png */,
 				12D5DB951A48F167003727AC /* marker.png */,
 				12D5DB961A48F167003727AC /* markerselected.png */,
-				123D1FF61A52567C004D5743 /* newboardbutton.png */,
+				F3F66F971B06A46D00B6D184 /* newboard.png */,
+				F3F66FB21B0AF15D00B6D184 /* newversion.png */,
+				F3F66F981B06A46D00B6D184 /* newboardbackground.png */,
+				F3F66FB01B0AE95E00B6D184 /* newversionbackground.png */,
 				123D200C1A5B2B6B004D5743 /* newmessages.png */,
 				1213D7B81A6B1538001FDEA9 /* newmessagesdivider.png */,
 				12D5DBA31A48F20B003727AC /* highlighter.png */,
@@ -861,6 +894,8 @@
 				12860FEB1A47C3170074B452 /* plus1.png */,
 				12D5DBA71A4A7432003727AC /* plus2.png */,
 				1231BEB81A6D8D2B00E09914 /* plus3.png */,
+				F3F66F9D1B06C97000B6D184 /* plus4.png */,
+				F3F66FA91B09458700B6D184 /* plus5.png */,
 				12C3A7FE1A88567F0022F2AA /* settingsfade.png */,
 				12860FE91A47AF800074B452 /* avatarbackground.png */,
 				1296676E1ABA954500CB57FA /* userbuttonmask.png */,
@@ -1132,6 +1167,7 @@
 				12860F931A3E29410074B452 /* background5.png in Resources */,
 				12ABCE821A5E0A3700C4C7DC /* Icon40.png in Resources */,
 				12860FCA1A420AF20074B452 /* usercommenthighlight.png in Resources */,
+				F3F66FA01B07FA9400B6D184 /* deleteproject.png in Resources */,
 				12ABCE861A5E0A3700C4C7DC /* Icon120.png in Resources */,
 				129E129519648A2C00ED9D42 /* Images.xcassets in Resources */,
 				1213D7B21A67ABF2001FDEA9 /* chatfade4.png in Resources */,
@@ -1144,6 +1180,7 @@
 				12D5DBA11A48F173003727AC /* pen.png in Resources */,
 				12860FDA1A43CFA30074B452 /* undo.png in Resources */,
 				123D1FFF1A5385C2004D5743 /* selected.png in Resources */,
+				F3F66FA81B09418D00B6D184 /* gear3.png in Resources */,
 				12C4E4E51A3B9E2E00DB0E23 /* carouselfaderight.png in Resources */,
 				12ABCE721A5E044400C4C7DC /* Icon.png in Resources */,
 				12860FD21A43CEC50074B452 /* erase.png in Resources */,
@@ -1161,15 +1198,17 @@
 				12ABCE9D1A5F214C00C4C7DC /* userbutton1.png in Resources */,
 				12D5DB981A48F167003727AC /* markerselected.png in Resources */,
 				12DC979F1A8179E300CC4616 /* invitefade.png in Resources */,
+				F3F66FAA1B09458700B6D184 /* plus5.png in Resources */,
 				12DC979D1A8154E000CC4616 /* Logo2.png in Resources */,
 				1243AFB319FF0A900029B976 /* userhighlight.png in Resources */,
 				12726C221A898F8F001F0346 /* arrow2.png in Resources */,
 				1201F4981A4ABFAD00186C13 /* up.png in Resources */,
 				1231BEBA1A6D8D2B00E09914 /* plus3.png in Resources */,
 				12ABCE901A5F0D8400C4C7DC /* viewer.png in Resources */,
-				123D1FF71A52567C004D5743 /* newboardbutton.png in Resources */,
 				123D200A1A5A5365004D5743 /* green.png in Resources */,
+				F3F66FB11B0AE95F00B6D184 /* newversionbackground.png in Resources */,
 				F3F66F941B0529ED00B6D184 /* board-versions9.png in Resources */,
+				F3F66F9A1B06A46D00B6D184 /* newboardbackground.png in Resources */,
 				129667711ABAA5E100CB57FA /* userbuttonmask2.png in Resources */,
 				12ABCEA21A5F214C00C4C7DC /* userbutton6.png in Resources */,
 				12ACFBB71A6C98E8004C298B /* Logo.png in Resources */,
@@ -1203,13 +1242,13 @@
 				12899BB21A1AEC3B00AF95BD /* carouselfade.png in Resources */,
 				F30F00381AF44E3B0082D7D6 /* carousel.png in Resources */,
 				12ABCEA11A5F214C00C4C7DC /* userbutton5.png in Resources */,
+				F3F66F9C1B06B02C00B6D184 /* buttonsbackgound.png in Resources */,
 				1231BEBE1A6DC52C00E09914 /* checked.png in Resources */,
 				12D5DBA61A48F20B003727AC /* highlighterselected.png in Resources */,
 				1213D7A61A646D5D001FDEA9 /* usercomment2.png in Resources */,
 				123D20071A5A5359004D5743 /* blue.png in Resources */,
 				124943B91A9174F800C1BEA4 /* board8.png in Resources */,
 				1213D7AA1A65BF51001FDEA9 /* yellow.png in Resources */,
-				F30F002C1AF43C6D0082D7D6 /* boardbuttonsbackground.png in Resources */,
 				1231BEC21A6DFAB400E09914 /* mail.png in Resources */,
 				129E128B19648A2C00ED9D42 /* Main_iPhone.storyboard in Resources */,
 				12D5DBA51A48F20B003727AC /* highlighter.png in Resources */,
@@ -1225,24 +1264,29 @@
 				F3E4E5D11B04647F00301E3D /* board-versions4.png in Resources */,
 				F3F66F8E1B05175B00B6D184 /* board-versions6.png in Resources */,
 				1213D7B91A6B1538001FDEA9 /* newmessagesdivider.png in Resources */,
+				F3F66F9E1B06C97000B6D184 /* plus4.png in Resources */,
 				12ABCE841A5E0A3700C4C7DC /* Icon76.png in Resources */,
 				12860FAA1A3FBE750074B452 /* SourceSansPro-Semibold.ttf in Resources */,
 				F3F66F841B04FF2A00B6D184 /* board-versions0.png in Resources */,
 				12C4E4D91A3B8AD400DB0E23 /* board7.png in Resources */,
 				12ABCE8C1A5E3F7500C4C7DC /* cancel.png in Resources */,
+				F3F66FA21B07FD4600B6D184 /* delete.png in Resources */,
+				F3F66FA61B093B8D00B6D184 /* gear2.png in Resources */,
 				129E128219648A2C00ED9D42 /* InfoPlist.strings in Resources */,
 				12860FEC1A47C3170074B452 /* plus1.png in Resources */,
 				12C4E4D31A3B781600DB0E23 /* board5.png in Resources */,
+				F3F66F991B06A46D00B6D184 /* newboard.png in Resources */,
 				12C4E4E11A3B98B300DB0E23 /* background4.png in Resources */,
 				12F4F9C41AA7ECDF00C8FC31 /* Instabug.bundle in Resources */,
 				12ACFBAF1A6C9262004C298B /* formsheetbackground.png in Resources */,
+				F3F66FAC1B095C6F00B6D184 /* buttonsbackgound2.png in Resources */,
 				1213D7AE1A664FB6001FDEA9 /* commenttitle.png in Resources */,
 				F3F66F8C1B0515E700B6D184 /* board-versions5.png in Resources */,
 				12BCAF5B1A4C0EA500FC327E /* down.png in Resources */,
 				12ABCE9E1A5F214C00C4C7DC /* userbutton2.png in Resources */,
 				1213D7A81A647C69001FDEA9 /* usercommenthighlight4.png in Resources */,
-				12ABCE8E1A5E491A00C4C7DC /* delete.png in Resources */,
 				12C4E4E31A3B9DA800DB0E23 /* carouselfadeleft.png in Resources */,
+				F3F66FB31B0AF15D00B6D184 /* newversion.png in Resources */,
 				12C4E4D11A3B704400DB0E23 /* board4.png in Resources */,
 				129667581AAE335200CB57FA /* usercomment4.png in Resources */,
 				12860FDC1A44AE040074B452 /* redo.png in Resources */,
@@ -1260,6 +1304,7 @@
 				F3E4E5CF1B04647F00301E3D /* board-versions2.png in Resources */,
 				123D200B1A5A5365004D5743 /* red.png in Resources */,
 				129667501AAE297000CB57FA /* usercomment3.png in Resources */,
+				F3F66FA41B09284900B6D184 /* deleteProjectBackground.png in Resources */,
 				12D5DBAA1A4A8619003727AC /* gear1.png in Resources */,
 				1296676F1ABA954500CB57FA /* userbuttonmask.png in Resources */,
 				12D5DB971A48F167003727AC /* marker.png in Resources */,
@@ -1327,6 +1372,7 @@
 				12F4F9D31AA808DA00C8FC31 /* InstabugViewController.m in Sources */,
 				129E128419648A2C00ED9D42 /* main.m in Sources */,
 				1296676A1ABA6CAE00CB57FA /* PhotosCollectionViewController.m in Sources */,
+				F3F66FAF1B0AAAB900B6D184 /* DeleteBoardAlertViewController.m in Sources */,
 				1296676D1ABA795A00CB57FA /* PhotosCollectionViewCell.m in Sources */,
 				12860FB31A4024920074B452 /* NSString+MD5.m in Sources */,
 				12A3FA0D1977420400E03E9E /* PersonalSettingsViewController.m in Sources */,

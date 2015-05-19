@@ -66,8 +66,11 @@
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
+            <string>SourceSansPro-Regular</string>
+            <string>SourceSansPro-Regular</string>
         </mutableArray>
         <mutableArray key="SourceSansPro-Semibold.ttf">
+            <string>SourceSansPro-Semibold</string>
             <string>SourceSansPro-Semibold</string>
             <string>SourceSansPro-Semibold</string>
             <string>SourceSansPro-Semibold</string>
@@ -253,7 +256,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8t5-bG-hhU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-6473" y="-3055"/>
+            <point key="canvasLocation" x="-6468" y="-3093"/>
         </scene>
         <!--Add User View Controller-->
         <scene sceneID="06d-IQ-UxX">
@@ -328,7 +331,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xjk-WB-Nf0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-6457" y="-2580"/>
+            <point key="canvasLocation" x="-6468" y="-2668"/>
         </scene>
         <!--New Project View Controller-->
         <scene sceneID="NZc-kU-eTR">
@@ -399,7 +402,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QgD-NU-SoF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-5834" y="-1620"/>
+            <point key="canvasLocation" x="-5321" y="-3093"/>
         </scene>
         <!--Personal Settings View Controller-->
         <scene sceneID="n3l-KT-7pV">
@@ -505,7 +508,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bRF-pz-wwN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-6457" y="-2095"/>
+            <point key="canvasLocation" x="-6468" y="-2244"/>
         </scene>
         <!--Invite To Team View Controller-->
         <scene sceneID="No2-9p-ZOy">
@@ -568,7 +571,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Eu-Rz-dO8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-6482" y="-1613"/>
+            <point key="canvasLocation" x="-5321" y="-2668"/>
         </scene>
         <!--Leave Project Alert View Controller-->
         <scene sceneID="exd-I0-yX4">
@@ -617,7 +620,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lqJ-E1-dUu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-6482" y="-1175"/>
+            <point key="canvasLocation" x="-6467" y="-1828"/>
         </scene>
         <!--Delete Project Alert View Controller-->
         <scene sceneID="yCN-Z1-XBd">
@@ -665,7 +668,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Y6L-bh-QcS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-5834" y="-1175"/>
+            <point key="canvasLocation" x="-5893" y="-1828"/>
         </scene>
         <!--Remove User Alert View Controller-->
         <scene sceneID="80f-hw-OjA">
@@ -714,7 +717,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="awA-3x-BMU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-5834" y="-760"/>
+            <point key="canvasLocation" x="-5893" y="-1406"/>
         </scene>
         <!--Instabug View Controller-->
         <scene sceneID="XKj-O1-Rzt">
@@ -767,7 +770,55 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DsK-a3-noJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-5834" y="-313"/>
+            <point key="canvasLocation" x="-5325" y="-988"/>
+        </scene>
+        <!--Delete Board Alert View Controller-->
+        <scene sceneID="4g6-Je-vQz">
+            <objects>
+                <viewController storyboardIdentifier="DeleteBoard" id="7Vp-Sw-jUD" customClass="DeleteBoardAlertViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="d1c-4B-wcZ">
+                        <rect key="frame" x="0.0" y="0.0" width="540" height="350"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Deleted boards cannot be recovered." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="eit-qO-0Nx">
+                                <rect key="frame" x="16" y="180" width="508" height="42"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ioT-dv-IBU">
+                                <rect key="frame" x="16" y="103" width="508" height="83"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="h7s-zC-1Un" customClass="RoundedButton">
+                                <rect key="frame" x="115" y="300" width="310" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-Semibold" family="Source Sans Pro" pointSize="24"/>
+                                <state key="normal" title="Delete Board">
+                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="deleteTapped:" destination="7Vp-Sw-jUD" eventType="touchUpInside" id="DmK-yK-lyY"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="540" height="350"/>
+                    <connections>
+                        <outlet property="boardLabel" destination="ioT-dv-IBU" id="fWc-IN-jUw"/>
+                        <outlet property="deleteButton" destination="h7s-zC-1Un" id="WcC-kq-cEI"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="GJx-sq-1fO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-5321" y="-1406"/>
         </scene>
         <!--Photos Collection View Controller-->
         <scene sceneID="5b0-4g-fzZ">
@@ -820,7 +871,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="buU-pd-gpb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-5730" y="133"/>
+            <point key="canvasLocation" x="-5320" y="-570"/>
         </scene>
         <!--Signed Out Alert View Controller-->
         <scene sceneID="jeo-Km-XpX">
@@ -861,7 +912,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cgQ-Nl-Fr2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-5705" y="554"/>
+            <point key="canvasLocation" x="-5893" y="-983"/>
         </scene>
         <!--Reset Password View Controller-->
         <scene sceneID="O9b-g3-qNY">
@@ -909,7 +960,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="y0x-tu-VAe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-5705" y="986"/>
+            <point key="canvasLocation" x="-5893" y="-551"/>
         </scene>
         <!--Transfer Owner View Controller-->
         <scene sceneID="y9z-gh-RXn">
@@ -967,7 +1018,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f0J-Pk-JuQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-6482" y="-765"/>
+            <point key="canvasLocation" x="-6467" y="-1406"/>
         </scene>
         <!--User Deleted Alert View Controller-->
         <scene sceneID="kaP-7j-Zd3">
@@ -1035,7 +1086,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="n2s-11-Jt8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-6482" y="-318"/>
+            <point key="canvasLocation" x="-5320" y="-1828"/>
         </scene>
         <!--Invalid Name Alert View Controller-->
         <scene sceneID="PaQ-5O-OJc">
@@ -1076,7 +1127,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ro8-AW-r6z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-6303" y="133"/>
+            <point key="canvasLocation" x="-5321" y="-2244"/>
         </scene>
         <!--Invite New Owner View Controller-->
         <scene sceneID="3Hg-32-VXk">
@@ -1124,7 +1175,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ces-zY-zk2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-6303" y="554"/>
+            <point key="canvasLocation" x="-6467" y="-983"/>
         </scene>
         <!--Offline Alert View Controller-->
         <scene sceneID="93A-5z-Ukq">
@@ -1152,7 +1203,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="g4C-yw-d0g" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-6303" y="986"/>
+            <point key="canvasLocation" x="-6467" y="-551"/>
         </scene>
         <!--Change Password View Controller-->
         <scene sceneID="12j-fu-6cq">
@@ -1220,7 +1271,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wpy-Bn-l59" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-5854" y="-2095"/>
+            <point key="canvasLocation" x="-5894" y="-2244"/>
         </scene>
         <!--New Name View Controller-->
         <scene sceneID="TfJ-0b-b6L">
@@ -1281,7 +1332,7 @@
                     <barButtonItem key="backBarButtonItem" title="User Name" id="ZWe-ah-TwH"/>
                 </navigationItem>
             </objects>
-            <point key="canvasLocation" x="-5887" y="-3497"/>
+            <point key="canvasLocation" x="-5894" y="-3521"/>
         </scene>
         <!--Name From Invite View Controller-->
         <scene sceneID="XG3-OZ-oxL">
@@ -1332,7 +1383,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lH6-bZ-UFA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-5307" y="-3497"/>
+            <point key="canvasLocation" x="-5321" y="-3521"/>
         </scene>
         <!--Team Settings View Controller-->
         <scene sceneID="sba-L0-lNm">
@@ -1412,7 +1463,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oxp-Gb-k3Y" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-5854" y="-2580"/>
+            <point key="canvasLocation" x="-5894" y="-2668"/>
         </scene>
         <!--New Team View Controller-->
         <scene sceneID="sPj-AL-VUq">
@@ -1470,7 +1521,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="z6I-aS-Ug8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-5894" y="-3055"/>
+            <point key="canvasLocation" x="-5894" y="-3093"/>
         </scene>
         <!--Project Detail View Controller-->
         <scene sceneID="DGE-om-W17">
@@ -1484,7 +1535,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <button hidden="YES" opaque="NO" alpha="0.20000000000000001" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="BtQ-po-KEj">
+                            <button hidden="YES" opaque="NO" alpha="0.25" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="BtQ-po-KEj">
                                 <rect key="frame" x="561" y="39" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="edit.png">
@@ -1494,17 +1545,17 @@
                                     <action selector="projectNameEditTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="ZzQ-f3-6zX"/>
                                 </connections>
                             </button>
-                            <button hidden="YES" opaque="NO" alpha="0.20000000000000001" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="fby-KJ-NQF">
+                            <button hidden="YES" opaque="NO" alpha="0.25" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="fby-KJ-NQF">
                                 <rect key="frame" x="561" y="39" width="30" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="gear1.png">
+                                <state key="normal" image="gear2.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="editTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="ayf-LH-cI2"/>
                                 </connections>
                             </button>
-                            <button hidden="YES" opaque="NO" alpha="0.20000000000000001" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="vuw-ek-kay">
+                            <button hidden="YES" opaque="NO" alpha="0.25" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="vuw-ek-kay">
                                 <rect key="frame" x="390" y="364" width="40" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="edit.png">
@@ -1559,14 +1610,18 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="HZI-dR-56J"/>
                                 </connections>
                             </view>
-                            <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.25" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="boardbuttonsbackground-rounded.png" id="1n7-6k-4XC">
-                                <rect key="frame" x="715" y="505" width="200" height="70"/>
+                            <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.25" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="newboardbackground.png" id="1n7-6k-4XC">
+                                <rect key="frame" x="804" y="552" width="142.5" height="42.5"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.25" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="buttonsbackgound.png" id="md8-y5-EWv">
+                                <rect key="frame" x="340" y="512" width="142" height="42"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="N38-cw-Ht6">
-                                <rect key="frame" x="851" y="511" width="58" height="58"/>
+                                <rect key="frame" x="804" y="552" width="142.5" height="42.5"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="plus1.png">
+                                <state key="normal" image="newboard.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -1574,7 +1629,7 @@
                                 </connections>
                             </button>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="tbP-tk-4fE">
-                                <rect key="frame" x="732" y="520" width="40" height="40"/>
+                                <rect key="frame" x="344" y="513" width="40" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="share.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -1584,13 +1639,23 @@
                                 </connections>
                             </button>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Rla-Rc-2p3">
-                                <rect key="frame" x="790" y="520" width="40" height="40"/>
+                                <rect key="frame" x="391" y="513" width="40" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="iterations.png">
+                                <state key="normal" image="versions.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="versionsTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="svB-MG-BdS"/>
+                                </connections>
+                            </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="4rx-rn-aUE">
+                                <rect key="frame" x="440" y="513" width="40" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="delete.png">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="deleteBoardTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="6bQ-av-DX8"/>
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" id="kDh-qU-DmB">
@@ -1658,8 +1723,20 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="WdP-0G-bAN"/>
                                 </connections>
                             </textField>
-                            <button opaque="NO" alpha="0.40000000000000002" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="x1v-BJ-G8Z">
-                                <rect key="frame" x="850" y="696" width="116" height="30"/>
+                            <imageView userInteractionEnabled="NO" alpha="0.25" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="buttonsbackgound.png" id="dJg-sG-5IY">
+                                <rect key="frame" x="850" y="696" width="142" height="42"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" alpha="0.25" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="buttonsbackgound.png" id="qoO-6r-mXR">
+                                <rect key="frame" x="680" y="696" width="142" height="42"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" alpha="0.65000000000000002" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="deleteProjectBackground.png" id="GGp-Zb-rBF">
+                                <rect key="frame" x="255" y="696" width="203" height="42"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="x1v-BJ-G8Z">
+                                <rect key="frame" x="850" y="696" width="142" height="42"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="apply.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -1668,8 +1745,8 @@
                                     <action selector="applyChangesTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="rEK-RL-SHS"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" alpha="0.40000000000000002" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="PVv-oK-WDb">
-                                <rect key="frame" x="680" y="696" width="116" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="PVv-oK-WDb">
+                                <rect key="frame" x="680" y="696" width="142" height="42"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="cancel.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -1679,9 +1756,9 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="WPV-YU-0TX">
-                                <rect key="frame" x="255" y="696" width="189" height="30"/>
+                                <rect key="frame" x="255" y="696" width="203" height="42"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="delete.png">
+                                <state key="normal" image="deleteproject.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -1829,10 +1906,13 @@
                     <connections>
                         <outlet property="addBoardBackgroundImage" destination="1n7-6k-4XC" id="Nim-q3-roT"/>
                         <outlet property="addBoardButton" destination="N38-cw-Ht6" id="1cu-HK-CxY"/>
+                        <outlet property="applyBackgroundImage" destination="dJg-sG-5IY" id="Eb6-7R-O2K"/>
                         <outlet property="applyChangesButton" destination="x1v-BJ-G8Z" id="Prx-JS-tnX"/>
                         <outlet property="backgroundImage" destination="m3y-wV-D63" id="AiC-UF-2tu"/>
                         <outlet property="boardNameEditButton" destination="vuw-ek-kay" id="JXr-hL-THv"/>
                         <outlet property="boardNameLabel" destination="Hbm-ZL-EhN" id="FXB-H3-xWR"/>
+                        <outlet property="buttonsBackgroundImage" destination="md8-y5-EWv" id="yeq-Ny-apC"/>
+                        <outlet property="cancelBackgroundImage" destination="qoO-6r-mXR" id="xlE-7k-q2H"/>
                         <outlet property="cancelButton" destination="PVv-oK-WDb" id="fLw-os-hmH"/>
                         <outlet property="carousel" destination="gXb-FZ-4hw" id="b6h-mW-OJD"/>
                         <outlet property="chatFadeImage" destination="bA4-HW-Iwl" id="exa-eK-HzJ"/>
@@ -1842,6 +1922,8 @@
                         <outlet property="chatView" destination="kDh-qU-DmB" id="T8e-RO-Tbs"/>
                         <outlet property="commentTitleTextField" destination="xTW-nI-pbt" id="iOn-pP-mkU"/>
                         <outlet property="commentTitleView" destination="ZYT-PY-718" id="FBM-zS-sXD"/>
+                        <outlet property="deleteBoardButton" destination="4rx-rn-aUE" id="BWQ-bJ-hjS"/>
+                        <outlet property="deleteProjectBackgroundImage" destination="GGp-Zb-rBF" id="EQG-2M-Scg"/>
                         <outlet property="deleteProjectButton" destination="WPV-YU-0TX" id="7ci-wy-2bd"/>
                         <outlet property="draggableCollectionView" destination="Gdt-c0-HVM" id="1zK-54-rIS"/>
                         <outlet property="editBoardNameTextField" destination="wFY-iY-Scc" id="i5M-9j-PZn"/>
@@ -1863,25 +1945,28 @@
         </scene>
     </scenes>
     <resources>
-        <image name="apply.png" width="378" height="100"/>
+        <image name="apply.png" width="570" height="170"/>
         <image name="arrow2.png" width="120" height="120"/>
         <image name="background5.png" width="1024" height="768"/>
-        <image name="boardbuttonsbackground-rounded.png" width="800" height="280"/>
-        <image name="cancel.png" width="378" height="100"/>
+        <image name="buttonsbackgound.png" width="285" height="86"/>
+        <image name="cancel.png" width="570" height="170"/>
         <image name="chatfade5.png" width="1528" height="60"/>
         <image name="commenttitle.png" width="1024" height="40"/>
-        <image name="delete.png" width="630" height="100"/>
+        <image name="delete.png" width="232" height="231"/>
+        <image name="deleteProjectBackground.png" width="410" height="86"/>
+        <image name="deleteproject.png" width="820" height="170"/>
         <image name="edit.png" width="600" height="600"/>
         <image name="feather.png" width="1024" height="1024"/>
-        <image name="gear1.png" width="324" height="323"/>
+        <image name="gear2.png" width="324" height="323"/>
         <image name="invitefade.png" width="540" height="112"/>
-        <image name="iterations.png" width="700" height="700"/>
-        <image name="plus1.png" width="232" height="231"/>
+        <image name="newboard.png" width="570" height="170"/>
+        <image name="newboardbackground.png" width="285" height="86"/>
         <image name="projectsshadow.png" width="210" height="70"/>
         <image name="settingsfade.png" width="540" height="112"/>
         <image name="share.png" width="700" height="700"/>
         <image name="up.png" width="145" height="80"/>
         <image name="userbuttonmask.png" width="250" height="250"/>
+        <image name="versions.png" width="700" height="700"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

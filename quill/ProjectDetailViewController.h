@@ -16,8 +16,10 @@
 @class MasterView;
 
 @interface ProjectDetailViewController : UIViewController <iCarouselDataSource, iCarouselDelegate, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource_Draggable, UICollectionViewDelegate, UIGestureRecognizerDelegate> {
-    
+
     BOOL newBoardCreated;
+    BOOL showButtons;
+
     UIButton *boardButton;
     UIImageView *carouselFade;
     UIImageView *editFade;
@@ -65,8 +67,10 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *addBoardButton;
 @property (weak, nonatomic) IBOutlet UIImageView *addBoardBackgroundImage;
+@property (weak, nonatomic) IBOutlet UIImageView *buttonsBackgroundImage;
 @property (weak, nonatomic) IBOutlet UIButton *shareButton;
 @property (weak, nonatomic) IBOutlet UIButton *versionsButton;
+@property (weak, nonatomic) IBOutlet UIButton *deleteBoardButton;
 
 @property (weak, nonatomic) IBOutlet UIButton *sendMessageButton;
 
@@ -93,8 +97,11 @@
 @property (weak, nonatomic) IBOutlet UITextField *editBoardNameTextField;
 @property (weak, nonatomic) IBOutlet UICollectionView *draggableCollectionView;
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
+@property (weak, nonatomic) IBOutlet UIImageView *cancelBackgroundImage;
 @property (weak, nonatomic) IBOutlet UIButton *applyChangesButton;
+@property (weak, nonatomic) IBOutlet UIImageView *applyBackgroundImage;
 @property (weak, nonatomic) IBOutlet UIButton *deleteProjectButton;
+@property (weak, nonatomic) IBOutlet UIImageView *deleteProjectBackgroundImage;
 
 @property (strong, nonatomic) UIImageView *eraserCursor;
 
@@ -109,5 +116,7 @@
 -(void) updateMessages;
 -(void) updateChatHeight;
 -(void) createBoard;
+-(void) deleteBoardWithID:(NSString *)boardID;
+-(IBAction) versionsTapped:(id)sender;
 
 @end
