@@ -471,7 +471,19 @@ static FirebaseHelper *sharedHelper = nil;
             else inBoard = true;
         }
 
-        if ([self.projectVC.boardIDs containsObject:boardID]){
+        NSArray *versionsArray = [[self.boards objectForKey:self.projectVC.boardIDs[self.projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
+        
+        if ([versionsArray containsObject:boardID] && self.projectVC.versioning) {
+            
+            NSInteger boardIndex = [versionsArray indexOfObject:boardID];
+            BoardView *boardView = (BoardView *)[self.projectVC.versionsCarousel itemViewAtIndex:boardIndex];
+            
+            if (inBoard && ![boardView.activeUserIDs containsObject:userID]) [boardView.activeUserIDs addObject:userID];
+            else if (!inBoard) [boardView.activeUserIDs removeObject:userID];
+            
+            [boardView layoutAvatars];
+        }
+        else if ([self.projectVC.boardIDs containsObject:boardID] && self.projectVC.versioning){
             
             NSInteger boardIndex = [self.projectVC.boardIDs indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
@@ -524,12 +536,25 @@ static FirebaseHelper *sharedHelper = nil;
             
             if (self.projectVC.activeBoardID && [[[[self.boards objectForKey:self.projectVC.activeBoardID] objectForKey:@"subpaths"] allKeys] containsObject:userID]) {
                 
-                NSInteger boardIndex = [self.projectVC.boardIDs indexOfObject:self.projectVC.activeBoardID];
-                BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
-                [boardView layoutAvatars];
+                NSArray *versionsArray = [[self.boards objectForKey:self.projectVC.boardIDs[self.projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
+                
+                if ([self.projectVC.boardIDs containsObject:self.projectVC.activeBoardID]){
+                    
+                    NSInteger boardIndex = [self.projectVC.boardIDs indexOfObject:self.projectVC.activeBoardID];
+                    BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
+ 
+                    [boardView layoutAvatars];
+                }
+                
+                if ([versionsArray containsObject:self.projectVC.activeBoardID]) {
+                    
+                    NSInteger boardIndex = [versionsArray indexOfObject:self.projectVC.activeBoardID];
+                    BoardView *boardView = (BoardView *)[self.projectVC.versionsCarousel itemViewAtIndex:boardIndex];
+                    
+                    [boardView layoutAvatars];
+                }
             }
         }
-        
         
         [[self.loadedUsers objectForKey:userID] setObject:@1 forKey:@"avatar"];
         
@@ -924,7 +949,7 @@ static FirebaseHelper *sharedHelper = nil;
                 self.projectVC.boardNameLabel.center = CGPointMake(self.projectVC.carousel.center.x+105, self.projectVC.boardNameLabel.center.y);
                 self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.carousel.center.x+self.projectVC.boardNameLabel.frame.size.width/2+122, self.projectVC.boardNameLabel.center.y);
             }
-            else if (self.currentProjectID ) {
+            else if (self.currentProjectID) {
                 
                 self.projectVC.boardNameLabel.center = CGPointMake(self.projectVC.carousel.center.x, self.projectVC.boardNameLabel.center.y);
                 
@@ -1013,6 +1038,27 @@ static FirebaseHelper *sharedHelper = nil;
                     [boardView addUserDrawing:userID];
                 }
             }
+            
+            
+            NSArray *versionsArray = [[self.boards objectForKey:self.projectVC.boardIDs[self.projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
+            
+            if ([versionsArray containsObject:boardID]) {
+                
+                NSInteger boardIndex = [versionsArray indexOfObject:boardID];
+                BoardView *boardView = (BoardView *)[self.projectVC.versionsCarousel itemViewAtIndex:boardIndex];
+                
+                if (boardView.drawingUserID && ![boardView.drawingUserID isEqualToString:userID]) {
+                    
+                    boardView.shouldRedraw = true;
+                }
+                else {
+                    
+                    if([snapshot.value respondsToSelector:@selector(objectForKey:)]) [boardView drawSubpath:snapshot.value];
+                    else [boardView drawSubpath:@{snapshot.key : snapshot.value}];
+                    
+                    [boardView addUserDrawing:userID];
+                }
+            }
         }
     }];
 }
@@ -1075,9 +1121,9 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void) observeCurrentBoardVersions {
     
-    NSArray *boardIDs = [[self.boards objectForKey:self.projectVC.boardIDs[self.projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
+    NSArray *versionsArray = [[self.boards objectForKey:self.projectVC.boardIDs[self.projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
     
-    for (NSString *boardID in boardIDs) {
+    for (NSString *boardID in versionsArray) {
         
         if (![self.loadedBoardIDs containsObject:boardID]) [self loadBoardWithID:boardID];
     }
@@ -1225,6 +1271,15 @@ static FirebaseHelper *sharedHelper = nil;
             [boardView layoutComments];
         }
         
+        NSArray *versionsArray = [[self.boards objectForKey:self.projectVC.boardIDs[self.projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
+        
+        if ([versionsArray containsObject:boardID]) {
+            
+            NSInteger boardIndex = [versionsArray indexOfObject:boardID];
+            BoardView *boardView = (BoardView *)[self.projectVC.versionsCarousel itemViewAtIndex:boardIndex];
+            [boardView layoutComments];
+        }
+        
         [[ref childByAppendingPath:snapshot.key] removeAllObservers];
     }];
 }
@@ -1261,6 +1316,23 @@ static FirebaseHelper *sharedHelper = nil;
                 self.projectVC.commentTitleView.hidden = false;
             }
         }
+        
+        NSArray *versionsArray = [[self.boards objectForKey:self.projectVC.boardIDs[self.projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
+        
+        if ([versionsArray containsObject:boardID]) {
+            
+            NSInteger boardIndex = [versionsArray indexOfObject:boardID];
+            BoardView *boardView = (BoardView *)[self.projectVC.versionsCarousel itemViewAtIndex:boardIndex];
+            [boardView layoutComments];
+            
+            NSString *titleString = [snapshot.value objectForKey:@"title"];
+            
+            if ([self.projectVC.activeCommentThreadID isEqualToString:commentThreadID] && titleString.length > 0) {
+                
+                self.projectVC.commentTitleTextField.text = titleString;
+                self.projectVC.commentTitleView.hidden = false;
+            }
+        }
     }];
     
     [[ref childByAppendingPath:@"messages"] observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot) {
@@ -1289,6 +1361,15 @@ static FirebaseHelper *sharedHelper = nil;
             
             NSInteger boardIndex = [self.projectVC.boardIDs indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
+            [boardView layoutComments];
+        }
+        
+        NSArray *versionsArray = [[self.boards objectForKey:self.projectVC.boardIDs[self.projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
+        
+        if ([versionsArray containsObject:boardID]) {
+            
+            NSInteger boardIndex = [versionsArray indexOfObject:boardID];
+            BoardView *boardView = (BoardView *)[self.projectVC.versionsCarousel itemViewAtIndex:boardIndex];
             [boardView layoutComments];
         }
     }];

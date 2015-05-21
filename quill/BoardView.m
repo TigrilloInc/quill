@@ -412,12 +412,17 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         projectVC.chatOpen = false;
         projectVC.activeCommentThreadID = nil;
         
+        iCarousel *carousel;
+        
+        if (projectVC.versioning) carousel = projectVC.versionsCarousel;
+        else carousel = projectVC.carousel;
+        
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:.25];
         [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
         [UIView setAnimationBeginsFromCurrentState:YES];
         
-        projectVC.carousel.center = CGPointMake(projectVC.view.center.x, projectVC.view.center.y);
+        carousel.center = CGPointMake(projectVC.view.center.x, projectVC.view.center.y);
         
         CGRect backgroundRect = self.avatarBackgroundImage.frame;
         self.avatarBackgroundImage.frame = CGRectMake(18, backgroundRect.origin.y, backgroundRect.size.width, backgroundRect.size.height);
@@ -556,7 +561,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
             alpha = 1.0f;
         }
         if (penType == 1) {
-            lineWidth = 2.0f;
+            lineWidth = 1.0f;
             alpha = 1.0f;
         }
         if (penType == 2) {
@@ -639,6 +644,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 -(void) hideChat {
     
     [projectVC.view bringSubviewToFront:projectVC.carousel];
+    [projectVC.view bringSubviewToFront:projectVC.versionsCarousel];
     [projectVC showDrawMenu];
     projectVC.carouselOffset = 0;
     
@@ -950,6 +956,11 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 
 -(void) updateCarouselOffsetWithPoint:(CGPoint)point {
     
+    iCarousel *carousel;
+    
+    if (projectVC.versioning) carousel = projectVC.versionsCarousel;
+    else carousel = projectVC.carousel;
+    
     float oldOffset = projectVC.carouselOffset;
     
     if (projectVC.userRole > 0) projectVC.carouselOffset = (point.x*.75)-70;
@@ -967,8 +978,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
             
             projectVC.carouselOffset = chatHeight;
             
-            CGRect carouselRect = projectVC.carousel.frame;
-            projectVC.carousel.frame = CGRectMake(carouselRect.origin.x, 5-projectVC.carouselOffset, carouselRect.size.width, carouselRect.size.height);
+            CGRect carouselRect = carousel.frame;
+            carousel.frame = CGRectMake(carouselRect.origin.x, 5-projectVC.carouselOffset, carouselRect.size.width, carouselRect.size.height);
             
             CGRect backgroundRect = self.avatarBackgroundImage.frame;
             self.avatarBackgroundImage.frame = CGRectMake(17+projectVC.carouselOffset, backgroundRect.origin.y, backgroundRect.size.width, backgroundRect.size.height);
@@ -986,9 +997,9 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     }
     else if (projectVC.activeCommentThreadID && projectVC.carouselOffset > 0) {
         
-        CGRect carouselRect = projectVC.carousel.frame;
+        CGRect carouselRect = carousel.frame;
         carouselRect.origin.y += (oldOffset - projectVC.carouselOffset);
-        projectVC.carousel.frame = carouselRect;
+        carousel.frame = carouselRect;
         
         CGRect backgroundRect = self.avatarBackgroundImage.frame;
         backgroundRect.origin.x -= (oldOffset - projectVC.carouselOffset);

@@ -29,7 +29,7 @@
     
     NSString *boardName;
     
-    if ([FirebaseHelper sharedHelper].projectVC.carousel.hidden) {
+    if ([FirebaseHelper sharedHelper].projectVC.versioning) {
         
         NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:[FirebaseHelper sharedHelper].projectVC.boardIDs[[FirebaseHelper sharedHelper].projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
         NSString *boardID = versionsArray[[FirebaseHelper sharedHelper].projectVC.versionsCarousel.currentItemIndex];
@@ -52,7 +52,7 @@
     NSString *boardString;
     int boldLength;
     
-    if (projectVC.carousel.hidden && projectVC.versionsCarousel.currentItemIndex > 0) {
+    if (projectVC.versioning && projectVC.versionsCarousel.currentItemIndex > 0) {
         boardString = [NSString stringWithFormat:@"Are you sure you want to delete Version %i of %@?", projectVC.versionsCarousel.currentItemIndex+1, boardName];
         boldLength = boardName.length+12+[@(projectVC.versionsCarousel.currentItemIndex+1) stringValue].length;
     }
@@ -100,7 +100,7 @@
     NSString *boardID = [FirebaseHelper sharedHelper].projectVC.boardIDs[[FirebaseHelper sharedHelper].projectVC.carousel.currentItemIndex];
     NSMutableArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:[FirebaseHelper sharedHelper].projectVC.boardIDs[[FirebaseHelper sharedHelper].projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
     
-    if (projectVC.carousel.hidden && projectVC.versionsCarousel.currentItemIndex > 0) {
+    if (projectVC.versioning && projectVC.versionsCarousel.currentItemIndex > 0) {
         
         NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/versions/%i", [FirebaseHelper sharedHelper].db, boardID, projectVC.versionsCarousel.currentItemIndex];
         Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
@@ -130,7 +130,7 @@
         
         for (int i=1; i<versionsArray.count; i++) [projectVC deleteBoardWithID:versionsArray[i]];
         
-        if (projectVC.carousel.hidden) [projectVC versionsTapped:nil];
+        if (projectVC.versioning) [projectVC versionsTapped:nil];
         if (projectVC.boardIDs.count == 0) [projectVC createBoard];
     }
     

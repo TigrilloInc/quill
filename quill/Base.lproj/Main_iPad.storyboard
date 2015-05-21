@@ -1594,14 +1594,6 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="3Yb-Sn-Nyj"/>
                                 </connections>
                             </textField>
-                            <view contentMode="scaleToFill" id="s9f-SR-zLr" customClass="iCarousel">
-                                <rect key="frame" x="210" y="150" width="814" height="380"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <connections>
-                                    <outlet property="dataSource" destination="u5o-7l-ZfK" id="U98-vF-n6H"/>
-                                    <outlet property="delegate" destination="u5o-7l-ZfK" id="ebI-ms-IQ3"/>
-                                </connections>
-                            </view>
                             <view contentMode="scaleToFill" id="gXb-FZ-4hw" customClass="iCarousel">
                                 <rect key="frame" x="210" y="150" width="814" height="380"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1610,11 +1602,19 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="HZI-dR-56J"/>
                                 </connections>
                             </view>
+                            <view contentMode="scaleToFill" id="s9f-SR-zLr" customClass="iCarousel">
+                                <rect key="frame" x="210" y="150" width="814" height="380"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="u5o-7l-ZfK" id="U98-vF-n6H"/>
+                                    <outlet property="delegate" destination="u5o-7l-ZfK" id="ebI-ms-IQ3"/>
+                                </connections>
+                            </view>
                             <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.25" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="newboardbackground.png" id="1n7-6k-4XC">
-                                <rect key="frame" x="804" y="552" width="142.5" height="42.5"/>
+                                <rect key="frame" x="800" y="552" width="142.5" height="42.5"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.25" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="buttonsbackgound.png" id="md8-y5-EWv">
+                            <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.25" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="buttonsbackground.png" id="md8-y5-EWv">
                                 <rect key="frame" x="340" y="512" width="142" height="42"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
@@ -1658,6 +1658,14 @@
                                     <action selector="deleteBoardTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="6bQ-av-DX8"/>
                                 </connections>
                             </button>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="downarrow.png" id="fA2-dq-x7i">
+                                <rect key="frame" x="280" y="175" width="37" height="330"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="uparrow.png" id="Aq2-gE-ke2">
+                                <rect key="frame" x="917" y="175" width="37" height="330"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                             <view contentMode="scaleToFill" id="kDh-qU-DmB">
                                 <rect key="frame" x="210" y="719" width="814" height="49"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1723,11 +1731,11 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="WdP-0G-bAN"/>
                                 </connections>
                             </textField>
-                            <imageView userInteractionEnabled="NO" alpha="0.25" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="buttonsbackgound.png" id="dJg-sG-5IY">
+                            <imageView userInteractionEnabled="NO" alpha="0.25" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="buttonsbackground.png" id="dJg-sG-5IY">
                                 <rect key="frame" x="850" y="696" width="142" height="42"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" alpha="0.25" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="buttonsbackgound.png" id="qoO-6r-mXR">
+                            <imageView userInteractionEnabled="NO" alpha="0.25" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="buttonsbackground.png" id="qoO-6r-mXR">
                                 <rect key="frame" x="680" y="696" width="142" height="42"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
@@ -1925,6 +1933,7 @@
                         <outlet property="deleteBoardButton" destination="4rx-rn-aUE" id="BWQ-bJ-hjS"/>
                         <outlet property="deleteProjectBackgroundImage" destination="GGp-Zb-rBF" id="EQG-2M-Scg"/>
                         <outlet property="deleteProjectButton" destination="WPV-YU-0TX" id="7ci-wy-2bd"/>
+                        <outlet property="downArrowImage" destination="fA2-dq-x7i" id="Tcx-Mq-jbq"/>
                         <outlet property="draggableCollectionView" destination="Gdt-c0-HVM" id="1zK-54-rIS"/>
                         <outlet property="editBoardNameTextField" destination="wFY-iY-Scc" id="i5M-9j-PZn"/>
                         <outlet property="editButton" destination="fby-KJ-NQF" id="6Mz-77-2Yo"/>
@@ -1934,6 +1943,7 @@
                         <outlet property="projectNameLabel" destination="7VA-hg-eFW" id="l8V-jU-Oxv"/>
                         <outlet property="sendMessageButton" destination="Q79-Vz-pZV" id="tD9-nF-8V2"/>
                         <outlet property="shareButton" destination="tbP-tk-4fE" id="PQB-9j-ItL"/>
+                        <outlet property="upArrowImage" destination="Aq2-gE-ke2" id="RVR-CZ-uUN"/>
                         <outlet property="versionsButton" destination="Rla-Rc-2p3" id="oLI-ok-SPN"/>
                         <outlet property="versionsCarousel" destination="s9f-SR-zLr" id="ErW-Lu-GsE"/>
                         <outlet property="versionsLabel" destination="eCq-mt-XlS" id="PUt-dm-rXD"/>
@@ -1948,13 +1958,14 @@
         <image name="apply.png" width="570" height="170"/>
         <image name="arrow2.png" width="120" height="120"/>
         <image name="background5.png" width="1024" height="768"/>
-        <image name="buttonsbackgound.png" width="285" height="86"/>
+        <image name="buttonsbackground.png" width="285" height="86"/>
         <image name="cancel.png" width="570" height="170"/>
         <image name="chatfade5.png" width="1528" height="60"/>
         <image name="commenttitle.png" width="1024" height="40"/>
         <image name="delete.png" width="232" height="231"/>
         <image name="deleteProjectBackground.png" width="410" height="86"/>
         <image name="deleteproject.png" width="820" height="170"/>
+        <image name="downarrow.png" width="165" height="1198"/>
         <image name="edit.png" width="600" height="600"/>
         <image name="feather.png" width="1024" height="1024"/>
         <image name="gear2.png" width="324" height="323"/>
@@ -1965,6 +1976,7 @@
         <image name="settingsfade.png" width="540" height="112"/>
         <image name="share.png" width="700" height="700"/>
         <image name="up.png" width="145" height="80"/>
+        <image name="uparrow.png" width="165" height="1198"/>
         <image name="userbuttonmask.png" width="250" height="250"/>
         <image name="versions.png" width="700" height="700"/>
     </resources>

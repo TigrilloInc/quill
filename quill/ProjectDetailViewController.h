@@ -50,6 +50,7 @@
 @property BOOL carouselMoving;
 @property BOOL chatViewed;
 @property BOOL erasing;
+@property BOOL versioning;
 @property BOOL chatOpen;
 
 @property int userRole;
@@ -71,6 +72,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *shareButton;
 @property (weak, nonatomic) IBOutlet UIButton *versionsButton;
 @property (weak, nonatomic) IBOutlet UIButton *deleteBoardButton;
+@property (weak, nonatomic) IBOutlet UIImageView *upArrowImage;
+@property (weak, nonatomic) IBOutlet UIImageView *downArrowImage;
 
 @property (weak, nonatomic) IBOutlet UIButton *sendMessageButton;
 
