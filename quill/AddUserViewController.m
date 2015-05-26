@@ -311,7 +311,7 @@
                             }];
                         
                         self.inviteLabel.text = @"Invites Sent!";
-                        [projectVC updateDetails];
+                        [projectVC updateDetails:NO];
                         [self performSelector:@selector(invitesSent) withObject:nil afterDelay:0.5];
                     }
                 }];
@@ -320,7 +320,7 @@
         else {
             
             self.inviteLabel.text = @"Invites Sent!";
-            [projectVC updateDetails];
+            [projectVC updateDetails:NO];
             [self invitesSent];
         }
     }

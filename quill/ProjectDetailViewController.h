@@ -18,7 +18,6 @@
 @interface ProjectDetailViewController : UIViewController <iCarouselDataSource, iCarouselDelegate, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource_Draggable, UICollectionViewDelegate, UIGestureRecognizerDelegate> {
 
     BOOL newBoardCreated;
-    BOOL showButtons;
 
     UIButton *boardButton;
     UIImageView *carouselFade;
@@ -52,6 +51,7 @@
 @property BOOL erasing;
 @property BOOL versioning;
 @property BOOL chatOpen;
+@property BOOL showButtons;
 
 @property int userRole;
 @property float chatDiff;
@@ -108,7 +108,7 @@
 
 @property (strong, nonatomic) UIImageView *eraserCursor;
 
--(void) updateDetails;
+-(void) updateDetails:(BOOL)reloadCarousel;
 -(void) drawBoard:(BoardView *)boardView;
 -(void) closeTapped;
 -(IBAction) cancelTapped:(id)sender;

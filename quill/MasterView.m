@@ -172,15 +172,20 @@
         projectVC.viewedBoardIDs = [NSMutableArray array];
         projectVC.editedBoardIDs = [NSMutableArray array];
    
+        BOOL differentProject = false;
+        if (![[FirebaseHelper sharedHelper].currentProjectID isEqualToString:projectID]) differentProject = true;
+        
         [[FirebaseHelper sharedHelper] setProjectViewedAt];
         [FirebaseHelper sharedHelper].currentProjectID = projectID;
         [[FirebaseHelper sharedHelper] setInProject:projectID];
         [[FirebaseHelper sharedHelper] observeCurrentProjectBoards];
         
-        [projectVC updateDetails];
+        if (projectVC.versioning) [projectVC versionsTapped:nil];
+        
+        [projectVC updateDetails:differentProject];
         [projectVC cancelTapped:nil];
         if ([projectVC.chatTextField isFirstResponder]) [projectVC.chatTextField resignFirstResponder];
-        if (projectVC.activeBoardID == nil) [projectVC.carousel scrollToItemAtIndex:projectVC.carousel.numberOfItems-1 duration:0];
+        if (differentProject && projectVC.activeBoardID == nil) [projectVC.carousel scrollToItemAtIndex:projectVC.carousel.numberOfItems-1 duration:0];
     }
     
     [self.projectsTable reloadData];

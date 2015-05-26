@@ -473,7 +473,7 @@ static FirebaseHelper *sharedHelper = nil;
 
         NSArray *versionsArray = [[self.boards objectForKey:self.projectVC.boardIDs[self.projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
         
-        if ([versionsArray containsObject:boardID] && self.projectVC.versioning) {
+        if ([versionsArray containsObject:boardID]) {
             
             NSInteger boardIndex = [versionsArray indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.versionsCarousel itemViewAtIndex:boardIndex];
@@ -483,7 +483,8 @@ static FirebaseHelper *sharedHelper = nil;
             
             [boardView layoutAvatars];
         }
-        else if ([self.projectVC.boardIDs containsObject:boardID] && self.projectVC.versioning){
+        
+        if ([self.projectVC.boardIDs containsObject:boardID]){
             
             NSInteger boardIndex = [self.projectVC.boardIDs indexOfObject:boardID];
             BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:boardIndex];
@@ -619,6 +620,7 @@ static FirebaseHelper *sharedHelper = nil;
                     if (![self.boards objectForKey:boardID] && [self.currentProjectID isEqualToString:projectID] && self.projectVC.activeBoardID == nil) {
 
                             if (![self.projectVC.boardIDs containsObject:boardID]) [self.projectVC.boardIDs addObject:boardID];
+                                NSLog(@"carousel reloaded 4");
                             [self.projectVC.carousel reloadData];
                     }
                 }
@@ -797,8 +799,6 @@ static FirebaseHelper *sharedHelper = nil;
         
         NSDictionary *projectsDict = [snapshot.value objectForKey:@"projects"];
         
-        if (projectsDict) [self.team setObject:projectsDict forKey:@"projects"];
-
         if ([[[snapshot.value objectForKey:@"users"] allKeys] isEqual:@[self.uid]]) {
             [self checkUsersLoaded];
             [[[self.team objectForKey:@"users"] objectForKey:self.uid] setObject:[[snapshot.value objectForKey:@"users"] objectForKey:self.uid] forKey:@"teamOwner"];
@@ -870,7 +870,7 @@ static FirebaseHelper *sharedHelper = nil;
             
             [self.boards removeObjectForKey:boardID];
             [self.loadedBoardIDs removeObject:boardID];
-            [self.comments removeObjectForKey:commentsID];
+            if (commentsID) [self.comments removeObjectForKey:commentsID];
         }
         
         NSString *chatID = [[self.projects objectForKey:projectID] objectForKey:@"chatID"];
@@ -908,7 +908,7 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void) observeBoardWithID:(NSString *)boardID {
 
-    //NSLog(@"observing Board %@", boardID);
+    NSLog(@"observing Board %@", boardID);
     
     NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@", self.db, boardID];
     Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
@@ -973,6 +973,114 @@ static FirebaseHelper *sharedHelper = nil;
             
             if ([userID isEqualToString:self.uid]) continue;
             [self observeSubpathsForUser:userID onBoard:boardID];
+        }
+    }];
+    
+    [[ref childByAppendingPath:@"versions"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+        
+        if (snapshot.value == [NSNull null]) return;
+
+        NSArray *versionsArray = [[self.boards objectForKey:boardID] objectForKey:@"versions"];
+        
+        for (NSString *boardID in versionsArray) {
+            
+            if (![snapshot.value containsObject:boardID]) {
+                
+                NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"commentsID"];
+                NSString *commentsString = [NSString stringWithFormat:@"https://%@.firebaseio.com/comments/%@", [FirebaseHelper sharedHelper].db, commentsID];
+                Firebase *commentsRef = [[Firebase alloc] initWithUrl:commentsString];
+                [commentsRef removeAllObservers];
+                
+                for (NSString *commentThreadID in [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] allKeys]) {
+                    
+                    NSString *infoString = [NSString stringWithFormat:@"%@/info", commentThreadID];
+                    [[commentsRef childByAppendingPath:infoString] removeAllObservers];
+                    
+                    NSString *messageString = [NSString stringWithFormat:@"%@/messages", commentThreadID];
+                    [[commentsRef childByAppendingPath:messageString] removeAllObservers];
+                    
+                    NSString *updatedString = [NSString stringWithFormat:@"%@/updatedAt", commentThreadID];
+                    [[commentsRef childByAppendingPath:updatedString] removeAllObservers];
+                }
+                
+                [self.comments removeObjectForKey:commentsID];
+                
+                NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@", [FirebaseHelper sharedHelper].db, boardID];
+                Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
+                [[boardRef childByAppendingPath:@"name"] removeAllObservers];
+                [[boardRef childByAppendingPath:@"updatedAt"] removeAllObservers];
+                
+                for (NSString *userID in [[[self.boards objectForKey:boardID] objectForKey:@"undo"] allKeys]) {
+                    
+                    NSString *undoString = [NSString stringWithFormat:@"undo/%@", userID];
+                    [[boardRef childByAppendingPath:undoString] removeAllObservers];
+                }
+                
+                for (NSString *userID in [[[self.boards objectForKey:boardID] objectForKey:@"subpaths"] allKeys]) {
+                    
+                    NSString *subpathsString = [NSString stringWithFormat:@"subpaths/%@", userID];
+                    [[boardRef childByAppendingPath:subpathsString] removeAllObservers];
+                }
+                
+                [[boardRef childByAppendingPath:@"versions"] removeAllObservers];
+                
+                [self.boards removeObjectForKey:boardID];
+            }
+        }
+        
+        [[self.boards objectForKey:boardID] setValue:snapshot.value forKey:@"versions"];
+        versionsArray = snapshot.value;
+        
+        if ([self.projectVC.boardIDs containsObject:boardID]) {
+            
+            BoardView *boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:[self.projectVC.boardIDs indexOfObject:boardID]];
+            
+            if (versionsArray.count < 10) {
+                
+                NSString *boardString = [NSString stringWithFormat:@"board-versions%i.png", versionsArray.count];
+                [boardView.gradientButton setBackgroundImage:[UIImage imageNamed:boardString] forState:UIControlStateNormal];
+                
+                NSLog(@"BOARD VERSIONS IMAGE SET TO %i", versionsArray.count);
+            }
+            else if (versionsArray.count >= 10) {
+                
+                [boardView.gradientButton setBackgroundImage:[UIImage imageNamed:@"board-versions10.png"] forState:UIControlStateNormal];
+            }
+            
+            if ([self.projectVC.boardIDs[self.projectVC.carousel.currentItemIndex] isEqualToString:boardID] && self.projectVC.versioning) {
+                
+                for (NSString *boardID in versionsArray) {
+                    if (![self.loadedBoardIDs containsObject:boardID]) [self loadBoardWithID:boardID];
+                }
+                
+                if (self.projectVC.activeBoardID == nil) {
+                    
+                    [self.projectVC.versionsCarousel reloadData];
+                    self.projectVC.showButtons = true;
+       
+                    if ([[[self.boards objectForKey:boardID] objectForKey:@"versions"] count] > 1) {
+                        
+                        if (self.projectVC.versionsCarousel.currentItemIndex < versionsArray.count-1) self.projectVC.upArrowImage.hidden = false;
+                        else self.projectVC.upArrowImage.hidden = true;
+                        
+                        if (self.projectVC.versionsCarousel.currentItemIndex > 0) self.projectVC.downArrowImage.hidden = false;
+                        else self.projectVC.downArrowImage.hidden = true;
+                        
+                    }
+                    else {
+                        
+                        self.projectVC.downArrowImage.hidden = true;
+                        self.projectVC.upArrowImage.hidden = true;
+                    }
+                    
+                    self.projectVC.versionsLabel.text = [NSString stringWithFormat:@"Version %i of", self.projectVC.versionsCarousel.currentItemIndex+1];
+                    
+                }
+                else if (![versionsArray containsObject:self.projectVC.activeBoardID]) {
+                    
+                    [self.projectVC closeTapped];
+                }
+            }
         }
     }];
     
@@ -1105,6 +1213,14 @@ static FirebaseHelper *sharedHelper = nil;
             [self.projectVC drawBoard:boardView];
         }
         
+        NSArray *versionsArray = [[self.boards objectForKey:self.projectVC.boardIDs[self.projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
+        if ([versionsArray containsObject:boardID]) {
+            
+            NSUInteger boardIndex = [versionsArray indexOfObject:boardID];
+            BoardView *boardView = (BoardView *)[self.projectVC.versionsCarousel itemViewAtIndex:boardIndex];
+            [self.projectVC drawBoard:boardView];
+        }
+        
         if ([userID isEqualToString:self.uid]) [ref removeAllObservers];
     }];
 }
@@ -1113,9 +1229,11 @@ static FirebaseHelper *sharedHelper = nil;
     
     NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
     
+    NSLog(@"project board IDs is %@", boardIDs);
+    
     for (NSString *boardID in boardIDs) {
         
-        if (![self.loadedBoardIDs containsObject:boardID]) [self loadBoardWithID:boardID];
+        if (![self.loadedBoardIDs containsObject:boardID])[self loadBoardWithID:boardID];
     }
 }
 
@@ -1125,7 +1243,7 @@ static FirebaseHelper *sharedHelper = nil;
     
     for (NSString *boardID in versionsArray) {
         
-        if (![self.loadedBoardIDs containsObject:boardID]) [self loadBoardWithID:boardID];
+        if (![self.loadedBoardIDs containsObject:boardID])[self loadBoardWithID:boardID];
     }
 }
 
@@ -1202,18 +1320,17 @@ static FirebaseHelper *sharedHelper = nil;
             }
         }
         
-        NSArray *currentProjectBoardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
-        NSArray *currentVersionboardIDs = [[self.boards objectForKey:self.projectVC.boardIDs[self.projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
+        NSArray *versionsArray = [[self.boards objectForKey:self.projectVC.boardIDs[self.projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
         
-        if (![self.loadedBoardIDs containsObject:boardID] && ([currentProjectBoardIDs containsObject:boardID] || [currentVersionboardIDs containsObject:boardID])) {
+        if (![self.loadedBoardIDs containsObject:boardID] && ([self.projectVC.boardIDs containsObject:boardID] || [versionsArray containsObject:boardID])) {
             
             [self.loadedBoardIDs addObject:boardID];
             BoardView *boardView;
-            if ([currentProjectBoardIDs containsObject:boardID]) {
-                boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:[currentProjectBoardIDs indexOfObject:boardID]];
+            if ([self.projectVC.boardIDs containsObject:boardID]) {
+                boardView = (BoardView *)[self.projectVC.carousel itemViewAtIndex:[self.projectVC.boardIDs indexOfObject:boardID]];
             }
             else {
-                boardView = (BoardView *)[self.projectVC.versionsCarousel itemViewAtIndex:[currentVersionboardIDs indexOfObject:boardID]];
+                boardView = (BoardView *)[self.projectVC.versionsCarousel itemViewAtIndex:[versionsArray indexOfObject:boardID]];
             }
             boardView.loadingView.hidden = true;
             boardView.fadeView.hidden = true;

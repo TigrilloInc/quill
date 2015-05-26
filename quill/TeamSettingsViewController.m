@@ -22,8 +22,6 @@
     
     isOwner = [[[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"teamOwner"] integerValue];
     
-    NSLog(@"ownerdict is %@", [[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:[FirebaseHelper sharedHelper].uid]);
-    
     self.usersDict = [NSMutableDictionary dictionary];
     
     self.navigationItem.title = @"Team Settings";

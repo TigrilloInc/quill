@@ -102,15 +102,17 @@
     
     if (projectVC.versioning && projectVC.versionsCarousel.currentItemIndex > 0) {
         
-        NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/versions/%i", [FirebaseHelper sharedHelper].db, boardID, projectVC.versionsCarousel.currentItemIndex];
-        Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
-        [boardRef removeValue];
-        
         NSString *versionBoardID = versionsArray[projectVC.versionsCarousel.currentItemIndex];
+        [versionsArray removeObject:versionBoardID];
+        
+        NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/versions", [FirebaseHelper sharedHelper].db, boardID];
+        Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
+        [boardRef setValue:versionsArray];
         
         [projectVC deleteBoardWithID:versionBoardID];
         
-        [versionsArray removeObject:versionBoardID];
+        projectVC.upArrowImage.hidden = true;
+        projectVC.downArrowImage.hidden = true;
         [projectVC.versionsCarousel reloadData];
         
         NSString *labelString = [NSString stringWithFormat:@"Version %i of", projectVC.versionsCarousel.currentItemIndex+1];
@@ -118,15 +120,15 @@
     }
     else {
         
-        NSString *projectString = [NSString stringWithFormat:@"https://%@.firebaseio.com/projects/%@/info/boards/%i", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].currentProjectID, projectVC.carousel.currentItemIndex];
+        [projectVC.boardIDs removeObject:boardID];
+        
+        NSString *projectString = [NSString stringWithFormat:@"https://%@.firebaseio.com/projects/%@/info/boards", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].currentProjectID];
         Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
-        [projectRef removeValue];
+        [projectRef setValue:projectVC.boardIDs];
         
         [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"boards"] removeObject:boardID];
         
         [projectVC deleteBoardWithID:boardID];
-        
-        [projectVC.boardIDs removeObject:boardID];
         
         for (int i=1; i<versionsArray.count; i++) [projectVC deleteBoardWithID:versionsArray[i]];
         
@@ -134,6 +136,7 @@
         if (projectVC.boardIDs.count == 0) [projectVC createBoard];
     }
     
+            NSLog(@"carousel reloaded 5");
     [projectVC.carousel reloadData];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
