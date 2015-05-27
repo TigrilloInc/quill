@@ -174,7 +174,7 @@
    
         BOOL differentProject = false;
         if (![[FirebaseHelper sharedHelper].currentProjectID isEqualToString:projectID]) differentProject = true;
-        
+
         [[FirebaseHelper sharedHelper] setProjectViewedAt];
         [FirebaseHelper sharedHelper].currentProjectID = projectID;
         [[FirebaseHelper sharedHelper] setInProject:projectID];

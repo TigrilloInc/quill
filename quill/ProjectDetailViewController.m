@@ -198,6 +198,7 @@
                           @"pen",
                           @"erase",
                           @"color",
+                          @"grid",
                           @"comment"
                         ];
     
@@ -208,7 +209,7 @@
         if (i==5) imageName = @"black.png";
         else imageName = [NSString stringWithFormat:@"%@.png",self.drawButtons[i]];
         UIImage *buttonImage = [UIImage imageNamed:imageName];
-        if (i>2 && i!=5) {
+        if (i>2 && i!=5 && i!=6) {
             UIImageView *selectedImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"selected.png"]];
             selectedImage.frame = CGRectMake(-7.5, -7.5, 75, 75);
             selectedImage.tag = 50;
@@ -217,7 +218,7 @@
         }
         button.frame = CGRectMake(0, 0, 60, 60);
         [button setBackgroundImage:buttonImage forState:UIControlStateNormal];
-        button.center = CGPointMake(272+i*80, 720);
+        button.center = CGPointMake(242+i*80, 720);
         [button addTarget:self action:NSSelectorFromString([NSString stringWithFormat:@"%@Tapped:", self.drawButtons[i]]) forControlEvents:UIControlEventTouchUpInside];
         button.hidden = true;
         [self.view addSubview:button];
@@ -415,10 +416,7 @@
     
     [self updateMessages];
     [self.chatTable reloadData];
-    if (reloadCarousel){
-        NSLog(@"carousel reloaded 1");
-        [self.carousel reloadData];
-    }
+    if (reloadCarousel) [self.carousel reloadData];
     [self.draggableCollectionView reloadData];
     
     [self layoutAvatars];
@@ -754,7 +752,7 @@
     
     [commentsRef removeValue];
     
-    [[FirebaseHelper sharedHelper].comments removeObjectForKey:commentsID];
+    if (commentsID) [[FirebaseHelper sharedHelper].comments removeObjectForKey:commentsID];
     
     NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@", [FirebaseHelper sharedHelper].db, boardID];
     Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
@@ -789,8 +787,6 @@
 
     NSDictionary *dictRef = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"undo"];
     NSMutableDictionary *undoDict = (NSMutableDictionary *)CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)dictRef, kCFPropertyListMutableContainers));
-    
-    NSLog(@"undoDict is %@", undoDict);
     
     NSMutableDictionary *pathsToDraw = [NSMutableDictionary dictionary];
     
@@ -926,6 +922,12 @@
     self.currentBoardView.penType = 1;
     [(UIButton *)[self.view viewWithTag:5] setBackgroundImage:[UIImage imageNamed:@"pen.png"] forState:UIControlStateNormal];
     self.erasing = false;
+    for (int i=5; i<=9; i++) {
+        if (i==7 || i==8) continue;
+        UIView *button = [self.view viewWithTag:i];
+        if (i==5) [button viewWithTag:50].hidden = false;
+        else [button viewWithTag:50].hidden = true;
+    }
     
     NSString *boardName = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"name"];
     NSString *labelString = [NSString stringWithFormat:@"|   %@", boardName];
@@ -998,7 +1000,12 @@
         swipe.enabled = true;
     }
     
+    if (self.currentBoardView.gridOn) [self gridTapped:nil];
+    self.carousel.hidden = false;
+    carouselFade.hidden = false;
+    
     boardButton.hidden = false;
+    self.currentBoardView.gridOn = false;
     self.currentBoardView.commenting = false;
     self.chatOpen = false;
     
@@ -1235,6 +1242,9 @@
     [self.view bringSubviewToFront:self.cancelButton];
     [self.view bringSubviewToFront:self.deleteProjectBackgroundImage];
     [self.view bringSubviewToFront:self.deleteProjectButton];
+    [self.view bringSubviewToFront:self.projectNameEditButton];
+    [self.view bringSubviewToFront:self.projectNameLabel];
+    [self.view bringSubviewToFront:self.editProjectNameTextField];
 }
 
 - (IBAction)projectNameEditTapped:(id)sender {
@@ -1332,8 +1342,6 @@
         }
         
         self.boardIDs = [self.editBoardIDs mutableCopy];
-        
-                NSLog(@"carousel reloaded 2");
         [self.carousel reloadData];
         [self carouselCurrentItemIndexDidChange:self.carousel];
         
@@ -1513,13 +1521,11 @@
     self.currentBoardView.commenting = false;
     self.erasing = true;
     
-    NSLog(@"eraseTapped");
-    
     [self.view bringSubviewToFront:self.eraserCursor];
     
-    for (int i=5; i<=8; i++) {
+    for (int i=5; i<=9; i++) {
         
-        if (i==7) continue;
+        if (i==7 || i==8) continue;
         
         UIView *button = [self.view viewWithTag:i];
         if (i==6) [button viewWithTag:50].hidden = false;
@@ -1569,14 +1575,46 @@
         [self presentViewController:penTypePopover animated:NO completion:nil];
     }
     
-    for (int i=5; i<=8; i++) {
+    for (int i=5; i<=9; i++) {
         
-        if (i==7) continue;
+        if (i==7 || i==8) continue;
         
         UIView *button = [self.view viewWithTag:i];
         if (i==5) [button viewWithTag:50].hidden = false;
         else [button viewWithTag:50].hidden = true;
     }
+}
+
+-(void) gridTapped:(id)sender {
+    
+    self.currentBoardView.gridOn = !self.currentBoardView.gridOn;
+    
+    NSArray *boardIDs;
+    iCarousel *carousel;
+    
+    if (self.versioning) {
+        
+        boardIDs = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"];
+        carousel = self.versionsCarousel;
+        
+        self.carousel.hidden = true;
+        carouselFade.hidden = true;
+    }
+    else {
+        
+        boardIDs = self.boardIDs;
+        carousel = self.carousel;
+    }
+    
+    self.gridImageView.hidden = !self.currentBoardView.gridOn;
+
+    for (UIView *view in carousel.visibleItemViews) {
+        
+        if ([view isEqual:carousel.currentItemView]) continue;
+        view.hidden = self.currentBoardView.gridOn;
+    }
+    
+    [self drawBoard:self.currentBoardView];
 }
 
 -(void) commentTapped:(id)sender {
@@ -1614,8 +1652,6 @@
     else {
         
         self.activeBoardID = [self.boardIDs lastObject];
-        
-                NSLog(@"carousel reloaded 3");
         [self.carousel reloadData];
         [self.carousel scrollByNumberOfItems:self.carousel.numberOfItems duration:.5];
     }
@@ -1630,7 +1666,7 @@
     nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     
     UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
-    logoImageView.frame = CGRectMake(170, 8, 32, 32);
+    logoImageView.frame = CGRectMake(177, 8, 32, 32);
     logoImageView.tag = 800;
     [nav.navigationBar addSubview:logoImageView];
     
@@ -1673,6 +1709,7 @@
         [self.versionsCarousel scrollToItemAtIndex:0 animated:NO];
         
         self.versionsCarousel.hidden = false;
+        self.versionsLabel.text = @"Version 1 of";
         self.versionsLabel.hidden = false;
         self.carousel.currentItemView.hidden = true;
         self.carousel.alpha = .2;

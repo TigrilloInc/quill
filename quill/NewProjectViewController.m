@@ -138,7 +138,6 @@
     [[FirebaseHelper sharedHelper] observeCommentsOnBoardWithID:boardID];
     
     [[FirebaseHelper sharedHelper].projects setObject:[localProjectDict mutableCopy] forKey:projectRefWithID.key];
-    [FirebaseHelper sharedHelper].currentProjectID = projectID;
     [[FirebaseHelper sharedHelper].visibleProjectIDs addObject:projectID];
     [[FirebaseHelper sharedHelper] observeProjectWithID:projectID];
     

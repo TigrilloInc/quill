@@ -54,6 +54,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         self.gradientButton = nil;
         self.loadingView = nil;
         self.hideComments = true;
+        self.backgroundColor = [UIColor clearColor];
         
         self. fadeView = [[UIView alloc] initWithFrame:self.frame];
         self.fadeView.backgroundColor = [UIColor whiteColor];
@@ -504,7 +505,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 
 - (void)drawRect:(CGRect)rect {
 
-    [[UIColor whiteColor] set];
+    if (self.gridOn) [[UIColor clearColor] set];
+    else [[UIColor whiteColor] set];
     UIRectFill(rect);
 
     if (!self.drawingBoard) {
@@ -525,9 +527,18 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 
     for (int i=0; i<paths.count; i++) {
         
+        CGContextSetBlendMode(context, kCGBlendModeNormal);
+        
         NSDictionary *subpathValues = paths[i];
         
         if (subpathValues.allKeys.count == 1) {
+            
+            if (i>0) {
+                
+                NSDictionary *prevSubpathValues = paths[i-1];
+                int prevColorNumber = [[prevSubpathValues objectForKey:@"color"] intValue];
+                if (prevSubpathValues.allKeys.count > 1 && prevColorNumber == 0 && self.gridOn) CGContextSetBlendMode(context, kCGBlendModeClear);
+            }
             
             CGContextSetStrokeColorWithColor(context, lineColor.CGColor);
             CGContextSetLineWidth(context, lineWidth);
@@ -599,6 +610,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         
         if (i == paths.count-1) {
 
+            if (colorNumber == 0 && self.gridOn) CGContextSetBlendMode(context, kCGBlendModeClear);
             CGContextSetStrokeColorWithColor(context, lineColor.CGColor);
             CGContextSetLineWidth(context, lineWidth);
             CGContextStrokePath(context);
@@ -648,9 +660,9 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [projectVC showDrawMenu];
     projectVC.carouselOffset = 0;
     
-    for (int i=5; i<=8; i++) {
+    for (int i=5; i<=9; i++) {
         
-        if (i==7) continue;
+        if (i==7 || i==8) continue;
         
         UIView *button = [projectVC.view viewWithTag:i];
         if (i==5) [button viewWithTag:50].hidden = false;

@@ -46,9 +46,9 @@
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     projectVC.currentBoardView.lineColorNumber = @(colorButton.tag);
     
-    for (int i=5; i<=8; i++) {
+    for (int i=5; i<=9; i++) {
         
-        if (i==7) continue;
+        if (i==7 || i==8) continue;
         
         UIView *button = [projectVC.view viewWithTag:i];
         if (i==5) [button viewWithTag:50].hidden = false;

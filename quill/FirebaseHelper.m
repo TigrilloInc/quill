@@ -620,7 +620,7 @@ static FirebaseHelper *sharedHelper = nil;
                     if (![self.boards objectForKey:boardID] && [self.currentProjectID isEqualToString:projectID] && self.projectVC.activeBoardID == nil) {
 
                             if (![self.projectVC.boardIDs containsObject:boardID]) [self.projectVC.boardIDs addObject:boardID];
-                                NSLog(@"carousel reloaded 4");
+
                             [self.projectVC.carousel reloadData];
                     }
                 }
@@ -1039,8 +1039,6 @@ static FirebaseHelper *sharedHelper = nil;
                 
                 NSString *boardString = [NSString stringWithFormat:@"board-versions%i.png", versionsArray.count];
                 [boardView.gradientButton setBackgroundImage:[UIImage imageNamed:boardString] forState:UIControlStateNormal];
-                
-                NSLog(@"BOARD VERSIONS IMAGE SET TO %i", versionsArray.count);
             }
             else if (versionsArray.count >= 10) {
                 
@@ -1228,8 +1226,6 @@ static FirebaseHelper *sharedHelper = nil;
 -(void) observeCurrentProjectBoards {
     
     NSArray *boardIDs = [[self.projects objectForKey:self.currentProjectID] objectForKey:@"boards"];
-    
-    NSLog(@"project board IDs is %@", boardIDs);
     
     for (NSString *boardID in boardIDs) {
         

@@ -187,12 +187,12 @@
     [self.commentImage setImage:[UIImage imageNamed:@"usercomment3.png"]];
     projectVC.erasing = false;
     
-    for (int i=5; i<=8; i++) {
+    for (int i=5; i<=9; i++) {
         
-        if (i==7) continue;
+        if (i==7 || i==8) continue;
         
         UIView *button = [projectVC.view viewWithTag:i];
-        if (i==8) [button viewWithTag:50].hidden = false;
+        if (i==9) [button viewWithTag:50].hidden = false;
         else [button viewWithTag:50].hidden = true;
     }
     

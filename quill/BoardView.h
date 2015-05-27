@@ -22,6 +22,7 @@
 @property (nonatomic, assign) BOOL hideComments;
 @property (nonatomic, assign) BOOL shouldRedraw;
 @property (nonatomic, assign) BOOL drawingBoard;
+@property (nonatomic, assign) BOOL gridOn;
 @property (nonatomic, assign) NSString *boardID;
 @property (nonatomic, assign) NSString *selectedAvatarUserID;
 @property (nonatomic, assign) NSString *drawingUserID;

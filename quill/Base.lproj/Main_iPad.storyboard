@@ -1594,6 +1594,10 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="3Yb-Sn-Nyj"/>
                                 </connections>
                             </textField>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="gridimage.png" id="sX8-E6-yJa">
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                             <view contentMode="scaleToFill" id="gXb-FZ-4hw" customClass="iCarousel">
                                 <rect key="frame" x="210" y="150" width="814" height="380"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1722,15 +1726,6 @@
                                 <rect key="frame" x="210" y="603" width="1024" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Project Name" minimumFontSize="14" id="mem-TG-8ys">
-                                <rect key="frame" x="267" y="28" width="376" height="64"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="SourceSansPro-ExtraLight" family="Source Sans Pro" pointSize="48"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                <connections>
-                                    <outlet property="delegate" destination="u5o-7l-ZfK" id="WdP-0G-bAN"/>
-                                </connections>
-                            </textField>
                             <imageView userInteractionEnabled="NO" alpha="0.25" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="buttonsbackground.png" id="dJg-sG-5IY">
                                 <rect key="frame" x="850" y="696" width="142" height="42"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1803,6 +1798,15 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="tMM-UT-Isr"/>
                                 </connections>
                             </collectionView>
+                            <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Project Name" minimumFontSize="14" id="mem-TG-8ys">
+                                <rect key="frame" x="324" y="352" width="376" height="64"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-ExtraLight" family="Source Sans Pro" pointSize="48"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <connections>
+                                    <outlet property="delegate" destination="u5o-7l-ZfK" id="WdP-0G-bAN"/>
+                                </connections>
+                            </textField>
                             <view contentMode="scaleToFill" id="r9C-xd-JPc" customClass="MasterView">
                                 <rect key="frame" x="0.0" y="0.0" width="210" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1938,6 +1942,7 @@
                         <outlet property="editBoardNameTextField" destination="wFY-iY-Scc" id="i5M-9j-PZn"/>
                         <outlet property="editButton" destination="fby-KJ-NQF" id="6Mz-77-2Yo"/>
                         <outlet property="editProjectNameTextField" destination="mem-TG-8ys" id="3jX-E3-iqV"/>
+                        <outlet property="gridImageView" destination="sX8-E6-yJa" id="JJM-13-VI1"/>
                         <outlet property="masterView" destination="r9C-xd-JPc" id="akP-PK-hhf"/>
                         <outlet property="projectNameEditButton" destination="BtQ-po-KEj" id="qVS-Wn-a4G"/>
                         <outlet property="projectNameLabel" destination="7VA-hg-eFW" id="l8V-jU-Oxv"/>
@@ -1969,6 +1974,7 @@
         <image name="edit.png" width="600" height="600"/>
         <image name="feather.png" width="1024" height="1024"/>
         <image name="gear2.png" width="324" height="323"/>
+        <image name="gridimage.png" width="1024" height="768"/>
         <image name="invitefade.png" width="540" height="112"/>
         <image name="newboard.png" width="570" height="170"/>
         <image name="newboardbackground.png" width="285" height="86"/>

@@ -74,6 +74,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *deleteBoardButton;
 @property (weak, nonatomic) IBOutlet UIImageView *upArrowImage;
 @property (weak, nonatomic) IBOutlet UIImageView *downArrowImage;
+@property (weak, nonatomic) IBOutlet UIImageView *gridImageView;
+
 
 @property (weak, nonatomic) IBOutlet UIButton *sendMessageButton;
 

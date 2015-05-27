@@ -136,7 +136,6 @@
         if (projectVC.boardIDs.count == 0) [projectVC createBoard];
     }
     
-            NSLog(@"carousel reloaded 5");
     [projectVC.carousel reloadData];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
