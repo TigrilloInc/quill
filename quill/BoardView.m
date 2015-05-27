@@ -278,6 +278,10 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     if (projectVC.userRole > 0) [self addUserDrawing:[FirebaseHelper sharedHelper].uid];
     
+    [projectVC.view viewWithTag:4].alpha = 1;
+    [projectVC.view viewWithTag:3].alpha = .3;
+    [projectVC.view viewWithTag:2].alpha = 1;
+    
     // initializes our point records to current location
     self.previousPreviousPoint = [touch previousLocationInView:self];
     self.previousPoint = [touch previousLocationInView:self];
@@ -440,33 +444,28 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         [UIView commitAnimations];
     }
     
-    if (!self.drawable) return;
-    
     projectVC.eraserCursor.hidden = true;
+    
+    if (!self.drawable) return;
     
     if (self.commenting) {
         self.commenting = false;
         return;
     }
     
-    if ([projectVC.chatTextField isFirstResponder]) {
+    if ([projectVC.chatTextField isFirstResponder] || [[projectVC.view viewWithTag:104] isFirstResponder] || [projectVC.commentTitleTextField isFirstResponder]) {
         
+        projectVC.commentTitleView.hidden = true;
+        projectVC.chatOpenButton.hidden = true;
+        projectVC.chatFadeImage.hidden = true;
+        projectVC.chatTable.hidden = true;
+        projectVC.chatView.hidden = true;
         [projectVC.chatTextField resignFirstResponder];
-        return;
-    }
-    
-    if ([[projectVC.view viewWithTag:104] isFirstResponder]) {
-        
         [[projectVC.view viewWithTag:104] resignFirstResponder];
-        return;
-    }
-    
-    if ([projectVC.commentTitleTextField isFirstResponder]) {
-        
         [projectVC.commentTitleTextField resignFirstResponder];
         return;
     }
-    
+
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@", [FirebaseHelper sharedHelper].db, self.boardID];
     Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
@@ -918,6 +917,11 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         UIButton *button = (UIButton *)[projectVC.view viewWithTag:i+2];
         button.userInteractionEnabled = YES;
         button.alpha = 1;
+        
+        if (i==0 && ![projectVC canUndo]) button.alpha = .3;
+        else if (i==1 && ![projectVC canRedo]) button.alpha = .3;
+        else if (i==2 && ![projectVC canClear]) button.alpha = .3;
+        else if (i==6 && !self.gridOn) button.alpha = .3;
     }
     
     self.alpha = 1;
@@ -969,14 +973,14 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 -(void) updateCarouselOffsetWithPoint:(CGPoint)point {
     
     iCarousel *carousel;
-    
+
     if (projectVC.versioning) carousel = projectVC.versionsCarousel;
     else carousel = projectVC.carousel;
     
     float oldOffset = projectVC.carouselOffset;
     
     if (projectVC.userRole > 0) projectVC.carouselOffset = (point.x*.75)-70;
-        
+
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:.25];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];

@@ -218,7 +218,7 @@
         }
         button.frame = CGRectMake(0, 0, 60, 60);
         [button setBackgroundImage:buttonImage forState:UIControlStateNormal];
-        button.center = CGPointMake(242+i*80, 720);
+        button.center = CGPointMake(232+i*80, 720);
         [button addTarget:self action:NSSelectorFromString([NSString stringWithFormat:@"%@Tapped:", self.drawButtons[i]]) forControlEvents:UIControlEventTouchUpInside];
         button.hidden = true;
         [self.view addSubview:button];
@@ -252,6 +252,10 @@
             UIButton *button = (UIButton *)[self.view viewWithTag:i+2];
             button.hidden = false;
             [self.view bringSubviewToFront:button];
+            
+            if (i==0 && ![self canUndo]) button.alpha = .3;
+            else if (i==1 && ![self canRedo]) button.alpha = .3;
+            else if (i==2 && ![self canClear]) button.alpha = .3;
         }
     }
 }
@@ -923,9 +927,10 @@
     [(UIButton *)[self.view viewWithTag:5] setBackgroundImage:[UIImage imageNamed:@"pen.png"] forState:UIControlStateNormal];
     self.erasing = false;
     for (int i=5; i<=9; i++) {
-        if (i==7 || i==8) continue;
+        if (i==7) continue;
         UIView *button = [self.view viewWithTag:i];
         if (i==5) [button viewWithTag:50].hidden = false;
+        else if (i==8) button.alpha = .3;
         else [button viewWithTag:50].hidden = true;
     }
     
@@ -1008,6 +1013,11 @@
     self.currentBoardView.gridOn = false;
     self.currentBoardView.commenting = false;
     self.chatOpen = false;
+    
+    self.chatOpenButton.hidden = false;
+    self.chatFadeImage.hidden = false;
+    self.chatTable.hidden = false;
+    self.chatView.hidden = false;
     
     if ([self.chatTextField isFirstResponder]) [self.chatTextField resignFirstResponder];
     if ([[self.view viewWithTag:104] isFirstResponder]) [[self.view viewWithTag:104] resignFirstResponder];
@@ -1242,9 +1252,6 @@
     [self.view bringSubviewToFront:self.cancelButton];
     [self.view bringSubviewToFront:self.deleteProjectBackgroundImage];
     [self.view bringSubviewToFront:self.deleteProjectButton];
-    [self.view bringSubviewToFront:self.projectNameEditButton];
-    [self.view bringSubviewToFront:self.projectNameLabel];
-    [self.view bringSubviewToFront:self.editProjectNameTextField];
 }
 
 - (IBAction)projectNameEditTapped:(id)sender {
@@ -1445,6 +1452,9 @@
         
         undoCount++;
         
+        if (undoCount == undoTotal) [self.view viewWithTag:2].alpha = .3;
+        [self.view viewWithTag:3].alpha = 1;
+        
         NSMutableDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
         [undoDict setObject:@(undoCount) forKey:@"currentIndex"];
         
@@ -1453,6 +1463,9 @@
         [self.currentBoardView addUserDrawing:[FirebaseHelper sharedHelper].uid];
         
         [undoDict setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
+        
+        if ([self canClear]) [self.view viewWithTag:4].alpha = 1;
+        else [self.view viewWithTag:4].alpha = .3;
         
         NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/undo/%@", [FirebaseHelper sharedHelper].db, self.currentBoardView.boardID, [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
@@ -1473,6 +1486,9 @@
         
         undoCount--;
         
+        if (undoCount == 0) [self.view viewWithTag:3].alpha = .3;
+        [self.view viewWithTag:2].alpha = 1;
+        
         NSMutableDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
         [undoDict setObject:@(undoCount) forKey:@"currentIndex"];
         
@@ -1481,6 +1497,9 @@
         [self.currentBoardView addUserDrawing:[FirebaseHelper sharedHelper].uid];
         
         [undoDict setObject:self.activeBoardUndoIndexDate forKey:@"currentIndexDate"];
+        
+        if ([self canClear]) [self.view viewWithTag:4].alpha = 1;
+        else [self.view viewWithTag:4].alpha = .3;
         
         NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/undo/%@/", [FirebaseHelper sharedHelper].db, self.currentBoardView.boardID, [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
@@ -1497,7 +1516,9 @@
     
     NSDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
     
-    if ([[undoDict objectForKey:@"total"] integerValue] == [[undoDict objectForKey:@"currentIndex"] integerValue]) return;
+    [self.view viewWithTag:4].alpha = .3;
+    
+    if ([[undoDict objectForKey:@"total"] integerValue] == [[undoDict objectForKey:@"currentIndex"] integerValue] || ![self canClear]) return;
     
     [[FirebaseHelper sharedHelper] resetUndo];
     
@@ -1588,6 +1609,9 @@
 -(void) gridTapped:(id)sender {
     
     self.currentBoardView.gridOn = !self.currentBoardView.gridOn;
+    
+    if (self.currentBoardView.gridOn) [self.view viewWithTag:8].alpha = 1;
+    else [self.view viewWithTag:8].alpha = .3;
     
     NSArray *boardIDs;
     iCarousel *carousel;
@@ -1828,7 +1852,7 @@
 
 -(void)versionSwiped:(UISwipeGestureRecognizer *)swipe {
     
-        if (!self.activeBoardID) [self versionsTapped:nil];
+    if (!self.activeBoardID) [self versionsTapped:nil];
 }
 
 -(void)openChat {
@@ -1925,6 +1949,11 @@
     
     if ([self.chatTextField isFirstResponder] || [self.commentTitleTextField isFirstResponder]) {
     
+        self.chatOpenButton.hidden = false;
+        self.chatFadeImage.hidden = false;
+        self.chatTable.hidden = false;
+        self.chatView.hidden = false;
+        
         [self showChat];
         
         CGFloat height = [[notification.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
@@ -2277,6 +2306,42 @@
     }
     
     [UIView setAnimationsEnabled:YES];
+}
+
+-(BOOL)canUndo {
+    
+    int undoCount = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndex"] intValue];
+    int undoTotal = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"total"] intValue];
+    
+    if (undoCount == undoTotal) return NO;
+    else return YES;
+}
+
+-(BOOL)canRedo {
+    
+    int undoCount = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndex"] intValue];
+    
+    if (undoCount == 0) return NO;
+    else return YES;
+}
+
+-(BOOL) canClear {
+    
+    NSDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
+    NSString *currentIndexDate = [undoDict objectForKey:@"currentIndexDate"];
+    NSMutableDictionary *subpathsDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.activeBoardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid];
+    NSMutableArray *dates = [[subpathsDict allKeys] mutableCopy];
+    NSSortDescriptor *ascendingSorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
+    [dates sortUsingDescriptors:@[ascendingSorter]];
+    int dateIndex = [dates indexOfObject:currentIndexDate];
+    if (dateIndex > 0) {
+        
+        NSString *clearDate = [dates objectAtIndex:(dateIndex-1)];
+        if ([[subpathsDict objectForKey:clearDate] respondsToSelector:@selector(isEqualToString:)] && [[subpathsDict objectForKey:clearDate] isEqualToString:@"clear"]) return NO;
+        else return YES;
+    }
+    else return NO;
+    
 }
 
 #pragma mark -
@@ -2721,6 +2786,7 @@
 -(CGFloat)carousel:(iCarousel *)carousel valueForOption:(iCarouselOption)option withDefault:(CGFloat)value {
     
     if (option == iCarouselOptionOffsetMultiplier && [carousel isEqual:self.versionsCarousel]) value = 5.0f;
+    //else if (option == iCarouselOptionSpacing && [carousel isEqual:self.carousel]) value = .7f;
     
     return value;
 }

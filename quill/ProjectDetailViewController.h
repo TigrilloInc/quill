@@ -122,6 +122,10 @@
 -(void) updateChatHeight;
 -(void) createBoard;
 -(void) deleteBoardWithID:(NSString *)boardID;
+-(void) gridTapped:(id)sender;
 -(IBAction) versionsTapped:(id)sender;
+-(BOOL)canUndo;
+-(BOOL)canRedo;
+-(BOOL)canClear;
 
 @end
