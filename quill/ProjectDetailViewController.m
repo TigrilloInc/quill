@@ -216,6 +216,14 @@
             [button addSubview:selectedImage];
             if (i!=3) selectedImage.hidden = true;
         }
+        if (i==7) {
+            
+            UILabel *commentCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(-7.5, -11, 75, 75)];
+            commentCountLabel.textAlignment = NSTextAlignmentCenter;
+            commentCountLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
+            commentCountLabel.tag = 51;
+            [button addSubview:commentCountLabel];
+        }
         button.frame = CGRectMake(0, 0, 60, 60);
         [button setBackgroundImage:buttonImage forState:UIControlStateNormal];
         button.center = CGPointMake(232+i*80, 720);
@@ -257,6 +265,8 @@
             else if (i==1 && ![self canRedo]) button.alpha = .3;
             else if (i==2 && ![self canClear]) button.alpha = .3;
         }
+        
+        [self updateCommentCount];
     }
 }
 
@@ -411,7 +421,7 @@
     
     self.projectNameLabel.text = self.projectName;
     CGRect projectRect = [self.projectNameLabel.text boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName:self.projectNameLabel.font} context:nil];
-    self.editButton.center = CGPointMake(MIN(projectRect.size.width+292,650), self.projectNameLabel.center.y+3);
+    self.editButton.center = CGPointMake(MIN(projectRect.size.width+290,600), self.projectNameLabel.center.y+3);
     self.projectNameEditButton.center = self.editButton.center;
     
     UIButton *projectNameButton = (UIButton *)[self.view viewWithTag:101];
@@ -550,6 +560,17 @@
     }
 }
 
+-(void) updateCommentCount {
+    
+    NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.activeBoardID] objectForKey:@"commentsID"];
+    NSInteger commentCount = [[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] allKeys] count];
+    
+    UILabel *commentCountLabel = (UILabel *)[[self.view viewWithTag:9] viewWithTag:51];
+    
+    if (commentCount > 0) commentCountLabel.text = [NSString stringWithFormat:@"%ld", (long)commentCount];
+    else commentCountLabel.text = @"";
+}
+
 -(void) layoutAvatars {
 
     for (AvatarButton *avatar in self.avatars) [avatar removeFromSuperview];
@@ -564,7 +585,7 @@
     }
     
     NSArray *userIDs = [users sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    
+
     [self.avatarBackgroundImage removeFromSuperview];
     self.avatarBackgroundImage.hidden = false;
     CGRect imageRect = CGRectMake(0, 0, 345+userIDs.count*(66*4), 280);
@@ -572,9 +593,31 @@
     self.avatarBackgroundImage = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:imageRef]];
     CGImageRelease(imageRef);
     self.avatarBackgroundImage.transform = CGAffineTransformScale(self.avatarBackgroundImage.transform, .25, .25);
-    self.avatarBackgroundImage.frame = CGRectMake(1024-self.avatarBackgroundImage.frame.size.width, 18, self.avatarBackgroundImage.frame.size.width, self.avatarBackgroundImage.frame.size.height);
+    self.avatarBackgroundImage.frame = CGRectMake(MAX(617.75,1034-self.avatarBackgroundImage.frame.size.width), 18, self.avatarBackgroundImage.frame.size.width, self.avatarBackgroundImage.frame.size.height);
     self.avatarBackgroundImage.alpha = .25;
     [self.view addSubview:self.avatarBackgroundImage];
+    
+    
+    [self.addUserButton removeFromSuperview];
+    self.addUserButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.addUserButton addTarget:self action:@selector(addUserTapped) forControlEvents:UIControlEventTouchUpInside];
+    UIImage *plusImage = [UIImage imageNamed:@"plus1.png"];
+    [self.addUserButton setImage:plusImage forState:UIControlStateNormal];
+    self.addUserButton.frame = CGRectMake(MAX(538,868-(userIDs.count*66)), -63, plusImage.size.width, plusImage.size.height);
+    self.addUserButton.transform = CGAffineTransformScale(self.addUserButton.transform, .25, .25);
+    [self.view insertSubview:self.addUserButton aboveSubview:self.avatarBackgroundImage];
+    
+    
+    [self.avatarScrollView removeFromSuperview];
+    
+    if (userIDs.count > 5) {
+        
+        self.avatarScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(689, 18, 334, 78)];
+        self.avatarScrollView.contentSize = CGSizeMake(userIDs.count*66+7, 70);
+        self.avatarScrollView.panGestureRecognizer.delaysTouchesBegan = YES;
+        [self.view addSubview:self.avatarScrollView];
+        [self.avatarScrollView flashScrollIndicators];
+    }
     
     for (int i=0; i<userIDs.count; i++) {
         
@@ -590,21 +633,27 @@
             [avatar setImage:avatarImage forState:UIControlStateNormal];
             avatar.imageView.layer.cornerRadius = avatarImage.size.width/2;
             avatar.imageView.layer.masksToBounds = YES;
-            avatar.frame = CGRectMake(911-(i*66), -11, avatarImage.size.width, avatarImage.size.height);
+            avatar.frame = CGRectMake(921-(i*66), -11, avatarImage.size.width, avatarImage.size.height);
             avatar.transform = CGAffineTransformMakeScale(.86*64/avatarImage.size.width, .86*64/avatarImage.size.width);
             avatar.shadowImage.center = CGPointMake(64, 69);
             
             if (avatar.imageView.frame.size.height == 64) {
-                avatar.frame = CGRectMake(943-(i*66), 21, avatarImage.size.width, avatarImage.size.height);
+                avatar.frame = CGRectMake(953-(i*66), 21, avatarImage.size.width, avatarImage.size.height);
                 avatar.shadowImage.frame = CGRectMake(2, 5, 70, 70);
             }
+            
+            if (userIDs.count > 5) avatar.center = CGPointMake(33+(i*66), 34.5);
         }
         else {
             [avatar generateIdenticonWithShadow:true];
-            avatar.frame = CGRectMake(850-(i*66), -70, avatar.userImage.size.width, avatar.userImage.size.height);
+            avatar.frame = CGRectMake(860-(i*66), -70, avatar.userImage.size.width, avatar.userImage.size.height);
             avatar.transform = CGAffineTransformMakeScale(.25, .25);
+            if (userIDs.count > 5) avatar.center = CGPointMake(33+(i*66), 36.5);
         }
-        [self.view insertSubview:avatar aboveSubview:self.avatarBackgroundImage];
+        
+        if (userIDs.count > 5) [self.avatarScrollView addSubview:avatar];
+        else [self.view insertSubview:avatar aboveSubview:self.avatarBackgroundImage];
+        
         
         NSString *inProjectID = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:avatar.userID] objectForKey:@"inProject"];
 
@@ -613,15 +662,6 @@
         }
         [self.avatars addObject:avatar];
     }
-    
-    [self.addUserButton removeFromSuperview];
-    self.addUserButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.addUserButton addTarget:self action:@selector(addUserTapped) forControlEvents:UIControlEventTouchUpInside];
-    UIImage *plusImage = [UIImage imageNamed:@"plus1.png"];
-    [self.addUserButton setImage:plusImage forState:UIControlStateNormal];
-    self.addUserButton.frame = CGRectMake(858-(userIDs.count*66), -63, plusImage.size.width, plusImage.size.height);
-    self.addUserButton.transform = CGAffineTransformScale(self.addUserButton.transform, .25, .25);
-    [self.view insertSubview:self.addUserButton aboveSubview:self.avatarBackgroundImage];
     
     if (self.activeBoardID) [self hideAvatars];
 }
@@ -1204,7 +1244,7 @@
     
     if ([self.chatTextField isFirstResponder]) [self.chatTextField resignFirstResponder];
     if ([self.editBoardNameTextField isFirstResponder]) [self.editBoardNameTextField resignFirstResponder];
-
+    
     self.editBoardIDs = [self.boardIDs mutableCopy];
     
     self.editProjectNameTextField.text = self.projectName;
@@ -1311,7 +1351,7 @@
         NSString *newName = self.editProjectNameTextField.text;
         self.projectNameLabel.text = newName;
         CGRect projectRect = [self.projectNameLabel.text boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName:self.projectNameLabel.font} context:nil];
-        self.editButton.center = CGPointMake(MIN(projectRect.size.width+292,650), self.projectNameLabel.center.y+3);
+        self.editButton.center = CGPointMake(MIN(projectRect.size.width+290,600), self.projectNameLabel.center.y+3);
         self.projectNameEditButton.center = self.editButton.center;
         
         [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] setObject:newName forKey:@"name"];
@@ -1349,12 +1389,13 @@
         }
         
         self.boardIDs = [self.editBoardIDs mutableCopy];
+        
+        if (self.boardIDs.count == 0) [self createBoard];
+        
         [self.carousel reloadData];
         [self carouselCurrentItemIndexDidChange:self.carousel];
         
         [self cancelTapped:nil];
-        
-        if (self.boardIDs.count == 0) [self createBoard];
     }
     
     [self cancelTapped:nil];
@@ -1706,6 +1747,7 @@
         self.versioning = false;
         
         [self drawBoard:(BoardView *)self.carousel.currentItemView];
+        [(BoardView *)self.carousel.currentItemView layoutComments];
         
         self.carousel.currentItemView.hidden = false;
         self.carousel.alpha = 1;
@@ -2768,7 +2810,6 @@
         
     return cell;
 }
-
 
 #pragma mark -
 #pragma mark UICollectionView

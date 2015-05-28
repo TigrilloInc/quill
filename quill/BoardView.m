@@ -230,6 +230,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         
         [self addSubview:button];
         [self.commentButtons addObject:button];
+        
+        if ([self.boardID isEqualToString:projectVC.activeBoardID]) [projectVC updateCommentCount];
     }
     
     [self bringSubviewToFront:[self viewWithTag:1]];
@@ -722,7 +724,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [[FirebaseHelper sharedHelper] setCommentThread:commentThreadRefWithID.key updatedAt:dateString];
     [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] setObject:mutableCommentDict forKey:commentThreadRefWithID.key];
     [[FirebaseHelper sharedHelper] observeCommentThreadWithID:commentThreadRefWithID.key boardID:self.boardID];
-    
+
     CommentButton *button = [CommentButton buttonWithType:UIButtonTypeCustom];
     button.commentThreadID = commentThreadRefWithID.key;
     button.point = point;

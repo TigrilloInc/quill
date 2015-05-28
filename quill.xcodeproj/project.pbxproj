@@ -107,7 +107,6 @@
 		129E128219648A2C00ED9D42 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 129E128019648A2C00ED9D42 /* InfoPlist.strings */; };
 		129E128419648A2C00ED9D42 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 129E128319648A2C00ED9D42 /* main.m */; };
 		129E128819648A2C00ED9D42 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 129E128719648A2C00ED9D42 /* AppDelegate.m */; };
-		129E128B19648A2C00ED9D42 /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 129E128919648A2C00ED9D42 /* Main_iPhone.storyboard */; };
 		129E129519648A2C00ED9D42 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 129E129419648A2C00ED9D42 /* Images.xcassets */; };
 		129E129C19648A2C00ED9D42 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E129B19648A2C00ED9D42 /* XCTest.framework */; };
 		129E129D19648A2C00ED9D42 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 129E127119648A2C00ED9D42 /* Foundation.framework */; };
@@ -441,7 +440,6 @@
 		129E128519648A2C00ED9D42 /* quill-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "quill-Prefix.pch"; sourceTree = "<group>"; };
 		129E128619648A2C00ED9D42 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		129E128719648A2C00ED9D42 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		129E128A19648A2C00ED9D42 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
 		129E129419648A2C00ED9D42 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		129E129A19648A2C00ED9D42 /* quillTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = quillTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		129E129B19648A2C00ED9D42 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -737,7 +735,6 @@
 			isa = PBXGroup;
 			children = (
 				12FF4C101A15459C008A6001 /* mailcore2.xcodeproj */,
-				129E128919648A2C00ED9D42 /* Main_iPhone.storyboard */,
 				1230ABC81972093300EB2389 /* Main_iPad.storyboard */,
 				129E128619648A2C00ED9D42 /* AppDelegate.h */,
 				129E128719648A2C00ED9D42 /* AppDelegate.m */,
@@ -1278,7 +1275,6 @@
 				124943B91A9174F800C1BEA4 /* board8.png in Resources */,
 				1213D7AA1A65BF51001FDEA9 /* yellow.png in Resources */,
 				1231BEC21A6DFAB400E09914 /* mail.png in Resources */,
-				129E128B19648A2C00ED9D42 /* Main_iPhone.storyboard in Resources */,
 				12D5DBA51A48F20B003727AC /* highlighter.png in Resources */,
 				1213D7AC1A65EE22001FDEA9 /* chatfade2.png in Resources */,
 				F3F66F921B05264D00B6D184 /* board-versions8.png in Resources */,
@@ -1455,14 +1451,6 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		129E128919648A2C00ED9D42 /* Main_iPhone.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				129E128A19648A2C00ED9D42 /* Base */,
-			);
-			name = Main_iPhone.storyboard;
-			sourceTree = "<group>";
-		};
 		129E12A419648A2C00ED9D42 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1586,6 +1574,7 @@
 				);
 				PRODUCT_NAME = quill;
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 2;
 				VALID_ARCHS = "armv7 armv7s arm64";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1631,6 +1620,7 @@
 				);
 				PRODUCT_NAME = quill;
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 2;
 				VALID_ARCHS = "armv7 armv7s arm64";
 				WRAPPER_EXTENSION = app;
 			};

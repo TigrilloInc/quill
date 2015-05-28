@@ -63,6 +63,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *projectNameLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImage;
 @property (strong, nonatomic) UIImageView *avatarBackgroundImage;
+@property (strong, nonatomic) UIScrollView *avatarScrollView;
 
 @property (weak, nonatomic) BoardView *currentBoardView;
 
@@ -112,18 +113,19 @@
 
 -(void) updateDetails:(BOOL)reloadCarousel;
 -(void) drawBoard:(BoardView *)boardView;
--(void) closeTapped;
 -(IBAction) cancelTapped:(id)sender;
+-(IBAction) versionsTapped:(id)sender;
+-(void) closeTapped;
+-(void) gridTapped:(id)sender;
 -(void) showDrawMenu;
 -(void) showChat;
 -(void) hideAll;
 -(void) layoutAvatars;
 -(void) updateMessages;
 -(void) updateChatHeight;
+-(void) updateCommentCount;
 -(void) createBoard;
 -(void) deleteBoardWithID:(NSString *)boardID;
--(void) gridTapped:(id)sender;
--(IBAction) versionsTapped:(id)sender;
 -(BOOL)canUndo;
 -(BOOL)canRedo;
 -(BOOL)canClear;

@@ -1565,13 +1565,6 @@
                                     <action selector="boardNameEditTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="MvK-lu-d4w"/>
                                 </connections>
                             </button>
-                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Project Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" id="7VA-hg-eFW">
-                                <rect key="frame" x="267" y="28" width="376" height="64"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="SourceSansPro-ExtraLight" family="Source Sans Pro" pointSize="48"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Hbm-ZL-EhN">
                                 <rect key="frame" x="364" y="109" width="509" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1799,7 +1792,7 @@
                                 </connections>
                             </collectionView>
                             <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Project Name" minimumFontSize="14" id="mem-TG-8ys">
-                                <rect key="frame" x="324" y="352" width="376" height="64"/>
+                                <rect key="frame" x="267" y="29" width="320" height="64"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="SourceSansPro-ExtraLight" family="Source Sans Pro" pointSize="48"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -1807,6 +1800,13 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="WdP-0G-bAN"/>
                                 </connections>
                             </textField>
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Project Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" id="7VA-hg-eFW">
+                                <rect key="frame" x="267" y="28" width="320" height="64"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-ExtraLight" family="Source Sans Pro" pointSize="48"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <view contentMode="scaleToFill" id="r9C-xd-JPc" customClass="MasterView">
                                 <rect key="frame" x="0.0" y="0.0" width="210" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>

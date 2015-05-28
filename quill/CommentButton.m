@@ -65,6 +65,8 @@
     
     [self removeFromSuperview];
     
+    [projectVC updateCommentCount];
+    
     if ([projectVC.chatTextField isFirstResponder]) [projectVC.chatTextField resignFirstResponder];
     else if ([projectVC.commentTitleTextField isFirstResponder]) [projectVC.commentTitleTextField resignFirstResponder];
 }
