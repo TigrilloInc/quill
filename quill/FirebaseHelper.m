@@ -908,7 +908,7 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void) observeBoardWithID:(NSString *)boardID {
 
-    NSLog(@"observing Board %@", boardID);
+    //NSLog(@"observing Board %@", boardID);
     
     NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@", self.db, boardID];
     Firebase *ref = [[Firebase alloc] initWithUrl:boardString];
@@ -1071,7 +1071,8 @@ static FirebaseHelper *sharedHelper = nil;
                         self.projectVC.upArrowImage.hidden = true;
                     }
                     
-                    self.projectVC.versionsLabel.text = [NSString stringWithFormat:@"Version %i of", self.projectVC.versionsCarousel.currentItemIndex+1];
+                    if (self.projectVC.versionsCarousel.currentItemIndex == 0) self.projectVC.versionsLabel.text = @"Original";
+                    else self.projectVC.versionsLabel.text = [NSString stringWithFormat:@"Version %lu", self.projectVC.versionsCarousel.currentItemIndex+1];
                     
                 }
                 else if (![versionsArray containsObject:self.projectVC.activeBoardID]) {

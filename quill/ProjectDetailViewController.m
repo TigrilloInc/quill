@@ -377,6 +377,7 @@
     self.buttonsBackgroundImage.hidden = true;
     self.shareButton.hidden = true;
     self.versionsButton.hidden = true;
+    self.versionsCountLabel.hidden = true;
     self.deleteBoardButton.hidden = true;
     self.projectNameEditButton.hidden = true;
     self.draggableCollectionView.hidden = true;
@@ -402,12 +403,12 @@
         
         self.chatDiff = 0;
         [self.buttonsBackgroundImage setImage:[UIImage imageNamed:@"buttonsbackground.png"]];
-        self.buttonsBackgroundImage.frame = CGRectMake(340, 512, 142, 42);
+        self.buttonsBackgroundImage.frame = CGRectMake(340, 508, 162, 48);
     }
     else {
         
         [self.buttonsBackgroundImage setImage:[UIImage imageNamed:@"buttonsbackground2.png"]];
-        self.buttonsBackgroundImage.frame = CGRectMake(340, 512, 98, 42);
+        self.buttonsBackgroundImage.frame = CGRectMake(340, 508, 112, 48);
         self.chatDiff = self.chatView.frame.size.height;
     }
     
@@ -585,6 +586,7 @@
     }
     
     NSArray *userIDs = [users sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    
 
     [self.avatarBackgroundImage removeFromSuperview];
     self.avatarBackgroundImage.hidden = false;
@@ -606,7 +608,6 @@
     self.addUserButton.frame = CGRectMake(MAX(538,868-(userIDs.count*66)), -63, plusImage.size.width, plusImage.size.height);
     self.addUserButton.transform = CGAffineTransformScale(self.addUserButton.transform, .25, .25);
     [self.view insertSubview:self.addUserButton aboveSubview:self.avatarBackgroundImage];
-    
     
     [self.avatarScrollView removeFromSuperview];
     
@@ -710,6 +711,9 @@
         boardName = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"name"];
         
         [[currentBoardDict objectForKey:@"versions"] addObject:boardID];
+        
+        [[FirebaseHelper sharedHelper] setBoard:self.boardIDs[self.carousel.currentItemIndex] UpdatedAt:dateString];
+        [self.editedBoardIDs addObject:self.boardIDs[self.carousel.currentItemIndex]];
     }
     else {
         
@@ -994,6 +998,7 @@
     self.shareButton.hidden = true;
     self.deleteBoardButton.hidden = true;
     self.versionsButton.hidden = true;
+    self.versionsCountLabel.hidden = true;
     self.buttonsBackgroundImage.hidden = true;
     [self hideAvatars];
     
@@ -1046,7 +1051,6 @@
     }
     
     if (self.currentBoardView.gridOn) [self gridTapped:nil];
-    self.carousel.hidden = false;
     carouselFade.hidden = false;
     
     boardButton.hidden = false;
@@ -1065,7 +1069,8 @@
     [self hideDrawMenu];
     
     NSString *boardID = self.activeBoardID;
-    [self.viewedBoardIDs addObject:boardID];
+    if (![self.viewedBoardIDs containsObject:boardID]) [self.viewedBoardIDs addObject:boardID];
+    if (![self.viewedBoardIDs containsObject:self.boardIDs[self.carousel.currentItemIndex]]) [self.viewedBoardIDs addObject:self.boardIDs[self.carousel.currentItemIndex]];
     self.activeBoardID = nil;
     self.activeCommentThreadID = nil;
     
@@ -1123,11 +1128,16 @@
                          [self.view bringSubviewToFront:self.versionsButton];
                          [self.view bringSubviewToFront:self.addBoardButton];
                          [self.view bringSubviewToFront:self.shareButton];
+                         [self.view bringSubviewToFront:self.versionsCountLabel];
                          [self.view bringSubviewToFront:self.deleteBoardButton];
                          [self.view bringSubviewToFront:self.versionsButton];
                          self.shareButton.hidden = false;
                          if  (self.userRole > 0) self.deleteBoardButton.hidden = false;
                          self.versionsButton.hidden = false;
+                         NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"versions"];
+                         if (versionsArray.count > 1) self.versionsCountLabel.text = [NSString stringWithFormat:@"%lu", versionsArray.count];
+                         else self.versionsCountLabel.text = @"";
+                         if (!self.versioning) self.versionsCountLabel.hidden = false;
                          self.buttonsBackgroundImage.hidden = false;
                          
                          if (![FirebaseHelper sharedHelper].connected) {
@@ -1263,6 +1273,7 @@
     self.addBoardButton.hidden = true;
     self.shareButton.hidden = true;
     self.versionsButton.hidden = true;
+    self.versionsCountLabel.hidden = true;
     self.deleteBoardButton.hidden = true;
     self.addBoardBackgroundImage.hidden = true;
     self.buttonsBackgroundImage.hidden = true;
@@ -1407,9 +1418,8 @@
     
     self.projectNameLabel.hidden = false;
     self.projectNameEditButton.hidden = true;
-    self.carousel.hidden = false;
     self.carousel.currentItemView.hidden = false;
-    self.carousel.alpha = 1;
+    self.carousel.hidden = false;
     self.carousel.userInteractionEnabled = true;
     self.versionsCarousel.hidden = true;
     self.versioning = false;
@@ -1431,8 +1441,12 @@
         [self.addBoardBackgroundImage setImage:[UIImage imageNamed:@"newboardbackground.png"]];
         self.shareButton.hidden = false;
         self.versionsButton.hidden = false;
+        [self.versionsButton setImage:[UIImage imageNamed:@"versions.png"] forState:UIControlStateNormal];
+        NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"];
+        if (versionsArray.count > 1) self.versionsCountLabel.text = [NSString stringWithFormat:@"%lu", versionsArray.count];
+        else self.versionsCountLabel.text = @"";
+        self.versionsCountLabel.hidden = false;
         if  (self.userRole > 0) self.deleteBoardButton.hidden = false;
-        [self.versionsButton setImage:[UIImage imageNamed:@"iterations.png"] forState:UIControlStateNormal];
         self.buttonsBackgroundImage.hidden = false;
         self.chatView.hidden = false;
         if (self.boardNameLabel.text.length > 0) self.boardNameEditButton.hidden = false;
@@ -1443,6 +1457,7 @@
         self.addBoardButton.hidden = true;
         self.shareButton.hidden = true;
         self.versionsButton.hidden = true;
+        self.versionsCountLabel.hidden = true;
         self.deleteBoardButton.hidden = true;
         self.addBoardBackgroundImage.hidden = true;
         self.buttonsBackgroundImage.hidden = true;
@@ -1558,6 +1573,8 @@
     NSDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
     
     [self.view viewWithTag:4].alpha = .3;
+    [self.view viewWithTag:3].alpha = .3;
+    [self.view viewWithTag:2].alpha = 1;
     
     if ([[undoDict objectForKey:@"total"] integerValue] == [[undoDict objectForKey:@"currentIndex"] integerValue] || ![self canClear]) return;
     
@@ -1683,20 +1700,42 @@
 }
 
 -(void) commentTapped:(id)sender {
+
+    NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.activeBoardID] objectForKey:@"commentsID"];
+    NSInteger commentCount = [[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] allKeys] count];
     
-    UIButton *commentButton = (UIButton *)sender;
-    
-    CommentPopoverViewController *commentPopover = [[CommentPopoverViewController alloc] init];
-    
-    [commentPopover setModalPresentationStyle:UIModalPresentationPopover];
-    
-    UIPopoverPresentationController *popover = [commentPopover popoverPresentationController];
-    popover.sourceView = commentButton;
-    popover.sourceRect = commentButton.bounds;
-    popover.backgroundColor = nil;
-    popover.permittedArrowDirections = UIPopoverArrowDirectionDown;
-    
-    [self presentViewController:commentPopover animated:NO completion:nil];
+    if (commentCount == 0) {
+        
+        for (int i=5; i<=9; i++) {
+            
+            if (i==7) continue;
+            
+            UIView *button = [self.view viewWithTag:i];
+            if (i==9) [button viewWithTag:50].hidden = false;
+            else [button viewWithTag:50].hidden = true;
+        }
+        
+        [self.currentBoardView layoutComments];
+        self.currentBoardView.hideComments = true;
+        
+        self.currentBoardView.commenting = true;
+    }
+    else {
+        
+        UIButton *commentButton = (UIButton *)sender;
+        
+        CommentPopoverViewController *commentPopover = [[CommentPopoverViewController alloc] init];
+        
+        [commentPopover setModalPresentationStyle:UIModalPresentationPopover];
+        
+        UIPopoverPresentationController *popover = [commentPopover popoverPresentationController];
+        popover.sourceView = commentButton;
+        popover.sourceRect = commentButton.bounds;
+        popover.backgroundColor = nil;
+        popover.permittedArrowDirections = UIPopoverArrowDirectionDown;
+        
+        [self presentViewController:commentPopover animated:NO completion:nil];
+    }
 }
 
 - (IBAction)newBoardTapped:(id)sender {
@@ -1739,8 +1778,6 @@
 }
 
 - (IBAction)versionsTapped:(id)sender {
-
-    self.showButtons = true;
     
     if (self.versioning) {
         
@@ -1749,56 +1786,93 @@
         [self drawBoard:(BoardView *)self.carousel.currentItemView];
         [(BoardView *)self.carousel.currentItemView layoutComments];
         
-        self.carousel.currentItemView.hidden = false;
-        self.carousel.alpha = 1;
-        self.carousel.userInteractionEnabled = true;
-        self.versionsLabel.hidden = true;
-        self.versionsCarousel.hidden = true;
-        self.upArrowImage.hidden = true;
-        self.downArrowImage.hidden = true;
+        self.carousel.alpha = 0;
+
+        self.carousel.hidden = false;
         
-//        self.addBoardButton.frame = CGRectMake(804, 552, 142, 42);
-//        self.addBoardBackgroundImage.frame = CGRectMake(804, 552, 142, 42);
-        [self.addBoardButton setImage:[UIImage imageNamed:@"newboard.png"] forState:UIControlStateNormal];
-        [self.addBoardBackgroundImage setImage:[UIImage imageNamed:@"newboardbackground.png"]];
-        
-        [self.versionsButton setImage:[UIImage imageNamed:@"versions.png"] forState:UIControlStateNormal];
-        
+        [UIView animateWithDuration:.1
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseInOut
+                         animations:^{
+                             
+                             self.carousel.alpha = 1;
+                             self.versionsLabel.alpha = 0;
+                             self.upArrowImage.alpha = 0;
+                             self.downArrowImage.alpha = 0;
+                             
+                         }completion:^(BOOL finished) {
+                             
+                             self.versionsCarousel.hidden = true;
+                             self.carousel.currentItemView.hidden = false;
+                            
+                             self.carousel.userInteractionEnabled = true;
+                             
+                             self.versionsLabel.hidden = true;
+                             self.versionsLabel.alpha = 1;
+                             
+                             self.upArrowImage.hidden = true;
+                             self.upArrowImage.alpha = .1;
+                             self.downArrowImage.hidden = true;
+                             self.downArrowImage.alpha = .1;
+                             
+                             [[FirebaseHelper sharedHelper] observeCurrentBoardVersions];
+                             
+                             [self.addBoardButton setImage:[UIImage imageNamed:@"newboard.png"] forState:UIControlStateNormal];
+                             [self.addBoardBackgroundImage setImage:[UIImage imageNamed:@"newboardbackground.png"]];
+                             
+                             [self.versionsButton setImage:[UIImage imageNamed:@"versions.png"] forState:UIControlStateNormal];
+                             self.versionsCountLabel.hidden = false;
+                             
+            }];
+
     }
     else {
-
-        self.versioning = true;
         
         if (![[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.boardIDs[self.carousel.currentItemIndex]]) return;
+        
+        self.versioning = true;
+        self.showButtons = true;
         
         [self.versionsCarousel reloadData];
         [self.versionsCarousel scrollToItemAtIndex:0 animated:NO];
         
-        self.versionsCarousel.hidden = false;
-        self.versionsLabel.text = @"Version 1 of";
-        self.versionsLabel.hidden = false;
         self.carousel.currentItemView.hidden = true;
-        self.carousel.alpha = .2;
+        self.versionsCarousel.hidden = false;
+        self.versionsLabel.text = @"Original";
+        self.versionsLabel.alpha = 0;
+        self.versionsLabel.hidden = false;
         self.carousel.userInteractionEnabled = false;
-
-        [[FirebaseHelper sharedHelper] observeCurrentBoardVersions];
-        
-//        self.addBoardButton.frame = CGRectMake(804, 546, 142, 42);
-//        self.addBoardBackgroundImage.frame = CGRectMake(804, 546, 142, 55);
-//        [self.addBoardButton setImage:[UIImage imageNamed:@"newversion.png"] forState:UIControlStateNormal];
-//        [self.addBoardBackgroundImage setImage:[UIImage imageNamed:@"newversionbackground.png"]];
-        
-        [self.addBoardButton setImage:[UIImage imageNamed:@"newversion.png"] forState:UIControlStateNormal];
-        [self.addBoardBackgroundImage setImage:[UIImage imageNamed:@"buttonsbackground.png"]];
-        
-        [self.versionsButton setImage:[UIImage imageNamed:@"carousel.png"] forState:UIControlStateNormal];
         
         NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"];
-        
         if (versionsArray.count > 1) {
-            
             self.upArrowImage.hidden = false;
+            self.upArrowImage.alpha = 0;
         }
+        
+        self.versionsCountLabel.hidden = true;
+        [self.versionsButton setImage:[UIImage imageNamed:@"carousel.png"] forState:UIControlStateNormal];
+        
+        [UIView animateWithDuration:.1
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveEaseInOut
+                         animations:^{
+                             
+                             self.carousel.alpha = 0;
+                             self.versionsLabel.alpha = 1;
+                             self.upArrowImage.alpha = .1;
+                             
+                         }completion:^(BOOL finished) {
+                             
+                             self.carousel.hidden = true;
+                             self.carousel.alpha = 1;
+                             
+                             [[FirebaseHelper sharedHelper] observeCurrentBoardVersions];
+                             
+                             [self.addBoardButton setImage:[UIImage imageNamed:@"newversion.png"] forState:UIControlStateNormal];
+                             [self.addBoardBackgroundImage setImage:[UIImage imageNamed:@"buttonsbackground.png"]];
+                    
+                         }];
+        
     }
 }
 
@@ -2236,8 +2310,6 @@
             [[FirebaseHelper sharedHelper] setBoard:self.boardIDs[self.carousel.currentItemIndex] UpdatedAt:dateString];
             [self.editedBoardIDs addObject:self.boardIDs[self.carousel.currentItemIndex]];
         }
-        
-        [self cancelTapped:nil];
     }
     
     if ([[self.view viewWithTag:104] isFirstResponder]) {
@@ -2493,6 +2565,10 @@
         self.buttonsBackgroundImage.hidden = false;
         self.shareButton.hidden = false;
         self.versionsButton.hidden = false;
+        NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"];
+        if (versionsArray.count > 1) self.versionsCountLabel.text = [NSString stringWithFormat:@"%lu", versionsArray.count];
+        else self.versionsCountLabel.text = @"";
+        if (!self.versioning) self.versionsCountLabel.hidden = false;
         if (self.userRole > 0) self.deleteBoardButton.hidden = false;
     }
         
@@ -2506,6 +2582,7 @@
         self.buttonsBackgroundImage.hidden = true;
         self.shareButton.hidden = true;
         self.versionsButton.hidden = true;
+        self.versionsCountLabel.hidden = true;
         self.deleteBoardButton.hidden = true;
     }
     
@@ -2515,6 +2592,8 @@
 - (void)carouselCurrentItemIndexDidChange:(iCarousel *)carousel {
     
     if (self.boardIDs.count == 0) return;
+    
+    NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"];
     
     if ([carousel isEqual:self.carousel]) {
         
@@ -2547,16 +2626,17 @@
         self.boardNameLabel.font = labelFont;
         [self.boardNameLabel sizeToFit];
         self.boardNameLabel.center = CGPointMake(self.carousel.center.x, self.boardNameLabel.center.y);
-
+        
+        if (versionsArray.count > 1) self.versionsCountLabel.text = [NSString stringWithFormat:@"%lu", versionsArray.count];
+        else self.versionsCountLabel.text = @"";
+        
         if (self.boardNameLabel.text.length > 0) self.boardNameEditButton.center = CGPointMake(self.carousel.center.x+self.boardNameLabel.frame.size.width/2+17, self.boardNameLabel.center.y);
         else self.boardNameEditButton.hidden = true;
     }
     else {
         
-        NSString *versionString = [NSString stringWithFormat:@"Version %i of", carousel.currentItemIndex+1];
-        self.versionsLabel.text = versionString;
-        
-        NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"];
+        if (self.versionsCarousel.currentItemIndex == 0) self.versionsLabel.text = @"Original";
+        else self.versionsLabel.text = [NSString stringWithFormat:@"Version %lu", self.versionsCarousel.currentItemIndex+1];
         
         if (versionsArray.count > 1) {
             
@@ -2873,6 +2953,13 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     return YES;
+}
+
+#pragma mark - MFMailComposeViewController Delegate
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

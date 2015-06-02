@@ -18,8 +18,10 @@
             <string>SourceSansPro-Light</string>
             <string>SourceSansPro-Light</string>
         </mutableArray>
+        <mutableArray key="SourceSansPro-LightItalic.ttf">
+            <string>SourceSansPro-LightIt</string>
+        </mutableArray>
         <mutableArray key="SourceSansPro-Regular.ttf">
-            <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
@@ -70,6 +72,7 @@
             <string>SourceSansPro-Regular</string>
         </mutableArray>
         <mutableArray key="SourceSansPro-Semibold.ttf">
+            <string>SourceSansPro-Semibold</string>
             <string>SourceSansPro-Semibold</string>
             <string>SourceSansPro-Semibold</string>
             <string>SourceSansPro-Semibold</string>
@@ -788,7 +791,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ioT-dv-IBU">
-                                <rect key="frame" x="16" y="103" width="508" height="83"/>
+                                <rect key="frame" x="16" y="93" width="508" height="83"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -1571,10 +1574,10 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="32"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version 1 of" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="eCq-mt-XlS">
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="eCq-mt-XlS">
                                 <rect key="frame" x="568" y="90" width="100" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-LightIt" family="Source Sans Pro" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -1587,6 +1590,13 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="3Yb-Sn-Nyj"/>
                                 </connections>
                             </textField>
+                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Project Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" id="7VA-hg-eFW">
+                                <rect key="frame" x="267" y="28" width="320" height="64"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-ExtraLight" family="Source Sans Pro" pointSize="48"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="gridimage.png" id="sX8-E6-yJa">
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1612,7 +1622,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.25" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="buttonsbackground.png" id="md8-y5-EWv">
-                                <rect key="frame" x="340" y="512" width="142" height="42"/>
+                                <rect key="frame" x="340" y="506" width="162" height="48"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="N38-cw-Ht6">
@@ -1626,7 +1636,7 @@
                                 </connections>
                             </button>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="tbP-tk-4fE">
-                                <rect key="frame" x="344" y="513" width="40" height="40"/>
+                                <rect key="frame" x="344" y="509" width="45" height="45"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="share.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -1636,7 +1646,7 @@
                                 </connections>
                             </button>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Rla-Rc-2p3">
-                                <rect key="frame" x="391" y="513" width="40" height="40"/>
+                                <rect key="frame" x="399" y="509" width="45" height="45"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="versions.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -1646,7 +1656,7 @@
                                 </connections>
                             </button>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="4rx-rn-aUE">
-                                <rect key="frame" x="440" y="513" width="40" height="40"/>
+                                <rect key="frame" x="454" y="509" width="45" height="45"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="delete.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -1655,12 +1665,19 @@
                                     <action selector="deleteBoardTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="6bQ-av-DX8"/>
                                 </connections>
                             </button>
-                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="downarrow.png" id="fA2-dq-x7i">
-                                <rect key="frame" x="278" y="175" width="37" height="330"/>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Ubj-ln-jAm">
+                                <rect key="frame" x="404" y="517" width="36" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-Semibold" family="Source Sans Pro" pointSize="20"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.10000000000000001" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="downarrow.png" id="fA2-dq-x7i">
+                                <rect key="frame" x="278" y="253" width="37" height="173"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="uparrow.png" id="Aq2-gE-ke2">
-                                <rect key="frame" x="919" y="175" width="37" height="330"/>
+                            <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.10000000000000001" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="uparrow.png" id="Aq2-gE-ke2">
+                                <rect key="frame" x="919" y="253" width="37" height="173"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <view contentMode="scaleToFill" id="kDh-qU-DmB">
@@ -1800,13 +1817,6 @@
                                     <outlet property="delegate" destination="u5o-7l-ZfK" id="WdP-0G-bAN"/>
                                 </connections>
                             </textField>
-                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Project Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" id="7VA-hg-eFW">
-                                <rect key="frame" x="267" y="28" width="320" height="64"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="SourceSansPro-ExtraLight" family="Source Sans Pro" pointSize="48"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <view contentMode="scaleToFill" id="r9C-xd-JPc" customClass="MasterView">
                                 <rect key="frame" x="0.0" y="0.0" width="210" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1951,6 +1961,7 @@
                         <outlet property="upArrowImage" destination="Aq2-gE-ke2" id="RVR-CZ-uUN"/>
                         <outlet property="versionsButton" destination="Rla-Rc-2p3" id="oLI-ok-SPN"/>
                         <outlet property="versionsCarousel" destination="s9f-SR-zLr" id="ErW-Lu-GsE"/>
+                        <outlet property="versionsCountLabel" destination="Ubj-ln-jAm" id="nlV-BV-hD5"/>
                         <outlet property="versionsLabel" destination="eCq-mt-XlS" id="PUt-dm-rXD"/>
                     </connections>
                 </viewController>
@@ -1970,7 +1981,7 @@
         <image name="delete.png" width="232" height="231"/>
         <image name="deleteProjectBackground.png" width="410" height="86"/>
         <image name="deleteproject.png" width="820" height="170"/>
-        <image name="downarrow.png" width="165" height="1198"/>
+        <image name="downarrow.png" width="328" height="1533"/>
         <image name="edit.png" width="600" height="600"/>
         <image name="feather.png" width="1024" height="1024"/>
         <image name="gear2.png" width="324" height="323"/>
@@ -1982,7 +1993,7 @@
         <image name="settingsfade.png" width="540" height="112"/>
         <image name="share.png" width="700" height="700"/>
         <image name="up.png" width="145" height="80"/>
-        <image name="uparrow.png" width="165" height="1198"/>
+        <image name="uparrow.png" width="328" height="1533"/>
         <image name="userbuttonmask.png" width="250" height="250"/>
         <image name="versions.png" width="700" height="700"/>
     </resources>

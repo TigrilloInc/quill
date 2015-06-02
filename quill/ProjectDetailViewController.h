@@ -12,10 +12,11 @@
 #import "MasterViewController.h"
 #import "UICollectionView+Draggable.h"
 #import "AvatarButton.h"
+#import <MessageUI/MessageUI.h>
 
 @class MasterView;
 
-@interface ProjectDetailViewController : UIViewController <iCarouselDataSource, iCarouselDelegate, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource_Draggable, UICollectionViewDelegate, UIGestureRecognizerDelegate> {
+@interface ProjectDetailViewController : UIViewController <iCarouselDataSource, iCarouselDelegate, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource_Draggable, UICollectionViewDelegate, UIGestureRecognizerDelegate, MFMailComposeViewControllerDelegate> {
 
     BOOL newBoardCreated;
 
@@ -72,6 +73,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *buttonsBackgroundImage;
 @property (weak, nonatomic) IBOutlet UIButton *shareButton;
 @property (weak, nonatomic) IBOutlet UIButton *versionsButton;
+@property (weak, nonatomic) IBOutlet UILabel *versionsCountLabel;
 @property (weak, nonatomic) IBOutlet UIButton *deleteBoardButton;
 @property (weak, nonatomic) IBOutlet UIImageView *upArrowImage;
 @property (weak, nonatomic) IBOutlet UIImageView *downArrowImage;

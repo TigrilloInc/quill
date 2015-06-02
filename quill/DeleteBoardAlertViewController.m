@@ -29,9 +29,10 @@
     
     NSString *boardName;
     
+    NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:[FirebaseHelper sharedHelper].projectVC.boardIDs[[FirebaseHelper sharedHelper].projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
+    
     if ([FirebaseHelper sharedHelper].projectVC.versioning) {
         
-        NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:[FirebaseHelper sharedHelper].projectVC.boardIDs[[FirebaseHelper sharedHelper].projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
         NSString *boardID = versionsArray[[FirebaseHelper sharedHelper].projectVC.versionsCarousel.currentItemIndex];
         
         boardName = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"name"];
@@ -57,7 +58,10 @@
         boldLength = boardName.length+12+[@(projectVC.versionsCarousel.currentItemIndex+1) stringValue].length;
     }
     else {
-        boardString = [NSString stringWithFormat:@"Are you sure you want to delete %@?", boardName];
+        
+        if (versionsArray.count > 1) boardString = [NSString stringWithFormat:@"Are you sure you want to delete %@?\nAll of its versions (%lu) will also be deleted.", boardName, versionsArray.count-1];
+        else boardString = [NSString stringWithFormat:@"Are you sure you want to delete %@?", boardName];
+        
         boldLength = boardName.length;
     }
     
@@ -115,8 +119,9 @@
         projectVC.downArrowImage.hidden = true;
         [projectVC.versionsCarousel reloadData];
         
-        NSString *labelString = [NSString stringWithFormat:@"Version %i of", projectVC.versionsCarousel.currentItemIndex+1];
-        projectVC.versionsLabel.text = labelString;
+        if (projectVC.versionsCarousel.currentItemIndex == 0) projectVC.versionsLabel.text = @"Original";
+        else projectVC.versionsLabel.text = [NSString stringWithFormat:@"Version %lu", projectVC.versionsCarousel.currentItemIndex+1];
+
     }
     else {
         

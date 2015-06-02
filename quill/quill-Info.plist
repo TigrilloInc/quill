@@ -37,6 +37,7 @@
 	<true/>
 	<key>UIAppFonts</key>
 	<array>
+		<string>SourceSansPro-LightItalic.ttf</string>
 		<string>SourceSansPro-ExtraLight.otf</string>
 		<string>SourceSansPro-Light.otf</string>
 		<string>SourceSansPro-Regular.ttf</string>

@@ -14,23 +14,28 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    options = @[ @"Leave a comment",
-                 @"Hide comments"
+    options = @[ @"leavecomment",
+                 @"hidecomments"
                 ];
     
-    self.preferredContentSize = CGSizeMake(175, 18+options.count*45);
+    self.preferredContentSize = CGSizeMake(205, 10+options.count*50);
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
     for (int i=0; i<options.count; i++) {
         
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        button.frame = CGRectMake(0, 12+i*45, 50, 50);
-        if (i==1 && !projectVC.currentBoardView.hideComments) [button setTitle:@"Show comments" forState:UIControlStateNormal];
-        else [button setTitle:options[i] forState:UIControlStateNormal];
-        button.titleLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:18];
-        [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [button sizeToFit];
-        button.center = CGPointMake(self.preferredContentSize.width/2, button.center.y);
+        button.frame = CGRectMake(0, 5+i*50, 205, 50);
+        if (i==1 && !projectVC.currentBoardView.hideComments) {
+            [button setImage:[UIImage imageNamed:@"showcomments.png"] forState:UIControlStateNormal];
+            [button setImage:[UIImage imageNamed:@"showcomments-highlighted.png"] forState:UIControlStateHighlighted];
+        }
+        else {
+            NSString *imageString = [NSString stringWithFormat:@"%@.png", options[i]];
+            [button setImage:[UIImage imageNamed:imageString] forState:UIControlStateNormal];
+            NSString *highlightedString = [NSString stringWithFormat:@"%@-highlighted.png", options[i]];
+            [button setImage:[UIImage imageNamed:imageString] forState:UIControlStateNormal];
+            [button setImage:[UIImage imageNamed:highlightedString] forState:UIControlStateHighlighted];
+        }
         [button addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:button];
         button.tag = i;

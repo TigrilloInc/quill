@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MessageUI/MessageUI.h>
 
-@interface SharePopoverViewController : UIViewController {
+@interface SharePopoverViewController : UIViewController <UINavigationControllerDelegate, MFMailComposeViewControllerDelegate> {
     
     NSArray *options;
 }
