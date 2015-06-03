@@ -817,6 +817,7 @@
                     <connections>
                         <outlet property="boardLabel" destination="ioT-dv-IBU" id="fWc-IN-jUw"/>
                         <outlet property="deleteButton" destination="h7s-zC-1Un" id="WcC-kq-cEI"/>
+                        <outlet property="recoverLabel" destination="eit-qO-0Nx" id="0b8-QA-b5z"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GJx-sq-1fO" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1689,7 +1690,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" name="SourceSansPro-Light" family="Source Sans Pro" pointSize="18"/>
-                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="send"/>
                                         <connections>
                                             <outlet property="delegate" destination="u5o-7l-ZfK" id="9nA-iC-awf"/>
                                         </connections>

@@ -135,15 +135,14 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    ProjectsTableViewCell *cell = (ProjectsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    cell.textLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
+    
     if (indexPath.row == [FirebaseHelper sharedHelper].visibleProjectIDs.count) {
         
         [self newProjectTapped];
-        [tableView selectRowAtIndexPath:self.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
         return;
     }
-    
-    ProjectsTableViewCell *cell = (ProjectsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-    cell.textLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
     
     NSString *projectName = cell.textLabel.text;
     NSString *projectID;

@@ -47,10 +47,12 @@
     else boardView = (BoardView *)projectVC.carousel.currentItemView;
     
     [boardView viewWithTag:1].hidden = true;
+    for (CommentButton *comment in boardView.commentButtons) comment.hidden = YES;
     UIGraphicsBeginImageContextWithOptions(boardView.bounds.size, YES, 0.0);
     [boardView.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *boardImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
+    for (CommentButton *comment in boardView.commentButtons) comment.hidden = NO;
     [boardView viewWithTag:1].hidden = false;
     
     
@@ -67,7 +69,7 @@
         
         NSString *projectName = [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"name"];
         
-        NSString *bodyString = [NSString stringWithFormat:@"I've shared the board <i><b>%@</b></i> from the project <i><b>%@</b></i> with you.<br>If you'd like to view it in Quill, make sure you're a member of the team <i><b>%@</b></i>.", boardName, projectName, [FirebaseHelper sharedHelper].teamName];
+        NSString *bodyString = [NSString stringWithFormat:@"I've shared the board '<b>%@</b>' from the project '<b>%@</b>' with you.<br><br>If you'd like to view it in Quill, make sure you're a member of the team '<b>%@</b>'.", boardName, projectName, [FirebaseHelper sharedHelper].teamName];
         
         [mailVC setMessageBody:bodyString isHTML:YES];
         
@@ -87,7 +89,6 @@
     if (button.tag == 1) {
         
         [button setImage:[UIImage imageNamed:@"camerarollsaved.png"] forState:UIControlStateNormal];
-        button.alpha = .5;
         button.enabled = NO;
         
         UIImage *rotatedImage = [UIImage imageWithCGImage:boardImage.CGImage scale:0 orientation:UIImageOrientationRight];

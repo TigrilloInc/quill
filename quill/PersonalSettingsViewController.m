@@ -404,7 +404,11 @@
         
         [[FirebaseHelper sharedHelper] updateMasterView];
         
-        if ([FirebaseHelper sharedHelper].currentProjectID) [projectVC layoutAvatars];
+        if ([FirebaseHelper sharedHelper].currentProjectID) {
+            
+            [projectVC layoutAvatars];
+            [projectVC.carousel reloadData];
+        }
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];

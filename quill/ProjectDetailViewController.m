@@ -57,6 +57,7 @@
     [self.carousel addGestureRecognizer:downBoardSwipe];
     
     self.versionsCarousel.type = iCarouselTypeInvertedTimeMachine;
+    self.versionsCarousel.pagingEnabled = YES;
     self.versionsCarousel.bounceDistance = 0.15f;
     self.versionsCarousel.viewpointOffset = CGSizeMake(0, -2750);
     self.versionsCarousel.contentOffset = CGSizeMake(0, -2750);
@@ -142,7 +143,12 @@
             
             UINavigationController *presentedNav = (UINavigationController *)self.presentedViewController;
             
-            if (![presentedNav.viewControllers[0] isKindOfClass:[InstabugViewController class]]) [self.presentedViewController presentViewController:nav animated:YES completion:nil];
+            UIViewController *vc;
+        
+            if ([presentedNav respondsToSelector:@selector(viewControllers)]) vc = presentedNav.viewControllers[0];
+            else vc = self.presentedViewController;
+            
+            if (![vc isKindOfClass:[InstabugViewController class]]) [self.presentedViewController presentViewController:nav animated:YES completion:nil];
         }
         else [self presentViewController:nav animated:YES completion:nil];
     }
@@ -2063,6 +2069,8 @@
 
 -(void)keyboardWillShow:(NSNotification *)notification {
     
+    if (self.keyboardHeight > 0) return;
+    
     if ([self.chatTextField isFirstResponder] || [self.commentTitleTextField isFirstResponder]) {
     
         self.chatOpenButton.hidden = false;
@@ -2072,8 +2080,8 @@
         
         [self showChat];
         
-        CGFloat height = [[notification.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
-        keyboardDiff = 517-height;
+        self.keyboardHeight = [[notification.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
+        keyboardDiff = 517-self.keyboardHeight;
         
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:[notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
@@ -2081,24 +2089,24 @@
         [UIView setAnimationBeginsFromCurrentState:YES];
         
         CGRect viewRect = self.chatView.frame;
-        viewRect.origin.y -= height;
+        viewRect.origin.y -= self.keyboardHeight;
         self.chatView.frame = viewRect;
         
         CGRect fadeRect = self.chatFadeImage.frame;
-        if(self.activeBoardID == nil) fadeRect.origin.y -= (height+keyboardDiff);
-        else fadeRect.origin.y -= height;
+        if(self.activeBoardID == nil) fadeRect.origin.y -= (self.keyboardHeight+keyboardDiff);
+        else fadeRect.origin.y -= self.keyboardHeight;
         self.chatFadeImage.frame = fadeRect;
         
         CGRect titleRect = self.commentTitleView.frame;
-        titleRect.origin.y -= height;
+        titleRect.origin.y -= self.keyboardHeight;
         self.commentTitleView.frame = titleRect;
         
         CGRect chatTableRect = self.chatTable.frame;
         if (self.activeBoardID == nil) {
             chatTableRect.size.height += keyboardDiff;
-            chatTableRect.origin.y -= (height+keyboardDiff);
+            chatTableRect.origin.y -= (self.keyboardHeight+keyboardDiff);
         }
-        else chatTableRect.origin.y -= height;
+        else chatTableRect.origin.y -= self.keyboardHeight;
         
         self.chatTable.frame = chatTableRect;
         
@@ -2126,7 +2134,7 @@
         else {
             
             CGRect projectsTableRect = self.masterView.projectsTable.frame;
-            projectsTableRect.size.height -= (height-keyboardDiff);
+            projectsTableRect.size.height -= (self.keyboardHeight-keyboardDiff);
             self.masterView.projectsTable.frame = projectsTableRect;
         }
         
@@ -2134,11 +2142,11 @@
         
         if (!self.activeBoardID) {
             [self.chatOpenButton setImage:[UIImage imageNamed:@"down.png"] forState:UIControlStateNormal];
-            self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y-(height+keyboardDiff));
+            self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y-(self.keyboardHeight+keyboardDiff));
         }
         else {
             [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
-            self.chatOpenButton.center = CGPointMake(self.view.center.x, self.chatOpenButton.center.y-height);
+            self.chatOpenButton.center = CGPointMake(self.view.center.x, self.chatOpenButton.center.y-self.keyboardHeight);
         }
         
         [self.view bringSubviewToFront:self.chatOpenButton];
@@ -2163,8 +2171,7 @@
         if (self.activeCommentThreadID) [self.viewedCommentThreadIDs addObject:self.activeCommentThreadID];
         self.activeCommentThreadID = nil;
         
-        CGFloat height = [[notification.userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
-        keyboardDiff = 517-height;
+        keyboardDiff = 517-self.keyboardHeight;
 
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:[notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
@@ -2172,28 +2179,28 @@
         [UIView setAnimationBeginsFromCurrentState:YES];
         
         CGRect projectsTableRect = self.masterView.projectsTable.frame;
-        projectsTableRect.size.height += (height-keyboardDiff);
+        projectsTableRect.size.height += (self.keyboardHeight-keyboardDiff);
         self.masterView.projectsTable.frame = projectsTableRect;
 
         CGRect titleRect = self.commentTitleView.frame;
-        titleRect.origin.y += height;
+        titleRect.origin.y += self.keyboardHeight;
         self.commentTitleView.frame = titleRect;
 
         CGRect viewRect = self.chatView.frame;
-        viewRect.origin.y += height;
+        viewRect.origin.y += self.keyboardHeight;
         self.chatView.frame = viewRect;
         
         CGRect fadeRect = self.chatFadeImage.frame;
-        if(self.activeBoardID == nil) fadeRect.origin.y += (height+keyboardDiff);
-        else fadeRect.origin.y += height;
+        if(self.activeBoardID == nil) fadeRect.origin.y += (self.keyboardHeight+keyboardDiff);
+        else fadeRect.origin.y += self.keyboardHeight;
         self.chatFadeImage.frame = fadeRect;
         
         CGRect chatTableRect = self.chatTable.frame;
         if (self.activeBoardID == nil) {
             chatTableRect.size.height -= keyboardDiff-self.chatDiff;
-            chatTableRect.origin.y += (height+keyboardDiff);
+            chatTableRect.origin.y += (self.keyboardHeight+keyboardDiff);
         }
-        else chatTableRect.origin.y += height;
+        else chatTableRect.origin.y += self.keyboardHeight;
         self.chatTable.frame = chatTableRect;
             
         if (self.activeBoardID && self.carouselOffset > 0) {
@@ -2225,18 +2232,20 @@
         else {
             
             CGRect projectsTableRect = self.masterView.projectsTable.frame;
-            projectsTableRect.size.height += (height-keyboardDiff);
+            projectsTableRect.size.height += (self.keyboardHeight-keyboardDiff);
             self.masterView.projectsTable.frame = projectsTableRect;
         }
 
-        if (self.activeBoardID) self.chatOpenButton.center = CGPointMake(self.view.center.x, self.chatOpenButton.center.y+height);
-        else self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y+(height+keyboardDiff));
+        if (self.activeBoardID) self.chatOpenButton.center = CGPointMake(self.view.center.x, self.chatOpenButton.center.y+self.keyboardHeight);
+        else self.chatOpenButton.center = CGPointMake(self.chatOpenButton.center.x, self.chatOpenButton.center.y+(self.keyboardHeight+keyboardDiff));
         
         if (self.chatOpen) [self openChat];
 
         [self.view bringSubviewToFront:self.chatOpenButton];
         
         [UIView commitAnimations];
+        
+        self.keyboardHeight = 0;
         
         CGPoint chatCenter = self.chatOpenButton.center;
         self.chatOpenButton.frame = CGRectMake(0, 0, 51, 28);

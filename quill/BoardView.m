@@ -192,7 +192,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         button.transform = tr;
  
         UIImage *avatarImage = [[[[FirebaseHelper sharedHelper].team objectForKey:@"users"] objectForKey:button.userID] objectForKey:@"avatar"];
-        
+
         if ([avatarImage isKindOfClass:[UIImage class]]) {
             
             UIImageView *customAvatar = [[UIImageView alloc] initWithImage:avatarImage];
@@ -229,6 +229,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         }
         
         [self addSubview:button];
+        [button updateLabel];
         [self.commentButtons addObject:button];
         
         if ([self.boardID isEqualToString:projectVC.activeBoardID]) [projectVC updateCommentCount];
@@ -772,6 +773,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     if (sender.state == UIGestureRecognizerStateBegan) {
         
+        button.commentTitleLabel.hidden = true;
+        
         for (CommentButton *commentButton in self.commentButtons) {
             
             if ([commentButton isEqual:button]) continue;
@@ -828,7 +831,9 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                              
                              button.point = CGPointMake(MAX(0,MIN(button.center.x,768))+40, button.center.y-22);
                              
-                             [self updateCarouselOffsetWithPoint:button.point];
+                             [button updateLabel];
+                             
+                             if (projectVC.keyboardHeight > 0) [self updateCarouselOffsetWithPoint:button.point];
                              
                              NSDictionary *locationDict = @{ @"x" : @(button.point.x), @"y" : @(button.point.y) };
                              

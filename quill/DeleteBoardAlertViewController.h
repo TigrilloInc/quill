@@ -18,5 +18,7 @@
 
 @property (weak, nonatomic) IBOutlet RoundedButton *deleteButton;
 @property (weak, nonatomic) IBOutlet UILabel *boardLabel;
+@property (weak, nonatomic) IBOutlet UILabel *recoverLabel;
+
 
 @end

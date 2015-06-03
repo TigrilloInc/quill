@@ -7,6 +7,8 @@
 //
 
 #import "ProjectsTableViewCell.h"
+#import "ProjectDetailViewController.h"
+#import "MasterView.h"
 
 @implementation ProjectsTableViewCell
 

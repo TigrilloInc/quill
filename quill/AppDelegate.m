@@ -41,6 +41,8 @@
     
     [[FirebaseHelper sharedHelper] testConnection];
     
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textFieldBegan:) name:UITextFieldTextDidBeginEditingNotification object:nil];
+    
     return YES;
 }
 
@@ -77,6 +79,26 @@ void signalHandler(int signal) {
     if ([FirebaseHelper sharedHelper].currentProjectID) [[FirebaseHelper sharedHelper] setInProject:[FirebaseHelper sharedHelper].currentProjectID];
     if ([FirebaseHelper sharedHelper].projectVC.activeBoardID) [[FirebaseHelper sharedHelper] setInBoard:[FirebaseHelper sharedHelper].projectVC.activeBoardID];
 }
+
+//-(void) textFieldBegan: (NSNotification *)notification {
+//    
+//    UITextField *textField = [notification object];
+//    
+//    if (!self.inputAccessoryView) {
+//        self.inputAccessoryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+//        [self.inputAccessoryView setBackgroundColor:[UIColor lightGrayColor]];
+//    }
+//    
+//    textField.inputAccessoryView = self.inputAccessoryView;
+//
+//    [self performSelector:@selector(forceKeyboard) withObject:nil afterDelay:0];
+//}
+//
+//-(void) forceKeyboard {
+//
+//    self.inputAccessoryView.superview.frame = CGRectMake(0, 416, 0, 0);
+//    
+//}
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     

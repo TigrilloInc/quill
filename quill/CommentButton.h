@@ -19,8 +19,10 @@
 @property (strong, nonatomic) UIImageView *commentImage;
 @property (strong, nonatomic) UIImageView *highlightedImage;
 @property (strong, nonatomic) UIButton *deleteButton;
+@property (strong, nonatomic) UILabel *commentTitleLabel;
 
 -(void) generateIdenticon;
 -(void) commentTapped;
+-(void) updateLabel;
 
 @end

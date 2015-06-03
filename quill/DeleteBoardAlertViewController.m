@@ -56,6 +56,8 @@
     if (projectVC.versioning && projectVC.versionsCarousel.currentItemIndex > 0) {
         boardString = [NSString stringWithFormat:@"Are you sure you want to delete Version %i of %@?", projectVC.versionsCarousel.currentItemIndex+1, boardName];
         boldLength = boardName.length+12+[@(projectVC.versionsCarousel.currentItemIndex+1) stringValue].length;
+        
+        self.recoverLabel.text = @"Deleted versions of a board cannot be recovered.";
     }
     else {
         
@@ -63,6 +65,8 @@
         else boardString = [NSString stringWithFormat:@"Are you sure you want to delete %@?", boardName];
         
         boldLength = boardName.length;
+        
+        self.recoverLabel.text = @"Deleted boards cannot be recovered.";
     }
     
     NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithString:boardString attributes:regAttrs];

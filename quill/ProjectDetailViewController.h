@@ -57,6 +57,7 @@
 @property int userRole;
 @property float chatDiff;
 @property float carouselOffset;
+@property float keyboardHeight;
 
 @property (weak, nonatomic) IBOutlet MasterView *masterView;
 @property (weak, nonatomic) IBOutlet iCarousel *carousel;

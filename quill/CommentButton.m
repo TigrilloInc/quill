@@ -31,6 +31,12 @@
         self.highlightedImage.hidden = true;
         [self addSubview:self.highlightedImage];
         
+        self.commentTitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        self.commentTitleLabel.font = [UIFont fontWithName:@"SourceSansPro-Regular" size:100];
+        self.commentTitleLabel.backgroundColor = [UIColor colorWithRed:.88 green:.88 blue:.88 alpha:.5];
+        self.commentTitleLabel.textAlignment = NSTextAlignmentCenter;
+        [self addSubview:self.commentTitleLabel];
+        
         UIImage *deleteImage = [UIImage imageNamed:@"close.png"];
         self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.deleteButton.frame = CGRectMake(-deleteImage.size.width/2, -deleteImage.size.height/2, deleteImage.size.width, deleteImage.size.height);
@@ -263,7 +269,33 @@
         [projectVC showChat];
     }
     
-    [boardView updateCarouselOffsetWithPoint:self.point];
+    if (projectVC.keyboardHeight > 0) [boardView updateCarouselOffsetWithPoint:self.point];
+}
+
+-(void) updateLabel {
+    
+    BoardView *boardView = (BoardView *)self.superview;
+    
+    NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"commentsID"];
+    NSString *title = [[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.commentThreadID] objectForKey:@"title"];
+    
+    if (title) {
+
+        self.commentTitleLabel.text = title;
+        CGRect titleRect = [self.commentTitleLabel.text boundingRectWithSize:CGSizeMake(1000000000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName:self.commentTitleLabel.font} context:nil];
+        
+        float x;
+
+        if ((1024-self.center.y)+titleRect.size.width/4 < 980) x = 220;
+        else x = -titleRect.size.width-60;
+    
+        self.commentTitleLabel.frame = CGRectMake(x, 40, titleRect.size.width+90, titleRect.size.height+15);
+        [self sendSubviewToBack:self.commentTitleLabel];
+        self.commentTitleLabel.hidden = false;
+        
+    }
+    else self.commentTitleLabel.hidden = true;
+    
 }
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
