@@ -198,6 +198,12 @@
     editBoardNameTextField.delegate = self;
     [self.view addSubview:editBoardNameTextField];
     
+    UILabel *boardVersionsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+    boardVersionsLabel.font = [UIFont fontWithName:@"SourceSansPro-LightIt" size:18];
+    boardVersionsLabel.hidden = true;
+    [self.view addSubview:boardVersionsLabel];
+    boardVersionsLabel.tag = 105;
+    
     self.drawButtons = @[ @"undo",
                           @"redo",
                           @"clear",
@@ -253,6 +259,13 @@
     UILabel *boardNameLabel = (UILabel *)[self.view viewWithTag:102];
     boardNameLabel.hidden = false;
     [self.view bringSubviewToFront:boardNameLabel];
+
+    if (self.versioning && self.versionsCarousel.currentItemIndex > 0) {
+        
+        UILabel *boardVersionLabel = (UILabel *)[self.view viewWithTag:105];
+        boardVersionLabel.hidden = false;
+        [self.view bringSubviewToFront:boardVersionLabel];
+    }
     
     if (self.userRole > 0) {
         
@@ -292,6 +305,9 @@
     
     UITextField *editBoardNameTextField = (UITextField *)[self.view viewWithTag:104];
     editBoardNameTextField.hidden = true;
+    
+    UILabel *boardVersionLabel = (UILabel *)[self.view viewWithTag:105];
+    boardVersionLabel.hidden = true;
     
     for (int i=0; i<=self.drawButtons.count; i++) {
         
@@ -343,6 +359,8 @@
     [self.view bringSubviewToFront:textField];
     textField.hidden = false;
     [textField becomeFirstResponder];
+
+    
 }
 
 -(void) hideAll {
@@ -993,6 +1011,10 @@
     [boardNameLabel sizeToFit];
     CGRect projectNameRect = [self.view viewWithTag:101].frame;
     boardNameLabel.frame = CGRectMake(projectNameRect.size.width+46, projectNameRect.origin.y+5.5, boardNameLabel.frame.size.width, boardNameLabel.frame.size.height);
+    UILabel *versionLabel = (UILabel *)[self.view viewWithTag:105];
+    versionLabel.text = [NSString stringWithFormat:@"Version %lu", self.versionsCarousel.currentItemIndex+1];
+    versionLabel.frame = CGRectMake(97, 42, 100, 50);
+
     
     self.messages = [NSMutableArray array];
     [self.chatTable reloadData];
@@ -1448,9 +1470,11 @@
         self.shareButton.hidden = false;
         self.versionsButton.hidden = false;
         [self.versionsButton setImage:[UIImage imageNamed:@"versions.png"] forState:UIControlStateNormal];
-        NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"];
-        if (versionsArray.count > 1) self.versionsCountLabel.text = [NSString stringWithFormat:@"%lu", versionsArray.count];
-        else self.versionsCountLabel.text = @"";
+        self.versionsCountLabel.text = @"";
+        if (self.boardIDs.count > 0) {
+            NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"];
+            if (versionsArray.count > 1) self.versionsCountLabel.text = [NSString stringWithFormat:@"%lu", versionsArray.count];
+        }
         self.versionsCountLabel.hidden = false;
         if  (self.userRole > 0) self.deleteBoardButton.hidden = false;
         self.buttonsBackgroundImage.hidden = false;
@@ -1792,44 +1816,63 @@
         [self drawBoard:(BoardView *)self.carousel.currentItemView];
         [(BoardView *)self.carousel.currentItemView layoutComments];
         
-        self.carousel.alpha = 0;
+        if ([self.boardIDs containsObject:((BoardView *)self.carousel.currentItemView).boardID]) {
+            self.carousel.alpha = 0;
 
-        self.carousel.hidden = false;
-        
-        [UIView animateWithDuration:.1
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseInOut
-                         animations:^{
-                             
-                             self.carousel.alpha = 1;
-                             self.versionsLabel.alpha = 0;
-                             self.upArrowImage.alpha = 0;
-                             self.downArrowImage.alpha = 0;
-                             
-                         }completion:^(BOOL finished) {
-                             
-                             self.versionsCarousel.hidden = true;
-                             self.carousel.currentItemView.hidden = false;
-                            
-                             self.carousel.userInteractionEnabled = true;
-                             
-                             self.versionsLabel.hidden = true;
-                             self.versionsLabel.alpha = 1;
-                             
-                             self.upArrowImage.hidden = true;
-                             self.upArrowImage.alpha = .1;
-                             self.downArrowImage.hidden = true;
-                             self.downArrowImage.alpha = .1;
-                             
-                             [[FirebaseHelper sharedHelper] observeCurrentBoardVersions];
-                             
-                             [self.addBoardButton setImage:[UIImage imageNamed:@"newboard.png"] forState:UIControlStateNormal];
-                             [self.addBoardBackgroundImage setImage:[UIImage imageNamed:@"newboardbackground.png"]];
-                             
-                             [self.versionsButton setImage:[UIImage imageNamed:@"versions.png"] forState:UIControlStateNormal];
-                             self.versionsCountLabel.hidden = false;
-                             
-            }];
+            self.carousel.hidden = false;
+            
+            [UIView animateWithDuration:.1
+                                  delay:0.0
+                                options:UIViewAnimationOptionCurveEaseInOut
+                             animations:^{
+                                 
+                                 self.carousel.alpha = 1;
+                                 self.versionsLabel.alpha = 0;
+                                 self.upArrowImage.alpha = 0;
+                                 self.downArrowImage.alpha = 0;
+                                 
+                             }completion:^(BOOL finished) {
+                                 
+                                 self.versionsCarousel.hidden = true;
+                                 self.carousel.currentItemView.hidden = false;
+                                
+                                 self.carousel.userInteractionEnabled = true;
+                                 
+                                 self.versionsLabel.hidden = true;
+                                 self.versionsLabel.alpha = 1;
+                                 
+                                 self.upArrowImage.hidden = true;
+                                 self.upArrowImage.alpha = .1;
+                                 self.downArrowImage.hidden = true;
+                                 self.downArrowImage.alpha = .1;
+                                 
+                                 [[FirebaseHelper sharedHelper] observeCurrentBoardVersions];
+                                 
+                                 [self.addBoardButton setImage:[UIImage imageNamed:@"newboard.png"] forState:UIControlStateNormal];
+                                 [self.addBoardBackgroundImage setImage:[UIImage imageNamed:@"newboardbackground.png"]];
+                                 
+                                 [self.versionsButton setImage:[UIImage imageNamed:@"versions.png"] forState:UIControlStateNormal];
+                                 self.versionsCountLabel.hidden = false;
+                                 
+                }];
+        }
+        else {
+            
+            self.versionsCarousel.hidden = true;
+            self.carousel.currentItemView.hidden = false;
+            self.carousel.hidden = false;
+            
+            self.carousel.userInteractionEnabled = true;
+            
+            self.versionsLabel.hidden = true;
+            self.versionsLabel.alpha = 1;
+            
+            self.upArrowImage.hidden = true;
+            self.upArrowImage.alpha = .1;
+            self.downArrowImage.hidden = true;
+            self.downArrowImage.alpha = .1;
+            
+        }
 
     }
     else {

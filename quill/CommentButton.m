@@ -1,9 +1,9 @@
 //
 //  CommentButton.m
-//  mailcore2
+//  Quill
 //
 //  Created by Alex Costantini on 10/27/14.
-//  Copyright (c) 2014 MailCore. All rights reserved.
+//  Copyright (c) 2014 Tigrillo. All rights reserved.
 //
 
 #import "CommentButton.h"
@@ -279,17 +279,17 @@
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"commentsID"];
     NSString *title = [[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.commentThreadID] objectForKey:@"title"];
     
-    if (title) {
+    if (title.length > 0) {
 
         self.commentTitleLabel.text = title;
         CGRect titleRect = [self.commentTitleLabel.text boundingRectWithSize:CGSizeMake(1000000000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName:self.commentTitleLabel.font} context:nil];
         
         float x;
 
-        if ((1024-self.center.y)+titleRect.size.width/4 < 980) x = 220;
-        else x = -titleRect.size.width-60;
+        if ((1024-self.center.y)+titleRect.size.width/4 < 980) x = 226;
+        else x = -titleRect.size.width-56;
     
-        self.commentTitleLabel.frame = CGRectMake(x, 40, titleRect.size.width+90, titleRect.size.height+15);
+        self.commentTitleLabel.frame = CGRectMake(x, 40, titleRect.size.width+80, titleRect.size.height+10);
         [self sendSubviewToBack:self.commentTitleLabel];
         self.commentTitleLabel.hidden = false;
         

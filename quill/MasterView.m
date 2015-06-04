@@ -91,7 +91,7 @@
     
     [self updateProjects];
     
-    if (indexPath.row == [FirebaseHelper sharedHelper].visibleProjectIDs.count && [FirebaseHelper sharedHelper].projectsLoaded) {
+    if (indexPath.row == self.orderedProjectNames.count && [FirebaseHelper sharedHelper].projectsLoaded) {
         
         UIGraphicsBeginImageContextWithOptions(CGSizeMake(28, 28), NO, 0.0);
         UIImage *plusImage = [UIImage imageNamed:@"plus5.png"];
@@ -135,14 +135,15 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    ProjectsTableViewCell *cell = (ProjectsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-    cell.textLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
-    
     if (indexPath.row == [FirebaseHelper sharedHelper].visibleProjectIDs.count) {
         
         [self newProjectTapped];
+        [tableView selectRowAtIndexPath:self.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
         return;
     }
+    
+    ProjectsTableViewCell *cell = (ProjectsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    cell.textLabel.font = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
     
     NSString *projectName = cell.textLabel.text;
     NSString *projectID;
@@ -152,9 +153,7 @@
         if ([[[[FirebaseHelper sharedHelper].projects objectForKey:pID] objectForKey:@"name"] isEqualToString:projectName])
             projectID = pID;
     }
-    
-    //if ([projectID isEqualToString:[FirebaseHelper sharedHelper].currentProjectID]) return;
-    
+
     if (projectID) {
         
         self.defaultRow = indexPath;
@@ -171,6 +170,8 @@
         projectVC.viewedBoardIDs = [NSMutableArray array];
         projectVC.editedBoardIDs = [NSMutableArray array];
    
+        if (projectVC.versioning) [projectVC versionsTapped:nil];
+        
         BOOL differentProject = false;
         if (![[FirebaseHelper sharedHelper].currentProjectID isEqualToString:projectID]) differentProject = true;
 
@@ -179,10 +180,9 @@
         [[FirebaseHelper sharedHelper] setInProject:projectID];
         [[FirebaseHelper sharedHelper] observeCurrentProjectBoards];
         
-        if (projectVC.versioning) [projectVC versionsTapped:nil];
-        
         [projectVC updateDetails:differentProject];
         [projectVC cancelTapped:nil];
+        projectVC.showButtons = true;
         if ([projectVC.chatTextField isFirstResponder]) [projectVC.chatTextField resignFirstResponder];
         if (differentProject && projectVC.activeBoardID == nil) [projectVC.carousel scrollToItemAtIndex:projectVC.carousel.numberOfItems-1 duration:0];
     }

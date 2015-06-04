@@ -1,9 +1,9 @@
 //
 //  CommentButton.h
-//  mailcore2
+//  Quill
 //
 //  Created by Alex Costantini on 10/27/14.
-//  Copyright (c) 2014 MailCore. All rights reserved.
+//  Copyright (c) 2014 Tigrillo. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

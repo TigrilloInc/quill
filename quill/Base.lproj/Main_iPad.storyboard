@@ -1673,12 +1673,12 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.10000000000000001" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="downarrow.png" id="fA2-dq-x7i">
-                                <rect key="frame" x="278" y="253" width="37" height="173"/>
+                            <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.10000000000000001" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="downarrow2.png" id="fA2-dq-x7i">
+                                <rect key="frame" x="278" y="225" width="37" height="228"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.10000000000000001" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="uparrow.png" id="Aq2-gE-ke2">
-                                <rect key="frame" x="919" y="253" width="37" height="173"/>
+                            <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.10000000000000001" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="uparrow2.png" id="Aq2-gE-ke2">
+                                <rect key="frame" x="919" y="225" width="37" height="228"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <view contentMode="scaleToFill" id="kDh-qU-DmB">
@@ -1982,7 +1982,7 @@
         <image name="delete.png" width="232" height="231"/>
         <image name="deleteProjectBackground.png" width="410" height="86"/>
         <image name="deleteproject.png" width="820" height="170"/>
-        <image name="downarrow.png" width="328" height="1533"/>
+        <image name="downarrow2.png" width="328" height="2020"/>
         <image name="edit.png" width="600" height="600"/>
         <image name="feather.png" width="1024" height="1024"/>
         <image name="gear2.png" width="324" height="323"/>
@@ -1994,7 +1994,7 @@
         <image name="settingsfade.png" width="540" height="112"/>
         <image name="share.png" width="700" height="700"/>
         <image name="up.png" width="145" height="80"/>
-        <image name="uparrow.png" width="328" height="1533"/>
+        <image name="uparrow2.png" width="328" height="2020"/>
         <image name="userbuttonmask.png" width="250" height="250"/>
         <image name="versions.png" width="700" height="700"/>
     </resources>

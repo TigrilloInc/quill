@@ -18,8 +18,6 @@
     
     projectVC = [FirebaseHelper sharedHelper].projectVC;
     
-    self.navigationItem.title = @"Delete Board";
-    
     self.deleteButton.layer.borderWidth = 1;
     self.deleteButton.layer.cornerRadius = 10;
     self.deleteButton.layer.borderColor = [UIColor grayColor].CGColor;
@@ -54,10 +52,16 @@
     int boldLength;
     
     if (projectVC.versioning && projectVC.versionsCarousel.currentItemIndex > 0) {
-        boardString = [NSString stringWithFormat:@"Are you sure you want to delete Version %i of %@?", projectVC.versionsCarousel.currentItemIndex+1, boardName];
+        
+        boardString = [NSString stringWithFormat:@"Are you sure you want to delete Version %lu of %@?", projectVC.versionsCarousel.currentItemIndex+1, boardName];
         boldLength = boardName.length+12+[@(projectVC.versionsCarousel.currentItemIndex+1) stringValue].length;
         
         self.recoverLabel.text = @"Deleted versions of a board cannot be recovered.";
+        self.navigationItem.title = @"Delete Version";
+        [self.deleteButton setTitle:@"Delete Version" forState:UIControlStateNormal];
+        
+        UIImageView *logoImageView = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
+        logoImageView.frame = CGRectMake(172, 8, 32, 32);
     }
     else {
         
@@ -67,6 +71,8 @@
         boldLength = boardName.length;
         
         self.recoverLabel.text = @"Deleted boards cannot be recovered.";
+        self.navigationItem.title = @"Delete Board";
+        [self.deleteButton setTitle:@"Delete Board" forState:UIControlStateNormal];
     }
     
     NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithString:boardString attributes:regAttrs];

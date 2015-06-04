@@ -47,7 +47,9 @@
     else boardView = (BoardView *)projectVC.carousel.currentItemView;
     
     [boardView viewWithTag:1].hidden = true;
-    for (CommentButton *comment in boardView.commentButtons) comment.hidden = YES;
+    for (CommentButton *comment in boardView.commentButtons) {
+        if (comment.commentTitleLabel.text.length == 0) comment.hidden = YES;
+    }
     UIGraphicsBeginImageContextWithOptions(boardView.bounds.size, YES, 0.0);
     [boardView.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *boardImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -63,13 +65,23 @@
         MFMailComposeViewController *mailVC = [[MFMailComposeViewController alloc] init];
         mailVC.mailComposeDelegate = projectVC;
         
-        NSString *boardName = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"name"];
-        
-        [mailVC setSubject: [NSString stringWithFormat:@"'%@' Shared from Quill", boardName]];
+        NSString *boardName = [[[FirebaseHelper sharedHelper].boards objectForKey:projectVC.boardIDs[projectVC.carousel.currentItemIndex]] objectForKey:@"name"];
         
         NSString *projectName = [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"name"];
         
-        NSString *bodyString = [NSString stringWithFormat:@"I've shared the board '<b>%@</b>' from the project '<b>%@</b>' with you.<br><br>If you'd like to view it in Quill, make sure you're a member of the team '<b>%@</b>'.", boardName, projectName, [FirebaseHelper sharedHelper].teamName];
+        NSString *bodyString;
+        
+        if (projectVC.versioning) {
+            
+            NSUInteger versionNum = projectVC.versionsCarousel.currentItemIndex+1;
+            [mailVC setSubject: [NSString stringWithFormat:@"Version %lu of '%@' shared from Quill", versionNum, boardName]];
+            bodyString = [NSString stringWithFormat:@"I've attached an image of Version %lu of the board <b>%@</b> from the project <b>%@</b>.<br><br>If you'd like to view it in Quill, make sure you're a member of the team <b>%@</b>.", versionNum, boardName, projectName, [FirebaseHelper sharedHelper].teamName];
+        }
+        else {
+            
+            [mailVC setSubject: [NSString stringWithFormat:@"'%@' shared from Quill", boardName]];
+            bodyString = [NSString stringWithFormat:@"I've attached an image of the board <b>%@</b> from the project <b>%@</b>.<br><br>If you'd like to view it in Quill, make sure you're a member of the team <b>%@</b>.", boardName, projectName, [FirebaseHelper sharedHelper].teamName];
+        }
         
         [mailVC setMessageBody:bodyString isHTML:YES];
         
