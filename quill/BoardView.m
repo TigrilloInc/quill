@@ -62,6 +62,16 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         self.fadeView.hidden = true;
         [self addSubview:self.fadeView];
         
+        self.leaveCommentLabel = [[UILabel alloc] initWithFrame:self.frame];
+        self.leaveCommentLabel.userInteractionEnabled = NO;
+        self.leaveCommentLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:50];
+        self.leaveCommentLabel.transform = CGAffineTransformMakeRotation(-M_PI_2);
+        self.leaveCommentLabel.textAlignment = NSTextAlignmentCenter;
+        self.leaveCommentLabel.text = @"Tap anywhere to leave comment...";
+        self.leaveCommentLabel.alpha = .15;
+        self.leaveCommentLabel.hidden = true;
+        [self addSubview:self.leaveCommentLabel];
+        
         self.userLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 100, 200, 40)];
         self.userLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
         self.userLabel.transform = CGAffineTransformMakeRotation(-M_PI_2);
@@ -270,6 +280,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     if (self.commenting) {
         
         [self addCommentAtPoint:[touch locationInView:self]];
+        self.fadeView.hidden = true;
         return;
     }
     
@@ -453,6 +464,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     if (self.commenting) {
         self.commenting = false;
+        self.leaveCommentLabel.hidden = true;
+        self.fadeView.hidden = true;
         return;
     }
     
@@ -657,6 +670,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 
 -(void) hideChat {
     
+    [projectVC.view bringSubviewToFront:projectVC.gridImageView];
     [projectVC.view bringSubviewToFront:projectVC.carousel];
     [projectVC.view bringSubviewToFront:projectVC.versionsCarousel];
     [projectVC showDrawMenu];
@@ -693,6 +707,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 }
 
 -(void) addCommentAtPoint:(CGPoint)point {
+    
+    self.fadeView.hidden = true;
     
     [Flurry logEvent:@"Comment_Thread-Created" withParameters:@{@"userID":[FirebaseHelper sharedHelper].uid,
                                                                 @"boardID":self.boardID,

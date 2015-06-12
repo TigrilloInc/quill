@@ -32,7 +32,7 @@
 @implementation ProjectDetailViewController
 
 - (void)viewDidLoad {
-    
+
     [super viewDidLoad];
     
     [[UITextField appearance] setTintColor:[UIColor grayColor]];
@@ -280,9 +280,12 @@
             button.hidden = false;
             [self.view bringSubviewToFront:button];
             
+            button.alpha = 1;
+            
             if (i==0 && ![self canUndo]) button.alpha = .3;
             else if (i==1 && ![self canRedo]) button.alpha = .3;
             else if (i==2 && ![self canClear]) button.alpha = .3;
+            else if (i==6 && !self.currentBoardView.gridOn) button.alpha = .3;
         }
         
         [self updateCommentCount];
@@ -610,7 +613,6 @@
     }
     
     NSArray *userIDs = [users sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    
 
     [self.avatarBackgroundImage removeFromSuperview];
     self.avatarBackgroundImage.hidden = false;
@@ -1013,7 +1015,7 @@
     boardNameLabel.frame = CGRectMake(projectNameRect.size.width+46, projectNameRect.origin.y+5.5, boardNameLabel.frame.size.width, boardNameLabel.frame.size.height);
     UILabel *versionLabel = (UILabel *)[self.view viewWithTag:105];
     versionLabel.text = [NSString stringWithFormat:@"Version %lu", self.versionsCarousel.currentItemIndex+1];
-    versionLabel.frame = CGRectMake(97, 42, 100, 50);
+    versionLabel.frame = CGRectMake(boardNameLabel.frame.origin.x+17, 42, 100, 50);
 
     
     self.messages = [NSMutableArray array];
@@ -1061,6 +1063,13 @@
                          
                          newBoardCreated = false;
                          self.showButtons = false;
+                         
+                         if (![[NSUserDefaults standardUserDefaults] objectForKey:@"boardTutorial"]) {
+                             
+                             self.tutorialView.type = 4;
+                             [self.view bringSubviewToFront:self.tutorialView];
+                             [self.tutorialView updateTutorial];
+                         }
                      }
      ];
 }
@@ -1084,6 +1093,8 @@
     boardButton.hidden = false;
     self.currentBoardView.gridOn = false;
     self.currentBoardView.commenting = false;
+    self.currentBoardView.fadeView.hidden = true;
+    self.currentBoardView.leaveCommentLabel.hidden = true;
     self.chatOpen = false;
     
     self.chatOpenButton.hidden = false;
@@ -1331,6 +1342,13 @@
     [self.view bringSubviewToFront:self.cancelButton];
     [self.view bringSubviewToFront:self.deleteProjectBackgroundImage];
     [self.view bringSubviewToFront:self.deleteProjectButton];
+    
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"editTutorial"]) {
+    
+        self.tutorialView.type = 2;
+        [self.view bringSubviewToFront:self.tutorialView];
+        [self.tutorialView updateTutorial];
+    }
 }
 
 - (IBAction)projectNameEditTapped:(id)sender {
@@ -1530,6 +1548,8 @@
 - (void) undoTapped:(id)sender {
     
     self.currentBoardView.commenting = false;
+    self.currentBoardView.leaveCommentLabel.hidden = true;
+    self.currentBoardView.fadeView.hidden = true;
     
     int undoCount = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndex"] intValue];
     int undoTotal = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"total"] intValue];
@@ -1565,6 +1585,8 @@
 - (void) redoTapped:(id)sender {
     
     self.currentBoardView.commenting = false;
+    self.currentBoardView.leaveCommentLabel.hidden = true;
+    self.currentBoardView.fadeView.hidden = true;
     
     int undoCount = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndex"] intValue];
     
@@ -1599,6 +1621,8 @@
 - (void) clearTapped:(id)sender {
     
     self.currentBoardView.commenting = false;
+    self.currentBoardView.leaveCommentLabel.hidden = true;
+    self.currentBoardView.fadeView.hidden = true;
     
     NSDictionary *undoDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid];
     
@@ -1628,6 +1652,8 @@
 -(void) eraseTapped:(id)sender {
 
     self.currentBoardView.commenting = false;
+    self.currentBoardView.leaveCommentLabel.hidden = true;
+    self.currentBoardView.fadeView.hidden = true;
     self.erasing = true;
     
     [self.view bringSubviewToFront:self.eraserCursor];
@@ -1645,6 +1671,8 @@
 -(void) colorTapped:(id)sender {
     
     self.currentBoardView.commenting = false;
+    self.currentBoardView.leaveCommentLabel.hidden = true;
+    self.currentBoardView.fadeView.hidden = true;
     self.erasing = false;
     
     UIButton *colorButton = (UIButton *)sender;
@@ -1666,6 +1694,8 @@
     
     self.erasing = false;
     self.currentBoardView.commenting = false;
+    self.currentBoardView.leaveCommentLabel.hidden = true;
+    self.currentBoardView.fadeView.hidden = true;
     
     UIButton *penButton = (UIButton *)sender;
 
@@ -1749,6 +1779,18 @@
         self.currentBoardView.hideComments = true;
         
         self.currentBoardView.commenting = true;
+        
+        [self.currentBoardView bringSubviewToFront:self.currentBoardView.fadeView];
+        self.currentBoardView.fadeView.hidden = false;
+        [self.currentBoardView bringSubviewToFront:self.currentBoardView.leaveCommentLabel];
+        self.currentBoardView.leaveCommentLabel.hidden = false;
+        
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"commentTutorial"]) {
+            
+            self.tutorialView.type = 5;
+            [self.view bringSubviewToFront:self.tutorialView];
+            [self.tutorialView updateTutorial];
+        }
     }
     else {
         
@@ -1887,12 +1929,14 @@
         
         self.carousel.currentItemView.hidden = true;
         self.versionsCarousel.hidden = false;
-        self.versionsLabel.text = @"Original";
+        
+        NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"];
+        if (versionsArray.count > 1) self.versionsLabel.text = [NSString stringWithFormat:@"Original (Version 1 of %lu)", versionsArray.count];
+        else self.versionsLabel.text = @"Original (Version 1)";
         self.versionsLabel.alpha = 0;
         self.versionsLabel.hidden = false;
         self.carousel.userInteractionEnabled = false;
         
-        NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"];
         if (versionsArray.count > 1) {
             self.upArrowImage.hidden = false;
             self.upArrowImage.alpha = 0;
@@ -1919,7 +1963,13 @@
                              
                              [self.addBoardButton setImage:[UIImage imageNamed:@"newversion.png"] forState:UIControlStateNormal];
                              [self.addBoardBackgroundImage setImage:[UIImage imageNamed:@"buttonsbackground.png"]];
-                    
+                             
+                             if (![[NSUserDefaults standardUserDefaults] objectForKey:@"versionsTutorial"]) {
+                             
+                                 self.tutorialView.type = 3;
+                                 [self.view bringSubviewToFront:self.tutorialView];
+                                 [self.tutorialView updateTutorial];
+                             }
                          }];
         
     }
@@ -1999,7 +2049,7 @@
         CGPoint location = [chatTapRecognizer locationInView:nil];
         CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
         
-        if (CGRectContainsPoint(self.chatTable.frame, converted)) {
+        if (CGRectContainsPoint(self.chatTable.frame, converted) && self.tutorialView.hidden) {
             
             if (![self.chatTextField isFirstResponder] && self.userRole > 0) [self.chatTextField becomeFirstResponder];
             else if (!self.chatOpen && self.userRole == 0) [self openChat];
@@ -2478,7 +2528,7 @@
     
     int undoCount = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndex"] intValue];
     int undoTotal = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"total"] intValue];
-    
+
     if (undoCount == undoTotal) return NO;
     else return YES;
 }
@@ -2687,8 +2737,12 @@
     }
     else {
         
-        if (self.versionsCarousel.currentItemIndex == 0) self.versionsLabel.text = @"Original";
-        else self.versionsLabel.text = [NSString stringWithFormat:@"Version %lu", self.versionsCarousel.currentItemIndex+1];
+        if (self.versionsCarousel.currentItemIndex == 0) {
+            
+            if (versionsArray.count > 1) self.versionsLabel.text = [NSString stringWithFormat:@"Original (Version 1 of %lu)", versionsArray.count];
+            else self.versionsLabel.text = @"Original (Version 1)";
+        }
+        else self.versionsLabel.text = [NSString stringWithFormat:@"Version %lu of %lu", self.versionsCarousel.currentItemIndex+1, versionsArray.count];
         
         if (versionsArray.count > 1) {
             

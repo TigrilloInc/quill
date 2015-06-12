@@ -33,6 +33,7 @@
 @property (strong, nonatomic) NSMutableDictionary *drawingTimers;
 @property (nonatomic, strong) UIActivityIndicatorView *loadingView;
 @property (nonatomic, strong) UIView *fadeView;
+@property (nonatomic, strong) UILabel *leaveCommentLabel;
 @property (nonatomic, strong) CommentButton *movingCommentButton;
 @property (strong, nonatomic) UIImageView *avatarBackgroundImage;
 @property (strong, nonatomic) UILabel *userLabel;

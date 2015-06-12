@@ -129,8 +129,13 @@
         projectVC.downArrowImage.hidden = true;
         [projectVC.versionsCarousel reloadData];
         
-        if (projectVC.versionsCarousel.currentItemIndex == 0) projectVC.versionsLabel.text = @"Original";
-        else projectVC.versionsLabel.text = [NSString stringWithFormat:@"Version %lu", projectVC.versionsCarousel.currentItemIndex+1];
+        if (projectVC.versionsCarousel.currentItemIndex == 0) {
+            
+            if (versionsArray.count > 1) projectVC.versionsLabel.text = [NSString stringWithFormat:@"Original (Version 1 of %lu)", versionsArray.count];
+            else projectVC.versionsLabel.text = @"Original (Version 1)";
+
+        }
+        else projectVC.versionsLabel.text = [NSString stringWithFormat:@"Version %lu of %lu", projectVC.versionsCarousel.currentItemIndex+1, versionsArray.count];
 
     }
     else {

@@ -205,6 +205,14 @@
 		F30F00341AF4437B0082D7D6 /* versions.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F00331AF4437B0082D7D6 /* versions.png */; };
 		F30F00361AF445D90082D7D6 /* boardbuttonsbackground-rounded.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F00351AF445D90082D7D6 /* boardbuttonsbackground-rounded.png */; };
 		F30F00381AF44E3B0082D7D6 /* carousel.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F00371AF44E3B0082D7D6 /* carousel.png */; };
+		F34259311B279085000ABCB3 /* edittutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = F34259301B279085000ABCB3 /* edittutorial.png */; };
+		F34259391B2793BC000ABCB3 /* versionstutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = F34259381B2793BC000ABCB3 /* versionstutorial.png */; };
+		F342593B1B279D0B000ABCB3 /* boardtutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = F342593A1B279D0B000ABCB3 /* boardtutorial.png */; };
+		F342593D1B28D7E7000ABCB3 /* commenttutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = F342593C1B28D7E7000ABCB3 /* commenttutorial.png */; };
+		F34EDFEB1B224A8100641E7C /* slack-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = F34EDFE91B224A8100641E7C /* slack-highlighted.png */; };
+		F34EDFEC1B224A8100641E7C /* slack.png in Resources */ = {isa = PBXBuildFile; fileRef = F34EDFEA1B224A8100641E7C /* slack.png */; };
+		F34EDFF11B27798B00641E7C /* TutorialView.m in Sources */ = {isa = PBXBuildFile; fileRef = F34EDFF01B27798B00641E7C /* TutorialView.m */; };
+		F34EDFF31B27832A00641E7C /* projecttutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = F34EDFF21B27832A00641E7C /* projecttutorial.png */; };
 		F35ACA6B1B1935E800C9A781 /* SourceSansPro-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F35ACA6A1B1935E800C9A781 /* SourceSansPro-LightItalic.ttf */; };
 		F37687E91AF2D2A3005ECE60 /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = F37687E81AF2D2A3005ECE60 /* share.png */; };
 		F3ABF3721B0F0C8F00BA4C28 /* board-versions1.png in Resources */ = {isa = PBXBuildFile; fileRef = F3ABF3711B0F0C8E00BA4C28 /* board-versions1.png */; };
@@ -576,6 +584,15 @@
 		F30F00331AF4437B0082D7D6 /* versions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = versions.png; path = Resources/versions.png; sourceTree = "<group>"; };
 		F30F00351AF445D90082D7D6 /* boardbuttonsbackground-rounded.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "boardbuttonsbackground-rounded.png"; path = "Resources/boardbuttonsbackground-rounded.png"; sourceTree = "<group>"; };
 		F30F00371AF44E3B0082D7D6 /* carousel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = carousel.png; path = Resources/carousel.png; sourceTree = "<group>"; };
+		F34259301B279085000ABCB3 /* edittutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = edittutorial.png; path = Resources/edittutorial.png; sourceTree = "<group>"; };
+		F34259381B2793BC000ABCB3 /* versionstutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = versionstutorial.png; path = Resources/versionstutorial.png; sourceTree = "<group>"; };
+		F342593A1B279D0B000ABCB3 /* boardtutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = boardtutorial.png; path = Resources/boardtutorial.png; sourceTree = "<group>"; };
+		F342593C1B28D7E7000ABCB3 /* commenttutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = commenttutorial.png; path = Resources/commenttutorial.png; sourceTree = "<group>"; };
+		F34EDFE91B224A8100641E7C /* slack-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "slack-highlighted.png"; path = "Resources/slack-highlighted.png"; sourceTree = "<group>"; };
+		F34EDFEA1B224A8100641E7C /* slack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = slack.png; path = Resources/slack.png; sourceTree = "<group>"; };
+		F34EDFEF1B27798B00641E7C /* TutorialView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialView.h; sourceTree = "<group>"; };
+		F34EDFF01B27798B00641E7C /* TutorialView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialView.m; sourceTree = "<group>"; };
+		F34EDFF21B27832A00641E7C /* projecttutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = projecttutorial.png; path = Resources/projecttutorial.png; sourceTree = "<group>"; };
 		F35ACA6A1B1935E800C9A781 /* SourceSansPro-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SourceSansPro-LightItalic.ttf"; path = "Resources/SourceSansPro-LightItalic.ttf"; sourceTree = "<group>"; };
 		F37687E81AF2D2A3005ECE60 /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = share.png; path = Resources/share.png; sourceTree = "<group>"; };
 		F3ABF3711B0F0C8E00BA4C28 /* board-versions1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions1.png"; path = "Resources/iCarousel/board-versions1.png"; sourceTree = "<group>"; };
@@ -814,6 +831,8 @@
 				1213D7B61A6849B7001FDEA9 /* CommentPopoverViewController.m */,
 				F3FFF20C1B0D58EC0042F7CC /* SharePopoverViewController.h */,
 				F3FFF20D1B0D58EC0042F7CC /* SharePopoverViewController.m */,
+				F34EDFEF1B27798B00641E7C /* TutorialView.h */,
+				F34EDFF01B27798B00641E7C /* TutorialView.m */,
 				F3E0FB531B0D9BCB0097B3C2 /* EmailBoardViewController.h */,
 				F3E0FB541B0D9BCB0097B3C2 /* EmailBoardViewController.m */,
 				12BDC6A01A95AF28001160AF /* LeaveProjectAlertViewController.h */,
@@ -944,6 +963,8 @@
 				F3BA3A4B1B1CFE680051AA7A /* cameraroll.png */,
 				F3BA3A4C1B1CFE680051AA7A /* camerarollsaved.png */,
 				F3BA3A571B1D01B20051AA7A /* cameraroll-highlighted.png */,
+				F34EDFE91B224A8100641E7C /* slack-highlighted.png */,
+				F34EDFEA1B224A8100641E7C /* slack.png */,
 				F3BA3A551B1CFF1C0051AA7A /* email.png */,
 				F3BA3A591B1D01C80051AA7A /* email-highlighted.png */,
 				1231BEB71A6D8D2B00E09914 /* minus1.png */,
@@ -997,6 +1018,11 @@
 				12C4E4E01A3B98B300DB0E23 /* background4.png */,
 				12860F921A3E29410074B452 /* background5.png */,
 				12DC97891A796FEA00CC4616 /* background6.png */,
+				F34EDFF21B27832A00641E7C /* projecttutorial.png */,
+				F34259301B279085000ABCB3 /* edittutorial.png */,
+				F34259381B2793BC000ABCB3 /* versionstutorial.png */,
+				F342593A1B279D0B000ABCB3 /* boardtutorial.png */,
+				F342593C1B28D7E7000ABCB3 /* commenttutorial.png */,
 				12A9485619F814330042A036 /* chatfade1.png */,
 				1213D7AB1A65EE22001FDEA9 /* chatfade2.png */,
 				1213D7AF1A67535A001FDEA9 /* chatfade3.png */,
@@ -1253,6 +1279,7 @@
 				12A9485719F814330042A036 /* chatfade1.png in Resources */,
 				12ABCE941A5F159600C4C7DC /* leave.png in Resources */,
 				F3E4E5D01B04647F00301E3D /* board-versions3.png in Resources */,
+				F34EDFF31B27832A00641E7C /* projecttutorial.png in Resources */,
 				12C3A7FF1A88567F0022F2AA /* settingsfade.png in Resources */,
 				1231BEB91A6D8D2B00E09914 /* minus1.png in Resources */,
 				12ABCE9F1A5F214C00C4C7DC /* userbutton3.png in Resources */,
@@ -1280,6 +1307,7 @@
 				12ACFBB71A6C98E8004C298B /* Logo.png in Resources */,
 				12D5DBA81A4A7432003727AC /* plus2.png in Resources */,
 				123D20111A5B4EDB004D5743 /* editfaderight.png in Resources */,
+				F342593B1B279D0B000ABCB3 /* boardtutorial.png in Resources */,
 				F3B4996E1B20160A00316F7A /* uparrow3.png in Resources */,
 				12ABCE871A5E0A3700C4C7DC /* Icon152.png in Resources */,
 				F3F66F901B0521B000B6D184 /* board-versions7.png in Resources */,
@@ -1294,6 +1322,7 @@
 				12DC978A1A796FEA00CC4616 /* background6.png in Resources */,
 				12860FC41A41170E0074B452 /* usercomment.png in Resources */,
 				12860FBF1A40C8CD0074B452 /* userbutton3shadow.png in Resources */,
+				F34EDFEB1B224A8100641E7C /* slack-highlighted.png in Resources */,
 				12ABCEA01A5F214C00C4C7DC /* userbutton4.png in Resources */,
 				12ABCE851A5E0A3700C4C7DC /* Icon80.png in Resources */,
 				12ABCE811A5E0A3700C4C7DC /* Icon29.png in Resources */,
@@ -1306,10 +1335,12 @@
 				F3BA3A641B1D11110051AA7A /* leavecomment-highlighted.png in Resources */,
 				12ABCE921A5F11CC00C4C7DC /* collaborator.png in Resources */,
 				12860FEA1A47AF800074B452 /* avatarbackground.png in Resources */,
+				F34259391B2793BC000ABCB3 /* versionstutorial.png in Resources */,
 				12C4E4D51A3B83A800DB0E23 /* board6.png in Resources */,
 				12ABCE961A5F17D500C4C7DC /* remove.png in Resources */,
 				F3BA3A5C1B1D0B4B0051AA7A /* hidecomments.png in Resources */,
 				12899BB21A1AEC3B00AF95BD /* carouselfade.png in Resources */,
+				F34259311B279085000ABCB3 /* edittutorial.png in Resources */,
 				F30F00381AF44E3B0082D7D6 /* carousel.png in Resources */,
 				12ABCEA11A5F214C00C4C7DC /* userbutton5.png in Resources */,
 				F3F66F9C1B06B02C00B6D184 /* buttonsbackground.png in Resources */,
@@ -1354,6 +1385,7 @@
 				F3F66FAC1B095C6F00B6D184 /* buttonsbackground2.png in Resources */,
 				1213D7AE1A664FB6001FDEA9 /* commenttitle.png in Resources */,
 				F3F66F8C1B0515E700B6D184 /* board-versions5.png in Resources */,
+				F342593D1B28D7E7000ABCB3 /* commenttutorial.png in Resources */,
 				12BCAF5B1A4C0EA500FC327E /* down.png in Resources */,
 				12ABCE9E1A5F214C00C4C7DC /* userbutton2.png in Resources */,
 				1213D7A81A647C69001FDEA9 /* usercommenthighlight4.png in Resources */,
@@ -1365,6 +1397,7 @@
 				12860FDC1A44AE040074B452 /* redo.png in Resources */,
 				F3F66F961B052B5800B6D184 /* board-versions10.png in Resources */,
 				12860FA91A3FBE750074B452 /* SourceSansPro-Regular.ttf in Resources */,
+				F34EDFEC1B224A8100641E7C /* slack.png in Resources */,
 				12D5DBA21A48F173003727AC /* penselected.png in Resources */,
 				F30F00361AF445D90082D7D6 /* boardbuttonsbackground-rounded.png in Resources */,
 				12ABCE881A5E0A3700C4C7DC /* Icon180.png in Resources */,
@@ -1401,6 +1434,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F34EDFF11B27798B00641E7C /* TutorialView.m in Sources */,
 				124943C21A91E11300C1BEA4 /* NameFromInviteViewController.m in Sources */,
 				12B17DA31ACB7A46003C9E9D /* OfflineAlertViewController.m in Sources */,
 				12BDC6AB1A95B14A001160AF /* RemoveUserAlertViewController.m in Sources */,
@@ -1598,6 +1632,9 @@
 					"$(PROJECT_DIR)/quill/Resources/Firebase",
 					/Users/Shared/Firebase/Frameworks,
 					"$(PROJECT_DIR)/quill/Resources/Instabug",
+					"/Users/alexcostantini/Downloads/aws-ios-sdk-2.1.1/frameworks",
+					"/Users/alexcostantini/Downloads/aws-ios-sdk-2.1.1/third-party",
+					"/Users/alexcostantini/Downloads/aws-ios-sdk-2.1.1/frameworks/extras",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "quill/quill-Prefix.pch";
@@ -1644,6 +1681,9 @@
 					"$(PROJECT_DIR)/quill/Resources/Firebase",
 					/Users/Shared/Firebase/Frameworks,
 					"$(PROJECT_DIR)/quill/Resources/Instabug",
+					"/Users/alexcostantini/Downloads/aws-ios-sdk-2.1.1/frameworks",
+					"/Users/alexcostantini/Downloads/aws-ios-sdk-2.1.1/third-party",
+					"/Users/alexcostantini/Downloads/aws-ios-sdk-2.1.1/frameworks/extras",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "quill/quill-Prefix.pch";

@@ -13,6 +13,7 @@
 #import "UICollectionView+Draggable.h"
 #import "AvatarButton.h"
 #import <MessageUI/MessageUI.h>
+#import "TutorialView.h"
 
 @class MasterView;
 
@@ -111,6 +112,8 @@
 @property (weak, nonatomic) IBOutlet UIImageView *applyBackgroundImage;
 @property (weak, nonatomic) IBOutlet UIButton *deleteProjectButton;
 @property (weak, nonatomic) IBOutlet UIImageView *deleteProjectBackgroundImage;
+
+@property (weak, nonatomic) IBOutlet TutorialView *tutorialView;
 
 @property (strong, nonatomic) UIImageView *eraserCursor;
 

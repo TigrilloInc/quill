@@ -286,15 +286,17 @@
         
         float x;
 
-        if ((1024-self.center.y)+titleRect.size.width/4 < 980) x = 226;
+        if ((1024-self.center.y)+titleRect.size.width/4 < 980) x = 232;
         else x = -titleRect.size.width-56;
     
-        self.commentTitleLabel.frame = CGRectMake(x, 40, titleRect.size.width+80, titleRect.size.height+10);
+        self.commentTitleLabel.frame = CGRectMake(x, 48, titleRect.size.width+80, titleRect.size.height);
         [self sendSubviewToBack:self.commentTitleLabel];
         self.commentTitleLabel.hidden = false;
         
     }
     else self.commentTitleLabel.hidden = true;
+    
+    [self sendSubviewToBack:self.commentTitleLabel];
     
 }
 

@@ -1576,7 +1576,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="eCq-mt-XlS">
-                                <rect key="frame" x="568" y="90" width="100" height="21"/>
+                                <rect key="frame" x="503" y="90" width="231" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="SourceSansPro-LightIt" family="Source Sans Pro" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -1922,6 +1922,10 @@
                                     </textField>
                                 </subviews>
                             </view>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="jCF-cc-rbm" customClass="TutorialView">
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
@@ -1959,6 +1963,7 @@
                         <outlet property="projectNameLabel" destination="7VA-hg-eFW" id="l8V-jU-Oxv"/>
                         <outlet property="sendMessageButton" destination="Q79-Vz-pZV" id="tD9-nF-8V2"/>
                         <outlet property="shareButton" destination="tbP-tk-4fE" id="PQB-9j-ItL"/>
+                        <outlet property="tutorialView" destination="jCF-cc-rbm" id="4Om-kh-I7S"/>
                         <outlet property="upArrowImage" destination="Aq2-gE-ke2" id="RVR-CZ-uUN"/>
                         <outlet property="versionsButton" destination="Rla-Rc-2p3" id="oLI-ok-SPN"/>
                         <outlet property="versionsCarousel" destination="s9f-SR-zLr" id="ErW-Lu-GsE"/>

@@ -62,6 +62,18 @@
         projectVC.currentBoardView.hideComments = true;
         
         projectVC.currentBoardView.commenting = true;
+        
+        [projectVC.currentBoardView bringSubviewToFront:projectVC.currentBoardView.fadeView];
+        projectVC.currentBoardView.fadeView.hidden = false;
+        [projectVC.currentBoardView bringSubviewToFront:projectVC.currentBoardView.leaveCommentLabel];
+        projectVC.currentBoardView.leaveCommentLabel.hidden = false;
+        
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"commentTutorial"]) {
+            
+            projectVC.tutorialView.type = 5;
+            [projectVC.view bringSubviewToFront:projectVC.tutorialView];
+            [projectVC.tutorialView updateTutorial];
+        }
     }
     
     if (button.tag == 1) {

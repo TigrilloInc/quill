@@ -189,6 +189,13 @@
     
     [self.projectsTable reloadData];
     [self.projectsTable selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+    
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"projectTutorial"]) {
+        
+        projectVC.tutorialView.type = 1;
+        [projectVC.view bringSubviewToFront:projectVC.tutorialView];
+        [projectVC.tutorialView updateTutorial];
+    }
 }
 
 - (IBAction)settingsTapped:(id)sender {

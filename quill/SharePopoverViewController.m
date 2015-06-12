@@ -14,8 +14,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    options = @[ @"email",
-                 @"cameraroll"
+    options = @[ @"slack",
+                 @"email",
+                 @"cameraroll",
                  ];
     
     self.preferredContentSize = CGSizeMake(240, 10+options.count*50);
@@ -98,7 +99,7 @@
         [projectVC presentViewController:mailVC animated:YES completion:nil];
     }
     
-    if (button.tag == 1) {
+    else if (button.tag == 1) {
         
         [button setImage:[UIImage imageNamed:@"camerarollsaved.png"] forState:UIControlStateNormal];
         button.enabled = NO;
@@ -108,6 +109,11 @@
         UIImageWriteToSavedPhotosAlbum(rotatedImage, nil, nil, nil);
         
         [self performSelector:@selector(dismiss) withObject:nil afterDelay:.8];
+    }
+    
+    else if (button.tag == 2) {
+        
+        
     }
 }
 

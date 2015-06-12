@@ -1058,7 +1058,7 @@ static FirebaseHelper *sharedHelper = nil;
        
                     if ([[[self.boards objectForKey:boardID] objectForKey:@"versions"] count] > 1) {
                         
-                        if (self.projectVC.versionsCarousel.currentItemIndex < versionsArray.count-1) self.projectVC.upArrowImage.hidden = false;
+                        if (self.projectVC.versionsCarousel.currentItemIndex < versionsArray.count) self.projectVC.upArrowImage.hidden = false;
                         else self.projectVC.upArrowImage.hidden = true;
                         
                         if (self.projectVC.versionsCarousel.currentItemIndex > 0) self.projectVC.downArrowImage.hidden = false;
@@ -1071,8 +1071,12 @@ static FirebaseHelper *sharedHelper = nil;
                         self.projectVC.upArrowImage.hidden = true;
                     }
                     
-                    if (self.projectVC.versionsCarousel.currentItemIndex == 0) self.projectVC.versionsLabel.text = @"Original";
-                    else self.projectVC.versionsLabel.text = [NSString stringWithFormat:@"Version %lu", self.projectVC.versionsCarousel.currentItemIndex+1];
+                    if (self.projectVC.versionsCarousel.currentItemIndex == 0) {
+                        
+                        if (versionsArray.count > 1) self.projectVC.versionsLabel.text = [NSString stringWithFormat:@"Original (Version 1 of %lu)", versionsArray.count];
+                        else self.projectVC.versionsLabel.text = @"Original (Version 1)";
+                    }
+                    else self.projectVC.versionsLabel.text = [NSString stringWithFormat:@"Version %lu of %lu", self.projectVC.versionsCarousel.currentItemIndex+1, versionsArray.count];
                     
                 }
                 else if (![versionsArray containsObject:self.projectVC.activeBoardID]) {
