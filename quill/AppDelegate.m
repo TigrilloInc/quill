@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import <Firebase/Firebase.h>
 #import "FirebaseHelper.h"
+#import "ShareHelper.h"
 #import <Instabug/Instabug.h>
 #import "Flurry.h"
 
@@ -40,6 +41,7 @@
     signal(SIGPIPE, signalHandler);
 
     [[FirebaseHelper sharedHelper] testConnection];
+    [ShareHelper sharedHelper];
     
     return YES;
 }

@@ -214,6 +214,11 @@
 		F34EDFF11B27798B00641E7C /* TutorialView.m in Sources */ = {isa = PBXBuildFile; fileRef = F34EDFF01B27798B00641E7C /* TutorialView.m */; };
 		F34EDFF31B27832A00641E7C /* projecttutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = F34EDFF21B27832A00641E7C /* projecttutorial.png */; };
 		F35ACA6B1B1935E800C9A781 /* SourceSansPro-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F35ACA6A1B1935E800C9A781 /* SourceSansPro-LightItalic.ttf */; };
+		F370EEB21B2FF70E00055AF2 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F370EEB11B2FF70E00055AF2 /* WebViewController.m */; };
+		F370EEBB1B30AC6B00055AF2 /* SlackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F370EEBA1B30AC6B00055AF2 /* SlackViewController.m */; };
+		F370EEBD1B30B8A300055AF2 /* next.png in Resources */ = {isa = PBXBuildFile; fileRef = F370EEBC1B30B8A300055AF2 /* next.png */; };
+		F370EEC01B30BF9100055AF2 /* SlackChannelTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F370EEBF1B30BF9100055AF2 /* SlackChannelTableViewController.m */; };
+		F370EEC31B311EE600055AF2 /* ShareHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F370EEC21B311EE600055AF2 /* ShareHelper.m */; };
 		F37687E91AF2D2A3005ECE60 /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = F37687E81AF2D2A3005ECE60 /* share.png */; };
 		F3ABF3721B0F0C8F00BA4C28 /* board-versions1.png in Resources */ = {isa = PBXBuildFile; fileRef = F3ABF3711B0F0C8E00BA4C28 /* board-versions1.png */; };
 		F3B4996E1B20160A00316F7A /* uparrow3.png in Resources */ = {isa = PBXBuildFile; fileRef = F3B4996D1B20160A00316F7A /* uparrow3.png */; };
@@ -594,6 +599,15 @@
 		F34EDFF01B27798B00641E7C /* TutorialView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialView.m; sourceTree = "<group>"; };
 		F34EDFF21B27832A00641E7C /* projecttutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = projecttutorial.png; path = Resources/projecttutorial.png; sourceTree = "<group>"; };
 		F35ACA6A1B1935E800C9A781 /* SourceSansPro-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SourceSansPro-LightItalic.ttf"; path = "Resources/SourceSansPro-LightItalic.ttf"; sourceTree = "<group>"; };
+		F370EEB01B2FF70E00055AF2 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
+		F370EEB11B2FF70E00055AF2 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
+		F370EEB91B30AC6B00055AF2 /* SlackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlackViewController.h; sourceTree = "<group>"; };
+		F370EEBA1B30AC6B00055AF2 /* SlackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SlackViewController.m; sourceTree = "<group>"; };
+		F370EEBC1B30B8A300055AF2 /* next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = next.png; path = Resources/next.png; sourceTree = "<group>"; };
+		F370EEBE1B30BF9100055AF2 /* SlackChannelTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlackChannelTableViewController.h; sourceTree = "<group>"; };
+		F370EEBF1B30BF9100055AF2 /* SlackChannelTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SlackChannelTableViewController.m; sourceTree = "<group>"; };
+		F370EEC11B311EE600055AF2 /* ShareHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShareHelper.h; sourceTree = "<group>"; };
+		F370EEC21B311EE600055AF2 /* ShareHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShareHelper.m; sourceTree = "<group>"; };
 		F37687E81AF2D2A3005ECE60 /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = share.png; path = Resources/share.png; sourceTree = "<group>"; };
 		F3ABF3711B0F0C8E00BA4C28 /* board-versions1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions1.png"; path = "Resources/iCarousel/board-versions1.png"; sourceTree = "<group>"; };
 		F3B4996D1B20160A00316F7A /* uparrow3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = uparrow3.png; path = Resources/uparrow3.png; sourceTree = "<group>"; };
@@ -865,6 +879,14 @@
 				12860FA11A3EA61F0074B452 /* ProjectsTableViewCell.m */,
 				12DC97931A7C0C9200CC4616 /* RoundedButton.h */,
 				12DC97941A7C0C9200CC4616 /* RoundedButton.m */,
+				F370EEB01B2FF70E00055AF2 /* WebViewController.h */,
+				F370EEB11B2FF70E00055AF2 /* WebViewController.m */,
+				F370EEB91B30AC6B00055AF2 /* SlackViewController.h */,
+				F370EEBA1B30AC6B00055AF2 /* SlackViewController.m */,
+				F370EEBE1B30BF9100055AF2 /* SlackChannelTableViewController.h */,
+				F370EEBF1B30BF9100055AF2 /* SlackChannelTableViewController.m */,
+				F370EEC11B311EE600055AF2 /* ShareHelper.h */,
+				F370EEC21B311EE600055AF2 /* ShareHelper.m */,
 				12A310EB1980BE4300E03E9E /* iCarousel.h */,
 				12A310EC1980BE4300E03E9E /* iCarousel.m */,
 				124943C31A93C4F300C1BEA4 /* InviteEmail.h */,
@@ -999,6 +1021,7 @@
 				1213D7A71A647C69001FDEA9 /* usercommenthighlight4.png */,
 				12860F9E1A3E9A1B0074B452 /* projectsshadow.png */,
 				123D20121A5C9B7C004D5743 /* back.png */,
+				F370EEBC1B30B8A300055AF2 /* next.png */,
 				12ACFBB61A6C98E8004C298B /* Logo.png */,
 				12DC979C1A8154E000CC4616 /* Logo2.png */,
 				12DC97A01A82D79300CC4616 /* Logo3.png */,
@@ -1259,6 +1282,7 @@
 				129E129519648A2C00ED9D42 /* Images.xcassets in Resources */,
 				1213D7B21A67ABF2001FDEA9 /* chatfade4.png in Resources */,
 				F3BA3A4D1B1CFE680051AA7A /* cameraroll.png in Resources */,
+				F370EEBD1B30B8A300055AF2 /* next.png in Resources */,
 				12860FBE1A40C8CD0074B452 /* userbutton2shadow.png in Resources */,
 				12DC97921A7AD63E00CC4616 /* welcometoquill.png in Resources */,
 				F3BA3A581B1D01B20051AA7A /* cameraroll-highlighted.png in Resources */,
@@ -1440,6 +1464,7 @@
 				12BDC6AB1A95B14A001160AF /* RemoveUserAlertViewController.m in Sources */,
 				1216D99E19A275980095DBD8 /* UICollectionView+Draggable.m in Sources */,
 				12BE8D74196CF04D00503F84 /* NewProjectViewController.m in Sources */,
+				F370EEC01B30BF9100055AF2 /* SlackChannelTableViewController.m in Sources */,
 				124E5CF619AE83CB00442963 /* NSDate+ServerDate.m in Sources */,
 				12DC979B1A80073100CC4616 /* InviteToTeamViewController.m in Sources */,
 				12B17DAA1AD31DDD003C9E9D /* ResetPasswordViewController.m in Sources */,
@@ -1474,6 +1499,7 @@
 				1216D99B19A275980095DBD8 /* LSCollectionViewHelper.m in Sources */,
 				12A3FA101979861800E03E9E /* ProjectDetailViewController.m in Sources */,
 				129667671AB7DD1800CB57FA /* InvalidNameAlertViewController.m in Sources */,
+				F370EEB21B2FF70E00055AF2 /* WebViewController.m in Sources */,
 				12DC97A41A83060A00CC4616 /* ChangePasswordViewController.m in Sources */,
 				1296677A1AC3C7E600CB57FA /* InviteNewOwnerViewController.m in Sources */,
 				F3E0FB5E1B0D9DC20097B3C2 /* BoardEmail.m in Sources */,
@@ -1483,6 +1509,7 @@
 				1231BEC51A6EE2F200E09914 /* Reachability.m in Sources */,
 				12F4F9D31AA808DA00C8FC31 /* InstabugViewController.m in Sources */,
 				129E128419648A2C00ED9D42 /* main.m in Sources */,
+				F370EEC31B311EE600055AF2 /* ShareHelper.m in Sources */,
 				1296676A1ABA6CAE00CB57FA /* PhotosCollectionViewController.m in Sources */,
 				F3F66FAF1B0AAAB900B6D184 /* DeleteBoardAlertViewController.m in Sources */,
 				1296676D1ABA795A00CB57FA /* PhotosCollectionViewCell.m in Sources */,
@@ -1490,6 +1517,7 @@
 				12A3FA0D1977420400E03E9E /* PersonalSettingsViewController.m in Sources */,
 				12899BB01A168CA100AF95BD /* MasterView.m in Sources */,
 				12E898A719ECC6DA00E29E7B /* AvatarButton.m in Sources */,
+				F370EEBB1B30AC6B00055AF2 /* SlackViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

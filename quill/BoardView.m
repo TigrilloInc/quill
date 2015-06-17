@@ -56,13 +56,14 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         self.hideComments = true;
         self.backgroundColor = [UIColor clearColor];
         
-        self. fadeView = [[UIView alloc] initWithFrame:self.frame];
+        self.fadeView = [[UIView alloc] initWithFrame:self.frame];
         self.fadeView.backgroundColor = [UIColor whiteColor];
         self.fadeView.alpha = .5f;
         self.fadeView.hidden = true;
         [self addSubview:self.fadeView];
         
         self.leaveCommentLabel = [[UILabel alloc] initWithFrame:self.frame];
+        self.leaveCommentLabel.center = CGPointMake(self.center.x-20, self.center.y);
         self.leaveCommentLabel.userInteractionEnabled = NO;
         self.leaveCommentLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:50];
         self.leaveCommentLabel.transform = CGAffineTransformMakeRotation(-M_PI_2);
@@ -871,6 +872,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     if (![userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
         self.drawable = false;
         self.fadeView.hidden = false;
+        [self bringSubviewToFront:self.fadeView];
     }
     
     for (AvatarButton *avatar in self.avatarButtons) {
@@ -917,7 +919,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     self.drawingUserID = nil;
     
     self.drawable = true;
-    self.fadeView.hidden = true;
+    if (!self.commenting) self.fadeView.hidden = true;
     
     NSString *userID = timer.userInfo;
     
@@ -1066,6 +1068,32 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     paths = [NSMutableArray array];
     incrementalImage = nil;
     [self setNeedsDisplay];
+}
+
+-(UIImage *) generateImage:(BOOL)rotate {
+    
+    [self viewWithTag:1].hidden = true;
+    for (CommentButton *comment in self.commentButtons) {
+        if (comment.commentTitleLabel.text.length == 0) comment.hidden = YES;
+    }
+    UIGraphicsBeginImageContextWithOptions(self.bounds.size, YES, 0.0);
+    [self.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *boardImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    for (CommentButton *comment in self.commentButtons) comment.hidden = NO;
+    [self viewWithTag:1].hidden = false;
+    
+    if (rotate) {
+        
+        CGRect newRect = CGRectMake(0, 0, self.bounds.size.height, self.bounds.size.width);
+        UIGraphicsBeginImageContextWithOptions(newRect.size, YES, 0.0);
+        [[UIImage imageWithCGImage:boardImage.CGImage scale:1.0 orientation:UIImageOrientationRight] drawInRect:newRect];
+        UIImage *rotatedImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        return rotatedImage;
+    }
+    else return boardImage;
 }
 
 @end

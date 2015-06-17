@@ -8,6 +8,9 @@
 
 #import "SharePopoverViewController.h"
 #import "FirebaseHelper.h"
+#import "WebViewController.h"
+#import "ShareHelper.h"
+#import "SlackViewController.h"
 
 @implementation SharePopoverViewController
 
@@ -47,19 +50,24 @@
     if (projectVC.versioning) boardView = (BoardView *)projectVC.versionsCarousel.currentItemView;
     else boardView = (BoardView *)projectVC.carousel.currentItemView;
     
-    [boardView viewWithTag:1].hidden = true;
-    for (CommentButton *comment in boardView.commentButtons) {
-        if (comment.commentTitleLabel.text.length == 0) comment.hidden = YES;
+    
+    if (button.tag == 2) {
+        
+        UIImage *boardImage = [boardView generateImage:NO];
+        
+        [button setImage:[UIImage imageNamed:@"camerarollsaved.png"] forState:UIControlStateNormal];
+        button.enabled = NO;
+        
+        UIImage *rotatedImage = [UIImage imageWithCGImage:boardImage.CGImage scale:0 orientation:UIImageOrientationRight];
+        
+        UIImageWriteToSavedPhotosAlbum(rotatedImage, nil, nil, nil);
+        
+        [self performSelector:@selector(dismiss) withObject:nil afterDelay:.8];
     }
-    UIGraphicsBeginImageContextWithOptions(boardView.bounds.size, YES, 0.0);
-    [boardView.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *boardImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    for (CommentButton *comment in boardView.commentButtons) comment.hidden = NO;
-    [boardView viewWithTag:1].hidden = false;
     
-    
-    if (button.tag == 0) {
+    else if (button.tag == 1) {
+        
+        UIImage *boardImage = [boardView generateImage:YES];
         
         [self dismissViewControllerAnimated:NO completion:nil];
         
@@ -86,34 +94,41 @@
         
         [mailVC setMessageBody:bodyString isHTML:YES];
         
-        CGRect newRect = CGRectMake(0, 0, boardView.bounds.size.height, boardView.bounds.size.width);
-        UIGraphicsBeginImageContextWithOptions(newRect.size, YES, 0.0);
-        [[UIImage imageWithCGImage:boardImage.CGImage scale:1.0 orientation:UIImageOrientationRight] drawInRect:newRect];
-        UIImage *rotatedImage = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        
-        NSData *imageData = UIImagePNGRepresentation(rotatedImage);
+        NSData *imageData = UIImagePNGRepresentation(boardImage);
         
         [mailVC addAttachmentData:imageData mimeType:@"image/png" fileName:boardName];
         
         [projectVC presentViewController:mailVC animated:YES completion:nil];
     }
     
-    else if (button.tag == 1) {
+    else if (button.tag == 0) {
         
-        [button setImage:[UIImage imageNamed:@"camerarollsaved.png"] forState:UIControlStateNormal];
-        button.enabled = NO;
+        [self dismissViewControllerAnimated:NO completion:nil];
         
-        UIImage *rotatedImage = [UIImage imageWithCGImage:boardImage.CGImage scale:0 orientation:UIImageOrientationRight];
-        
-        UIImageWriteToSavedPhotosAlbum(rotatedImage, nil, nil, nil);
-        
-        [self performSelector:@selector(dismiss) withObject:nil afterDelay:.8];
-    }
-    
-    else if (button.tag == 2) {
-        
-        
+        if ([ShareHelper sharedHelper].slackToken) {
+            
+            SlackViewController *slackVC = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"Slack"];
+            
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:slackVC];
+            nav.modalPresentationStyle = UIModalPresentationFormSheet;
+            nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            
+            UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+            logoImageView.frame = CGRectMake(175, 8, 32, 32);
+            logoImageView.tag = 800;
+            [nav.navigationBar addSubview:logoImageView];
+            
+            [projectVC presentViewController:nav animated:YES completion:nil];
+        }
+        else {
+            
+            WebViewController *webVC = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"Web"];
+            [projectVC presentViewController:webVC animated:YES completion:^{
+                
+                projectVC.showButtons = true;
+                [projectVC.carousel reloadData];
+            }];
+        }
     }
 }
 

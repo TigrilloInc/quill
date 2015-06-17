@@ -1304,7 +1304,9 @@
     self.carousel.hidden = true;
     self.versionsCarousel.hidden = true;
     self.versioning = false;
-    self.versionsLabel.hidden = true;
+    self.versionsLabel.hidden = false;
+    self.versionsLabel.alpha = .3;
+    self.versionsLabel.text = @"Press and hold on boards to rearrange them.";
     self.upArrowImage.hidden = true;
     self.downArrowImage.hidden = true;
     self.draggableCollectionView.hidden = false;
@@ -1473,6 +1475,8 @@
     self.downArrowImage.hidden = true;
     self.draggableCollectionView.hidden = true;
     self.boardNameLabel.hidden = false;
+    self.versionsLabel.alpha = 1;
+    self.versionsLabel.text = @"";
     self.versionsLabel.hidden = true;
     
     if (self.userRole > 0) {
@@ -1835,6 +1839,8 @@
 
 - (IBAction)deleteBoardTapped:(id)sender {
 
+    if (![[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.boardIDs[self.carousel.currentItemIndex]]) return;
+    
     DeleteBoardAlertViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"DeleteBoard"];
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
