@@ -37,11 +37,11 @@
     if (projectVC.versioning) boardView = (BoardView *)projectVC.versionsCarousel.currentItemView;
     else boardView = (BoardView *)projectVC.carousel.currentItemView;
     
-    UIImage *boardImage = [boardView generateImage:YES];
+    self.boardImage = [boardView generateImage:YES];
     
     self.boardNameLabel.text = projectVC.boardNameLabel.text;
     
-    [self.boardImageView setImage:boardImage];
+    [self.boardImageView setImage:self.boardImage];
     self.boardImageView.layer.borderWidth = 1;
     self.boardImageView.layer.borderColor = [UIColor lightGrayColor].CGColor;
     
@@ -78,7 +78,7 @@
         NSString *codeURL = [NSString stringWithFormat:@"https://slack.com/api/oauth.access?client_id=2420812446.6437258849&client_secret=7eac4229c79538b6cefb8bd1e60c489c&code=%@", self.code];
         NSURLRequest *tokenRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:codeURL]];
         
-        NSURLConnection *tokenConnection =[[NSURLConnection alloc] initWithRequest:tokenRequest delegate:self];
+        NSURLConnection *tokenConnection = [[NSURLConnection alloc] initWithRequest:tokenRequest delegate:self];
     }
 }
 
@@ -142,6 +142,74 @@
             [self dismissViewControllerAnimated:YES completion:nil];
         }
     }
+}
+
+- (IBAction)sendTapped:(id)sender {
+
+    NSMutableDictionary *params = [@{ @"token" : [ShareHelper sharedHelper].slackToken,
+                                      @"title" : self.boardNameLabel.text,
+                                      @"channels" : self.selectedChannelID
+                                     } mutableCopy];
+    
+    NSString *noCommentString = [NSString stringWithFormat:@"https://slack.com/api/files.upload?token=%@&title=%@&channels=%@&file=@%@.jpeg", [ShareHelper sharedHelper].slackToken, self.boardNameLabel.text, self.selectedChannelID, self.boardNameLabel.text];
+    
+    NSString *urlString;
+    
+    if (![self.commentTextView.text isEqualToString:@"Add a comment..."] && self.commentTextView.text.length > 0) {
+        urlString = [NSString stringWithFormat:@"%@&initial_comment=%@", noCommentString, self.commentTextView.text];
+        [params setObject:self.commentTextView.text forKey:@"initial_comment"];
+    }
+    else urlString = noCommentString;
+
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
+    
+    NSString *boundary = [self generateBoundary];
+    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
+    [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
+    
+    NSMutableData *body = [NSMutableData data];
+    
+    for (NSString *param in params) {
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", param] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@\r\n", [params objectForKey:param]] dataUsingEncoding:NSUTF8StringEncoding]];
+    }
+    
+    NSData *imageData = UIImageJPEGRepresentation(self.boardImage, 1.0);
+    [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"file\"; filename=\"%@.jpg\"\r\n", self.boardNameLabel.text] dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[@"Content-Type: image/jpeg\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:imageData];
+    [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+
+    
+    // add the POST data as the request body
+    [request setHTTPMethod:@"POST"];
+    [request setHTTPBody:body];
+    
+    NSString *postLength = [NSString stringWithFormat:@"%lu", (unsigned long)body.length];
+    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+
+    // now lets make the connection to the web
+    [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (NSString *) generateBoundary {
+    
+    NSString *alphanum = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    
+    int length = 15;
+    
+    NSMutableString *randomString = [NSMutableString stringWithCapacity:length];
+    
+    for (int i=0; i<length; i++) {
+        [randomString appendFormat: @"%C", [alphanum characterAtIndex: arc4random_uniform([alphanum length]) % [alphanum length]]];
+    }
+    
+    return randomString;
 }
 
 #pragma mark - NSURLConnection Data Delegate
