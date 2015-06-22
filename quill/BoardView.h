@@ -46,6 +46,6 @@
 -(void)layoutAvatars;
 -(void)layoutComments;
 -(void)updateCarouselOffsetWithPoint:(CGPoint)point;
--(UIImage *)generateImage:(BOOL)rotate;
+-(UIImage *)generateImage;
 
 @end

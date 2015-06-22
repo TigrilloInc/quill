@@ -11,13 +11,15 @@
 #import "WebViewController.h"
 #import "ShareHelper.h"
 #import "SlackViewController.h"
+#import <DropboxSDK/DropboxSDK.h>
 
 @implementation SharePopoverViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    options = @[ @"slack",
+    options = @[ @"dropbox",
+                 @"slack",
                  @"email",
                  @"cameraroll",
                  ];
@@ -51,23 +53,21 @@
     else boardView = (BoardView *)projectVC.carousel.currentItemView;
     
     
-    if (button.tag == 2) {
+    if (button.tag == 3) {
         
-        UIImage *boardImage = [boardView generateImage:NO];
+        UIImage *boardImage = [boardView generateImage];
         
         [button setImage:[UIImage imageNamed:@"camerarollsaved.png"] forState:UIControlStateNormal];
         button.enabled = NO;
-        
-        UIImage *rotatedImage = [UIImage imageWithCGImage:boardImage.CGImage scale:0 orientation:UIImageOrientationRight];
-        
-        UIImageWriteToSavedPhotosAlbum(rotatedImage, nil, nil, nil);
+
+        UIImageWriteToSavedPhotosAlbum(boardImage, nil, nil, nil);
         
         [self performSelector:@selector(dismiss) withObject:nil afterDelay:.8];
     }
     
-    else if (button.tag == 1) {
+    else if (button.tag == 2) {
         
-        UIImage *boardImage = [boardView generateImage:YES];
+        UIImage *boardImage = [boardView generateImage];
         
         [self dismissViewControllerAnimated:NO completion:nil];
         
@@ -101,7 +101,7 @@
         [projectVC presentViewController:mailVC animated:YES completion:nil];
     }
     
-    else if (button.tag == 0) {
+    else if (button.tag == 1) {
         
         [self dismissViewControllerAnimated:NO completion:nil];
         
@@ -129,6 +129,32 @@
                 [projectVC.carousel reloadData];
             }];
         }
+    }
+    else if (button.tag == 0) {
+
+        if (![[DBSession sharedSession] isLinked]) {
+            
+           [self dismissViewControllerAnimated:YES completion:^{
+               [[DBSession sharedSession] linkFromController:projectVC];
+           }];
+        }
+        else {
+            
+            [button setImage:[UIImage imageNamed:@"dropboxsaved.png"] forState:UIControlStateNormal];
+            button.enabled = NO;
+            
+            UIImage *boardImage = [boardView generateImage];
+            NSData *imageData = UIImagePNGRepresentation(boardImage);
+            NSString *filename = [NSString stringWithFormat:@"%@.png", projectVC.boardNameLabel.text];
+            NSString *localDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+            NSString *localPath = [localDir stringByAppendingPathComponent:filename];
+            [imageData writeToFile:localPath atomically:YES];
+            
+            [[ShareHelper sharedHelper].dropboxClient uploadFile:filename toPath:@"/Quill" withParentRev:nil fromPath:localPath];
+            
+            [self performSelector:@selector(dismiss) withObject:nil afterDelay:.8];
+        }
+        
     }
 }
 

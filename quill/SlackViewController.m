@@ -37,7 +37,7 @@
     if (projectVC.versioning) boardView = (BoardView *)projectVC.versionsCarousel.currentItemView;
     else boardView = (BoardView *)projectVC.carousel.currentItemView;
     
-    self.boardImage = [boardView generateImage:YES];
+    self.boardImage = [boardView generateImage];
     
     self.boardNameLabel.text = projectVC.boardNameLabel.text;
     
@@ -239,6 +239,8 @@
         }
         
         NSArray *sortedNames = [unsortedNames sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+        
+        [ShareHelper sharedHelper].slackChannels = [NSMutableArray array];
         
         for (int i=0; i<sortedNames.count; i++) {
             

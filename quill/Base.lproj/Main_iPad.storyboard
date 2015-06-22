@@ -886,6 +886,7 @@
         <!--Signed Out Alert View Controller-->
         <scene sceneID="jeo-Km-XpX">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cgQ-Nl-Fr2" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="SignedOut" id="euh-bw-2gr" customClass="SignedOutAlertViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="sdC-Rn-zrA">
                         <rect key="frame" x="0.0" y="0.0" width="540" height="360"/>
@@ -920,7 +921,6 @@
                         <outlet property="signedOutLabel" destination="K2n-m6-3rI" id="HJd-YA-d87"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="cgQ-Nl-Fr2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-5893" y="-983"/>
         </scene>
@@ -1190,21 +1190,14 @@
             </objects>
             <point key="canvasLocation" x="-5320" y="-1828"/>
         </scene>
-        <!--Invalid Name Alert View Controller-->
+        <!--General Alert View Controller-->
         <scene sceneID="PaQ-5O-OJc">
             <objects>
-                <viewController storyboardIdentifier="InvalidName" id="7xp-pQ-YyX" customClass="InvalidNameAlertViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Alert" id="7xp-pQ-YyX" customClass="GeneralAlertViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="mbn-8E-3WH">
                         <rect key="frame" x="0.0" y="0.0" width="540" height="350"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Invalid label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="O7i-H4-a7G">
-                                <rect key="frame" x="0.0" y="128" width="540" height="38"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="16"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="PSS-BA-cVF" customClass="RoundedButton">
                                 <rect key="frame" x="115" y="246" width="310" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1217,14 +1210,21 @@
                                     <action selector="okTapped:" destination="7xp-pQ-YyX" eventType="touchUpInside" id="8Ho-S3-1MA"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="General label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="O7i-H4-a7G">
+                                <rect key="frame" x="46" y="72" width="448" height="138"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="16"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="540" height="350"/>
                     <connections>
-                        <outlet property="invalidLabel" destination="O7i-H4-a7G" id="CMi-I8-qcu"/>
-                        <outlet property="okButton" destination="PSS-BA-cVF" id="yWf-C7-5fM"/>
+                        <outlet property="generalLabel" destination="O7i-H4-a7G" id="Hps-Kp-Zwk"/>
+                        <outlet property="okButton" destination="PSS-BA-cVF" id="kR0-WS-Axs"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ro8-AW-r6z" userLabel="First Responder" sceneMemberID="firstResponder"/>

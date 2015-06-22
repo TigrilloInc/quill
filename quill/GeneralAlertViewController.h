@@ -1,5 +1,5 @@
 //
-//  InvalidNameAlertViewController.h
+//  GeneralAlertViewController.h
 //  quill
 //
 //  Created by Alex Costantini on 3/16/15.
@@ -9,13 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "RoundedButton.h"
 
-@interface InvalidNameAlertViewController : UIViewController <UIGestureRecognizerDelegate> {
+@interface GeneralAlertViewController : UIViewController <UIGestureRecognizerDelegate> {
     
     UITapGestureRecognizer *outsideTapRecognizer;
 }
 
-@property BOOL project;
-@property (weak, nonatomic) IBOutlet UILabel *invalidLabel;
+@property int type;
+@property (strong, nonatomic) NSString *boardName;
+@property (weak, nonatomic) IBOutlet UILabel *generalLabel;
 @property (weak, nonatomic) IBOutlet RoundedButton *okButton;
 
 @end

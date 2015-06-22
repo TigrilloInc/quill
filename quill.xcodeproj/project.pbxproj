@@ -87,7 +87,7 @@
 		128DC3201A22C01800FF6076 /* AvatarPopoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 128DC31F1A22C01800FF6076 /* AvatarPopoverViewController.m */; };
 		129667501AAE297000CB57FA /* usercomment3.png in Resources */ = {isa = PBXBuildFile; fileRef = 1296674F1AAE297000CB57FA /* usercomment3.png */; };
 		129667581AAE335200CB57FA /* usercomment4.png in Resources */ = {isa = PBXBuildFile; fileRef = 129667571AAE335200CB57FA /* usercomment4.png */; };
-		129667671AB7DD1800CB57FA /* InvalidNameAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 129667661AB7DD1800CB57FA /* InvalidNameAlertViewController.m */; };
+		129667671AB7DD1800CB57FA /* GeneralAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 129667661AB7DD1800CB57FA /* GeneralAlertViewController.m */; };
 		1296676A1ABA6CAE00CB57FA /* PhotosCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 129667691ABA6CAE00CB57FA /* PhotosCollectionViewController.m */; };
 		1296676D1ABA795A00CB57FA /* PhotosCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1296676C1ABA795A00CB57FA /* PhotosCollectionViewCell.m */; };
 		1296676F1ABA954500CB57FA /* userbuttonmask.png in Resources */ = {isa = PBXBuildFile; fileRef = 1296676E1ABA954500CB57FA /* userbuttonmask.png */; };
@@ -143,7 +143,6 @@
 		12ABCEA11A5F214C00C4C7DC /* userbutton5.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ABCE9B1A5F214C00C4C7DC /* userbutton5.png */; };
 		12ABCEA21A5F214C00C4C7DC /* userbutton6.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ABCE9C1A5F214C00C4C7DC /* userbutton6.png */; };
 		12ACFBB71A6C98E8004C298B /* Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 12ACFBB61A6C98E8004C298B /* Logo.png */; };
-		12B17DA01AC9F8A8003C9E9D /* SignedOutAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12B17D9F1AC9F8A8003C9E9D /* SignedOutAlertViewController.m */; };
 		12B17DA31ACB7A46003C9E9D /* OfflineAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12B17DA21ACB7A46003C9E9D /* OfflineAlertViewController.m */; };
 		12B17DA71AD21874003C9E9D /* libFlurry_6.3.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 12B17DA61AD21874003C9E9D /* libFlurry_6.3.0.a */; };
 		12B17DAA1AD31DDD003C9E9D /* ResetPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12B17DA91AD31DDD003C9E9D /* ResetPasswordViewController.m */; };
@@ -205,6 +204,12 @@
 		F30F00341AF4437B0082D7D6 /* versions.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F00331AF4437B0082D7D6 /* versions.png */; };
 		F30F00361AF445D90082D7D6 /* boardbuttonsbackground-rounded.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F00351AF445D90082D7D6 /* boardbuttonsbackground-rounded.png */; };
 		F30F00381AF44E3B0082D7D6 /* carousel.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F00371AF44E3B0082D7D6 /* carousel.png */; };
+		F333A15F1B364220009D00BF /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F333A15E1B364220009D00BF /* DropboxSDK.framework */; };
+		F333A1691B365042009D00BF /* dropbox-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = F333A1671B365042009D00BF /* dropbox-highlighted.png */; };
+		F333A16A1B365042009D00BF /* dropbox.png in Resources */ = {isa = PBXBuildFile; fileRef = F333A1681B365042009D00BF /* dropbox.png */; };
+		F333A16D1B37A25A009D00BF /* DropboxViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F333A16C1B37A25A009D00BF /* DropboxViewController.m */; };
+		F333A1701B37B579009D00BF /* SignedOutAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F333A16F1B37B579009D00BF /* SignedOutAlertViewController.m */; };
+		F333A1721B37BBE4009D00BF /* dropboxsaved.png in Resources */ = {isa = PBXBuildFile; fileRef = F333A1711B37BBE4009D00BF /* dropboxsaved.png */; };
 		F34259311B279085000ABCB3 /* edittutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = F34259301B279085000ABCB3 /* edittutorial.png */; };
 		F34259391B2793BC000ABCB3 /* versionstutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = F34259381B2793BC000ABCB3 /* versionstutorial.png */; };
 		F342593B1B279D0B000ABCB3 /* boardtutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = F342593A1B279D0B000ABCB3 /* boardtutorial.png */; };
@@ -436,8 +441,8 @@
 		128DC31F1A22C01800FF6076 /* AvatarPopoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AvatarPopoverViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1296674F1AAE297000CB57FA /* usercomment3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = usercomment3.png; path = Resources/usercomment3.png; sourceTree = "<group>"; };
 		129667571AAE335200CB57FA /* usercomment4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = usercomment4.png; path = Resources/usercomment4.png; sourceTree = "<group>"; };
-		129667651AB7DD1800CB57FA /* InvalidNameAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = InvalidNameAlertViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		129667661AB7DD1800CB57FA /* InvalidNameAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = InvalidNameAlertViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		129667651AB7DD1800CB57FA /* GeneralAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = GeneralAlertViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		129667661AB7DD1800CB57FA /* GeneralAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GeneralAlertViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		129667681ABA6CAE00CB57FA /* PhotosCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PhotosCollectionViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		129667691ABA6CAE00CB57FA /* PhotosCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PhotosCollectionViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1296676B1ABA795A00CB57FA /* PhotosCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PhotosCollectionViewCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -507,8 +512,6 @@
 		12ABCE9B1A5F214C00C4C7DC /* userbutton5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userbutton5.png; path = Resources/userbutton5.png; sourceTree = "<group>"; };
 		12ABCE9C1A5F214C00C4C7DC /* userbutton6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = userbutton6.png; path = Resources/userbutton6.png; sourceTree = "<group>"; };
 		12ACFBB61A6C98E8004C298B /* Logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Logo.png; path = Resources/Logo.png; sourceTree = "<group>"; };
-		12B17D9E1AC9F8A8003C9E9D /* SignedOutAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignedOutAlertViewController.h; sourceTree = "<group>"; };
-		12B17D9F1AC9F8A8003C9E9D /* SignedOutAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignedOutAlertViewController.m; sourceTree = "<group>"; };
 		12B17DA11ACB7A46003C9E9D /* OfflineAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OfflineAlertViewController.h; sourceTree = "<group>"; };
 		12B17DA21ACB7A46003C9E9D /* OfflineAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OfflineAlertViewController.m; sourceTree = "<group>"; };
 		12B17DA51AD21874003C9E9D /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
@@ -589,6 +592,14 @@
 		F30F00331AF4437B0082D7D6 /* versions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = versions.png; path = Resources/versions.png; sourceTree = "<group>"; };
 		F30F00351AF445D90082D7D6 /* boardbuttonsbackground-rounded.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "boardbuttonsbackground-rounded.png"; path = "Resources/boardbuttonsbackground-rounded.png"; sourceTree = "<group>"; };
 		F30F00371AF44E3B0082D7D6 /* carousel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = carousel.png; path = Resources/carousel.png; sourceTree = "<group>"; };
+		F333A15E1B364220009D00BF /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DropboxSDK.framework; path = quill/Resources/Dropbox/DropboxSDK.framework; sourceTree = "<group>"; };
+		F333A1671B365042009D00BF /* dropbox-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "dropbox-highlighted.png"; path = "Resources/dropbox-highlighted.png"; sourceTree = "<group>"; };
+		F333A1681B365042009D00BF /* dropbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dropbox.png; path = Resources/dropbox.png; sourceTree = "<group>"; };
+		F333A16B1B37A25A009D00BF /* DropboxViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DropboxViewController.h; sourceTree = "<group>"; };
+		F333A16C1B37A25A009D00BF /* DropboxViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DropboxViewController.m; sourceTree = "<group>"; };
+		F333A16E1B37B579009D00BF /* SignedOutAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignedOutAlertViewController.h; sourceTree = "<group>"; };
+		F333A16F1B37B579009D00BF /* SignedOutAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignedOutAlertViewController.m; sourceTree = "<group>"; };
+		F333A1711B37BBE4009D00BF /* dropboxsaved.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dropboxsaved.png; path = Resources/dropboxsaved.png; sourceTree = "<group>"; };
 		F34259301B279085000ABCB3 /* edittutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = edittutorial.png; path = Resources/edittutorial.png; sourceTree = "<group>"; };
 		F34259381B2793BC000ABCB3 /* versionstutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = versionstutorial.png; path = Resources/versionstutorial.png; sourceTree = "<group>"; };
 		F342593A1B279D0B000ABCB3 /* boardtutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = boardtutorial.png; path = Resources/boardtutorial.png; sourceTree = "<group>"; };
@@ -684,6 +695,7 @@
 				12564B60196A5C3600F8F3D2 /* Accounts.framework in Frameworks */,
 				129E12C61964DB4300ED9D42 /* libc++.dylib in Frameworks */,
 				129E12C41964D77700ED9D42 /* libicucore.dylib in Frameworks */,
+				F333A15F1B364220009D00BF /* DropboxSDK.framework in Frameworks */,
 				129E127419648A2C00ED9D42 /* CoreGraphics.framework in Frameworks */,
 				129E127A19648A2C00ED9D42 /* Security.framework in Frameworks */,
 				129E127619648A2C00ED9D42 /* UIKit.framework in Frameworks */,
@@ -760,6 +772,7 @@
 		129E127019648A2C00ED9D42 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F333A15E1B364220009D00BF /* DropboxSDK.framework */,
 				12F4F9CF1AA7ED8B00C8FC31 /* GLKit.framework */,
 				12F4F9CD1AA7ED7D00C8FC31 /* OpenGLES.framework */,
 				12F4F9CB1AA7ED6300C8FC31 /* MessageUI.framework */,
@@ -861,10 +874,10 @@
 				12BDC6AD1A96ECBB001160AF /* TransferOwnerViewController.m */,
 				12CAB1211A9D4EC800136AB1 /* UserDeletedAlertViewController.h */,
 				12CAB1221A9D4EC800136AB1 /* UserDeletedAlertViewController.m */,
-				129667651AB7DD1800CB57FA /* InvalidNameAlertViewController.h */,
-				129667661AB7DD1800CB57FA /* InvalidNameAlertViewController.m */,
-				12B17D9E1AC9F8A8003C9E9D /* SignedOutAlertViewController.h */,
-				12B17D9F1AC9F8A8003C9E9D /* SignedOutAlertViewController.m */,
+				129667651AB7DD1800CB57FA /* GeneralAlertViewController.h */,
+				129667661AB7DD1800CB57FA /* GeneralAlertViewController.m */,
+				F333A16E1B37B579009D00BF /* SignedOutAlertViewController.h */,
+				F333A16F1B37B579009D00BF /* SignedOutAlertViewController.m */,
 				12B17DA11ACB7A46003C9E9D /* OfflineAlertViewController.h */,
 				12B17DA21ACB7A46003C9E9D /* OfflineAlertViewController.m */,
 				12B17DA81AD31DDD003C9E9D /* ResetPasswordViewController.h */,
@@ -885,6 +898,8 @@
 				F370EEBA1B30AC6B00055AF2 /* SlackViewController.m */,
 				F370EEBE1B30BF9100055AF2 /* SlackChannelTableViewController.h */,
 				F370EEBF1B30BF9100055AF2 /* SlackChannelTableViewController.m */,
+				F333A16B1B37A25A009D00BF /* DropboxViewController.h */,
+				F333A16C1B37A25A009D00BF /* DropboxViewController.m */,
 				F370EEC11B311EE600055AF2 /* ShareHelper.h */,
 				F370EEC21B311EE600055AF2 /* ShareHelper.m */,
 				12A310EB1980BE4300E03E9E /* iCarousel.h */,
@@ -985,6 +1000,9 @@
 				F3BA3A4B1B1CFE680051AA7A /* cameraroll.png */,
 				F3BA3A4C1B1CFE680051AA7A /* camerarollsaved.png */,
 				F3BA3A571B1D01B20051AA7A /* cameraroll-highlighted.png */,
+				F333A1671B365042009D00BF /* dropbox-highlighted.png */,
+				F333A1681B365042009D00BF /* dropbox.png */,
+				F333A1711B37BBE4009D00BF /* dropboxsaved.png */,
 				F34EDFE91B224A8100641E7C /* slack-highlighted.png */,
 				F34EDFEA1B224A8100641E7C /* slack.png */,
 				F3BA3A551B1CFF1C0051AA7A /* email.png */,
@@ -1280,6 +1298,7 @@
 				F3F66FA01B07FA9400B6D184 /* deleteproject.png in Resources */,
 				12ABCE861A5E0A3700C4C7DC /* Icon120.png in Resources */,
 				129E129519648A2C00ED9D42 /* Images.xcassets in Resources */,
+				F333A16A1B365042009D00BF /* dropbox.png in Resources */,
 				1213D7B21A67ABF2001FDEA9 /* chatfade4.png in Resources */,
 				F3BA3A4D1B1CFE680051AA7A /* cameraroll.png in Resources */,
 				F370EEBD1B30B8A300055AF2 /* next.png in Resources */,
@@ -1315,6 +1334,7 @@
 				12DC979F1A8179E300CC4616 /* invitefade.png in Resources */,
 				F3F66FAA1B09458700B6D184 /* plus5.png in Resources */,
 				F3BA3A561B1CFF1C0051AA7A /* email.png in Resources */,
+				F333A1691B365042009D00BF /* dropbox-highlighted.png in Resources */,
 				12DC979D1A8154E000CC4616 /* Logo2.png in Resources */,
 				1243AFB319FF0A900029B976 /* userhighlight.png in Resources */,
 				12726C221A898F8F001F0346 /* arrow2.png in Resources */,
@@ -1343,6 +1363,7 @@
 				12C4E4CF1A3B6CD300DB0E23 /* board3.png in Resources */,
 				F37687E91AF2D2A3005ECE60 /* share.png in Resources */,
 				12ABCE8B1A5E3F7500C4C7DC /* apply.png in Resources */,
+				F333A1721B37BBE4009D00BF /* dropboxsaved.png in Resources */,
 				12DC978A1A796FEA00CC4616 /* background6.png in Resources */,
 				12860FC41A41170E0074B452 /* usercomment.png in Resources */,
 				12860FBF1A40C8CD0074B452 /* userbutton3shadow.png in Resources */,
@@ -1486,8 +1507,8 @@
 				124943C51A93C4F300C1BEA4 /* InviteEmail.m in Sources */,
 				129E128819648A2C00ED9D42 /* AppDelegate.m in Sources */,
 				12BE8D68196BA1B100503F84 /* NewTeamViewController.m in Sources */,
+				F333A16D1B37A25A009D00BF /* DropboxViewController.m in Sources */,
 				12C3780C19FEE9FC000C0DB4 /* CommentButton.m in Sources */,
-				12B17DA01AC9F8A8003C9E9D /* SignedOutAlertViewController.m in Sources */,
 				129667831AC5049200CB57FA /* NewOwnerEmail.m in Sources */,
 				1216D99D19A275980095DBD8 /* DraggableCollectionViewFlowLayout.m in Sources */,
 				12860FCD1A423EDA0074B452 /* PenTypePopoverViewController.m in Sources */,
@@ -1498,7 +1519,7 @@
 				1213D7B71A6849B7001FDEA9 /* CommentPopoverViewController.m in Sources */,
 				1216D99B19A275980095DBD8 /* LSCollectionViewHelper.m in Sources */,
 				12A3FA101979861800E03E9E /* ProjectDetailViewController.m in Sources */,
-				129667671AB7DD1800CB57FA /* InvalidNameAlertViewController.m in Sources */,
+				129667671AB7DD1800CB57FA /* GeneralAlertViewController.m in Sources */,
 				F370EEB21B2FF70E00055AF2 /* WebViewController.m in Sources */,
 				12DC97A41A83060A00CC4616 /* ChangePasswordViewController.m in Sources */,
 				1296677A1AC3C7E600CB57FA /* InviteNewOwnerViewController.m in Sources */,
@@ -1514,6 +1535,7 @@
 				F3F66FAF1B0AAAB900B6D184 /* DeleteBoardAlertViewController.m in Sources */,
 				1296676D1ABA795A00CB57FA /* PhotosCollectionViewCell.m in Sources */,
 				12860FB31A4024920074B452 /* NSString+MD5.m in Sources */,
+				F333A1701B37B579009D00BF /* SignedOutAlertViewController.m in Sources */,
 				12A3FA0D1977420400E03E9E /* PersonalSettingsViewController.m in Sources */,
 				12899BB01A168CA100AF95BD /* MasterView.m in Sources */,
 				12E898A719ECC6DA00E29E7B /* AvatarButton.m in Sources */,
@@ -1663,6 +1685,7 @@
 					"/Users/alexcostantini/Downloads/aws-ios-sdk-2.1.1/frameworks",
 					"/Users/alexcostantini/Downloads/aws-ios-sdk-2.1.1/third-party",
 					"/Users/alexcostantini/Downloads/aws-ios-sdk-2.1.1/frameworks/extras",
+					"$(PROJECT_DIR)/quill/Resources/Dropbox",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "quill/quill-Prefix.pch";
@@ -1712,6 +1735,7 @@
 					"/Users/alexcostantini/Downloads/aws-ios-sdk-2.1.1/frameworks",
 					"/Users/alexcostantini/Downloads/aws-ios-sdk-2.1.1/third-party",
 					"/Users/alexcostantini/Downloads/aws-ios-sdk-2.1.1/frameworks/extras",
+					"$(PROJECT_DIR)/quill/Resources/Dropbox",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "quill/quill-Prefix.pch";

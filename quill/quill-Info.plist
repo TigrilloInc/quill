@@ -30,6 +30,16 @@
 				<string>quill</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>co.tigrillo.quill</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>db-a3njr70wv18ygn5</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1.0.13</string>

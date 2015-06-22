@@ -7,11 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <DropboxSDK/DropboxSDK.h>
 
-@interface ShareHelper : NSObject
+@interface ShareHelper : NSObject <DBRestClientDelegate>
 
 @property (strong, nonatomic) NSString *slackToken;
 @property (strong, nonatomic) NSMutableArray *slackChannels;
+@property (strong, nonatomic) DBRestClient *dropboxClient;
 
 + (ShareHelper *)sharedHelper;
 

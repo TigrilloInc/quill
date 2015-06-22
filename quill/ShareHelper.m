@@ -19,10 +19,13 @@ static ShareHelper *sharedHelper = nil;
         sharedHelper = [[ShareHelper alloc] init];
         sharedHelper.slackToken = nil;
         sharedHelper.slackChannels = [NSMutableArray array];
+        sharedHelper.dropboxClient = [[DBRestClient alloc] initWithSession:[DBSession sharedSession]];
+        sharedHelper.dropboxClient.delegate = sharedHelper;
     }
     
     return sharedHelper;
 }
+
 
 
 @end

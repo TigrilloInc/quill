@@ -1,14 +1,14 @@
 //
-//  InvalidNameAlertViewController.m
+//  GeneralAlertViewController.m
 //  quill
 //
 //  Created by Alex Costantini on 3/16/15.
 //  Copyright (c) 2015 Tigrillo. All rights reserved.
 //
 
-#import "InvalidNameAlertViewController.h"
+#import "GeneralAlertViewController.h"
 
-@implementation InvalidNameAlertViewController
+@implementation GeneralAlertViewController
 
 -(void)viewDidLoad {
     [super viewDidLoad];
@@ -21,15 +21,24 @@
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    if (self.project) {
-        
-        self.navigationItem.title = @"Invalid Project Name";
-        self.invalidLabel.text = @"Project names cannot be blank.";
-    }
-    else {
+    if (self.type == 1) {
         
         self.navigationItem.title = @"Invalid Board Name";
-        self.invalidLabel.text = @"There is already a board with that name in this project.";
+        self.generalLabel.text = @"There is already a board with that name in this project.";
+    }
+    else if (self.type == 2) {
+        
+        self.navigationItem.title = @"Board Sent to Dropbox";
+        
+        UIFont *boardFont = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
+        UIFont *labelFont = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
+        NSDictionary *boardAttrs = [NSDictionary dictionaryWithObjectsAndKeys: boardFont, NSFontAttributeName, nil];
+        NSDictionary *labelAttrs = [NSDictionary dictionaryWithObjectsAndKeys: labelFont, NSFontAttributeName, nil];
+        
+        NSString *boardString = [NSString stringWithFormat:@"An image of %@ has been uploaded to your Dropbox.", self.boardName];
+        NSMutableAttributedString *boardAttrString = [[NSMutableAttributedString alloc] initWithString:boardString attributes:labelAttrs];
+        [boardAttrString setAttributes:boardAttrs range:NSMakeRange(12,self.boardName.length)];
+        [self.generalLabel setAttributedText:boardAttrString];
     }
 }
 

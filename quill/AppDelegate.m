@@ -12,6 +12,8 @@
 #import "ShareHelper.h"
 #import <Instabug/Instabug.h>
 #import "Flurry.h"
+#import <DropboxSDK/DropboxSDK.h>
+#import "GeneralAlertViewController.h"
 
 @implementation AppDelegate
 
@@ -31,6 +33,9 @@
     [Instabug startWithToken:@"9a674b675e5dd033bc995a4d7a4a231f" captureSource:IBGCaptureSourceUIKit invocationEvent:IBGInvocationEventNone];
     [Instabug setEmailIsRequired:NO];
     [Instabug setWillShowFeedbackSentAlert:NO];
+    
+    DBSession *dbSession = [[DBSession alloc] initWithAppKey:@"a3njr70wv18ygn5" appSecret:@"38pnslf7rwxioz6" root:kDBRootDropbox];
+    [DBSession setSharedSession:dbSession];
     
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     signal(SIGABRT, signalHandler);
@@ -81,9 +86,51 @@ void signalHandler(int signal) {
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+
+    if ([url.scheme isEqualToString:@"quill"]) {
+        [FirebaseHelper sharedHelper].inviteURL = url;
+        [[FirebaseHelper sharedHelper] createUser];
+    }
     
-    [FirebaseHelper sharedHelper].inviteURL = url;
-    [[FirebaseHelper sharedHelper] createUser];
+    if ([[DBSession sharedSession] handleOpenURL:url]) {
+        if ([[DBSession sharedSession] isLinked]) {
+            
+            ProjectDetailViewController *projectVC = [FirebaseHelper sharedHelper].projectVC;
+            
+            BoardView *boardView;
+            
+            if (projectVC.versioning) boardView = (BoardView *)projectVC.versionsCarousel.currentItemView;
+            else boardView = (BoardView *)projectVC.carousel.currentItemView;
+            
+            UIImage *boardImage = [boardView generateImage];
+            NSData *imageData = UIImagePNGRepresentation(boardImage);
+            NSString *filename = [NSString stringWithFormat:@"%@.png", projectVC.boardNameLabel.text];
+            NSString *localDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+            NSString *localPath = [localDir stringByAppendingPathComponent:filename];
+            [imageData writeToFile:localPath atomically:YES];
+            
+            [ShareHelper sharedHelper].dropboxClient = [[DBRestClient alloc] initWithSession:[DBSession sharedSession]];
+            
+            [[ShareHelper sharedHelper].dropboxClient uploadFile:filename toPath:@"/Quill" withParentRev:nil fromPath:localPath];
+
+            if (projectVC.presentedViewController) [projectVC.presentedViewController dismissViewControllerAnimated:YES completion:nil];
+            
+            GeneralAlertViewController *vc = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"Alert"];
+            vc.boardName = projectVC.boardNameLabel.text;
+            vc.type = 2;
+            
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+            nav.modalPresentationStyle = UIModalPresentationFormSheet;
+            nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            
+            UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+            logoImageView.frame = CGRectMake(130, 8, 32, 32);
+            logoImageView.tag = 800;
+            [nav.navigationBar addSubview:logoImageView];
+            
+            [projectVC presentViewController:nav animated:YES completion:nil];
+        }
+    }
     
     return YES;
 }

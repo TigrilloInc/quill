@@ -316,7 +316,7 @@ static FirebaseHelper *sharedHelper = nil;
                     logoImageView.frame = CGRectMake(162, 8, 32, 32);
                     logoImageView.tag = 800;
                     [nav.navigationBar addSubview:logoImageView];
-
+                    
                     [self.projectVC presentViewController:nav animated:YES completion:nil];
                 }
             }

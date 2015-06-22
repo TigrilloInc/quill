@@ -24,7 +24,7 @@
 #import "InstabugViewController.h"
 #import "DeleteProjectAlertViewController.h"
 #import "DeleteBoardAlertViewController.h"
-#import "InvalidNameAlertViewController.h"
+#import "GeneralAlertViewController.h"
 #import "SignedOutAlertViewController.h"
 #import "OfflineAlertViewController.h"
 #import "Flurry.h"
@@ -1203,10 +1203,13 @@
                              [self presentViewController:nav animated:YES completion:nil];
                          }
                          else if (![FirebaseHelper sharedHelper].loggedIn) {
+    
+                             NSString *email = [FirebaseHelper sharedHelper].email;
                              
                              [[FirebaseHelper sharedHelper] signOut];
-                             
+
                              SignedOutAlertViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"SignedOut"];
+                             vc.email = email;
                              
                              UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
                              nav.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -1408,19 +1411,23 @@
         self.showButtons = true;
         
         NSString *newName = self.editProjectNameTextField.text;
-        self.projectNameLabel.text = newName;
-        CGRect projectRect = [self.projectNameLabel.text boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName:self.projectNameLabel.font} context:nil];
-        self.editButton.center = CGPointMake(MIN(projectRect.size.width+290,600), self.projectNameLabel.center.y+3);
-        self.projectNameEditButton.center = self.editButton.center;
         
-        [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] setObject:newName forKey:@"name"];
-        
-        [self.masterView updateProjects];        
-        self.masterView.defaultRow = [NSIndexPath indexPathForRow:[self.masterView.orderedProjectNames indexOfObject:newName] inSection:0];
-        [self.masterView.projectsTable reloadData];
-        [self.masterView tableView:self.masterView.projectsTable didSelectRowAtIndexPath:self.masterView.defaultRow];
-     
-        [[projectRef childByAppendingPath:@"name"] setValue:newName];
+        if (newName.length > 0) {
+            
+            self.projectNameLabel.text = newName;
+            CGRect projectRect = [self.projectNameLabel.text boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName:self.projectNameLabel.font} context:nil];
+            self.editButton.center = CGPointMake(MIN(projectRect.size.width+290,600), self.projectNameLabel.center.y+3);
+            self.projectNameEditButton.center = self.editButton.center;
+            
+            [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] setObject:newName forKey:@"name"];
+            
+            [self.masterView updateProjects];        
+            self.masterView.defaultRow = [NSIndexPath indexPathForRow:[self.masterView.orderedProjectNames indexOfObject:newName] inSection:0];
+            [self.masterView.projectsTable reloadData];
+            [self.masterView tableView:self.masterView.projectsTable didSelectRowAtIndexPath:self.masterView.defaultRow];
+         
+            [[projectRef childByAppendingPath:@"name"] setValue:newName];
+        }
     }
 
     if (![self.editBoardIDs isEqualToArray:self.boardIDs]) {
@@ -2375,7 +2382,8 @@
             
             self.editBoardNameTextField.text = oldBoardName;
             
-            InvalidNameAlertViewController *invalidVC = [self.storyboard instantiateViewControllerWithIdentifier:@"InvalidName"];
+            GeneralAlertViewController *invalidVC = [self.storyboard instantiateViewControllerWithIdentifier:@"Alert"];
+            invalidVC.type = 1;
             
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:invalidVC];
             nav.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -2450,7 +2458,8 @@
             
             name = oldBoardName;
             
-            InvalidNameAlertViewController *invalidVC = [self.storyboard instantiateViewControllerWithIdentifier:@"InvalidName"];
+            GeneralAlertViewController *invalidVC = [self.storyboard instantiateViewControllerWithIdentifier:@"General"];
+            invalidVC.type = 1;
             
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:invalidVC];
             nav.modalPresentationStyle = UIModalPresentationFormSheet;
