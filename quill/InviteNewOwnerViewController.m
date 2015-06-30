@@ -35,14 +35,7 @@
 
 -(void) viewDidAppear:(BOOL)animated {
     
-    [super viewDidAppear:animated];
-    
-    outsideTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside)];
-    
-    [outsideTapRecognizer setDelegate:self];
-    [outsideTapRecognizer setNumberOfTapsRequired:1];
-    outsideTapRecognizer.cancelsTouchesInView = NO;
-    [self.view.window addGestureRecognizer:outsideTapRecognizer];
+    [FirebaseHelper sharedHelper].projectVC.handleOutsideTaps = true;
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
@@ -57,9 +50,7 @@
     
     self.emailTextField.delegate = nil;
 
-    
-    outsideTapRecognizer.delegate = nil;
-    [self.view.window removeGestureRecognizer:outsideTapRecognizer];
+    [FirebaseHelper sharedHelper].projectVC.handleOutsideTaps = false;
     
     [super viewWillDisappear:animated];
 }
@@ -88,22 +79,6 @@
     
     if ([FirebaseHelper sharedHelper].isDev) return @"tEsTtOkEn";
     else return randomString;
-}
-
--(void) tappedOutside {
-    
-    if (outsideTapRecognizer.state == UIGestureRecognizerStateEnded) {
-        
-        CGPoint location = [outsideTapRecognizer locationInView:nil];
-        CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
-        
-        if (!CGRectContainsPoint(self.view.frame, converted)){
-            
-            [outsideTapRecognizer setDelegate:nil];
-            [self.view.window removeGestureRecognizer:outsideTapRecognizer];
-            [self dismissViewControllerAnimated:YES completion:nil];
-        }
-    }
 }
 
 - (IBAction)sendTapped:(id)sender {
@@ -192,20 +167,6 @@
 
 -(void) dismiss {
     [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-#pragma mark - UIGestureRecognizer Delegate
-
-- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-    return YES;
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return YES;
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    return YES;
 }
 
 @end

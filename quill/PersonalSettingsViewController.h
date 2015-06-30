@@ -10,13 +10,12 @@
 #import "ProjectDetailViewController.h"
 #import "RoundedButton.h"
 
-@interface PersonalSettingsViewController : UIViewController <UIGestureRecognizerDelegate, UITextFieldDelegate> {
+@interface PersonalSettingsViewController : UIViewController <UITextFieldDelegate> {
     
     BOOL nameChanged;
     BOOL emailChanged;
 
     UIImageView *logoImage;
-    UITapGestureRecognizer *outsideTapRecognizer;
     NSMutableArray *teamNames;
     NSMutableArray *teamEmails;
 }

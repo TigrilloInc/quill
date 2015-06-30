@@ -10,10 +10,9 @@
 #import "ProjectDetailViewController.h"
 #import "RoundedButton.h"
 
-@interface EmailBoardViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate> {
+@interface EmailBoardViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource> {
     
     ProjectDetailViewController *projectVC;
-    UITapGestureRecognizer *outsideTapRecognizer;
     NSMutableArray *teamEmails;
     NSMutableArray *editedText;
 }

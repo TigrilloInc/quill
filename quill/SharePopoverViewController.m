@@ -12,24 +12,27 @@
 #import "ShareHelper.h"
 #import "SlackViewController.h"
 #import <DropboxSDK/DropboxSDK.h>
+#import "GTMOAuth2ViewControllerTouch.h"
+#import "GeneralAlertViewController.h"
 
 @implementation SharePopoverViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    options = @[ @"dropbox",
+    options = @[ @"drive",
+                 @"dropbox",
                  @"slack",
                  @"email",
                  @"cameraroll",
                  ];
     
-    self.preferredContentSize = CGSizeMake(240, 10+options.count*50);
+    self.preferredContentSize = CGSizeMake(254, 10+options.count*50);
 
     for (int i=0; i<options.count; i++) {
         
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        button.frame = CGRectMake(5, 5+i*50, 230, 50);
+        button.frame = CGRectMake(5, 5+i*50, 243, 50);
         
         NSString *imageString = [NSString stringWithFormat:@"%@.png", options[i]];
         NSString *highlightedString = [NSString stringWithFormat:@"%@-highlighted.png", options[i]];
@@ -53,7 +56,7 @@
     else boardView = (BoardView *)projectVC.carousel.currentItemView;
     
     
-    if (button.tag == 3) {
+    if (button.tag == 4) {
         
         UIImage *boardImage = [boardView generateImage];
         
@@ -65,7 +68,7 @@
         [self performSelector:@selector(dismiss) withObject:nil afterDelay:.8];
     }
     
-    else if (button.tag == 2) {
+    else if (button.tag == 3) {
         
         UIImage *boardImage = [boardView generateImage];
         
@@ -101,7 +104,7 @@
         [projectVC presentViewController:mailVC animated:YES completion:nil];
     }
     
-    else if (button.tag == 1) {
+    else if (button.tag == 2) {
         
         [self dismissViewControllerAnimated:NO completion:nil];
         
@@ -123,20 +126,21 @@
         else {
             
             WebViewController *webVC = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"Web"];
+            webVC.modalPresentationStyle = UIModalPresentationPageSheet;
+            
             [projectVC presentViewController:webVC animated:YES completion:^{
-                
+                projectVC.handleOutsideTaps = true;
                 projectVC.showButtons = true;
-                [projectVC.carousel reloadData];
             }];
         }
     }
-    else if (button.tag == 0) {
+    else if (button.tag == 1) {
 
         if (![[DBSession sharedSession] isLinked]) {
             
-           [self dismissViewControllerAnimated:YES completion:^{
-               [[DBSession sharedSession] linkFromController:projectVC];
-           }];
+            [self dismissViewControllerAnimated:YES completion:nil];
+            projectVC.handleOutsideTaps = true;
+            [[DBSession sharedSession] linkFromController:projectVC];
         }
         else {
             
@@ -154,8 +158,52 @@
             
             [self performSelector:@selector(dismiss) withObject:nil afterDelay:.8];
         }
-        
     }
+    else if (button.tag == 0) {
+        
+        if ([[ShareHelper sharedHelper].driveService.authorizer canAuthorize]) {
+            
+            [self uploadToDrive];
+            
+            [button setImage:[UIImage imageNamed:@"drivesaved.png"] forState:UIControlStateNormal];
+            button.enabled = NO;
+
+            [self performSelector:@selector(dismiss) withObject:nil afterDelay:.8];
+        }
+        else {
+            
+            projectVC.handleOutsideTaps = true;
+            
+            [self dismissViewControllerAnimated:YES completion:nil];
+            
+            GTMOAuth2ViewControllerTouch *authController = [GTMOAuth2ViewControllerTouch controllerWithScope:@"https://www.googleapis.com/auth/drive" clientID:@"326374351015-kqguhqk7m5cgvcc1bj3hbu9se42r130h.apps.googleusercontent.com" clientSecret:@"dSEKG_KwpILXAxHYAppVbj3e" keychainItemName:nil delegate:self finishedSelector:@selector(viewController:finishedWithAuth:error:)];
+            authController.modalPresentationStyle = UIModalPresentationPageSheet;
+            
+            [projectVC presentViewController:authController animated:YES completion:nil];
+        }
+    }
+}
+
+-(void) uploadToDrive {
+ 
+    ProjectDetailViewController *projectVC = [FirebaseHelper sharedHelper].projectVC;
+    
+    BoardView *boardView;
+    
+    if (projectVC.versioning) boardView = (BoardView *)projectVC.versionsCarousel.currentItemView;
+    else boardView = (BoardView *)projectVC.carousel.currentItemView;
+    
+    GTLDriveFile *metadata = [GTLDriveFile object];
+    metadata.title = projectVC.boardNameLabel.text;;
+    metadata.mimeType = @"image/png";
+    
+    UIImage *boardImage = [boardView generateImage];
+    
+    NSData *imageData = UIImagePNGRepresentation(boardImage);
+    GTLUploadParameters *uploadParameters = [GTLUploadParameters uploadParametersWithData:imageData MIMEType:@"image/png"];
+    GTLQueryDrive *query = [GTLQueryDrive queryForFilesInsertWithObject:metadata
+                                                       uploadParameters:uploadParameters];
+    [[ShareHelper sharedHelper].driveService executeQuery:query completionHandler:nil];
 }
 
 -(void) dismiss {
@@ -163,6 +211,39 @@
     [self dismissViewControllerAnimated:NO completion:nil];
 }
 
+- (void)viewController:(GTMOAuth2ViewControllerTouch *)viewController
+      finishedWithAuth:(GTMOAuth2Authentication *)authResult
+                 error:(NSError *)error {
+    
+    ProjectDetailViewController *projectVC = [FirebaseHelper sharedHelper].projectVC;
+    
+    GeneralAlertViewController *vc = [projectVC.storyboard instantiateViewControllerWithIdentifier:@"Alert"];
+    vc.type = 3;
+    vc.boardName = projectVC.boardNameLabel.text;
 
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    nav.modalPresentationStyle = UIModalPresentationFormSheet;
+    nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    
+    UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+    logoImageView.tag = 800;
+    [nav.navigationBar addSubview:logoImageView];
+    
+    if (error != nil) {
+        logoImageView.frame = CGRectMake(120, 8, 32, 32);
+        vc.navigationItem.title = @"Google Drive Error";
+        vc.generalLabel.text = error.localizedDescription;
+        [ShareHelper sharedHelper].driveService.authorizer = nil;
+    }
+    else {
+        logoImageView.frame = CGRectMake(112, 8, 32, 32);
+        vc.type = 3;
+        [ShareHelper sharedHelper].driveService.authorizer = authResult;
+        [self uploadToDrive];
+        [viewController dismissViewControllerAnimated:YES completion:nil];
+    }
+    
+    [projectVC presentViewController:nav animated:YES completion:nil];
+}
 
 @end

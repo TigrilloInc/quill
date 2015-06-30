@@ -10,10 +10,9 @@
 #import "ProjectDetailViewController.h"
 #import "RoundedButton.h"
 
-@interface TransferOwnerViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate> {
+@interface TransferOwnerViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     
     ProjectDetailViewController *projectVC;
-    UITapGestureRecognizer *outsideTapRecognizer;
 }
 
 @property (strong, nonatomic) NSDictionary *availableUsersDict;

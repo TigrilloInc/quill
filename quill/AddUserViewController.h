@@ -10,10 +10,9 @@
 #import "ProjectDetailViewController.h"
 #import "RoundedButton.h"
 
-@interface AddUserViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate> {
+@interface AddUserViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource> {
 
     ProjectDetailViewController *projectVC;
-    UITapGestureRecognizer *outsideTapRecognizer;
     NSMutableArray *teamEmails;
     NSMutableArray *editedText;
 }

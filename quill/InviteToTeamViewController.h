@@ -10,7 +10,7 @@
 #import "ProjectDetailViewController.h"
 #import "RoundedButton.h"
 
-@interface InviteToTeamViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate> {
+@interface InviteToTeamViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource> {
     
     BOOL invitesSent;
     
@@ -18,7 +18,6 @@
     ProjectDetailViewController *projectVC;
     NSMutableArray *editedText;
     NSMutableArray *teamEmails;
-    UITapGestureRecognizer *outsideTapRecognizer;
 }
 
 @property BOOL creatingTeam;

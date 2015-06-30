@@ -9,10 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "RoundedButton.h"
 
-@interface GeneralAlertViewController : UIViewController <UIGestureRecognizerDelegate> {
-    
-    UITapGestureRecognizer *outsideTapRecognizer;
-}
+@interface GeneralAlertViewController : UIViewController
 
 @property int type;
 @property (strong, nonatomic) NSString *boardName;

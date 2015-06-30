@@ -1631,7 +1631,7 @@ static FirebaseHelper *sharedHelper = nil;
         if ([[[self.loadedUsers objectForKey:userID] objectForKey:@"info"] integerValue] == 0) usersLoaded = false;
         if ([[[self.loadedUsers objectForKey:userID] objectForKey:@"status"] integerValue] == 0) usersLoaded = false;
     }
-
+    
     if (usersLoaded) {
 
         self.teamLoaded = true;

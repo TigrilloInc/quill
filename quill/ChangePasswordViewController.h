@@ -9,11 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "RoundedButton.h"
 
-@interface ChangePasswordViewController : UIViewController <UITextFieldDelegate, UIGestureRecognizerDelegate> {
+@interface ChangePasswordViewController : UIViewController <UITextFieldDelegate> {
     
     UIImageView *logoImage;
     NSArray *textFieldArray;
-    UITapGestureRecognizer *outsideTapRecognizer;
 }
 
 @property (weak, nonatomic) IBOutlet UITextField *passwordTextField;

@@ -7,6 +7,7 @@
 //
 
 #import "GeneralAlertViewController.h"
+#import "ProjectDetailViewController.h"
 
 @implementation GeneralAlertViewController
 
@@ -26,66 +27,46 @@
         self.navigationItem.title = @"Invalid Board Name";
         self.generalLabel.text = @"There is already a board with that name in this project.";
     }
-    else if (self.type == 2) {
-        
-        self.navigationItem.title = @"Board Sent to Dropbox";
+    else if (self.type > 1) {
         
         UIFont *boardFont = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
         UIFont *labelFont = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
         NSDictionary *boardAttrs = [NSDictionary dictionaryWithObjectsAndKeys: boardFont, NSFontAttributeName, nil];
         NSDictionary *labelAttrs = [NSDictionary dictionaryWithObjectsAndKeys: labelFont, NSFontAttributeName, nil];
         
-        NSString *boardString = [NSString stringWithFormat:@"An image of %@ has been uploaded to your Dropbox.", self.boardName];
+        NSString *boardString;
+        
+        if (self.type == 2) {
+            self.navigationItem.title = @"Board Sent to Dropbox";
+            boardString = [NSString stringWithFormat:@"An image of %@ has been uploaded to your Dropbox.", self.boardName];
+        }
+        else {
+            self.navigationItem.title = @"Board Sent to Google Drive";
+            boardString = [NSString stringWithFormat:@"An image of %@ has been uploaded to Google Drive.", self.boardName];
+        }
+        
         NSMutableAttributedString *boardAttrString = [[NSMutableAttributedString alloc] initWithString:boardString attributes:labelAttrs];
         [boardAttrString setAttributes:boardAttrs range:NSMakeRange(12,self.boardName.length)];
         [self.generalLabel setAttributedText:boardAttrString];
     }
+    
 }
 
 -(void) viewDidAppear:(BOOL)animated {
     
-    outsideTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside)];
-    
-    [outsideTapRecognizer setDelegate:self];
-    [outsideTapRecognizer setNumberOfTapsRequired:1];
-    outsideTapRecognizer.cancelsTouchesInView = NO;
-    [self.view.window addGestureRecognizer:outsideTapRecognizer];
+    ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    projectVC.handleOutsideTaps = true;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     
-    [outsideTapRecognizer setDelegate:nil];
-    [self.view.window removeGestureRecognizer:outsideTapRecognizer];
-}
-
--(void) tappedOutside {
-    
-    if (outsideTapRecognizer.state == UIGestureRecognizerStateEnded) {
-        
-        CGPoint location = [outsideTapRecognizer locationInView:nil];
-        CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
-        
-        if (!CGRectContainsPoint(self.view.frame, converted)) [self dismissViewControllerAnimated:YES completion:nil];
-    }
+    ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    projectVC.handleOutsideTaps = false;
 }
 
 - (IBAction)okTapped:(id)sender {
     
     [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-#pragma mark - UIGestureRecognizer Delegate
-
-- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-    return YES;
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return YES;
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    return YES;
 }
 
 @end

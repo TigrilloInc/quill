@@ -11,7 +11,7 @@
 #import "ProjectDetailViewController.h"
 #import "RoundedButton.h"
 
-@interface NewProjectViewController : UIViewController <UIGestureRecognizerDelegate, UITextFieldDelegate> {
+@interface NewProjectViewController : UIViewController <UITextFieldDelegate> {
 
     BOOL projectDone;
     BOOL teamDone;
@@ -19,7 +19,6 @@
     BOOL chatDone;
     BOOL keyboardShowing;
     
-    UITapGestureRecognizer *outsideTapRecognizer;
     ProjectDetailViewController *projectVC;
 }
 

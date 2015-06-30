@@ -9,10 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "RoundedButton.h"
 
-@interface SlackViewController : UIViewController <UITextViewDelegate, UIGestureRecognizerDelegate, NSURLConnectionDataDelegate> {
-    
-    UITapGestureRecognizer *outsideTapRecognizer;
-}
+@interface SlackViewController : UIViewController <UITextViewDelegate, NSURLConnectionDataDelegate>
 
 @property (strong, nonatomic) NSString *code;
 @property (strong, nonatomic) NSString *selectedChannelID;

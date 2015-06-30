@@ -9,10 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "RoundedButton.h"
 
-@interface TeamSettingsViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate> {
+@interface TeamSettingsViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource> {
     
     UIImageView *logoImage;
-    UITapGestureRecognizer *outsideTapRecognizer;
     
     BOOL isOwner;
 }

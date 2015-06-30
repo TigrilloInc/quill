@@ -9,10 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "RoundedButton.h"
 
-@interface RemoveUserAlertViewController : UIViewController <UIGestureRecognizerDelegate> {
-    
-    UITapGestureRecognizer *outsideTapRecognizer;
-}
+@interface RemoveUserAlertViewController : UIViewController
 
 @property (strong, nonatomic) NSString *userID;
 @property (weak, nonatomic) IBOutlet RoundedButton *removeButton;

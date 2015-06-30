@@ -10,10 +10,9 @@
 #import "ProjectDetailViewController.h"
 #import "RoundedButton.h"
 
-@interface LeaveProjectAlertViewController : UIViewController <UIGestureRecognizerDelegate> {
+@interface LeaveProjectAlertViewController : UIViewController {
     
     ProjectDetailViewController *projectVC;
-    UITapGestureRecognizer *outsideTapRecognizer;
 }
 
 @property BOOL deleteProject;

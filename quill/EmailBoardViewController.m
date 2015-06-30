@@ -53,21 +53,12 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     
-    outsideTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside)];
-    
-    [outsideTapRecognizer setDelegate:self];
-    [outsideTapRecognizer setNumberOfTapsRequired:1];
-    outsideTapRecognizer.cancelsTouchesInView = NO;
-    [self.view.window addGestureRecognizer:outsideTapRecognizer];
-    
+    projectVC.handleOutsideTaps = true;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     
-    [super viewWillDisappear:animated];
-    
-    [outsideTapRecognizer setDelegate:nil];
-    [self.view.window removeGestureRecognizer:outsideTapRecognizer];
+    projectVC.handleOutsideTaps = false;
 }
 
 - (NSString *) generateToken {
@@ -134,7 +125,6 @@
 
 -(void) invitesSent {
     
-    [outsideTapRecognizer setDelegate:nil];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -359,17 +349,6 @@
     
     if (self.inviteEmails.count+self.selectedUsers.count > 1) [self.inviteButton setTitle:@"Send Invites" forState:UIControlStateNormal];
     else [self.inviteButton setTitle:@"Send Invite" forState:UIControlStateNormal];
-}
-
--(void) tappedOutside {
-    
-    if (outsideTapRecognizer.state == UIGestureRecognizerStateEnded) {
-        
-        CGPoint location = [outsideTapRecognizer locationInView:nil];
-        CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
-        
-        if (!CGRectContainsPoint(self.view.frame, converted)) [self dismissViewControllerAnimated:YES completion:nil];
-    }
 }
 
 #pragma mark - Text field handling

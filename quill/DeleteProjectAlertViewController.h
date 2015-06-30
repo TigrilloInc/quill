@@ -9,10 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "RoundedButton.h"
 
-@interface DeleteProjectAlertViewController : UIViewController <UIGestureRecognizerDelegate> {
-    
-    UITapGestureRecognizer *outsideTapRecognizer;
-}
+@interface DeleteProjectAlertViewController : UIViewController
 
 @property (weak, nonatomic) IBOutlet RoundedButton *deleteButton;
 @property (weak, nonatomic) IBOutlet UILabel *projectLabel;

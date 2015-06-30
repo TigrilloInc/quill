@@ -71,7 +71,6 @@
     rightVersionSwipe.direction = UISwipeGestureRecognizerDirectionRight;
     [self.versionsCarousel addGestureRecognizer:rightVersionSwipe];
     
-    
     carouselFade = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"carouselfadeleft.png"]];
     [self.carousel addSubview:carouselFade];
     carouselFade.frame = CGRectMake(0, -5, 15, 400);
@@ -100,11 +99,16 @@
 - (void) viewDidAppear:(BOOL)animated {
     
     chatTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(chatTableTapped)];
-    
     [chatTapRecognizer setDelegate:self];
     [chatTapRecognizer setNumberOfTapsRequired:1];
     chatTapRecognizer.cancelsTouchesInView = NO;
     [self.view.window addGestureRecognizer:chatTapRecognizer];
+    
+    outsideTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside)];
+    [outsideTapRecognizer setDelegate:self];
+    [outsideTapRecognizer setNumberOfTapsRequired:1];
+    outsideTapRecognizer.cancelsTouchesInView = NO;
+    [self.view.window addGestureRecognizer:outsideTapRecognizer];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
@@ -119,10 +123,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
-
-//- (BOOL)canBecomeFirstResponder {
-//    return YES;
-//}
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
     
@@ -2070,6 +2070,20 @@
     }
 }
 
+-(void) tappedOutside {
+    
+    if (self.handleOutsideTaps && self.presentedViewController && outsideTapRecognizer.state == UIGestureRecognizerStateEnded) {
+        
+        CGPoint location = [outsideTapRecognizer locationInView:nil];
+        CGPoint converted = [self.presentedViewController.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
+        
+        if (!CGRectContainsPoint(self.presentedViewController.view.frame, converted)) {
+            [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
+            self.handleOutsideTaps = false;
+        }
+    }
+}
+
 -(void)boardSwiped:(UISwipeGestureRecognizer *)swipe {
 
     if ([[FirebaseHelper sharedHelper].loadedBoardIDs containsObject:self.boardIDs[self.carousel.currentItemIndex]] && !self.activeBoardID) {
@@ -2572,6 +2586,11 @@
         else return YES;
     }
     else return NO;
+    
+}
+
+-(void) driveAlert {
+    
     
 }
 

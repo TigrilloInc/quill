@@ -46,18 +46,14 @@
 
 -(void) viewDidAppear:(BOOL)animated {
     
-    outsideTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside)];
-    
-    [outsideTapRecognizer setDelegate:self];
-    [outsideTapRecognizer setNumberOfTapsRequired:1];
-    outsideTapRecognizer.cancelsTouchesInView = NO;
-    [self.view.window addGestureRecognizer:outsideTapRecognizer];
+    ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    projectVC.handleOutsideTaps = true;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     
-    [outsideTapRecognizer setDelegate:nil];
-    [self.view.window removeGestureRecognizer:outsideTapRecognizer];
+    ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    projectVC.handleOutsideTaps = false;
 }
 
 - (IBAction)removeTapped:(id)sender {
@@ -76,36 +72,6 @@
     [teamVC.usersTable reloadData];
     
     [self.navigationController popToRootViewControllerAnimated:YES];
-}
-
--(void) tappedOutside {
-    
-    if (outsideTapRecognizer.state == UIGestureRecognizerStateEnded) {
-        
-        CGPoint location = [outsideTapRecognizer locationInView:nil];
-        CGPoint converted = [self.view convertPoint:CGPointMake(location.y,location.x) fromView:self.view.window];
-        
-        if (!CGRectContainsPoint(self.view.bounds, converted)){
-            
-            [outsideTapRecognizer setDelegate:nil];
-            [self.view.window removeGestureRecognizer:outsideTapRecognizer];
-            [self dismissViewControllerAnimated:YES completion:nil];
-        }
-    }
-}
-
-#pragma mark - UIGestureRecognizer Delegate
-
-- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-    return YES;
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return YES;
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    return YES;
 }
 
 @end

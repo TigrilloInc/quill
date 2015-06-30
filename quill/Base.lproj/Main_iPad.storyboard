@@ -886,7 +886,6 @@
         <!--Signed Out Alert View Controller-->
         <scene sceneID="jeo-Km-XpX">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="cgQ-Nl-Fr2" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="SignedOut" id="euh-bw-2gr" customClass="SignedOutAlertViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="sdC-Rn-zrA">
                         <rect key="frame" x="0.0" y="0.0" width="540" height="360"/>
@@ -921,6 +920,7 @@
                         <outlet property="signedOutLabel" destination="K2n-m6-3rI" id="HJd-YA-d87"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cgQ-Nl-Fr2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-5893" y="-983"/>
         </scene>

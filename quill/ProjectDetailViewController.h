@@ -32,6 +32,7 @@
     CGFloat keyboardDiff;
     
     UITapGestureRecognizer *chatTapRecognizer;
+    UITapGestureRecognizer *outsideTapRecognizer;
 }
 
 @property (strong, nonatomic) NSString *projectName;
@@ -54,6 +55,7 @@
 @property BOOL versioning;
 @property BOOL chatOpen;
 @property BOOL showButtons;
+@property BOOL handleOutsideTaps;
 
 @property int userRole;
 @property float chatDiff;
@@ -132,8 +134,9 @@
 -(void) updateCommentCount;
 -(void) createBoard;
 -(void) deleteBoardWithID:(NSString *)boardID;
--(BOOL)canUndo;
--(BOOL)canRedo;
--(BOOL)canClear;
+-(BOOL) canUndo;
+-(BOOL) canRedo;
+-(BOOL) canClear;
+-(void) driveAlert;
 
 @end

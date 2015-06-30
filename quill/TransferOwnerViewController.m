@@ -52,21 +52,13 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     
-    outsideTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside)];
-    
-    [outsideTapRecognizer setDelegate:self];
-    [outsideTapRecognizer setNumberOfTapsRequired:1];
-    outsideTapRecognizer.cancelsTouchesInView = NO;
-    [self.view.window addGestureRecognizer:outsideTapRecognizer];
+    projectVC.handleOutsideTaps = true;
     
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     
-    [super viewWillDisappear:animated];
-    
-    [outsideTapRecognizer setDelegate:nil];
-    [self.view.window removeGestureRecognizer:outsideTapRecognizer];
+    projectVC.handleOutsideTaps = false;
 }
 
 - (IBAction)leaveTapped:(id)sender {
@@ -96,17 +88,6 @@
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];
-}
-
--(void) tappedOutside {
-    
-    if (outsideTapRecognizer.state == UIGestureRecognizerStateEnded) {
-        
-        CGPoint location = [outsideTapRecognizer locationInView:nil];
-        CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
-        
-        if (!CGRectContainsPoint(self.view.frame, converted)) [self dismissViewControllerAnimated:YES completion:nil];
-    }
 }
 
 #pragma mark - Table view data source
@@ -208,20 +189,6 @@
     if ([self.selectedUserID isEqualToString:self.availableUsersDict.allKeys[indexPath.row]]) self.selectedUserID = nil;
     else self.selectedUserID = self.availableUsersDict.allKeys[indexPath.row];
     [tableView reloadData];
-}
-
-#pragma mark - UIGestureRecognizer Delegate
-
-- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-    return YES;
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return YES;
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    return YES;
 }
 
 @end

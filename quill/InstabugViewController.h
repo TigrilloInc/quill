@@ -9,10 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "RoundedButton.h"
 
-@interface InstabugViewController : UIViewController <UIGestureRecognizerDelegate, UITextFieldDelegate> {
-    
-    UITapGestureRecognizer *outsideTapRecognizer;
-}
+@interface InstabugViewController : UIViewController <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet RoundedButton *bugButton;
 @property (weak, nonatomic) IBOutlet RoundedButton *featureButton;

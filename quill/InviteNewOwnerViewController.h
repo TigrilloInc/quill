@@ -9,10 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "RoundedButton.h"
 
-@interface InviteNewOwnerViewController : UIViewController <UIGestureRecognizerDelegate> {
+@interface InviteNewOwnerViewController : UIViewController {
     
     UIImageView *logoImage;
-    UITapGestureRecognizer *outsideTapRecognizer;
 }
 
 @property (weak, nonatomic) IBOutlet UILabel *inviteLabel;

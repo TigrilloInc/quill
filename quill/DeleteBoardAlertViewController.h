@@ -10,9 +10,8 @@
 #import "RoundedButton.h"
 #import "ProjectDetailViewController.h"
 
-@interface DeleteBoardAlertViewController : UIViewController <UIGestureRecognizerDelegate> {
+@interface DeleteBoardAlertViewController : UIViewController {
     
-    UITapGestureRecognizer *outsideTapRecognizer;
     ProjectDetailViewController *projectVC;
 }
 

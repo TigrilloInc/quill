@@ -67,15 +67,8 @@
 
 -(void) viewDidAppear:(BOOL)animated {
     
-    if (!self.creatingTeam) {
-        
-        outsideTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside)];
-        
-        [outsideTapRecognizer setDelegate:self];
-        [outsideTapRecognizer setNumberOfTapsRequired:1];
-        outsideTapRecognizer.cancelsTouchesInView = NO;
-        [self.view.window addGestureRecognizer:outsideTapRecognizer];
-    }
+    if (!self.creatingTeam) projectVC.handleOutsideTaps = true;
+    
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -93,11 +86,7 @@
         [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
     }
     
-    if (!self.creatingTeam) {
-        [outsideTapRecognizer setDelegate:nil];
-        [self.view.window removeGestureRecognizer:outsideTapRecognizer];
-    
-    }
+    projectVC.handleOutsideTaps = false;
     
     [super viewWillDisappear:animated];
 }
@@ -379,17 +368,6 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
--(void)tappedOutside {
-    
-    if (outsideTapRecognizer.state == UIGestureRecognizerStateEnded) {
-        
-        CGPoint location = [outsideTapRecognizer locationInView:nil];
-        CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
-        
-        if (!CGRectContainsPoint(self.view.frame, converted)) [self dismissViewControllerAnimated:YES completion:nil];
-    }
-}
-
 #pragma mark - Text field handling
 
 -(void)textFieldDidBeginEditing:(UITextField *)textField {
@@ -541,18 +519,5 @@
     [UIView setAnimationsEnabled:YES];
 }
 
-#pragma mark - UIGestureRecognizer Delegate
-
-- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-    return YES;
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return YES;
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    return YES;
-}
 
 @end
