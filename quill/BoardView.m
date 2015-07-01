@@ -219,12 +219,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
             button.identiconView.hidden = true;
         }
         
-        NSString *viewedAtString = [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid];
-        NSString *updatedAtString = [[commentDict objectForKey:commentThreadID] objectForKey:@"updatedAt"];
-        
-        if (([updatedAtString doubleValue] > [viewedAtString doubleValue] || updatedAtString == nil) && ![projectVC.viewedCommentThreadIDs containsObject:commentThreadID] && ![projectVC.viewedBoardIDs containsObject:self.boardID]) {
+        if ([[projectVC.updatedElements objectForKey:@"comments"] containsObject:commentThreadID])
             [button.commentImage setImage:[UIImage imageNamed:@"usercomment4.png"]];
-        }
         
         if ([button.userID isEqualToString:[FirebaseHelper sharedHelper].uid]) {
             UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(commentLongPress:)];

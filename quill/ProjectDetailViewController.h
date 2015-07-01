@@ -21,6 +21,8 @@
 
     BOOL newBoardCreated;
 
+    NSString *chatViewedAt;
+    
     UIButton *boardButton;
     UIImageView *carouselFade;
     UIImageView *editFade;
@@ -43,14 +45,11 @@
 @property (strong, nonatomic) NSArray *drawButtons;
 @property (strong, nonatomic) NSMutableArray *boardIDs;
 @property (strong, nonatomic) NSMutableArray *editBoardIDs;
-@property (strong, nonatomic) NSMutableArray *viewedBoardIDs;
-@property (strong, nonatomic) NSMutableArray *editedBoardIDs;
-@property (strong, nonatomic) NSMutableArray *viewedCommentThreadIDs;
 @property (strong, nonatomic) NSMutableArray *messages;
 @property (strong, nonatomic) NSMutableDictionary *roles;
+@property (strong, nonatomic) NSMutableDictionary *updatedElements;
 
 @property BOOL carouselMoving;
-@property BOOL chatViewed;
 @property BOOL erasing;
 @property BOOL versioning;
 @property BOOL chatOpen;
@@ -119,7 +118,7 @@
 
 @property (strong, nonatomic) UIImageView *eraserCursor;
 
--(void) updateDetails:(BOOL)reloadCarousel;
+-(void) updateDetails:(BOOL)differentProject;
 -(void) drawBoard:(BoardView *)boardView;
 -(IBAction) cancelTapped:(id)sender;
 -(IBAction) versionsTapped:(id)sender;

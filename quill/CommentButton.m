@@ -194,6 +194,7 @@
     
     [self.commentImage setImage:[UIImage imageNamed:@"usercomment3.png"]];
     projectVC.erasing = false;
+    [[projectVC.updatedElements objectForKey:@"comments"] removeObject:self.commentThreadID];
     
     for (int i=5; i<=9; i++) {
         

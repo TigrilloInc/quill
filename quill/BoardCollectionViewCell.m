@@ -29,7 +29,7 @@
         self.boardView.center = self.center;
         [self.contentView addSubview:self.boardView];
         
-        self.gradientImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"board8.png"]];
+        self.gradientImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"board-versions1.png"]];
         self.gradientImage.center = self.center;
         self.gradientImage.transform = tr;
         [self.contentView addSubview:self.gradientImage];

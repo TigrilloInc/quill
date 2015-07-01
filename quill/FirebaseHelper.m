@@ -42,8 +42,9 @@ static FirebaseHelper *sharedHelper = nil;
         sharedHelper.comments = [NSMutableDictionary dictionary];
         sharedHelper.visibleProjectIDs = [NSMutableArray array];
         sharedHelper.loadedBoardIDs = [NSMutableArray array];
+        sharedHelper.loadedProjectIDs = [NSMutableArray array];
         sharedHelper.loadedUsers = [NSMutableDictionary dictionary];
-
+        
         sharedHelper.projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     }
     return sharedHelper;
@@ -779,8 +780,9 @@ static FirebaseHelper *sharedHelper = nil;
     [self.projectVC.masterView addSubview:self.projectVC.masterView.avatarButton];
     [self.projectVC.chatView addSubview:self.projectVC.chatAvatar];
     self.projectVC.chatAvatar.hidden = true;
-    
+
     [self.projectVC.masterView.projectsTable reloadData];
+    [self.projectVC.masterView.projectsTable selectRowAtIndexPath:self.projectVC.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
     
     if (self.projectVC.masterView.defaultRow.row != [FirebaseHelper sharedHelper].visibleProjectIDs.count)
         [self.projectVC.masterView tableView:self.projectVC.masterView.projectsTable didSelectRowAtIndexPath:self.projectVC.masterView.defaultRow];
@@ -891,6 +893,7 @@ static FirebaseHelper *sharedHelper = nil;
             else {
                 
                 [self.projectVC.masterView.projectsTable reloadData];
+                [self.projectVC.masterView.projectsTable selectRowAtIndexPath:self.projectVC.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
                 
                 if (self.visibleProjectIDs.count > 0) {
                     
@@ -1037,7 +1040,7 @@ static FirebaseHelper *sharedHelper = nil;
             
             if (versionsArray.count < 10) {
                 
-                NSString *boardString = [NSString stringWithFormat:@"board-versions%i.png", versionsArray.count];
+                NSString *boardString = [NSString stringWithFormat:@"board-versions%lu.png", (unsigned long)versionsArray.count];
                 [boardView.gradientButton setBackgroundImage:[UIImage imageNamed:boardString] forState:UIControlStateNormal];
             }
             else if (versionsArray.count >= 10) {
@@ -1090,21 +1093,6 @@ static FirebaseHelper *sharedHelper = nil;
     [[ref childByAppendingPath:@"updatedAt"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         [[self.boards objectForKey:boardID] setObject:snapshot.value forKey:@"updatedAt"];
-        
-        if ([self.projectVC.viewedBoardIDs containsObject:boardID]) [self.projectVC.viewedBoardIDs removeObject:boardID];
-        
-        if (self.projectVC.carousel.currentItemIndex == [self.projectVC.boardIDs indexOfObject:boardID] && self.projectVC.currentBoardView == nil) {
-
-            if ([self.projectVC.editedBoardIDs containsObject:boardID]) [self.projectVC.editedBoardIDs removeObject:boardID];
-            
-            else {
-                
-                self.projectVC.boardNameLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:24];
-                [self.projectVC.boardNameLabel sizeToFit];
-                self.projectVC.boardNameLabel.center = CGPointMake(self.projectVC.carousel.center.x, self.projectVC.boardNameLabel.center.y);
-                self.projectVC.boardNameEditButton.center = CGPointMake(self.projectVC.carousel.center.x+self.projectVC.boardNameLabel.frame.size.width/2+17, self.projectVC.boardNameLabel.center.y);
-            }
-        }
     }];
 }
 
@@ -1284,11 +1272,11 @@ static FirebaseHelper *sharedHelper = nil;
                 }
             }
             
-            if ([projectID isEqualToString:self.currentProjectID] && !self.projectVC.chatOpen) self.projectVC.chatViewed = false;
-            
-            [self.projectVC updateMessages];
-            [self.projectVC.chatTable reloadData];
-            if (self.projectVC.chatOpen) [self.projectVC updateChatHeight];
+            if ([projectID isEqualToString:self.currentProjectID]) {
+                [self.projectVC updateMessages];
+                [self.projectVC.chatTable reloadData];
+                if (self.projectVC.chatOpen) [self.projectVC updateChatHeight];
+            }
         }
     }];
 }
@@ -1472,8 +1460,6 @@ static FirebaseHelper *sharedHelper = nil;
     [[ref childByAppendingPath:@"updatedAt"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         [threadDict setObject:snapshot.value forKey:@"updatedAt"];
-        
-        if ([self.projectVC.viewedCommentThreadIDs containsObject:commentThreadID] && ![self.projectVC.activeCommentThreadID isEqualToString:commentThreadID]) [self.projectVC.viewedCommentThreadIDs removeObject:commentThreadID];
         
         if ([self.projectVC.boardIDs containsObject:boardID]) {
             

@@ -31,6 +31,7 @@
 @property (strong, nonatomic) NSMutableDictionary *comments;
 @property (strong, nonatomic) NSString *currentProjectID;
 @property (strong, nonatomic) NSMutableArray *visibleProjectIDs;
+@property (strong, nonatomic) NSMutableArray *loadedProjectIDs;
 @property (strong, nonatomic) NSMutableArray *loadedBoardIDs;
 @property (strong, nonatomic) NSMutableDictionary *loadedUsers;
 @property (strong, nonatomic) NSDictionary *invitedProject;

@@ -166,10 +166,7 @@
         projectVC.roles = [projectDict objectForKey:@"roles"];
         projectVC.userRole = [[projectVC.roles objectForKey:[FirebaseHelper sharedHelper].uid] intValue];
         projectVC.boardNameLabel.text = nil;
-        projectVC.chatViewed = false;
-        projectVC.viewedBoardIDs = [NSMutableArray array];
-        projectVC.editedBoardIDs = [NSMutableArray array];
-   
+        
         if (projectVC.versioning) [projectVC versionsTapped:nil];
         
         BOOL differentProject = false;
@@ -180,21 +177,49 @@
         [[FirebaseHelper sharedHelper] setInProject:projectID];
         [[FirebaseHelper sharedHelper] observeCurrentProjectBoards];
         
+        if (differentProject) {
+    
+            projectVC.updatedElements = [@{ @"boards" : [NSMutableArray array],
+                                            @"comments" : [NSMutableArray array]
+                                           } mutableCopy];
+            
+            NSString *viewedAtString = [[[[FirebaseHelper sharedHelper].projects objectForKey:projectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid];
+            
+            for (NSString *boardID in [projectDict objectForKey:@"boards"]) {
+                
+                NSString *boardUpdatedAtString = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"updatedAt"];
+
+                if ([boardUpdatedAtString doubleValue] > [viewedAtString doubleValue] || (!boardUpdatedAtString && [[FirebaseHelper sharedHelper].loadedProjectIDs containsObject:projectID])) [[projectVC.updatedElements objectForKey:@"boards"] addObject:boardID];
+                
+                NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"commentsID"];
+                
+                for (NSString *commentThreadID in [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] allKeys]) {
+                    
+                    NSString *commentUpdatedAtString = [[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:commentThreadID] objectForKey:@"updatedAt"];
+
+                    if ([commentUpdatedAtString doubleValue] > [viewedAtString doubleValue]) [[projectVC.updatedElements objectForKey:@"comments"] addObject:commentThreadID];
+                }
+            }
+        
+            [self.projectsTable reloadData];
+            [self.projectsTable selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+        }
+        
         [projectVC updateDetails:differentProject];
         [projectVC cancelTapped:nil];
         projectVC.showButtons = true;
+        if (![[FirebaseHelper sharedHelper].loadedProjectIDs containsObject:projectID]) [[FirebaseHelper sharedHelper].loadedProjectIDs addObject:projectID];
         if ([projectVC.chatTextField isFirstResponder]) [projectVC.chatTextField resignFirstResponder];
-        if (differentProject && projectVC.activeBoardID == nil) [projectVC.carousel scrollToItemAtIndex:projectVC.carousel.numberOfItems-1 duration:0];
-    }
-    
-    [self.projectsTable reloadData];
-    [self.projectsTable selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
-    
-    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"projectTutorial"]) {
+        if (projectVC.activeBoardID == nil && differentProject) [projectVC.carousel scrollToItemAtIndex:projectVC.carousel.numberOfItems-1 duration:0];
         
-        projectVC.tutorialView.type = 1;
-        [projectVC.view bringSubviewToFront:projectVC.tutorialView];
-        [projectVC.tutorialView updateTutorial];
+        [[FirebaseHelper sharedHelper] setProjectViewedAt];
+        
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"projectTutorial"]) {
+            
+            projectVC.tutorialView.type = 1;
+            [projectVC.view bringSubviewToFront:projectVC.tutorialView];
+            [projectVC.tutorialView updateTutorial];
+        }
     }
 }
 

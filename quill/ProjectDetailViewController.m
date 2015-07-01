@@ -85,8 +85,6 @@
     self.masterView.projectsTable.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"projectsshadow.png"]];
 
     self.editBoardNameTextField.hidden = true;
-    self.viewedCommentThreadIDs = [NSMutableArray array];
-    
     self.eraserCursor = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"eraser.png"]];
     self.eraserCursor.hidden = true;
     self.eraserCursor.frame = CGRectMake(0, 0, 62, 62);
@@ -419,7 +417,7 @@
     self.editing = false;
 }
 
--(void) updateDetails:(BOOL)reloadCarousel {
+-(void) updateDetails:(BOOL)differentProject {
     
     self.chatTextField.hidden = false;
     self.sendMessageButton.hidden = false;
@@ -456,10 +454,13 @@
     [projectNameButton setTitle:self.projectName forState:UIControlStateNormal];
     [projectNameButton sizeToFit];
     
-    [self updateMessages];
-    [self.chatTable reloadData];
-    if (reloadCarousel) [self.carousel reloadData];
-    [self.draggableCollectionView reloadData];
+    if (differentProject) {
+        chatViewedAt = nil;
+        [self updateMessages];
+        [self.chatTable reloadData];
+        [self.carousel reloadData];
+        [self.draggableCollectionView reloadData];
+    }
     
     [self layoutAvatars];
 
@@ -501,23 +502,36 @@
     }
     
     NSString *viewedAt = [[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid];
-    
     if (!viewedAt) viewedAt = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
-    [self.messages addObject:viewedAt];
+    if (!chatViewedAt) chatViewedAt = viewedAt;
+    
+    [self.messages addObject:chatViewedAt];
     
     NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
     [self.messages sortUsingDescriptors:@[sorter]];
     
-    if ([self.messages.lastObject isEqualToString:viewedAt] || [self.messages.firstObject isEqualToString:viewedAt] || (!self.activeCommentThreadID && self.chatViewed) || ([self.viewedCommentThreadIDs containsObject:self.activeCommentThreadID])) {
+    if ([self.messages.lastObject isEqualToString:chatViewedAt] && !self.activeCommentThreadID) {
+        [self.updatedElements setObject:@1 forKey:@"chat"];
+    }
+    
+    if ((!self.activeCommentThreadID && [self.updatedElements objectForKey:@"chat"]) || self.activeCommentThreadID) {
         
-        [self.messages removeObject:viewedAt];
+        [self.messages removeObject:chatViewedAt];
+        
         if (![self.chatTextField isFirstResponder]) {
+            
             CGPoint chatCenter = self.chatOpenButton.center;
             self.chatOpenButton.frame = CGRectMake(0, 0, 51, 28);
             self.chatOpenButton.center = chatCenter;
             if (self.chatOpen) [self.chatOpenButton setImage:[UIImage imageNamed:@"down.png"] forState:UIControlStateNormal];
             else [self.chatOpenButton setImage:[UIImage imageNamed:@"up.png"] forState:UIControlStateNormal];
         }
+    }
+    else if (![self.chatTextField isFirstResponder]) {
+        
+        self.chatOpenButton.frame = CGRectMake(0, 0, 150, 31);
+        self.chatOpenButton.center = CGPointMake(617.9, 598);
+        [self.chatOpenButton setImage:[UIImage imageNamed:@"newmessages.png"] forState:UIControlStateNormal];
     }
     
     for (NSString *messageID in messageKeys) {
@@ -533,16 +547,8 @@
         
         for (int i=0; i<self.messages.count; i++) {
             
-            if ([viewedAt isEqualToString:self.messages[i]]) {
-                
+            if ([viewedAt isEqualToString:self.messages[i]])
                 [self.messages replaceObjectAtIndex:i withObject:@"new messages"];
-                if (!self.chatViewed && ![self.chatTextField isFirstResponder]) {
-                    
-                    self.chatOpenButton.frame = CGRectMake(0, 0, 150, 31);
-                    self.chatOpenButton.center = CGPointMake(617.9, 598);
-                    [self.chatOpenButton setImage:[UIImage imageNamed:@"newmessages.png"] forState:UIControlStateNormal];
-                }
-            }
             
             else if ([date isEqualToString:self.messages[i]]) {
                 
@@ -739,7 +745,6 @@
         [[currentBoardDict objectForKey:@"versions"] addObject:boardID];
         
         [[FirebaseHelper sharedHelper] setBoard:self.boardIDs[self.carousel.currentItemIndex] UpdatedAt:dateString];
-        [self.editedBoardIDs addObject:self.boardIDs[self.carousel.currentItemIndex]];
     }
     else {
         
@@ -798,7 +803,6 @@
     }];
     
     [[FirebaseHelper sharedHelper].boards setObject:[boardDict mutableCopy] forKey:boardID];
-    [self.viewedBoardIDs addObject:boardID];
     [[FirebaseHelper sharedHelper].loadedBoardIDs addObject:boardID];
 
     [[FirebaseHelper sharedHelper] setProjectUpdatedAt:dateString];
@@ -1108,8 +1112,11 @@
     [self hideDrawMenu];
     
     NSString *boardID = self.activeBoardID;
-    if (![self.viewedBoardIDs containsObject:boardID]) [self.viewedBoardIDs addObject:boardID];
-    if (![self.viewedBoardIDs containsObject:self.boardIDs[self.carousel.currentItemIndex]]) [self.viewedBoardIDs addObject:self.boardIDs[self.carousel.currentItemIndex]];
+    [[self.updatedElements objectForKey:@"boards"] removeObject:boardID];
+    NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"commentsID"];
+    for (NSString *commentThreadID in [[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] allKeys]) {
+        [[self.updatedElements objectForKey:@"comments"] removeObject:commentThreadID];
+    }
     self.activeBoardID = nil;
     self.activeCommentThreadID = nil;
     
@@ -1174,7 +1181,7 @@
                          if  (self.userRole > 0) self.deleteBoardButton.hidden = false;
                          self.versionsButton.hidden = false;
                          NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"versions"];
-                         if (versionsArray.count > 1) self.versionsCountLabel.text = [NSString stringWithFormat:@"%lu", versionsArray.count];
+                         if (versionsArray.count > 1) self.versionsCountLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)versionsArray.count];
                          else self.versionsCountLabel.text = @"";
                          if (!self.versioning) self.versionsCountLabel.hidden = false;
                          self.buttonsBackgroundImage.hidden = false;
@@ -2046,7 +2053,7 @@
     
     if (!self.activeBoardID) {
         
-        self.chatViewed = true;
+        [self.updatedElements setObject:@1 forKey:@"chat"];
         
         if ([self.chatTextField isFirstResponder]) [self.chatTextField resignFirstResponder];
         else if (self.userRole > 0) [self.chatTextField becomeFirstResponder];
@@ -2288,7 +2295,6 @@
         
         self.chatTextField.text = nil;
         
-        if (self.activeCommentThreadID) [self.viewedCommentThreadIDs addObject:self.activeCommentThreadID];
         self.activeCommentThreadID = nil;
         
         keyboardDiff = 517-self.keyboardHeight;
@@ -2438,7 +2444,6 @@
             
             NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
             [[FirebaseHelper sharedHelper] setBoard:self.boardIDs[self.carousel.currentItemIndex] UpdatedAt:dateString];
-            [self.editedBoardIDs addObject:self.boardIDs[self.carousel.currentItemIndex]];
         }
     }
     
@@ -2499,7 +2504,6 @@
                 
                 NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
                 [[FirebaseHelper sharedHelper] setBoard:self.activeBoardID UpdatedAt:dateString];
-                [self.editedBoardIDs addObject:self.activeBoardID];
             }
         }
         
@@ -2747,17 +2751,10 @@
             else self.boardNameLabel.alpha = 1;
         }
         
-        double viewedAt = [[[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"viewedAt"] objectForKey:[FirebaseHelper sharedHelper].uid] doubleValue];
-        double updatedAt = [[boardDict objectForKey:@"updatedAt"] doubleValue];
-        
         UIFont *labelFont;
-        
-        if (updatedAt > viewedAt && ![self.viewedBoardIDs containsObject:boardID] && !newBoardCreated && ![self.editedBoardIDs containsObject:boardID]) {
-            
-            labelFont = [UIFont fontWithName:@"SourceSansPro-Semibold" size:24];
-        }
-        else
-            labelFont = [UIFont fontWithName:@"SourceSansPro-Light" size:24];
+
+        if ([[self.updatedElements objectForKey:@"boards"] containsObject:boardID]) labelFont = [UIFont fontWithName:@"SourceSansPro-Semibold" size:24];
+        else labelFont = [UIFont fontWithName:@"SourceSansPro-Light" size:24];
         
         self.boardNameLabel.font = labelFont;
         [self.boardNameLabel sizeToFit];
