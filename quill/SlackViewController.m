@@ -234,7 +234,9 @@
                 }
             }
             
-            NSDictionary *channelDict = @{ channelID : sortedNames[i] };
+            NSString *channelName = [NSString stringWithFormat:@"#%@", sortedNames[i]];
+            
+            NSDictionary *channelDict = @{ channelID : channelName };
             
             [[ShareHelper sharedHelper].slackChannels addObject:channelDict];
         }

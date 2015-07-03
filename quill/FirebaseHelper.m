@@ -41,8 +41,8 @@ static FirebaseHelper *sharedHelper = nil;
         sharedHelper.chats = [NSMutableDictionary dictionary];
         sharedHelper.comments = [NSMutableDictionary dictionary];
         sharedHelper.visibleProjectIDs = [NSMutableArray array];
+        sharedHelper.viewedProjectIDs = [NSMutableArray array];
         sharedHelper.loadedBoardIDs = [NSMutableArray array];
-        sharedHelper.loadedProjectIDs = [NSMutableArray array];
         sharedHelper.loadedUsers = [NSMutableDictionary dictionary];
         
         sharedHelper.projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;

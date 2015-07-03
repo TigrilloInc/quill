@@ -64,11 +64,11 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         
         self.leaveCommentLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         self.leaveCommentLabel.userInteractionEnabled = NO;
-        self.leaveCommentLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:48];
+        self.leaveCommentLabel.font = [UIFont fontWithName:@"SourceSansPro-LightIt" size:48];
         self.leaveCommentLabel.textColor = [UIColor lightGrayColor];
         self.leaveCommentLabel.transform = CGAffineTransformMakeRotation(-M_PI_2);
         self.leaveCommentLabel.textAlignment = NSTextAlignmentCenter;
-        self.leaveCommentLabel.text = @"Tap anywhere to leave a comment...";
+        self.leaveCommentLabel.text = @"tap anywhere to leave a comment...";
         [self.leaveCommentLabel sizeToFit];
         self.leaveCommentLabel.center = CGPointMake(self.center.x-20, self.center.y);
         self.leaveCommentLabel.alpha = .75;

@@ -189,7 +189,7 @@
                 
                 NSString *boardUpdatedAtString = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"updatedAt"];
 
-                if ([boardUpdatedAtString doubleValue] > [viewedAtString doubleValue] || (!boardUpdatedAtString && [[FirebaseHelper sharedHelper].loadedProjectIDs containsObject:projectID])) [[projectVC.updatedElements objectForKey:@"boards"] addObject:boardID];
+                if ([boardUpdatedAtString doubleValue] > [viewedAtString doubleValue] || (!boardUpdatedAtString && [[FirebaseHelper sharedHelper].viewedProjectIDs containsObject:projectID])) [[projectVC.updatedElements objectForKey:@"boards"] addObject:boardID];
                 
                 NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"commentsID"];
                 
@@ -208,7 +208,7 @@
         [projectVC updateDetails:differentProject];
         [projectVC cancelTapped:nil];
         projectVC.showButtons = true;
-        if (![[FirebaseHelper sharedHelper].loadedProjectIDs containsObject:projectID]) [[FirebaseHelper sharedHelper].loadedProjectIDs addObject:projectID];
+        if (![[FirebaseHelper sharedHelper].viewedProjectIDs containsObject:projectID]) [[FirebaseHelper sharedHelper].viewedProjectIDs addObject:projectID];
         if ([projectVC.chatTextField isFirstResponder]) [projectVC.chatTextField resignFirstResponder];
         if (projectVC.activeBoardID == nil && differentProject) [projectVC.carousel scrollToItemAtIndex:projectVC.carousel.numberOfItems-1 duration:0];
         

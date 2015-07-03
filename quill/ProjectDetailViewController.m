@@ -1316,7 +1316,7 @@
     self.versioning = false;
     self.versionsLabel.hidden = false;
     self.versionsLabel.alpha = .3;
-    self.versionsLabel.text = @"Press and hold on boards to rearrange them.";
+    self.versionsLabel.text = @"press and hold on boards to rearrange them";
     self.upArrowImage.hidden = true;
     self.downArrowImage.hidden = true;
     self.draggableCollectionView.hidden = false;
