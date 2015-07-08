@@ -49,12 +49,12 @@
     
     if (button.tag == 0) {
         
-        for (int i=5; i<=9; i++) {
+        for (int i=6; i<=10; i++) {
             
-            if (i==7) continue;
+            if (i==8) continue;
             
             UIView *button = [projectVC.view viewWithTag:i];
-            if (i==9) [button viewWithTag:50].hidden = false;
+            if (i==10) [button viewWithTag:50].hidden = false;
             else [button viewWithTag:50].hidden = true;
         }
         

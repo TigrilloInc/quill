@@ -52,6 +52,8 @@
 
 -(void) updateSubpathsForBoardID:(NSString *)boardID {
     
+    self.boardView.shapeRect = CGRectNull;
+    
     self.boardView.drawingBoard = true;
     
     [self.boardView clear];

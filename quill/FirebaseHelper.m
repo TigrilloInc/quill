@@ -1141,7 +1141,7 @@ static FirebaseHelper *sharedHelper = nil;
             
             NSArray *versionsArray = [[self.boards objectForKey:self.projectVC.boardIDs[self.projectVC.carousel.currentItemIndex]] objectForKey:@"versions"];
             
-            if ([versionsArray containsObject:boardID]) {
+            if ([versionsArray containsObject:boardID] && ![self.projectVC.boardIDs containsObject:boardID]) {
                 
                 NSInteger boardIndex = [versionsArray indexOfObject:boardID];
                 BoardView *boardView = (BoardView *)[self.projectVC.versionsCarousel itemViewAtIndex:boardIndex];
@@ -1152,7 +1152,10 @@ static FirebaseHelper *sharedHelper = nil;
                 }
                 else {
                     
-                    if([snapshot.value respondsToSelector:@selector(objectForKey:)]) [boardView drawSubpath:snapshot.value];
+                    if([snapshot.value respondsToSelector:@selector(objectForKey:)]) {
+                         NSLog(@"draw 2");
+                        [boardView drawSubpath:snapshot.value];
+                    }
                     else [boardView drawSubpath:@{snapshot.key : snapshot.value}];
                     
                     [boardView addUserDrawing:userID];

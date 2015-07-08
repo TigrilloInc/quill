@@ -19,6 +19,7 @@
 #import "AvatarPopoverViewController.h"
 #import "ColorPopoverViewController.h"
 #import "PenTypePopoverViewController.h"
+#import "ShapePopoverViewController.h"
 #import "CommentPopoverViewController.h"
 #import "SharePopoverViewController.h"
 #import "InstabugViewController.h"
@@ -205,6 +206,7 @@
     self.drawButtons = @[ @"undo",
                           @"redo",
                           @"clear",
+                          @"shape",
                           @"pen",
                           @"erase",
                           @"color",
@@ -216,17 +218,17 @@
         
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         NSString *imageName;
-        if (i==5) imageName = @"black.png";
+        if (i==6) imageName = @"black.png";
         else imageName = [NSString stringWithFormat:@"%@.png",self.drawButtons[i]];
         UIImage *buttonImage = [UIImage imageNamed:imageName];
-        if (i>2 && i!=5 && i!=6) {
+        if (i>2 && i!=6 && i!=7) {
             UIImageView *selectedImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"selected.png"]];
             selectedImage.frame = CGRectMake(-7.5, -7.5, 75, 75);
             selectedImage.tag = 50;
             [button addSubview:selectedImage];
-            if (i!=3) selectedImage.hidden = true;
+            if (i!=4) selectedImage.hidden = true;
         }
-        if (i==7) {
+        if (i==8) {
             
             UILabel *commentCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(-7.5, -11, 75, 75)];
             commentCountLabel.textAlignment = NSTextAlignmentCenter;
@@ -236,7 +238,7 @@
         }
         button.frame = CGRectMake(0, 0, 60, 60);
         [button setBackgroundImage:buttonImage forState:UIControlStateNormal];
-        button.center = CGPointMake(232+i*80, 720);
+        button.center = CGPointMake(172+i*85, 720);
         [button addTarget:self action:NSSelectorFromString([NSString stringWithFormat:@"%@Tapped:", self.drawButtons[i]]) forControlEvents:UIControlEventTouchUpInside];
         button.hidden = true;
         [self.view addSubview:button];
@@ -283,7 +285,7 @@
             if (i==0 && ![self canUndo]) button.alpha = .3;
             else if (i==1 && ![self canRedo]) button.alpha = .3;
             else if (i==2 && ![self canClear]) button.alpha = .3;
-            else if (i==6 && !self.currentBoardView.gridOn) button.alpha = .3;
+            else if (i==7 && !self.currentBoardView.gridOn) button.alpha = .3;
         }
         
         [self updateCommentCount];
@@ -857,8 +859,10 @@
 
 -(void) drawBoard:(BoardView *)boardView {
     
+    boardView.shapeRect = CGRectNull;
+    
     [boardView clear];
-
+    
     boardView.drawingBoard = true;
     
     NSDictionary *subpathsDict = [[[FirebaseHelper sharedHelper].boards objectForKey:boardView.boardID] objectForKey:@"subpaths"];
@@ -996,15 +1000,17 @@
     [self.currentBoardView layoutAvatars];
     
     self.currentBoardView.lineColorNumber = @1;
-    [(UIButton *)[self.view viewWithTag:7] setBackgroundImage:[UIImage imageNamed:@"black.png"] forState:UIControlStateNormal];
+    [(UIButton *)[self.view viewWithTag:8] setBackgroundImage:[UIImage imageNamed:@"black.png"] forState:UIControlStateNormal];
     self.currentBoardView.penType = 1;
-    [(UIButton *)[self.view viewWithTag:5] setBackgroundImage:[UIImage imageNamed:@"pen.png"] forState:UIControlStateNormal];
+    [(UIButton *)[self.view viewWithTag:6] setBackgroundImage:[UIImage imageNamed:@"pen.png"] forState:UIControlStateNormal];
+    self.currentBoardView.shapeType = 1;
+    [(UIButton *)[self.view viewWithTag:5] setBackgroundImage:[UIImage imageNamed:@"shape.png"] forState:UIControlStateNormal];
     self.erasing = false;
-    for (int i=5; i<=9; i++) {
-        if (i==7) continue;
+    for (int i=6; i<=10; i++) {
+        if (i==8) continue;
         UIView *button = [self.view viewWithTag:i];
-        if (i==5) [button viewWithTag:50].hidden = false;
-        else if (i==8) button.alpha = .3;
+        if (i==6) [button viewWithTag:50].hidden = false;
+        else if (i==9) button.alpha = .3;
         else [button viewWithTag:50].hidden = true;
     }
     
@@ -1097,6 +1103,7 @@
     boardButton.hidden = false;
     self.currentBoardView.gridOn = false;
     self.currentBoardView.commenting = false;
+    //self.currentBoardView.shaping = false;
     self.currentBoardView.fadeView.hidden = true;
     self.currentBoardView.leaveCommentLabel.hidden = true;
     self.chatOpen = false;
@@ -1667,8 +1674,40 @@
     [self.currentBoardView addUserDrawing:[FirebaseHelper sharedHelper].uid];
 }
 
+-(void) shapeTapped:(id)sender {
+    
+    self.erasing = false;
+    self.currentBoardView.commenting = false;
+    self.currentBoardView.leaveCommentLabel.hidden = true;
+    self.currentBoardView.fadeView.hidden = true;
+    
+    UIButton *shapeButton = (UIButton *)sender;
+    
+    ShapePopoverViewController *shapePopover = [[ShapePopoverViewController alloc] init];
+    
+    [shapePopover setModalPresentationStyle:UIModalPresentationPopover];
+    
+    UIPopoverPresentationController *popover = [shapePopover popoverPresentationController];
+    popover.sourceView = shapeButton;
+    popover.sourceRect = shapeButton.bounds;
+    popover.backgroundColor = nil;
+    popover.permittedArrowDirections = UIPopoverArrowDirectionDown;
+    
+    [self presentViewController:shapePopover animated:NO completion:nil];
+    
+    for (int i=6; i<=10; i++) {
+        
+        if (i==8 || i==9) continue;
+        
+        UIView *button = [self.view viewWithTag:i];
+        if (i==6) [button viewWithTag:50].hidden = false;
+        else [button viewWithTag:50].hidden = true;
+    }
+}
+
 -(void) eraseTapped:(id)sender {
 
+    //self.currentBoardView.shaping = false;
     self.currentBoardView.commenting = false;
     self.currentBoardView.leaveCommentLabel.hidden = true;
     self.currentBoardView.fadeView.hidden = true;
@@ -1676,12 +1715,12 @@
     
     [self.view bringSubviewToFront:self.eraserCursor];
     
-    for (int i=5; i<=9; i++) {
+    for (int i=6; i<=10; i++) {
         
-        if (i==7 || i==8) continue;
+        if (i==8 || i==9) continue;
         
         UIView *button = [self.view viewWithTag:i];
-        if (i==6) [button viewWithTag:50].hidden = false;
+        if (i==7) [button viewWithTag:50].hidden = false;
         else [button viewWithTag:50].hidden = true;
     }
 }
@@ -1711,6 +1750,7 @@
 -(void) penTapped:(id)sender {
     
     self.erasing = false;
+    //self.currentBoardView.shaping = false;
     self.currentBoardView.commenting = false;
     self.currentBoardView.leaveCommentLabel.hidden = true;
     self.currentBoardView.fadeView.hidden = true;
@@ -1732,12 +1772,12 @@
         [self presentViewController:penTypePopover animated:NO completion:nil];
     }
     
-    for (int i=5; i<=9; i++) {
+    for (int i=6; i<=10; i++) {
         
-        if (i==7 || i==8) continue;
+        if (i==8 || i==9) continue;
         
         UIView *button = [self.view viewWithTag:i];
-        if (i==5) [button viewWithTag:50].hidden = false;
+        if (i==6) [button viewWithTag:50].hidden = false;
         else [button viewWithTag:50].hidden = true;
     }
 }
@@ -1746,8 +1786,8 @@
     
     self.currentBoardView.gridOn = !self.currentBoardView.gridOn;
     
-    if (self.currentBoardView.gridOn) [self.view viewWithTag:8].alpha = 1;
-    else [self.view viewWithTag:8].alpha = .3;
+    if (self.currentBoardView.gridOn) [self.view viewWithTag:9].alpha = 1;
+    else [self.view viewWithTag:9].alpha = .3;
     
     NSArray *boardIDs;
     iCarousel *carousel;
@@ -1784,12 +1824,12 @@
     
     if (commentCount == 0) {
         
-        for (int i=5; i<=9; i++) {
+        for (int i=6; i<=10; i++) {
             
-            if (i==7) continue;
+            if (i==8) continue;
             
             UIView *button = [self.view viewWithTag:i];
-            if (i==9) [button viewWithTag:50].hidden = false;
+            if (i==10) [button viewWithTag:50].hidden = false;
             else [button viewWithTag:50].hidden = true;
         }
         
@@ -2810,6 +2850,7 @@
         if (textField.text.length == 0) return NO;
         
         NSString *chatString;
+        NSMutableDictionary *chatDict;
         NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
         
         if (self.activeCommentThreadID != nil) {
@@ -2823,6 +2864,8 @@
             
             NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"commentsID"];
             chatString = [NSString stringWithFormat:@"https://%@.firebaseio.com/comments/%@/%@/messages", [FirebaseHelper sharedHelper].db, commentsID, self.activeCommentThreadID];
+            
+            chatDict = [[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] objectForKey:@"messages"];
             [[FirebaseHelper sharedHelper] setCommentThread:self.activeCommentThreadID updatedAt:dateString];
         }
         else {
@@ -2834,6 +2877,7 @@
                     }];
             
             chatString = [NSString stringWithFormat:@"https://%@.firebaseio.com/chats/%@", [FirebaseHelper sharedHelper].db, self.chatID];
+            chatDict = [[FirebaseHelper sharedHelper].chats objectForKey:self.chatID];
             [[FirebaseHelper sharedHelper] setProjectUpdatedAt:dateString];
         }
         
@@ -2842,7 +2886,15 @@
                                        @"message" : textField.text,
                                        @"sentAt" : dateString
                                        };
-        [[chatRef childByAutoId] setValue:messageDict];
+        Firebase *messageRef = [chatRef childByAutoId];
+        [messageRef setValue:messageDict];
+
+        NSMutableDictionary *unsentDict = [messageDict mutableCopy];
+        [unsentDict setObject:@1 forKey:@"unsent"];
+        [chatDict setObject:unsentDict forKey:messageRef.key];
+        
+        [self updateMessages];
+        [self.chatTable reloadData];
         
         self.chatTextField.text = nil;
     }
@@ -2857,6 +2909,8 @@
         NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"commentsID"];
         [[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] objectForKey:self.activeCommentThreadID] setObject:self.commentTitleTextField.text forKey:@"title"];
 
+        [self.currentBoardView layoutComments];
+        
         NSString *titleString = [NSString stringWithFormat:@"https://%@.firebaseio.com/comments/%@/%@/info/title", [FirebaseHelper sharedHelper].db, commentsID, self.activeCommentThreadID];
         Firebase *titleRef = [[Firebase alloc] initWithUrl:titleString];
         [titleRef setValue:self.commentTitleTextField.text];
@@ -2964,7 +3018,6 @@
             NSDate *date = [NSDate dateWithTimeIntervalSince1970:dateDouble];
             NSString *dateString = [dateFormatter stringFromDate:date];
 
-            
             AvatarButton *avatar = [AvatarButton buttonWithType:UIButtonTypeCustom];
             avatar.userID = userID;
             avatar.userInteractionEnabled = false;
@@ -3018,6 +3071,7 @@
             CGRect messageRect = [message boundingRectWithSize:CGSizeMake(-66+self.chatTable.frame.size.width,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Light" size:20]} context:nil];
             messageLabel.frame = CGRectMake(57, 18, messageRect.size.width, messageRect.size.height);
             messageLabel.tag = 204;
+            if ([messageDict objectForKey:@"unsent"]) messageLabel.alpha = .3;
             [cell.contentView addSubview:messageLabel];
         }
         

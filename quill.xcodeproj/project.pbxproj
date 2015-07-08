@@ -165,7 +165,6 @@
 		12CE896A1A70A24F00983FBE /* feather.png in Resources */ = {isa = PBXBuildFile; fileRef = 12CE89691A70A24F00983FBE /* feather.png */; };
 		12CE89771A75E85600983FBE /* TeamSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12CE89761A75E85600983FBE /* TeamSettingsViewController.m */; };
 		12D5DB971A48F167003727AC /* marker.png in Resources */ = {isa = PBXBuildFile; fileRef = 12D5DB951A48F167003727AC /* marker.png */; };
-		12D5DB981A48F167003727AC /* markerselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 12D5DB961A48F167003727AC /* markerselected.png */; };
 		12D5DBA11A48F173003727AC /* pen.png in Resources */ = {isa = PBXBuildFile; fileRef = 12D5DB9F1A48F172003727AC /* pen.png */; };
 		12D5DBA21A48F173003727AC /* penselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 12D5DBA01A48F172003727AC /* penselected.png */; };
 		12D5DBA51A48F20B003727AC /* highlighter.png in Resources */ = {isa = PBXBuildFile; fileRef = 12D5DBA31A48F20B003727AC /* highlighter.png */; };
@@ -205,6 +204,10 @@
 		F342593D1B28D7E7000ABCB3 /* commenttutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = F342593C1B28D7E7000ABCB3 /* commenttutorial.png */; };
 		F342D12A1B391CCD00642F76 /* drive-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = F342D1281B391CCD00642F76 /* drive-highlighted.png */; };
 		F342D12B1B391CCD00642F76 /* drive.png in Resources */ = {isa = PBXBuildFile; fileRef = F342D1291B391CCD00642F76 /* drive.png */; };
+		F3452FF11B4CD0B900342680 /* shape.png in Resources */ = {isa = PBXBuildFile; fileRef = F3452FF01B4CD0B900342680 /* shape.png */; };
+		F3452FFD1B4CE01500342680 /* ShapePopoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F3452FFC1B4CE01500342680 /* ShapePopoverViewController.m */; };
+		F34530001B4CF3A500342680 /* ellipse.png in Resources */ = {isa = PBXBuildFile; fileRef = F3452FFE1B4CF3A500342680 /* ellipse.png */; };
+		F34530011B4CF3A500342680 /* line.png in Resources */ = {isa = PBXBuildFile; fileRef = F3452FFF1B4CF3A500342680 /* line.png */; };
 		F34EDFEB1B224A8100641E7C /* slack-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = F34EDFE91B224A8100641E7C /* slack-highlighted.png */; };
 		F34EDFEC1B224A8100641E7C /* slack.png in Resources */ = {isa = PBXBuildFile; fileRef = F34EDFEA1B224A8100641E7C /* slack.png */; };
 		F34EDFF11B27798B00641E7C /* TutorialView.m in Sources */ = {isa = PBXBuildFile; fileRef = F34EDFF01B27798B00641E7C /* TutorialView.m */; };
@@ -322,7 +325,42 @@
 			remoteGlobalIDString = C6B5AE0219F630B3001352A6;
 			remoteInfo = unittest;
 		};
-		12FF4C291A154643008A6001 /* PBXContainerItemProxy */ = {
+		F33AEC771B474CB30042256D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F33AEC701B474CB30042256D /* GTL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4F38F6A60B66E91D00B24B81;
+			remoteInfo = GTLFramework;
+		};
+		F33AEC791B474CB30042256D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F33AEC701B474CB30042256D /* GTL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4F12027C11A4CA2F00BEB470;
+			remoteInfo = GTLTouchStaticLib;
+		};
+		F33AEC7B1B474CB30042256D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F33AEC701B474CB30042256D /* GTL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4F12027D11A4CA2F00BEB470;
+			remoteInfo = GTLUnitTests;
+		};
+		F33AEC7D1B474CB30042256D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F33AEC701B474CB30042256D /* GTL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4F1AD9020B71603F00DC0485;
+			remoteInfo = DevelopmentTestTool;
+		};
+		F3DAB1391B4751A400DBAE70 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F33AEC701B474CB30042256D /* GTL.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 4F1C6E0E1027B3CE00B46459;
+			remoteInfo = GTLTouchStaticLib;
+		};
+		F3DAB13B1B4751AC00DBAE70 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 12FF4C101A15459C008A6001 /* mailcore2.xcodeproj */;
 			proxyType = 1;
@@ -539,7 +577,6 @@
 		12CE89751A75E85600983FBE /* TeamSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = TeamSettingsViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		12CE89761A75E85600983FBE /* TeamSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = TeamSettingsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		12D5DB951A48F167003727AC /* marker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = marker.png; path = Resources/marker.png; sourceTree = "<group>"; };
-		12D5DB961A48F167003727AC /* markerselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = markerselected.png; path = Resources/markerselected.png; sourceTree = "<group>"; };
 		12D5DB9F1A48F172003727AC /* pen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pen.png; path = Resources/pen.png; sourceTree = "<group>"; };
 		12D5DBA01A48F172003727AC /* penselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = penselected.png; path = Resources/penselected.png; sourceTree = "<group>"; };
 		12D5DBA31A48F20B003727AC /* highlighter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = highlighter.png; path = Resources/highlighter.png; sourceTree = "<group>"; };
@@ -581,12 +618,18 @@
 		F333A16E1B37B579009D00BF /* SignedOutAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignedOutAlertViewController.h; sourceTree = "<group>"; };
 		F333A16F1B37B579009D00BF /* SignedOutAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignedOutAlertViewController.m; sourceTree = "<group>"; };
 		F333A1711B37BBE4009D00BF /* dropboxsaved.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dropboxsaved.png; path = Resources/dropboxsaved.png; sourceTree = "<group>"; };
+		F33AEC701B474CB30042256D /* GTL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GTL.xcodeproj; path = Resources/Google/Source/GTL.xcodeproj; sourceTree = "<group>"; };
 		F34259301B279085000ABCB3 /* edittutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = edittutorial.png; path = Resources/edittutorial.png; sourceTree = "<group>"; };
 		F34259381B2793BC000ABCB3 /* versionstutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = versionstutorial.png; path = Resources/versionstutorial.png; sourceTree = "<group>"; };
 		F342593A1B279D0B000ABCB3 /* boardtutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = boardtutorial.png; path = Resources/boardtutorial.png; sourceTree = "<group>"; };
 		F342593C1B28D7E7000ABCB3 /* commenttutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = commenttutorial.png; path = Resources/commenttutorial.png; sourceTree = "<group>"; };
 		F342D1281B391CCD00642F76 /* drive-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "drive-highlighted.png"; path = "Resources/drive-highlighted.png"; sourceTree = "<group>"; };
 		F342D1291B391CCD00642F76 /* drive.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = drive.png; path = Resources/drive.png; sourceTree = "<group>"; };
+		F3452FF01B4CD0B900342680 /* shape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = shape.png; path = Resources/shape.png; sourceTree = "<group>"; };
+		F3452FFB1B4CE01500342680 /* ShapePopoverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapePopoverViewController.h; sourceTree = "<group>"; };
+		F3452FFC1B4CE01500342680 /* ShapePopoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShapePopoverViewController.m; sourceTree = "<group>"; };
+		F3452FFE1B4CF3A500342680 /* ellipse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ellipse.png; path = Resources/ellipse.png; sourceTree = "<group>"; };
+		F3452FFF1B4CF3A500342680 /* line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = line.png; path = Resources/line.png; sourceTree = "<group>"; };
 		F34EDFE91B224A8100641E7C /* slack-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "slack-highlighted.png"; path = "Resources/slack-highlighted.png"; sourceTree = "<group>"; };
 		F34EDFEA1B224A8100641E7C /* slack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = slack.png; path = Resources/slack.png; sourceTree = "<group>"; };
 		F34EDFEF1B27798B00641E7C /* TutorialView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialView.h; sourceTree = "<group>"; };
@@ -790,6 +833,7 @@
 		129E127D19648A2C00ED9D42 /* quill */ = {
 			isa = PBXGroup;
 			children = (
+				F33AEC701B474CB30042256D /* GTL.xcodeproj */,
 				12FF4C101A15459C008A6001 /* mailcore2.xcodeproj */,
 				1230ABC81972093300EB2389 /* Main_iPad.storyboard */,
 				F3FE1BF31B39BB9A00E966EC /* Main */,
@@ -861,6 +905,17 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		F33AEC711B474CB30042256D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F33AEC781B474CB30042256D /* GTL.framework */,
+				F33AEC7A1B474CB30042256D /* libGTLTouchStaticLib.a */,
+				F33AEC7C1B474CB30042256D /* GTLUnitTests.xctest */,
+				F33AEC7E1B474CB30042256D /* DevelopmentTestTool */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		F3FE1BF31B39BB9A00E966EC /* Main */ = {
 			isa = PBXGroup;
 			children = (
@@ -897,6 +952,8 @@
 				12DC97941A7C0C9200CC4616 /* RoundedButton.m */,
 				12860FCB1A423EDA0074B452 /* PenTypePopoverViewController.h */,
 				12860FCC1A423EDA0074B452 /* PenTypePopoverViewController.m */,
+				F3452FFB1B4CE01500342680 /* ShapePopoverViewController.h */,
+				F3452FFC1B4CE01500342680 /* ShapePopoverViewController.m */,
 				12860FCE1A423F000074B452 /* ColorPopoverViewController.h */,
 				12860FCF1A423F000074B452 /* ColorPopoverViewController.m */,
 				1213D7B51A6849B7001FDEA9 /* CommentPopoverViewController.h */,
@@ -1155,8 +1212,10 @@
 				123D200C1A5B2B6B004D5743 /* newmessages.png */,
 				12D5DB9F1A48F172003727AC /* pen.png */,
 				12D5DBA01A48F172003727AC /* penselected.png */,
+				F3452FF01B4CD0B900342680 /* shape.png */,
+				F3452FFE1B4CF3A500342680 /* ellipse.png */,
+				F3452FFF1B4CF3A500342680 /* line.png */,
 				12D5DB951A48F167003727AC /* marker.png */,
-				12D5DB961A48F167003727AC /* markerselected.png */,
 				F3F66F971B06A46D00B6D184 /* newboard.png */,
 				F3F66FB21B0AF15D00B6D184 /* newversion.png */,
 				12ABCE931A5F159600C4C7DC /* leave.png */,
@@ -1236,7 +1295,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				12FF4C2A1A154643008A6001 /* PBXTargetDependency */,
+				F3DAB13C1B4751AC00DBAE70 /* PBXTargetDependency */,
+				F3DAB13A1B4751A400DBAE70 /* PBXTargetDependency */,
 			);
 			name = quill;
 			productName = chalk;
@@ -1290,6 +1350,10 @@
 			productRefGroup = 129E126F19648A2C00ED9D42 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
+				{
+					ProductGroup = F33AEC711B474CB30042256D /* Products */;
+					ProjectRef = F33AEC701B474CB30042256D /* GTL.xcodeproj */;
+				},
 				{
 					ProductGroup = 12FF4C111A15459C008A6001 /* Products */;
 					ProjectRef = 12FF4C101A15459C008A6001 /* mailcore2.xcodeproj */;
@@ -1353,6 +1417,34 @@
 			remoteRef = 12FF4C261A15459D008A6001 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		F33AEC781B474CB30042256D /* GTL.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = GTL.framework;
+			remoteRef = F33AEC771B474CB30042256D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F33AEC7A1B474CB30042256D /* libGTLTouchStaticLib.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libGTLTouchStaticLib.a;
+			remoteRef = F33AEC791B474CB30042256D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F33AEC7C1B474CB30042256D /* GTLUnitTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = GTLUnitTests.xctest;
+			remoteRef = F33AEC7B1B474CB30042256D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F33AEC7E1B474CB30042256D /* DevelopmentTestTool */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = DevelopmentTestTool;
+			remoteRef = F33AEC7D1B474CB30042256D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -1403,7 +1495,6 @@
 				12860FBD1A40C8CD0074B452 /* userbutton1shadow.png in Resources */,
 				12860F9F1A3E9A1B0074B452 /* projectsshadow.png in Resources */,
 				12ABCE9D1A5F214C00C4C7DC /* userbutton1.png in Resources */,
-				12D5DB981A48F167003727AC /* markerselected.png in Resources */,
 				12DC979F1A8179E300CC4616 /* invitefade.png in Resources */,
 				F3F66FAA1B09458700B6D184 /* plus5.png in Resources */,
 				F3BA3A561B1CFF1C0051AA7A /* email.png in Resources */,
@@ -1447,6 +1538,7 @@
 				123D20101A5B4EDB004D5743 /* editfadeleft.png in Resources */,
 				1230ABCA1972093300EB2389 /* Main_iPad.storyboard in Resources */,
 				F3B499701B20162800316F7A /* downarrow3.png in Resources */,
+				F3452FF11B4CD0B900342680 /* shape.png in Resources */,
 				F3BA3A641B1D11110051AA7A /* leavecomment-highlighted.png in Resources */,
 				12ABCE921A5F11CC00C4C7DC /* collaborator.png in Resources */,
 				12860FEA1A47AF800074B452 /* avatarbackground.png in Resources */,
@@ -1454,6 +1546,7 @@
 				F3B646EF1B391A1400722058 /* GTMOAuth2ViewTouch.xib in Resources */,
 				12ABCE961A5F17D500C4C7DC /* remove.png in Resources */,
 				F3BA3A5C1B1D0B4B0051AA7A /* hidecomments.png in Resources */,
+				F34530001B4CF3A500342680 /* ellipse.png in Resources */,
 				12899BB21A1AEC3B00AF95BD /* carouselfade.png in Resources */,
 				F34259311B279085000ABCB3 /* edittutorial.png in Resources */,
 				F30F00381AF44E3B0082D7D6 /* carousel.png in Resources */,
@@ -1523,6 +1616,7 @@
 				F3BA3A4E1B1CFE680051AA7A /* camerarollsaved.png in Resources */,
 				F3F66FA41B09284900B6D184 /* deleteProjectBackground.png in Resources */,
 				F3BA3A681B1D11290051AA7A /* hidecomments-highlighted.png in Resources */,
+				F34530011B4CF3A500342680 /* line.png in Resources */,
 				1296676F1ABA954500CB57FA /* userbuttonmask.png in Resources */,
 				12D5DB971A48F167003727AC /* marker.png in Resources */,
 			);
@@ -1599,6 +1693,7 @@
 				F3F66FAF1B0AAAB900B6D184 /* DeleteBoardAlertViewController.m in Sources */,
 				1296676D1ABA795A00CB57FA /* PhotosCollectionViewCell.m in Sources */,
 				12860FB31A4024920074B452 /* NSString+MD5.m in Sources */,
+				F3452FFD1B4CE01500342680 /* ShapePopoverViewController.m in Sources */,
 				F333A1701B37B579009D00BF /* SignedOutAlertViewController.m in Sources */,
 				12A3FA0D1977420400E03E9E /* PersonalSettingsViewController.m in Sources */,
 				12899BB01A168CA100AF95BD /* MasterView.m in Sources */,
@@ -1623,10 +1718,15 @@
 			target = 129E126D19648A2C00ED9D42 /* quill */;
 			targetProxy = 129E129F19648A2C00ED9D42 /* PBXContainerItemProxy */;
 		};
-		12FF4C2A1A154643008A6001 /* PBXTargetDependency */ = {
+		F3DAB13A1B4751A400DBAE70 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GTLTouchStaticLib;
+			targetProxy = F3DAB1391B4751A400DBAE70 /* PBXContainerItemProxy */;
+		};
+		F3DAB13C1B4751AC00DBAE70 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "static mailcore2 ios";
-			targetProxy = 12FF4C291A154643008A6001 /* PBXContainerItemProxy */;
+			targetProxy = F3DAB13B1B4751AC00DBAE70 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1749,6 +1849,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "quill/quill-Prefix.pch";
 				INFOPLIST_FILE = "quill/quill-Info.plist";
+				INSTALL_PATH = /Applications;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1797,6 +1898,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "quill/quill-Prefix.pch";
 				INFOPLIST_FILE = "quill/quill-Info.plist";
+				INSTALL_PATH = /Applications;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

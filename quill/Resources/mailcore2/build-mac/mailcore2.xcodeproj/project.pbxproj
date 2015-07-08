@@ -3576,6 +3576,7 @@
 				);
 				PRODUCT_NAME = MailCore;
 				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Debug;
@@ -3603,6 +3604,7 @@
 				);
 				PRODUCT_NAME = MailCore;
 				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Release;
@@ -3656,6 +3658,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OSX_HEADERS_SEARCH_PATHS = "\"$(SRCROOT)/../Externals/libetpan-osx/include\" \"$(SRCROOT)/../Externals/ctemplate-osx/include\" \"$(SRCROOT)/../Externals/uchardet-osx/include\" /usr/include/tidy /usr/include/libxml2";
 				OSX_LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../Externals/libetpan-osx/lib\" \"$(SRCROOT)/../Externals/uchardet-osx/lib\" \"$(SRCROOT)/../Externals/ctemplate-osx/lib\"";
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -3703,6 +3706,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				OSX_HEADERS_SEARCH_PATHS = "\"$(SRCROOT)/../Externals/libetpan-osx/include\" \"$(SRCROOT)/../Externals/ctemplate-osx/include\" \"$(SRCROOT)/../Externals/uchardet-osx/include\" /usr/include/tidy /usr/include/libxml2";
 				OSX_LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../Externals/libetpan-osx/lib\" \"$(SRCROOT)/../Externals/uchardet-osx/lib\" \"$(SRCROOT)/../Externals/ctemplate-osx/lib\"";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -3713,6 +3717,7 @@
 				EXECUTABLE_PREFIX = lib;
 				PRODUCT_NAME = MailCore;
 				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -3723,6 +3728,7 @@
 				EXECUTABLE_PREFIX = lib;
 				PRODUCT_NAME = MailCore;
 				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};

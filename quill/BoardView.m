@@ -37,7 +37,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     ProjectDetailViewController *projectVC;
     UIImage *incrementalImage;
     NSMutableArray *paths;
-    CGRect dotRect;
+    
 }
 
 #pragma mark UIView lifecycle methods
@@ -48,6 +48,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     if (self) {
         
         self.penType = 1;
+        self.shapeType = 1;
         self.lineColorNumber = @1;
         _empty = YES;
         self.activeUserIDs = [NSMutableArray array];
@@ -257,11 +258,30 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     
+    if (!self.drawable) return;
+    
     NSArray *allTouches = [[event allTouches] allObjects];
     
-    if (allTouches.count > 1 || !self.drawable) return;
+    if (allTouches.count > 2) return;
     
-    UITouch *touch = [touches anyObject];
+    if (allTouches.count == 2 && !projectVC.erasing) {
+        
+        CGPoint touch1 = [allTouches[0] locationInView:self];
+        CGPoint touch2 = [allTouches[1] locationInView:self];
+        
+        if (self.gridOn) self.shapeRect = CGRectMake((round(touch1.x/24))*24, (round(touch1.y/32))*32, (round((touch2.x-touch1.x)/24))*24, (round((touch2.y-touch1.y)/32))*32);
+        else self.shapeRect = CGRectMake(touch1.x, touch1.y, touch2.x-touch1.x, touch2.y-touch1.y);
+        
+        [[FirebaseHelper sharedHelper]resetUndo];
+        
+        CGRect bufferRect = CGRectInset(self.shapeRect, MIN(-80, -1*fabs(self.shapeRect.size.width*.2)), MIN(-80,-1*fabs(self.shapeRect.size.height*.2)));
+        
+        [self setNeedsDisplayInRect:bufferRect];
+
+        return;
+    }
+    
+    UITouch *touch = allTouches[0];
 
     if (self.selectedAvatarUserID) {
         
@@ -296,10 +316,21 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [projectVC.view viewWithTag:2].alpha = 1;
     
     // initializes our point records to current location
-    self.previousPreviousPoint = [touch previousLocationInView:self];
-    self.previousPoint = [touch previousLocationInView:self];
-    self.currentPoint = [touch locationInView:self];
-    
+    if (self.gridOn) {
+        
+        CGPoint prev = [touch previousLocationInView:self];
+        CGPoint loc = [touch locationInView:self];
+        
+        self.previousPreviousPoint = CGPointMake(24*(round(prev.x/24)), 32*(round(prev.y/32)));
+        self.previousPoint = CGPointMake(24*(round(prev.x/24)), 32*(round(prev.y/32)));
+        self.currentPoint = CGPointMake(24*(round(loc.x/24)), 32*(round(loc.y/32)));
+    }
+    else {
+        self.previousPreviousPoint = [touch previousLocationInView:self];
+        self.previousPoint = [touch previousLocationInView:self];
+        self.currentPoint = [touch locationInView:self];
+    }
+        
     CGMutablePathRef subpath = CGPathCreateMutable();
     CGPathMoveToPoint(subpath, NULL, self.currentPoint.x, self.currentPoint.y);
     CGPathAddLineToPoint(subpath, NULL, self.currentPoint.x, self.currentPoint.y);
@@ -339,19 +370,56 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [paths addObject:subpathValues];
     [self setNeedsDisplayInRect:drawBox];
     
+    [[FirebaseHelper sharedHelper] resetUndo];
+    
     NSString *subpathsString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/subpaths/%@", [FirebaseHelper sharedHelper].db, self.boardID, [FirebaseHelper sharedHelper].uid];
     Firebase *subpathsRef = [[Firebase alloc] initWithUrl:subpathsString];
     [subpathsRef updateChildValues:@{ dateString  :  subpathValues }];
     [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:subpathValues forKey:dateString];
-
-    [[FirebaseHelper sharedHelper] resetUndo];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     
     NSArray *allTouches = [[event allTouches] allObjects];
     
-    if (allTouches.count > 1 || !self.drawable || self.commenting || [projectVC.chatTextField isFirstResponder] || [[projectVC.view viewWithTag:104] isFirstResponder] || [projectVC.commentTitleTextField isFirstResponder] || self.selectedAvatarUserID) return;
+    if (allTouches.count > 2) return;
+    
+    if (allTouches.count == 2 && !projectVC.erasing) {
+        
+        CGPoint touch1 = [allTouches[0] locationInView:self];
+        CGPoint touch2 = [allTouches[1] locationInView:self];
+        
+        BOOL firstShape = CGRectIsNull(self.shapeRect);
+
+        if (self.gridOn) self.shapeRect = CGRectMake((round(touch1.x/24))*24, (round(touch1.y/32))*32, (round((touch2.x-touch1.x)/24))*24, (round((touch2.y-touch1.y)/32))*32);
+        else self.shapeRect = CGRectMake(touch1.x, touch1.y, touch2.x-touch1.x, touch2.y-touch1.y);
+
+        if (firstShape) {
+            
+            double currentIndexDate = [[[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"undo"] objectForKey:[FirebaseHelper sharedHelper].uid] objectForKey:@"currentIndexDate"] doubleValue];
+            NSMutableDictionary *subpathsDict = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid];
+            
+            for (NSString *dateString in subpathsDict.allKeys) {
+                if ([dateString doubleValue] > currentIndexDate) {
+                    [subpathsDict removeObjectForKey:dateString];
+                    NSString *subpathString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/subpaths/%@/%@", [FirebaseHelper sharedHelper].db, self.boardID, [FirebaseHelper sharedHelper].uid, dateString];
+                    Firebase *subpathRef = [[Firebase alloc] initWithUrl:subpathString];
+                    [subpathRef removeValue];
+                }
+            }
+            
+            [[FirebaseHelper sharedHelper]resetUndo];
+            [self setNeedsDisplay];
+        }
+        else {
+            CGRect bufferRect = CGRectInset(self.shapeRect, MIN(-80, -1*fabs(self.shapeRect.size.width*.2)), MIN(-80,-1*fabs(self.shapeRect.size.height*.2)));
+            [self setNeedsDisplayInRect:bufferRect];
+        }
+        
+        return;
+    }
+    
+    if (!self.drawable || self.commenting || [projectVC.chatTextField isFirstResponder] || [[projectVC.view viewWithTag:104] isFirstResponder] || [projectVC.commentTitleTextField isFirstResponder] || self.selectedAvatarUserID) return;
     
     if (projectVC.userRole > 0) [self addUserDrawing:[FirebaseHelper sharedHelper].uid];
     
@@ -367,9 +435,22 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     if ((dx * dx + dy * dy) < kPointMinDistanceSquared) return;
     
     // update points: previousPrevious -> mid1 -> previous -> mid2 -> current
-    self.previousPreviousPoint = self.previousPoint;
-    self.previousPoint = [touch previousLocationInView:self];
-    self.currentPoint = [touch locationInView:self];
+    
+    if (self.gridOn) {
+        
+        CGPoint prev = [touch previousLocationInView:self];
+        CGPoint loc = [touch locationInView:self];
+        
+        self.previousPreviousPoint = CGPointMake(24*(round(self.previousPoint.x/24)), 32*(round(self.previousPoint.y/32)));
+        self.previousPoint = CGPointMake(24*(round(prev.x/24)), 32*(round(prev.y/32)));
+        self.currentPoint = CGPointMake(24*(round(loc.x/24)), 32*(round(loc.y/32)));
+        
+    }
+    else {
+        self.previousPreviousPoint = self.previousPoint;
+        self.previousPoint = [touch previousLocationInView:self];
+        self.currentPoint = [touch locationInView:self];
+    }
     
     CGPoint mid1 = midPoint(self.previousPoint, self.previousPreviousPoint);
     CGPoint mid2 = midPoint(self.currentPoint, self.previousPoint);
@@ -391,26 +472,47 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         else lineWidth = 30.0f;
     }
 
-    NSDictionary *subpathValues =  @{ @"mid1x" : @(mid1.x),
-                                      @"mid1y" : @(mid1.y),
-                                      @"mid2x" : @(mid2.x),
-                                      @"mid2y" : @(mid2.y),
-                                      @"prevx" : @(self.previousPoint.x),
-                                      @"prevy" : @(self.previousPoint.y),
-                                      @"color" : lineColorNumber,
-                                      @"pen" : penType
-                                      };
-   
     CGMutablePathRef subpath = CGPathCreateMutable();
-    CGPathMoveToPoint(subpath, NULL, mid1.x, mid1.y);
-    CGPathAddQuadCurveToPoint(subpath, NULL,
-                              self.previousPoint.x, self.previousPoint.y,
-                              mid2.x, mid2.y);
+    NSDictionary *subpathValues;
+    CGRect bounds;
     
-    CGRect bounds = CGPathGetBoundingBox(subpath);
+    if (self.gridOn) {
+        
+        subpathValues = @{ @"currx" : @(self.currentPoint.x),
+                           @"curry" : @(self.currentPoint.y),
+                           @"prevx" : @(self.previousPoint.x),
+                           @"prevy" : @(self.previousPoint.y),
+                           @"color" : lineColorNumber,
+                           @"pen" : penType
+                                       };
+        
+        CGPathMoveToPoint(subpath, NULL, self.currentPoint.x, self.currentPoint.y);
+        CGPathAddLineToPoint(subpath, NULL, self.currentPoint.x, self.currentPoint.y);
+        
+        bounds = CGRectMake(self.previousPoint.x, self.previousPoint.y, self.currentPoint.x-self.previousPoint.x, self.currentPoint.y-self.previousPoint.y);
+    }
+    else {
+        
+        subpathValues = @{ @"mid1x" : @(mid1.x),
+                           @"mid1y" : @(mid1.y),
+                           @"mid2x" : @(mid2.x),
+                           @"mid2y" : @(mid2.y),
+                           @"prevx" : @(self.previousPoint.x),
+                           @"prevy" : @(self.previousPoint.y),
+                           @"color" : lineColorNumber,
+                           @"pen" : penType
+                            };
+        
+        CGPathMoveToPoint(subpath, NULL, mid1.x, mid1.y);
+        CGPathAddQuadCurveToPoint(subpath, NULL, self.previousPoint.x, self.previousPoint.y, mid2.x, mid2.y);
+        
+        bounds = CGPathGetBoundingBox(subpath);
+    }
+
     CGRect drawBox = CGRectInset(bounds, -1 * lineWidth, -1 * lineWidth);
     
     [paths addObject:subpathValues];
+    
     [self setNeedsDisplayInRect:drawBox];
 
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
@@ -480,6 +582,32 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         [projectVC.commentTitleTextField resignFirstResponder];
         return;
     }
+ 
+    if (!CGRectIsNull(self.shapeRect)) {
+        
+        [projectVC.view viewWithTag:4].alpha = 1;
+        [projectVC.view viewWithTag:3].alpha = .3;
+        [projectVC.view viewWithTag:2].alpha = 1;
+        
+        NSDictionary *subpathValues = @{ @"origx"  : @(self.shapeRect.origin.x),
+                                         @"origy"  : @(self.shapeRect.origin.y),
+                                         @"width"  : @(self.shapeRect.size.width),
+                                         @"height" : @(self.shapeRect.size.height),
+                                         @"color"  : self.lineColorNumber,
+                                         @"pen"    : @(self.penType),
+                                         @"shape"  : @(self.shapeType)
+                                         };
+    
+        self.shapeRect = CGRectNull;
+    
+        [paths addObject:subpathValues];
+        
+        NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
+        NSString *subpathsString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@/subpaths/%@", [FirebaseHelper sharedHelper].db, self.boardID, [FirebaseHelper sharedHelper].uid];
+        Firebase *subpathsRef = [[Firebase alloc] initWithUrl:subpathsString];
+        [subpathsRef updateChildValues:@{ dateString  :  subpathValues }];
+        [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:subpathValues forKey:dateString];
+    }
 
     NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
     NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@", [FirebaseHelper sharedHelper].db, self.boardID];
@@ -539,6 +667,47 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     UIColor *lineColor;
     CGFloat lineWidth = 0;
 
+    if (!CGRectIsNull(self.shapeRect)) {
+        
+        CGFloat alpha = 1;
+        
+        if (self.penType == 0) {
+            lineWidth = 60.0f;
+            alpha = 1.0f;
+        }
+        if (self.penType == 1) {
+            lineWidth = 1.0f;
+            alpha = 1.0f;
+        }
+        if (self.penType == 2) {
+            lineWidth = 7.0f;
+            alpha = 1.0f;
+        }
+        if (self.penType == 3) {
+            lineWidth = 40.0f;
+            alpha = 0.4f;
+        }
+        
+        if (self.lineColorNumber.intValue == 1) lineColor = [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:alpha];
+        if (self.lineColorNumber.intValue == 2) lineColor = [UIColor colorWithRed:(12.0f/255.0f) green:(111.0f/255.0f) blue:(234.0f/255.0f) alpha:alpha];
+        if (self.lineColorNumber.intValue == 3) lineColor = [UIColor colorWithRed:(225.0f/255.0f) green:(34.0f/255.0f) blue:(34.0f/255.0f) alpha:alpha];
+        if (self.lineColorNumber.intValue == 4) lineColor = [UIColor colorWithRed:(117.0f/255.0f) green:(228.0f/255.0f) blue:(117.0f/255.0f) alpha:alpha];
+        if (self.lineColorNumber.intValue == 5) lineColor = [UIColor colorWithRed:(255.0f/255.0f) green:(246.0f/255.0f) blue:0.0f alpha:alpha];
+        
+        
+        CGContextSetStrokeColorWithColor(context, lineColor.CGColor);
+        CGContextSetLineWidth(context, lineWidth);
+        
+        if (self.shapeType == 1) CGContextStrokeRect(context, self.shapeRect);
+        else if (self.shapeType == 2) CGContextStrokeEllipseInRect(context, self.shapeRect);
+        else if (self.shapeType == 3) {
+            CGPoint points[2] = { self.shapeRect.origin, CGPointMake(self.shapeRect.origin.x+self.shapeRect.size.width, self.shapeRect.origin.y+self.shapeRect.size.height) };
+            CGContextStrokeLineSegments(context, points, 2);
+        }
+        
+        return;
+    }
+
     for (int i=0; i<paths.count; i++) {
         
         CGContextSetBlendMode(context, kCGBlendModeNormal);
@@ -558,7 +727,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
             CGContextSetLineWidth(context, lineWidth);
             CGContextStrokePath(context);
             CGContextBeginPath(context);
-
+            
             if (!self.drawingBoard && i == paths.count-1) {
                 
                 CGImageRef imageRef = CGBitmapContextCreateImage(context);
@@ -571,13 +740,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
             continue;
         }
 
-        CGMutablePathRef subpath = CGPathCreateMutable();
-        CGPathMoveToPoint(subpath, NULL, [[subpathValues objectForKey:@"mid1x"] floatValue], [[subpathValues objectForKey:@"mid1y"] floatValue]);
-        CGPathAddQuadCurveToPoint(subpath, NULL,
-                                  [[subpathValues objectForKey:@"prevx"] floatValue], [[subpathValues objectForKey:@"prevy"] floatValue],
-                                  [[subpathValues objectForKey:@"mid2x"] floatValue], [[subpathValues objectForKey:@"mid2y"] floatValue]);
-        CGContextAddPath(context, subpath);
-        
         int penType = [[subpathValues objectForKey:@"pen"] intValue];
         CGFloat alpha = 1;
         
@@ -622,29 +784,93 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
             else lineColor = [UIColor colorWithRed:(255.0f/255.0f) green:(246.0f/255.0f) blue:0.0f alpha:alpha];
         }
         
-        if (i == paths.count-1) {
+        CGMutablePathRef subpath = CGPathCreateMutable();
+        
+        if (subpathValues.allKeys.count == 8) {
+            
+            CGPathMoveToPoint(subpath, NULL, [[subpathValues objectForKey:@"mid1x"] floatValue], [[subpathValues objectForKey:@"mid1y"] floatValue]);
+            CGPathAddQuadCurveToPoint(subpath, NULL,
+                                      [[subpathValues objectForKey:@"prevx"] floatValue], [[subpathValues objectForKey:@"prevy"] floatValue],
+                                      [[subpathValues objectForKey:@"mid2x"] floatValue], [[subpathValues objectForKey:@"mid2y"] floatValue]);
+        }
+        else if (subpathValues.allKeys.count == 7) {
+            
+            CGContextSetStrokeColorWithColor(context, lineColor.CGColor);
+            CGContextSetLineWidth(context, lineWidth);
+            
+            int shapeType = [[subpathValues objectForKey:@"shape"] intValue];
+            
+            CGRect shapeRect = CGRectMake([[subpathValues objectForKey:@"origx"] floatValue], [[subpathValues objectForKey:@"origy"] floatValue], [[subpathValues objectForKey:@"width"] floatValue], [[subpathValues objectForKey:@"height"] floatValue]);
+            
+            if (shapeType == 1) CGContextStrokeRect(context, shapeRect);
+            else if (shapeType == 2) CGContextStrokeEllipseInRect(context, shapeRect);
+            else if (shapeType == 3) {
+                CGPoint points[2] = { shapeRect.origin, CGPointMake(shapeRect.origin.x+shapeRect.size.width, shapeRect.origin.y+shapeRect.size.height) };
+                CGContextStrokeLineSegments(context, points, 2);
+            }
+        }
+        else if (subpathValues.allKeys.count == 6) {
+            
+            CGPathMoveToPoint(subpath, NULL, [[subpathValues objectForKey:@"prevx"] floatValue], [[subpathValues objectForKey:@"prevy"] floatValue]);
+            CGPathAddLineToPoint(subpath, NULL, [[subpathValues objectForKey:@"currx"] floatValue], [[subpathValues objectForKey:@"curry"] floatValue]);
+        }
+        
+        CGContextAddPath(context, subpath);
+        CGPathRelease(subpath);
+        
+        if (i == paths.count-1 && subpathValues.count != 7) {
 
             if (colorNumber == 0 && self.gridOn) CGContextSetBlendMode(context, kCGBlendModeClear);
             CGContextSetStrokeColorWithColor(context, lineColor.CGColor);
             CGContextSetLineWidth(context, lineWidth);
             CGContextStrokePath(context);
-            CGContextBeginPath(context);
         }
     }
 }
 
 -(void) drawSubpath:(NSDictionary *)subpathValues {
 
-    CGPoint mid1;
-    CGPoint mid2;
-    CGPoint prev;
+    CGMutablePathRef subpath = CGPathCreateMutable();
     
-    mid1.x = [[subpathValues objectForKey:@"mid1x"] floatValue];
-    mid1.y = [[subpathValues objectForKey:@"mid1y"] floatValue];
-    mid2.x = [[subpathValues objectForKey:@"mid2x"] floatValue];
-    mid2.y = [[subpathValues objectForKey:@"mid2y"] floatValue];
-    prev.x = [[subpathValues objectForKey:@"prevx"] floatValue];
-    prev.y = [[subpathValues objectForKey:@"prevy"] floatValue];
+    CGRect bounds;
+    
+    if (subpathValues.allKeys.count == 8) {
+        
+        CGPoint mid1;
+        CGPoint mid2;
+        CGPoint prev;
+        
+        mid1.x = [[subpathValues objectForKey:@"mid1x"] floatValue];
+        mid1.y = [[subpathValues objectForKey:@"mid1y"] floatValue];
+        mid2.x = [[subpathValues objectForKey:@"mid2x"] floatValue];
+        mid2.y = [[subpathValues objectForKey:@"mid2y"] floatValue];
+        prev.x = [[subpathValues objectForKey:@"prevx"] floatValue];
+        prev.y = [[subpathValues objectForKey:@"prevy"] floatValue];
+        
+        CGPathMoveToPoint(subpath, NULL, mid1.x, mid1.y);
+        CGPathAddQuadCurveToPoint(subpath, NULL,
+                                  prev.x, prev.y,
+                                  mid2.x, mid2.y);
+        bounds = CGPathGetBoundingBox(subpath);
+    }
+    else if (subpathValues.allKeys.count == 7) bounds = self.bounds;
+    else if (subpathValues.allKeys.count == 6) {
+        
+        CGPoint curr;
+        CGPoint prev;
+        
+        curr.x = [[subpathValues objectForKey:@"currx"] floatValue];
+        curr.y = [[subpathValues objectForKey:@"curry"] floatValue];
+        prev.x = [[subpathValues objectForKey:@"prevx"] floatValue];
+        prev.y = [[subpathValues objectForKey:@"prevy"] floatValue];
+        
+        CGPathMoveToPoint(subpath, NULL, curr.x, curr.y);
+        CGPathAddLineToPoint(subpath, NULL, curr.x, curr.y);
+        
+        bounds = CGRectMake(prev.x, prev.y, curr.x-prev.x, curr.y-prev.y);
+    }
+    
+    [paths addObject:subpathValues];
     
     int penType = [[subpathValues objectForKey:@"pen"] intValue];
     CGFloat lineWidth = 0;
@@ -653,18 +879,10 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     else if (penType == 2) lineWidth = 7.0f;
     else lineWidth = 30.0f;
     
-    CGMutablePathRef subpath = CGPathCreateMutable();
-    CGPathMoveToPoint(subpath, NULL, mid1.x, mid1.y);
-    CGPathAddQuadCurveToPoint(subpath, NULL,
-                              prev.x, prev.y,
-                              mid2.x, mid2.y);
-    
-    CGRect bounds = CGPathGetBoundingBox(subpath);
     CGRect drawBox = CGRectInset(bounds, -1 * lineWidth, -1 * lineWidth);
-    
-    [paths addObject:subpathValues];
     [self setNeedsDisplayInRect:drawBox];
     
+    CGPathRelease(subpath);
 }
 
 -(void) hideChat {
@@ -675,12 +893,12 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [projectVC showDrawMenu];
     projectVC.carouselOffset = 0;
     
-    for (int i=5; i<=9; i++) {
+    for (int i=6; i<=10; i++) {
         
-        if (i==7 || i==8) continue;
+        if (i==8 || i==9) continue;
         
         UIView *button = [projectVC.view viewWithTag:i];
-        if (i==5) [button viewWithTag:50].hidden = false;
+        if (i==6) [button viewWithTag:50].hidden = false;
         else [button viewWithTag:50].hidden = true;
     }
     
@@ -944,7 +1162,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         if (i==0 && ![projectVC canUndo]) button.alpha = .3;
         else if (i==1 && ![projectVC canRedo]) button.alpha = .3;
         else if (i==2 && ![projectVC canClear]) button.alpha = .3;
-        else if (i==6 && !self.gridOn) button.alpha = .3;
+        else if (i==7 && !self.gridOn) button.alpha = .3;
     }
     
     self.alpha = 1;

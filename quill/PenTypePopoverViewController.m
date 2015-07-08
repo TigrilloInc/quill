@@ -1,5 +1,5 @@
 //
-//  WidthPopoverViewController.m
+//  PenTypePopoverViewController.m
 //  quill
 //
 //  Created by Alex Costantini on 12/17/14.
@@ -38,20 +38,9 @@
     UIButton *penButton = (UIButton *)sender;
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
-//    if (penButton.tag == 3) {
-//        
-//        projectVC.currentBoardView.lineColorNumber = @(5);
-//        [(UIButton *)[projectVC.view viewWithTag:7] setBackgroundImage:[UIImage imageNamed:@"yellow.png"] forState:UIControlStateNormal];
-//    }
-//    else if (projectVC.currentBoardView.penType == 3) {
-//        
-//        projectVC.currentBoardView.lineColorNumber = @(1);
-//        [(UIButton *)[projectVC.view viewWithTag:7] setBackgroundImage:[UIImage imageNamed:@"black.png"] forState:UIControlStateNormal];
-//    }
-    
     NSString *imageName = pens[penButton.tag-1];
     projectVC.currentBoardView.penType = penButton.tag;
-    [(UIButton *)[projectVC.view viewWithTag:5] setBackgroundImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
+    [(UIButton *)[projectVC.view viewWithTag:6] setBackgroundImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
     
     [self dismissViewControllerAnimated:NO completion:nil];
 }
