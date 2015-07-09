@@ -1013,7 +1013,7 @@
         else if (i==9) button.alpha = .3;
         else [button viewWithTag:50].hidden = true;
     }
-    
+
     NSString *boardName = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"name"];
     NSString *labelString = [NSString stringWithFormat:@"|   %@", boardName];
     UILabel *boardNameLabel = (UILabel *)[self.view viewWithTag:102];
@@ -1024,10 +1024,10 @@
     CGRect projectNameRect = [self.view viewWithTag:101].frame;
     boardNameLabel.frame = CGRectMake(projectNameRect.size.width+46, projectNameRect.origin.y+5.5, boardNameLabel.frame.size.width, boardNameLabel.frame.size.height);
     UILabel *versionLabel = (UILabel *)[self.view viewWithTag:105];
-    versionLabel.text = [NSString stringWithFormat:@"Version %lu", self.versionsCarousel.currentItemIndex+1];
+    versionLabel.text = [NSString stringWithFormat:@"Version %d", self.versionsCarousel.currentItemIndex+1];
     versionLabel.frame = CGRectMake(boardNameLabel.frame.origin.x+17, 42, 100, 50);
-
     
+    self.chatTextField.text = nil;
     self.messages = [NSMutableArray array];
     [self.chatTable reloadData];
     [self hideChat];
@@ -2318,6 +2318,8 @@
         
         [self.view bringSubviewToFront:self.chatOpenButton];
         
+        [UIView setAnimationDelegate:self];
+        if ([self.chatTextField isFirstResponder] && self.activeBoardID) [UIView setAnimationDidStopSelector:@selector(openChat)];
         [UIView commitAnimations];
     }
 }
@@ -2333,7 +2335,7 @@
     
     if ([self.chatTextField isFirstResponder] || [self.commentTitleTextField isFirstResponder]) {
         
-        self.chatTextField.text = nil;
+        if (self.activeCommentThreadID) self.chatTextField.text = nil;
         
         self.activeCommentThreadID = nil;
         
@@ -2595,6 +2597,11 @@
     }
     
     [UIView setAnimationsEnabled:YES];
+}
+
+-(void)changeCommentHeight {
+    
+    
 }
 
 -(BOOL)canUndo {
@@ -2921,6 +2928,8 @@
         
         NSString *dateString = [NSString stringWithFormat:@"%.f", [[NSDate serverDate] timeIntervalSince1970]*100000000];
         [[FirebaseHelper sharedHelper] setCommentThread:self.activeCommentThreadID updatedAt:dateString];
+        
+        if (!self.chatOpen) [self openChat];
     }
     
     return NO;
