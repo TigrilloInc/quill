@@ -639,6 +639,8 @@ static FirebaseHelper *sharedHelper = nil;
                             
                             [self.boards removeObjectForKey:boardID];
                             
+                            NSLog(@"boardID is %@", boardID);
+                            
                             NSString *boardString = [NSString stringWithFormat:@"https://%@.firebaseio.com/boards/%@", self.db, boardID];
                             Firebase *boardRef = [[Firebase alloc] initWithUrl:boardString];
                             [[boardRef childByAppendingPath:@"name"] removeAllObservers];
@@ -663,6 +665,8 @@ static FirebaseHelper *sharedHelper = nil;
                             NSString *commentsString = [NSString stringWithFormat:@"https://%@.firebaseio.com/comments/%@", self.db, commentsID];
                             Firebase *commentsRef = [[Firebase alloc] initWithUrl:commentsString];
                             [commentsRef removeAllObservers];
+                            
+                            [self.projectVC.carousel reloadData];
                         }
                     }
                 }

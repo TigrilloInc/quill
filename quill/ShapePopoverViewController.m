@@ -38,7 +38,7 @@
     UIButton *shapeButton = (UIButton *)sender;
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
-    NSString *imageName = shapes[shapeButton.tag-1];
+    NSString *imageName = [NSString stringWithFormat:@"hand%@", shapes[shapeButton.tag-1]];
     projectVC.currentBoardView.shapeType = shapeButton.tag;
     [(UIButton *)[projectVC.view viewWithTag:5] setBackgroundImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
     

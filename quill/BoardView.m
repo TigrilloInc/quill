@@ -376,6 +376,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     Firebase *subpathsRef = [[Firebase alloc] initWithUrl:subpathsString];
     [subpathsRef updateChildValues:@{ dateString  :  subpathValues }];
     [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:subpathValues forKey:dateString];
+    
+    CGPathRelease(subpath);
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -412,7 +414,10 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
             [self setNeedsDisplay];
         }
         else {
-            CGRect bufferRect = CGRectInset(self.shapeRect, MIN(-80, -1*fabs(self.shapeRect.size.width*.2)), MIN(-80,-1*fabs(self.shapeRect.size.height*.2)));
+            
+            CGFloat scale = [UIScreen mainScreen].scale;
+            
+            CGRect bufferRect = CGRectInset(self.shapeRect, MIN(-80*scale, -1*fabs(self.shapeRect.size.width*.2)), MIN(-80*scale,-1*fabs(self.shapeRect.size.height*.2)));
             [self setNeedsDisplayInRect:bufferRect];
         }
         
@@ -508,7 +513,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         
         bounds = CGPathGetBoundingBox(subpath);
     }
-
+    
     CGRect drawBox = CGRectInset(bounds, -1 * lineWidth, -1 * lineWidth);
     
     [paths addObject:subpathValues];
@@ -521,6 +526,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     Firebase *subpathsRef = [[Firebase alloc] initWithUrl:subpathsString];
     [subpathsRef updateChildValues:@{ dateString  :  subpathValues }];
     [[[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardID] objectForKey:@"subpaths"] objectForKey:[FirebaseHelper sharedHelper].uid] setObject:subpathValues forKey:dateString];
+    
+    CGPathRelease(subpath);
 }
 
 -(void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -694,7 +701,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         if (self.lineColorNumber.intValue == 4) lineColor = [UIColor colorWithRed:(117.0f/255.0f) green:(228.0f/255.0f) blue:(117.0f/255.0f) alpha:alpha];
         if (self.lineColorNumber.intValue == 5) lineColor = [UIColor colorWithRed:(255.0f/255.0f) green:(246.0f/255.0f) blue:0.0f alpha:alpha];
         
-        
         CGContextSetStrokeColorWithColor(context, lineColor.CGColor);
         CGContextSetLineWidth(context, lineWidth);
         
@@ -764,7 +770,9 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         
         if (colorNumber == 0) lineColor = [UIColor whiteColor];
         if (colorNumber == 1) {
-            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(220.0f/255.0f) green:(220.0f/255.0f) blue:(220.0f/255.0f) alpha:alpha];
+            if  ([subpathValues objectForKey:@"faded"]) {lineColor = [UIColor colorWithRed:(220.0f/255.0f) green:(220.0f/255.0f) blue:(220.0f/255.0f) alpha:alpha];
+                NSLog(@"subpath values is %@", subpathValues);
+            }
             else lineColor = [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:alpha];
         }
         if (colorNumber == 2) {
@@ -786,14 +794,14 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         
         CGMutablePathRef subpath = CGPathCreateMutable();
         
-        if (subpathValues.allKeys.count == 8) {
+        if ([subpathValues.allKeys containsObject:@"mid1x"]) {
             
             CGPathMoveToPoint(subpath, NULL, [[subpathValues objectForKey:@"mid1x"] floatValue], [[subpathValues objectForKey:@"mid1y"] floatValue]);
             CGPathAddQuadCurveToPoint(subpath, NULL,
                                       [[subpathValues objectForKey:@"prevx"] floatValue], [[subpathValues objectForKey:@"prevy"] floatValue],
                                       [[subpathValues objectForKey:@"mid2x"] floatValue], [[subpathValues objectForKey:@"mid2y"] floatValue]);
         }
-        else if (subpathValues.allKeys.count == 7) {
+        else if ([subpathValues.allKeys containsObject:@"shape"]) {
             
             CGContextSetStrokeColorWithColor(context, lineColor.CGColor);
             CGContextSetLineWidth(context, lineWidth);
@@ -809,14 +817,13 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                 CGContextStrokeLineSegments(context, points, 2);
             }
         }
-        else if (subpathValues.allKeys.count == 6) {
+        else if ([subpathValues.allKeys containsObject:@"currx"]) {
             
             CGPathMoveToPoint(subpath, NULL, [[subpathValues objectForKey:@"prevx"] floatValue], [[subpathValues objectForKey:@"prevy"] floatValue]);
             CGPathAddLineToPoint(subpath, NULL, [[subpathValues objectForKey:@"currx"] floatValue], [[subpathValues objectForKey:@"curry"] floatValue]);
         }
         
         CGContextAddPath(context, subpath);
-        CGPathRelease(subpath);
         
         if (i == paths.count-1 && subpathValues.count != 7) {
 
@@ -825,6 +832,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
             CGContextSetLineWidth(context, lineWidth);
             CGContextStrokePath(context);
         }
+        
+        CGPathRelease(subpath);
     }
 }
 
@@ -834,7 +843,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     CGRect bounds;
     
-    if (subpathValues.allKeys.count == 8) {
+    if ([subpathValues.allKeys containsObject:@"mid1x"]) {
         
         CGPoint mid1;
         CGPoint mid2;
@@ -853,8 +862,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
                                   mid2.x, mid2.y);
         bounds = CGPathGetBoundingBox(subpath);
     }
-    else if (subpathValues.allKeys.count == 7) bounds = self.bounds;
-    else if (subpathValues.allKeys.count == 6) {
+    else if ([subpathValues.allKeys containsObject:@"currx"]) {
         
         CGPoint curr;
         CGPoint prev;
@@ -869,6 +877,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         
         bounds = CGRectMake(prev.x, prev.y, curr.x-prev.x, curr.y-prev.y);
     }
+    else if ([subpathValues.allKeys containsObject:@"shape"]) bounds = self.bounds;
     
     [paths addObject:subpathValues];
     

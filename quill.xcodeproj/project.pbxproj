@@ -208,6 +208,9 @@
 		F3452FFD1B4CE01500342680 /* ShapePopoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F3452FFC1B4CE01500342680 /* ShapePopoverViewController.m */; };
 		F34530001B4CF3A500342680 /* ellipse.png in Resources */ = {isa = PBXBuildFile; fileRef = F3452FFE1B4CF3A500342680 /* ellipse.png */; };
 		F34530011B4CF3A500342680 /* line.png in Resources */ = {isa = PBXBuildFile; fileRef = F3452FFF1B4CF3A500342680 /* line.png */; };
+		F34530051B4E127500342680 /* handellipse.png in Resources */ = {isa = PBXBuildFile; fileRef = F34530021B4E127500342680 /* handellipse.png */; };
+		F34530061B4E127500342680 /* handline.png in Resources */ = {isa = PBXBuildFile; fileRef = F34530031B4E127500342680 /* handline.png */; };
+		F34530071B4E127500342680 /* handshape.png in Resources */ = {isa = PBXBuildFile; fileRef = F34530041B4E127500342680 /* handshape.png */; };
 		F34EDFEB1B224A8100641E7C /* slack-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = F34EDFE91B224A8100641E7C /* slack-highlighted.png */; };
 		F34EDFEC1B224A8100641E7C /* slack.png in Resources */ = {isa = PBXBuildFile; fileRef = F34EDFEA1B224A8100641E7C /* slack.png */; };
 		F34EDFF11B27798B00641E7C /* TutorialView.m in Sources */ = {isa = PBXBuildFile; fileRef = F34EDFF01B27798B00641E7C /* TutorialView.m */; };
@@ -630,6 +633,9 @@
 		F3452FFC1B4CE01500342680 /* ShapePopoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShapePopoverViewController.m; sourceTree = "<group>"; };
 		F3452FFE1B4CF3A500342680 /* ellipse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ellipse.png; path = Resources/ellipse.png; sourceTree = "<group>"; };
 		F3452FFF1B4CF3A500342680 /* line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = line.png; path = Resources/line.png; sourceTree = "<group>"; };
+		F34530021B4E127500342680 /* handellipse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = handellipse.png; path = Resources/handellipse.png; sourceTree = "<group>"; };
+		F34530031B4E127500342680 /* handline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = handline.png; path = Resources/handline.png; sourceTree = "<group>"; };
+		F34530041B4E127500342680 /* handshape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = handshape.png; path = Resources/handshape.png; sourceTree = "<group>"; };
 		F34EDFE91B224A8100641E7C /* slack-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "slack-highlighted.png"; path = "Resources/slack-highlighted.png"; sourceTree = "<group>"; };
 		F34EDFEA1B224A8100641E7C /* slack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = slack.png; path = Resources/slack.png; sourceTree = "<group>"; };
 		F34EDFEF1B27798B00641E7C /* TutorialView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialView.h; sourceTree = "<group>"; };
@@ -1215,6 +1221,9 @@
 				F3452FF01B4CD0B900342680 /* shape.png */,
 				F3452FFE1B4CF3A500342680 /* ellipse.png */,
 				F3452FFF1B4CF3A500342680 /* line.png */,
+				F34530021B4E127500342680 /* handellipse.png */,
+				F34530031B4E127500342680 /* handline.png */,
+				F34530041B4E127500342680 /* handshape.png */,
 				12D5DB951A48F167003727AC /* marker.png */,
 				F3F66F971B06A46D00B6D184 /* newboard.png */,
 				F3F66FB21B0AF15D00B6D184 /* newversion.png */,
@@ -1459,6 +1468,7 @@
 				129667761AC0EBFC00CB57FA /* userbuttonmask3.png in Resources */,
 				123D200D1A5B2B6B004D5743 /* newmessages.png in Resources */,
 				12C4E4D71A3B88D400DB0E23 /* background2.png in Resources */,
+				F34530061B4E127500342680 /* handline.png in Resources */,
 				12860F931A3E29410074B452 /* background5.png in Resources */,
 				12ABCE821A5E0A3700C4C7DC /* Icon40.png in Resources */,
 				F3DE19491B152EE7003FB294 /* grid.png in Resources */,
@@ -1517,8 +1527,10 @@
 				F3B4996E1B20160A00316F7A /* uparrow3.png in Resources */,
 				12ABCE871A5E0A3700C4C7DC /* Icon152.png in Resources */,
 				F3F66F901B0521B000B6D184 /* board-versions7.png in Resources */,
+				F34530071B4E127500342680 /* handshape.png in Resources */,
 				12B222C51AD70387002F45E3 /* editavatar.png in Resources */,
 				12860F9B1A3E62870074B452 /* SourceSansPro-ExtraLight.otf in Resources */,
+				F34530051B4E127500342680 /* handellipse.png in Resources */,
 				1213D7B41A681915001FDEA9 /* chatfade5.png in Resources */,
 				12726C211A898F8F001F0346 /* arrow1.png in Resources */,
 				12860FD41A43CECD0074B452 /* edit.png in Resources */,

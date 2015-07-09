@@ -206,7 +206,7 @@
     self.drawButtons = @[ @"undo",
                           @"redo",
                           @"clear",
-                          @"shape",
+                          @"handshape",
                           @"pen",
                           @"erase",
                           @"color",
@@ -1004,7 +1004,7 @@
     self.currentBoardView.penType = 1;
     [(UIButton *)[self.view viewWithTag:6] setBackgroundImage:[UIImage imageNamed:@"pen.png"] forState:UIControlStateNormal];
     self.currentBoardView.shapeType = 1;
-    [(UIButton *)[self.view viewWithTag:5] setBackgroundImage:[UIImage imageNamed:@"shape.png"] forState:UIControlStateNormal];
+    [(UIButton *)[self.view viewWithTag:5] setBackgroundImage:[UIImage imageNamed:@"handshape.png"] forState:UIControlStateNormal];
     self.erasing = false;
     for (int i=6; i<=10; i++) {
         if (i==8) continue;
@@ -1514,9 +1514,9 @@
         self.versionsButton.hidden = false;
         [self.versionsButton setImage:[UIImage imageNamed:@"versions.png"] forState:UIControlStateNormal];
         self.versionsCountLabel.text = @"";
-        if (self.boardIDs.count > 0) {
+        if (self.boardIDs.count > self.carousel.currentItemIndex) {
             NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"];
-            if (versionsArray.count > 1) self.versionsCountLabel.text = [NSString stringWithFormat:@"%lu", versionsArray.count];
+            if (versionsArray.count > 1) self.versionsCountLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)versionsArray.count];
         }
         self.versionsCountLabel.hidden = false;
         if  (self.userRole > 0) self.deleteBoardButton.hidden = false;
@@ -1674,7 +1674,7 @@
     [self.currentBoardView addUserDrawing:[FirebaseHelper sharedHelper].uid];
 }
 
--(void) shapeTapped:(id)sender {
+-(void) handshapeTapped:(id)sender {
     
     self.erasing = false;
     self.currentBoardView.commenting = false;
@@ -2688,6 +2688,8 @@
     }
     
     if ([carousel isEqual:self.carousel]) {
+
+        if (self.boardIDs.count <= index) return nil;
         
         ((BoardView *)view).boardID = self.boardIDs[index];
         
@@ -2746,7 +2748,7 @@
         self.shareButton.hidden = false;
         self.versionsButton.hidden = false;
         NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"];
-        if (versionsArray.count > 1) self.versionsCountLabel.text = [NSString stringWithFormat:@"%lu", versionsArray.count];
+        if (versionsArray.count > 1) self.versionsCountLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)versionsArray.count];
         else self.versionsCountLabel.text = @"";
         if (!self.versioning) self.versionsCountLabel.hidden = false;
         if (self.userRole > 0) self.deleteBoardButton.hidden = false;
@@ -2771,7 +2773,7 @@
 
 - (void)carouselCurrentItemIndexDidChange:(iCarousel *)carousel {
     
-    if (self.boardIDs.count == 0) return;
+    if ([carousel isEqual:self.carousel] && self.boardIDs.count <= carousel.currentItemIndex) return;
     
     NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"];
     
