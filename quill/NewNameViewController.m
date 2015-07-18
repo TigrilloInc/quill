@@ -11,6 +11,7 @@
 #import "FirebaseHelper.h"
 #import "NewTeamViewController.h"
 #import "Flurry.h"
+#import "SignInViewController.h"
 
 @implementation NewNameViewController
 
@@ -41,6 +42,14 @@
 }
 
 -(void) viewWillAppear:(BOOL)animated {
+    
+    NSString *teamString = [NSString stringWithFormat:@"https://%@.firebaseio.com/teams", [FirebaseHelper sharedHelper].db];
+    Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
+    [FirebaseHelper sharedHelper].teamID = [teamRef childByAutoId].key;
+    
+    SignInViewController *signInVC = (SignInViewController *)self.navigationController.viewControllers[0];
+    
+    if (!signInVC.signingIn) [Flurry logEvent:@"New_Owner-Sign_up-Step_0-Email_Complete" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
     
     [self.nameTextField becomeFirstResponder];
 }

@@ -65,11 +65,11 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
         
         self.leaveCommentLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         self.leaveCommentLabel.userInteractionEnabled = NO;
-        self.leaveCommentLabel.font = [UIFont fontWithName:@"SourceSansPro-LightIt" size:48];
+        self.leaveCommentLabel.font = [UIFont fontWithName:@"SourceSansPro-LightIt" size:60];
         self.leaveCommentLabel.textColor = [UIColor lightGrayColor];
         self.leaveCommentLabel.transform = CGAffineTransformMakeRotation(-M_PI_2);
         self.leaveCommentLabel.textAlignment = NSTextAlignmentCenter;
-        self.leaveCommentLabel.text = @"tap anywhere to leave a comment...";
+        self.leaveCommentLabel.text = @"tap anywhere to add a label...";
         [self.leaveCommentLabel sizeToFit];
         self.leaveCommentLabel.center = CGPointMake(self.center.x-20, self.center.y);
         self.leaveCommentLabel.alpha = .75;
@@ -264,7 +264,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     if (allTouches.count > 2) return;
     
-    if (allTouches.count == 2 && !projectVC.erasing) {
+    if (allTouches.count == 2 && !projectVC.erasing && projectVC.userRole > 0) {
         
         CGPoint touch1 = [allTouches[0] locationInView:self];
         CGPoint touch2 = [allTouches[1] locationInView:self];
@@ -386,7 +386,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     
     if (allTouches.count > 2) return;
     
-    if (allTouches.count == 2 && !projectVC.erasing) {
+    if (allTouches.count == 2 && !projectVC.erasing && projectVC.userRole > 0) {
         
         CGPoint touch1 = [allTouches[0] locationInView:self];
         CGPoint touch2 = [allTouches[1] locationInView:self];
@@ -770,9 +770,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         
         if (colorNumber == 0) lineColor = [UIColor whiteColor];
         if (colorNumber == 1) {
-            if  ([subpathValues objectForKey:@"faded"]) {lineColor = [UIColor colorWithRed:(220.0f/255.0f) green:(220.0f/255.0f) blue:(220.0f/255.0f) alpha:alpha];
-                NSLog(@"subpath values is %@", subpathValues);
-            }
+            if  ([subpathValues objectForKey:@"faded"]) lineColor = [UIColor colorWithRed:(220.0f/255.0f) green:(220.0f/255.0f) blue:(220.0f/255.0f) alpha:alpha];
             else lineColor = [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:alpha];
         }
         if (colorNumber == 2) {
@@ -899,6 +897,8 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     [projectVC.view bringSubviewToFront:projectVC.gridImageView];
     [projectVC.view bringSubviewToFront:projectVC.carousel];
     [projectVC.view bringSubviewToFront:projectVC.versionsCarousel];
+    [projectVC.view bringSubviewToFront:projectVC.feedbackBackground];
+    [projectVC.view bringSubviewToFront:projectVC.feedbackButton];
     [projectVC showDrawMenu];
     projectVC.carouselOffset = 0;
     
@@ -1206,11 +1206,12 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
         self.userLabel.center = CGPointMake(self.userLabel.center.x, avatar.center.y);
         
         CGRect nameRect = [self.userLabel.text boundingRectWithSize:CGSizeMake(1000,NSUIntegerMax) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) attributes:@{NSFontAttributeName: [UIFont fontWithName:@"SourceSansPro-Semibold" size:20]} context:nil];
-
+        
         CGFloat diff = self.userLabel.center.y-nameRect.size.width/2;
         
-        if (diff < 40) self.userLabel.center = CGPointMake(self.userLabel.center.x, self.userLabel.center.y-diff+10);
+        if (diff < 10) self.userLabel.center = CGPointMake(self.userLabel.center.x, self.userLabel.center.y-diff+10);
         
+        self.userLabel.hidden = false;
         self.userLabel.hidden = false;
         
         avatar.highlightedImage.hidden = false;

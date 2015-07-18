@@ -12,6 +12,7 @@
 #import <MailCore/mailcore.h>
 #import "InviteEmail.h"
 #import "Flurry.h"
+#import "GeneralAlertViewController.h"
 
 @implementation AddUserViewController
 
@@ -607,16 +608,26 @@
     }
     else if (indexPath.row >= cellCount) {
         
-        [self.inviteEmails addObject:@""];
-        [self.usersTable reloadData];
+        if ([[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys].count == 5) {
+            
+            GeneralAlertViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"Alert"];
+            vc.type = 4;
+            
+            [self.navigationController pushViewController:vc animated:YES];
+        }
+        else {
+            
+            [self.inviteEmails addObject:@""];
+            [self.usersTable reloadData];
 
-        int newCellRow;
-        
-        if (indexPath.row == cellCount) newCellRow = cellCount;
-        else newCellRow = cellCount-1;
-        
-        UITableViewCell *newCell = [self.usersTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:newCellRow inSection:0]];
-        [(UITextField *)[newCell.contentView viewWithTag:401] becomeFirstResponder];
+            int newCellRow;
+            
+            if (indexPath.row == cellCount) newCellRow = cellCount;
+            else newCellRow = cellCount-1;
+            
+            UITableViewCell *newCell = [self.usersTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:newCellRow inSection:0]];
+            [(UITextField *)[newCell.contentView viewWithTag:401] becomeFirstResponder];
+        }
     }
     
     [UIView setAnimationsEnabled:YES];

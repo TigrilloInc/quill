@@ -117,6 +117,9 @@
 @property (weak, nonatomic) IBOutlet TutorialView *tutorialView;
 
 @property (strong, nonatomic) UIImageView *eraserCursor;
+@property (weak, nonatomic) IBOutlet UILabel *connectingLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *feedbackBackground;
+@property (weak, nonatomic) IBOutlet UIButton *feedbackButton;
 
 -(void) updateDetails:(BOOL)differentProject;
 -(void) drawBoard:(BoardView *)boardView;

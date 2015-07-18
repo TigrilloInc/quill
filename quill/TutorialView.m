@@ -56,7 +56,7 @@
     }
     else if (self.type == 5) {
         imageString = @"commenttutorial.png";
-        self.gotItButton.center = CGPointMake(self.center.x, 510);
+        self.gotItButton.center = CGPointMake(self.center.x, 540);
     }
     
     [self setImage:[UIImage imageNamed:imageString]];

@@ -27,7 +27,7 @@
         self.navigationItem.title = @"Invalid Board Name";
         self.generalLabel.text = @"There is already a board with that name in this project.";
     }
-    else if (self.type > 1) {
+    else if (self.type > 1 && self.type < 3) {
         
         UIFont *boardFont = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
         UIFont *labelFont = [UIFont fontWithName:@"SourceSansPro-Light" size:20];
@@ -49,7 +49,11 @@
         [boardAttrString setAttributes:boardAttrs range:NSMakeRange(12,self.boardName.length)];
         [self.generalLabel setAttributedText:boardAttrString];
     }
-    
+    else {
+        
+        self.navigationItem.title = @"BLAH";
+        self.generalLabel.text = @"BLAH";
+    }
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -66,7 +70,8 @@
 
 - (IBAction)okTapped:(id)sender {
     
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if (self.type == 4) [self.navigationController popViewControllerAnimated:YES];
+    else [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

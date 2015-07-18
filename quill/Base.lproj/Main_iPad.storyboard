@@ -21,8 +21,10 @@
         </mutableArray>
         <mutableArray key="SourceSansPro-LightItalic.ttf">
             <string>SourceSansPro-LightIt</string>
+            <string>SourceSansPro-LightIt</string>
         </mutableArray>
         <mutableArray key="SourceSansPro-Regular.ttf">
+            <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
@@ -129,7 +131,7 @@
                                 <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="24"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="LvJ-G1-S1E">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="LvJ-G1-S1E">
                                 <rect key="frame" x="163" y="358" width="215" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="18"/>
@@ -142,7 +144,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="lpN-OB-qsm">
-                                <rect key="frame" x="305" y="224" width="120" height="26"/>
+                                <rect key="frame" x="305" y="223" width="120" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="12"/>
                                 <state key="normal" title="Forgot your password?">
@@ -2053,6 +2055,29 @@
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" alpha="0.10000000000000001" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connecting..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="c8S-Pg-xxi">
+                                <rect key="frame" x="442" y="246" width="351" height="115"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-LightIt" family="Source Sans Pro" pointSize="44"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.25" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="buttonsbackground.png" id="aWk-XN-JMA">
+                                <rect key="frame" x="-29" y="723" width="140" height="41"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="QSk-Lx-VIj">
+                                <rect key="frame" x="-2" y="722" width="113" height="42"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="20"/>
+                                <state key="normal" title="Feedback">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="feedbackTapped:" destination="u5o-7l-ZfK" eventType="touchUpInside" id="72a-bC-XrC"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
@@ -2076,6 +2101,7 @@
                         <outlet property="chatView" destination="kDh-qU-DmB" id="T8e-RO-Tbs"/>
                         <outlet property="commentTitleTextField" destination="xTW-nI-pbt" id="iOn-pP-mkU"/>
                         <outlet property="commentTitleView" destination="ZYT-PY-718" id="FBM-zS-sXD"/>
+                        <outlet property="connectingLabel" destination="c8S-Pg-xxi" id="K4o-5U-qi9"/>
                         <outlet property="deleteBoardButton" destination="4rx-rn-aUE" id="BWQ-bJ-hjS"/>
                         <outlet property="deleteProjectBackgroundImage" destination="GGp-Zb-rBF" id="EQG-2M-Scg"/>
                         <outlet property="deleteProjectButton" destination="WPV-YU-0TX" id="7ci-wy-2bd"/>
@@ -2084,6 +2110,8 @@
                         <outlet property="editBoardNameTextField" destination="wFY-iY-Scc" id="i5M-9j-PZn"/>
                         <outlet property="editButton" destination="fby-KJ-NQF" id="6Mz-77-2Yo"/>
                         <outlet property="editProjectNameTextField" destination="mem-TG-8ys" id="3jX-E3-iqV"/>
+                        <outlet property="feedbackBackground" destination="aWk-XN-JMA" id="knt-3y-SBF"/>
+                        <outlet property="feedbackButton" destination="QSk-Lx-VIj" id="xxT-tE-Zqc"/>
                         <outlet property="gridImageView" destination="sX8-E6-yJa" id="JJM-13-VI1"/>
                         <outlet property="masterView" destination="r9C-xd-JPc" id="akP-PK-hhf"/>
                         <outlet property="projectNameEditButton" destination="BtQ-po-KEj" id="qVS-Wn-a4G"/>

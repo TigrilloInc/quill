@@ -62,7 +62,7 @@
     }
     else self.signingIn = true;
     
-    //self.signingIn = [[[NSUserDefaults standardUserDefaults] objectForKey:@"registered"] integerValue];
+    self.signingIn = [[[NSUserDefaults standardUserDefaults] objectForKey:@"registered"] integerValue];
     
     [self updateDetails];
 
@@ -237,6 +237,10 @@
                         [FirebaseHelper sharedHelper].uid = user.uid;
                         [FirebaseHelper sharedHelper].email = user.email;
                         
+                        NSString *teamString = [NSString stringWithFormat:@"https://%@.firebaseio.com/teams", [FirebaseHelper sharedHelper].db];
+                        Firebase *teamRef = [[Firebase alloc] initWithUrl:teamString];
+                        if (![FirebaseHelper sharedHelper].teamID) [FirebaseHelper sharedHelper].teamID = [teamRef childByAutoId].key;
+                        
                         [self performSelector:@selector(accountCreated) withObject:nil afterDelay:.5];
                     }
                 }];
@@ -256,8 +260,6 @@
 }
 
 -(void)accountCreated {
-    
-    [Flurry logEvent:@"New_Owner-Sign_up-Step_0-Email_Complete" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
     
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     

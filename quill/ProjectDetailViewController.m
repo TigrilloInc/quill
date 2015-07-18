@@ -230,8 +230,7 @@
         }
         if (i==8) {
             
-            UILabel *commentCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(-7.5, -11, 75, 75)];
-            commentCountLabel.textAlignment = NSTextAlignmentCenter;
+            UILabel *commentCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(46, -25, 75, 75)];
             commentCountLabel.font = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
             commentCountLabel.tag = 51;
             [button addSubview:commentCountLabel];
@@ -415,6 +414,8 @@
     self.cancelBackgroundImage.hidden = true;
     self.deleteProjectButton.hidden = true;
     self.deleteProjectBackgroundImage.hidden = true;
+    self.feedbackButton.hidden = true;
+    self.feedbackBackground.hidden = true;
     editFade.hidden = true;
     self.editing = false;
 }
@@ -601,8 +602,8 @@
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:self.activeBoardID] objectForKey:@"commentsID"];
     NSInteger commentCount = [[[[FirebaseHelper sharedHelper].comments objectForKey:commentsID] allKeys] count];
     
-    UILabel *commentCountLabel = (UILabel *)[[self.view viewWithTag:9] viewWithTag:51];
-    
+    UILabel *commentCountLabel = (UILabel *)[[self.view viewWithTag:10] viewWithTag:51];
+
     if (commentCount > 0) commentCountLabel.text = [NSString stringWithFormat:@"%ld", (long)commentCount];
     else commentCountLabel.text = @"";
 }
@@ -1139,6 +1140,8 @@
     self.currentBoardView = nil;
     
     [self.view bringSubviewToFront:self.masterView];
+    [self.view bringSubviewToFront:self.feedbackBackground];
+    [self.view bringSubviewToFront:self.feedbackButton];
     
     self.commentTitleView.hidden = true;
     self.messages = [NSMutableArray array];
@@ -1522,6 +1525,7 @@
         if  (self.userRole > 0) self.deleteBoardButton.hidden = false;
         self.buttonsBackgroundImage.hidden = false;
         self.chatView.hidden = false;
+        self.chatTextField.text = nil;
         if (self.boardNameLabel.text.length > 0) self.boardNameEditButton.hidden = false;
     }
     else {
@@ -2115,6 +2119,22 @@
             else if (!self.chatOpen && self.userRole == 0) [self openChat];
         }
     }
+}
+
+- (IBAction)feedbackTapped:(id)sender {
+
+    InstabugViewController *instabugVC = [self.storyboard instantiateViewControllerWithIdentifier:@"Instabug"];
+    
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:instabugVC];
+    nav.modalPresentationStyle = UIModalPresentationFormSheet;
+    nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    
+    UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+    logoImageView.frame = CGRectMake(195, 8, 32, 32);
+    logoImageView.tag = 800;
+    [nav.navigationBar addSubview:logoImageView];
+    
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 -(void) tappedOutside {

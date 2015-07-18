@@ -11,6 +11,7 @@
 #import <MailCore/mailcore.h>
 #import "InviteEmail.h"
 #import "Flurry.h"
+#import "GeneralAlertViewController.h"
 
 @implementation InviteToTeamViewController
 
@@ -223,6 +224,7 @@
                 nameCreated = true;
                 if (teamCreated && teamSet && emailsSent && !invitesSent) [self invitesSent];
             }];
+            
             
             //////////Create Team
             NSString *teamString = [NSString stringWithFormat:@"https://%@.firebaseio.com/teams", [FirebaseHelper sharedHelper].db];
@@ -504,16 +506,26 @@
     
     if (indexPath.row >= cellCount) {
         
-        [self.inviteEmails addObject:@""];
-        [self.inviteTable reloadData];
-        
-        int newCellRow;
-        
-        if (indexPath.row == cellCount) newCellRow = cellCount;
-        else newCellRow = cellCount-1;
-        
-        UITableViewCell *newCell = [self.inviteTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:newCellRow inSection:0]];
-        [(UITextField *)[newCell.contentView viewWithTag:401] becomeFirstResponder];
+        if ([[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys].count == 5) {
+            
+            GeneralAlertViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"Alert"];
+            vc.type = 4;
+            
+            [self.navigationController pushViewController:vc animated:YES];
+        }
+        else {
+            
+            [self.inviteEmails addObject:@""];
+            [self.inviteTable reloadData];
+            
+            int newCellRow;
+            
+            if (indexPath.row == cellCount) newCellRow = cellCount;
+            else newCellRow = cellCount-1;
+            
+            UITableViewCell *newCell = [self.inviteTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:newCellRow inSection:0]];
+            [(UITextField *)[newCell.contentView viewWithTag:401] becomeFirstResponder];
+        }
     }
     
     [UIView setAnimationsEnabled:YES];

@@ -18,13 +18,13 @@
                  @"hidecomments"
                 ];
     
-    self.preferredContentSize = CGSizeMake(205, 10+options.count*50);
+    self.preferredContentSize = CGSizeMake(170, 10+options.count*50);
     ProjectDetailViewController *projectVC = (ProjectDetailViewController *)[UIApplication sharedApplication].delegate.window.rootViewController;
     
     for (int i=0; i<options.count; i++) {
         
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        button.frame = CGRectMake(0, 5+i*50, 205, 50);
+        button.frame = CGRectMake(0, 5+i*50, 170, 50);
         if (i==1 && !projectVC.currentBoardView.hideComments) {
             [button setImage:[UIImage imageNamed:@"showcomments.png"] forState:UIControlStateNormal];
             [button setImage:[UIImage imageNamed:@"showcomments-highlighted.png"] forState:UIControlStateHighlighted];

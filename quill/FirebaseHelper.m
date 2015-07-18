@@ -82,7 +82,6 @@ static FirebaseHelper *sharedHelper = nil;
         dispatch_async(dispatch_get_main_queue(), ^{
             
             weakSelf.connected = false;
-            NSLog(@"Someone broke the internet :(");
             
             if (self.loggedIn) {
                 
@@ -112,6 +111,8 @@ static FirebaseHelper *sharedHelper = nil;
                     [self.projectVC presentViewController:nav animated:YES completion:nil];
                 }
             }
+            
+            NSLog(@"Someone broke the internet :(");
         });
     };
     
@@ -140,6 +141,8 @@ static FirebaseHelper *sharedHelper = nil;
         }
         else if (user == nil) {
             
+            self.projectVC.connectingLabel.hidden = true;
+            
             SignInViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignIn"];
             //SignUpFromInviteViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignUpFromInvite"];
             
@@ -155,6 +158,8 @@ static FirebaseHelper *sharedHelper = nil;
             [self.projectVC presentViewController:nav animated:YES completion:nil];
         }
         else {
+            
+            self.projectVC.connectingLabel.hidden = true;
             
             NSLog(@"User logged in as %@", user.uid);
             
@@ -336,8 +341,26 @@ static FirebaseHelper *sharedHelper = nil;
         
         UINavigationController *nav = (UINavigationController *)self.projectVC.presentedViewController;
         SignInViewController *signInVC = (SignInViewController *)nav.viewControllers[0];
-        
+
         if (!self.teamID) {
+            
+            if (!nav) {
+                
+                [self signOut];
+                
+                SignInViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignIn"];
+                
+                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+                nav.modalPresentationStyle = UIModalPresentationFormSheet;
+                nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+                
+                UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Logo.png"]];
+                logoImageView.frame = CGRectMake(155, 8, 32, 32);
+                logoImageView.tag = 800;
+                [nav.navigationBar addSubview:logoImageView];
+                
+                [self.projectVC presentViewController:nav animated:YES completion:nil];
+            }
             
             [signInVC accountCreated];
         }
@@ -784,7 +807,9 @@ static FirebaseHelper *sharedHelper = nil;
     [self.projectVC.masterView addSubview:self.projectVC.masterView.avatarButton];
     [self.projectVC.chatView addSubview:self.projectVC.chatAvatar];
     self.projectVC.chatAvatar.hidden = true;
-
+    self.projectVC.feedbackBackground.hidden = false;
+    self.projectVC.feedbackButton.hidden = false;
+    
     [self.projectVC.masterView.projectsTable reloadData];
     [self.projectVC.masterView.projectsTable selectRowAtIndexPath:self.projectVC.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
     
@@ -802,9 +827,7 @@ static FirebaseHelper *sharedHelper = nil;
         
         self.teamName = [snapshot.value objectForKey:@"name"];
         [self.team setObject:[snapshot.value objectForKey:@"name"] forKey:@"name"];
-        
-        NSDictionary *projectsDict = [snapshot.value objectForKey:@"projects"];
-        
+
         if ([[[snapshot.value objectForKey:@"users"] allKeys] isEqual:@[self.uid]]) {
             [self checkUsersLoaded];
             [[[self.team objectForKey:@"users"] objectForKey:self.uid] setObject:[[snapshot.value objectForKey:@"users"] objectForKey:self.uid] forKey:@"teamOwner"];
