@@ -1672,16 +1672,17 @@ static FirebaseHelper *sharedHelper = nil;
                                   @"inBoard" : @"none"
                                   };
     
-    [userRef setValue:statusDict];
     
     FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:userRef];
-    [authClient logout];
     
-    self.loggedIn = false;
-    
-    [self removeAllObservers];
-    [self clearData];
-    
+    [userRef setValue:statusDict withCompletionBlock:^(NSError *error, Firebase *ref) {
+        
+        [authClient logout];
+        self.loggedIn = false;
+        
+        [self removeAllObservers];
+        [self clearData];
+    }];
 }
 
 -(void) removeAllObservers {

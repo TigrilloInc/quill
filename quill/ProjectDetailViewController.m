@@ -814,6 +814,8 @@
 
 -(void) deleteBoardWithID:(NSString *)boardID {
     
+    [Flurry logEvent:@"Board-Deleted" withParameters: @{ @"projectID" : [FirebaseHelper sharedHelper].currentProjectID, @"teamID" : [FirebaseHelper sharedHelper].teamID }];
+    
     NSString *commentsID = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"commentsID"];
     NSString *commentsString = [NSString stringWithFormat:@"https://%@.firebaseio.com/comments/%@", [FirebaseHelper sharedHelper].db, commentsID];
     Firebase *commentsRef = [[Firebase alloc] initWithUrl:commentsString];
@@ -1465,6 +1467,8 @@
              
                 [self deleteBoardWithID:boardID];
                 
+                [Flurry logEvent:@"Board-Deleted" withParameters: @{ @"projectID" : [FirebaseHelper sharedHelper].currentProjectID, @"teamID" : [FirebaseHelper sharedHelper].teamID }];
+                
                 NSArray *versionsArray = [[[FirebaseHelper sharedHelper].boards objectForKey:boardID] objectForKey:@"versions"];
                 
                 for (int i=1; i<versionsArray.count; i++) [self deleteBoardWithID:versionsArray[i]];
@@ -1874,13 +1878,13 @@
 
 - (IBAction)newBoardTapped:(id)sender {
     
-    [Flurry logEvent:@"New_Board-Created" withParameters: @{ @"projectID" : [FirebaseHelper sharedHelper].currentProjectID, @"teamID" : [FirebaseHelper sharedHelper].teamID }];
-    
     newBoardCreated = true;
     
     [self createBoard];
     
     if (self.versioning) {
+        
+        [Flurry logEvent:@"Versions-New_Version" withParameters: @{ @"boardID" : self.boardIDs[self.carousel.currentItemIndex], @"projectID" : [FirebaseHelper sharedHelper].currentProjectID, @"teamID" : [FirebaseHelper sharedHelper].teamID }];
         
         self.activeBoardID = [[[[FirebaseHelper sharedHelper].boards objectForKey:self.boardIDs[self.carousel.currentItemIndex]] objectForKey:@"versions"] lastObject];
 
@@ -1888,6 +1892,8 @@
         [self.versionsCarousel scrollByNumberOfItems:self.versionsCarousel.numberOfItems duration:.5];
     }
     else {
+        
+        [Flurry logEvent:@"Board-Created" withParameters: @{ @"projectID" : [FirebaseHelper sharedHelper].currentProjectID, @"teamID" : [FirebaseHelper sharedHelper].teamID }];
         
         self.activeBoardID = [self.boardIDs lastObject];
         [self.carousel reloadData];

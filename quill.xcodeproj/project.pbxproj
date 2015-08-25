@@ -179,6 +179,7 @@
 		F30F00341AF4437B0082D7D6 /* versions.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F00331AF4437B0082D7D6 /* versions.png */; };
 		F30F00381AF44E3B0082D7D6 /* carousel.png in Resources */ = {isa = PBXBuildFile; fileRef = F30F00371AF44E3B0082D7D6 /* carousel.png */; };
 		F31606FA1B425A4700F4BA4C /* drivesaved.png in Resources */ = {isa = PBXBuildFile; fileRef = F31606F91B425A4700F4BA4C /* drivesaved.png */; };
+		F330BE591B5D695000E93B3F /* TeamSizeAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F330BE581B5D695000E93B3F /* TeamSizeAlertViewController.m */; };
 		F333A15F1B364220009D00BF /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F333A15E1B364220009D00BF /* DropboxSDK.framework */; };
 		F333A1691B365042009D00BF /* dropbox-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = F333A1671B365042009D00BF /* dropbox-highlighted.png */; };
 		F333A16A1B365042009D00BF /* dropbox.png in Resources */ = {isa = PBXBuildFile; fileRef = F333A1681B365042009D00BF /* dropbox.png */; };
@@ -209,6 +210,8 @@
 		F370EEC01B30BF9100055AF2 /* SlackChannelTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F370EEBF1B30BF9100055AF2 /* SlackChannelTableViewController.m */; };
 		F370EEC31B311EE600055AF2 /* ShareHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F370EEC21B311EE600055AF2 /* ShareHelper.m */; };
 		F37687E91AF2D2A3005ECE60 /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = F37687E81AF2D2A3005ECE60 /* share.png */; };
+		F3782A1A1B8BC246008CC9A6 /* termschecked.png in Resources */ = {isa = PBXBuildFile; fileRef = F3782A181B8BC246008CC9A6 /* termschecked.png */; };
+		F3782A1B1B8BC246008CC9A6 /* termsunchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = F3782A191B8BC246008CC9A6 /* termsunchecked.png */; };
 		F3ABF3721B0F0C8F00BA4C28 /* board-versions1.png in Resources */ = {isa = PBXBuildFile; fileRef = F3ABF3711B0F0C8E00BA4C28 /* board-versions1.png */; };
 		F3B646E21B39198000722058 /* libGTLTouchStaticLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F3B646E11B39198000722058 /* libGTLTouchStaticLib.a */; };
 		F3B646EA1B39198700722058 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3B646E91B39198700722058 /* MobileCoreServices.framework */; };
@@ -583,6 +586,8 @@
 		F30F00331AF4437B0082D7D6 /* versions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = versions.png; path = Resources/versions.png; sourceTree = "<group>"; };
 		F30F00371AF44E3B0082D7D6 /* carousel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = carousel.png; path = Resources/carousel.png; sourceTree = "<group>"; };
 		F31606F91B425A4700F4BA4C /* drivesaved.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = drivesaved.png; path = Resources/drivesaved.png; sourceTree = "<group>"; };
+		F330BE571B5D695000E93B3F /* TeamSizeAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeamSizeAlertViewController.h; sourceTree = "<group>"; };
+		F330BE581B5D695000E93B3F /* TeamSizeAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeamSizeAlertViewController.m; sourceTree = "<group>"; };
 		F333A15E1B364220009D00BF /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DropboxSDK.framework; path = quill/Resources/Dropbox/DropboxSDK.framework; sourceTree = "<group>"; };
 		F333A1671B365042009D00BF /* dropbox-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "dropbox-highlighted.png"; path = "Resources/dropbox-highlighted.png"; sourceTree = "<group>"; };
 		F333A1681B365042009D00BF /* dropbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dropbox.png; path = Resources/dropbox.png; sourceTree = "<group>"; };
@@ -622,6 +627,8 @@
 		F370EEC11B311EE600055AF2 /* ShareHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShareHelper.h; sourceTree = "<group>"; };
 		F370EEC21B311EE600055AF2 /* ShareHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShareHelper.m; sourceTree = "<group>"; };
 		F37687E81AF2D2A3005ECE60 /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = share.png; path = Resources/share.png; sourceTree = "<group>"; };
+		F3782A181B8BC246008CC9A6 /* termschecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = termschecked.png; path = Resources/termschecked.png; sourceTree = "<group>"; };
+		F3782A191B8BC246008CC9A6 /* termsunchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = termsunchecked.png; path = Resources/termsunchecked.png; sourceTree = "<group>"; };
 		F3ABF3711B0F0C8E00BA4C28 /* board-versions1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions1.png"; path = "Resources/iCarousel/board-versions1.png"; sourceTree = "<group>"; };
 		F3B646E11B39198000722058 /* libGTLTouchStaticLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGTLTouchStaticLib.a; path = "quill/Resources/Google/Source/build/Debug-iphoneos/libGTLTouchStaticLib.a"; sourceTree = "<group>"; };
 		F3B646E91B39198700722058 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
@@ -970,6 +977,8 @@
 		F3FE1BFC1B39BC4000E966EC /* Alerts */ = {
 			isa = PBXGroup;
 			children = (
+				F330BE571B5D695000E93B3F /* TeamSizeAlertViewController.h */,
+				F330BE581B5D695000E93B3F /* TeamSizeAlertViewController.m */,
 				12BDC6A01A95AF28001160AF /* LeaveProjectAlertViewController.h */,
 				12BDC6A11A95AF28001160AF /* LeaveProjectAlertViewController.m */,
 				12BDC6A61A95B12B001160AF /* DeleteProjectAlertViewController.h */,
@@ -1061,6 +1070,8 @@
 				1213D7B81A6B1538001FDEA9 /* newmessagesdivider.png */,
 				1231BEBD1A6DC52C00E09914 /* checked.png */,
 				1231BEBF1A6DC53A00E09914 /* unchecked.png */,
+				F3782A181B8BC246008CC9A6 /* termschecked.png */,
+				F3782A191B8BC246008CC9A6 /* termsunchecked.png */,
 				1231BEC11A6DFAB400E09914 /* mail.png */,
 				1231BEB71A6D8D2B00E09914 /* minus1.png */,
 				1231BEBB1A6D97A200E09914 /* minus2.png */,
@@ -1529,12 +1540,14 @@
 				129E128219648A2C00ED9D42 /* InfoPlist.strings in Resources */,
 				F3BA3A5E1B1D0BFC0051AA7A /* leavecomment.png in Resources */,
 				12860FEC1A47C3170074B452 /* plus1.png in Resources */,
+				F3782A1A1B8BC246008CC9A6 /* termschecked.png in Resources */,
 				F3BA3A601B1D0DDF0051AA7A /* showcomments.png in Resources */,
 				F3F66F991B06A46D00B6D184 /* newboard.png in Resources */,
 				12F4F9C41AA7ECDF00C8FC31 /* Instabug.bundle in Resources */,
 				F3F66FAC1B095C6F00B6D184 /* buttonsbackground2.png in Resources */,
 				1213D7AE1A664FB6001FDEA9 /* commenttitle.png in Resources */,
 				F342D12A1B391CCD00642F76 /* drive-highlighted.png in Resources */,
+				F3782A1B1B8BC246008CC9A6 /* termsunchecked.png in Resources */,
 				F3F66F8C1B0515E700B6D184 /* board-versions5.png in Resources */,
 				F342593D1B28D7E7000ABCB3 /* commenttutorial.png in Resources */,
 				12BCAF5B1A4C0EA500FC327E /* down.png in Resources */,
@@ -1619,6 +1632,7 @@
 				1230ABC719709E7B00EB2389 /* FirebaseHelper.m in Sources */,
 				1216D99C19A275980095DBD8 /* LSCollectionViewLayoutHelper.m in Sources */,
 				12CE89771A75E85600983FBE /* TeamSettingsViewController.m in Sources */,
+				F330BE591B5D695000E93B3F /* TeamSizeAlertViewController.m in Sources */,
 				1213D7B71A6849B7001FDEA9 /* CommentPopoverViewController.m in Sources */,
 				1216D99B19A275980095DBD8 /* LSCollectionViewHelper.m in Sources */,
 				12A3FA101979861800E03E9E /* ProjectDetailViewController.m in Sources */,

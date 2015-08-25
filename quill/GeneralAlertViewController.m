@@ -49,11 +49,6 @@
         [boardAttrString setAttributes:boardAttrs range:NSMakeRange(12,self.boardName.length)];
         [self.generalLabel setAttributedText:boardAttrString];
     }
-    else {
-        
-        self.navigationItem.title = @"BLAH";
-        self.generalLabel.text = @"BLAH";
-    }
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -70,8 +65,7 @@
 
 - (IBAction)okTapped:(id)sender {
     
-    if (self.type == 4) [self.navigationController popViewControllerAnimated:YES];
-    else [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

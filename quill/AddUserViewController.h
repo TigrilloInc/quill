@@ -15,6 +15,7 @@
     ProjectDetailViewController *projectVC;
     NSMutableArray *teamEmails;
     NSMutableArray *editedText;
+    UIImageView *logoImage;
 }
 
 @property (strong, nonatomic) IBOutlet UITableView *usersTable;

@@ -60,7 +60,13 @@
         self.switchButton.hidden = false;
         self.emailField.text = [FirebaseHelper sharedHelper].email;
     }
-    else self.signingIn = true;
+    else {
+        self.signingIn = true;
+        self.termsButton.hidden = false;
+        self.termsLabel.hidden = false;
+        self.termsLink.hidden = false;
+        self.privacyLink.hidden = false;
+    }
     
     self.signingIn = [[[NSUserDefaults standardUserDefaults] objectForKey:@"registered"] integerValue];
     
@@ -78,6 +84,10 @@
         [self.signInButton setTitle:@"Sign In" forState:UIControlStateNormal];
         [self.signInLabel setText:@"Sign in with your email."];
         self.passwordResetButton.hidden = false;
+        self.termsButton.hidden = true;
+        self.termsLabel.hidden = true;
+        self.termsLink.hidden = true;
+        self.privacyLink.hidden = true;
         
     } else {
         
@@ -85,6 +95,10 @@
         [self.signInButton setTitle:@"Sign Up" forState:UIControlStateNormal];
         [self.signInLabel setText:@"Pick an email and password to begin creating a team."];
         self.passwordResetButton.hidden = true;
+        self.termsButton.hidden = false;
+        self.termsLabel.hidden = false;
+        self.termsLink.hidden = false;
+        self.privacyLink.hidden = false;
     }
     
     [UIView setAnimationsEnabled:YES];
@@ -196,6 +210,22 @@
             return;
         }
         
+        if (!termsChecked) {
+            
+            self.signInLabel.text = @"You must agree to the Terms of Service and Privacy Policy to proceed.";
+            
+            self.emailField.userInteractionEnabled = true;
+            self.passwordField.userInteractionEnabled = true;
+            self.emailField.alpha = 1;
+            self.passwordField.alpha = 1;
+            self.signInButton.userInteractionEnabled = true;
+            self.signInButton.alpha = 1;
+            self.passwordResetButton.userInteractionEnabled = true;
+            self.passwordResetButton.alpha = 1;
+            
+            return;
+        }
+        
         self.signInLabel.text = @"Creating user account...";
         
         [authClient createUserWithEmail:self.emailField.text password:self.passwordField.text andCompletionBlock:^(NSError* error, FAUser* user) {
@@ -214,10 +244,6 @@
             }
             else {
                 
-                NSString *userString = [NSString stringWithFormat:@"users/%@/info", user.uid];
-                
-                [[ref childByAppendingPath:userString] updateChildValues:@{@"email":self.emailField.text}];
-                
                 [FirebaseHelper sharedHelper].uid = user.uid;
                 
                 [authClient loginWithEmail:self.emailField.text andPassword:self.passwordField.text
@@ -231,6 +257,9 @@
                     } else {
                         
                         self.signInLabel.text = @"User account created!";
+                        
+                        NSString *userString = [NSString stringWithFormat:@"users/%@/info", user.uid];
+                        [[ref childByAppendingPath:userString] updateChildValues:@{@"email":self.emailField.text}];
                         
                         [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:@"registered"];
                         [FirebaseHelper sharedHelper].loggedIn = true;
@@ -290,6 +319,26 @@
     self.signingIn = !self.signingIn;
 
     [self updateDetails];
+}
+
+- (IBAction)termsTapped:(id)sender {
+    
+    if (termsChecked) {
+        termsChecked = false;
+        [self.termsButton setImage:[UIImage imageNamed:@"termsunchecked.png"] forState:UIControlStateNormal];
+    }
+    else {
+        termsChecked = true;
+        [self.termsButton setImage:[UIImage imageNamed:@"termschecked.png"] forState:UIControlStateNormal];
+    }
+}
+
+- (IBAction)termsLinkTapped:(id)sender {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString: @"http://www.getquill.com/legal/terms-of-service/"]];
+}
+
+- (IBAction)privacyLinkTapped:(id)sender {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString: @"http://www.getquill.com/legal/privacy-policy/"]];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{

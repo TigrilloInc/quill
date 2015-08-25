@@ -54,4 +54,12 @@
     }];
 }
 
+- (IBAction)termsTapped:(id)sender {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString: @"http://www.getquill.com/legal/terms-of-service/"]];
+}
+
+- (IBAction)privacyTapped:(id)sender {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString: @"http://www.getquill.com/legal/privacy-policy/"]];
+}
+
 @end

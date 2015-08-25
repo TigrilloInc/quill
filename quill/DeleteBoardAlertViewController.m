@@ -138,7 +138,7 @@
         if (projectVC.versioning) [projectVC versionsTapped:nil];
         if (projectVC.boardIDs.count == 0) [projectVC createBoard];
     }
-    
+
     [projectVC.carousel reloadData];
     [self dismissViewControllerAnimated:YES completion:nil];
 }

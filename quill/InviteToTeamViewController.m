@@ -12,6 +12,7 @@
 #import "InviteEmail.h"
 #import "Flurry.h"
 #import "GeneralAlertViewController.h"
+#import "TeamSizeAlertViewController.h"
 
 @implementation InviteToTeamViewController
 
@@ -44,10 +45,11 @@
 -(void) viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-    
+        
     if (self.creatingTeam) {
         
         self.navigationItem.title = @"Step 3: Send Invites";
+        
         self.inviteButton.frame = CGRectMake(115, 272, 310, 50);
         self.inviteTable.frame = CGRectMake(0, 0, 540, 212);
         self.inviteLabel.frame = CGRectMake(0, 219, 540, 48);
@@ -82,6 +84,7 @@
             [Flurry logEvent:@"New_Owner-Sign_up-Step_3-Back_to_Team_Name" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
             logoImage.frame = CGRectMake(149, 8, 32, 32);
         }
+        else if ([self.navigationController.viewControllers.lastObject isKindOfClass:[TeamSizeAlertViewController class]]) logoImage.frame = CGRectMake(95, 8, 32, 32);
         else logoImage.frame = CGRectMake(173, 8, 32, 32);
         
         [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
@@ -508,8 +511,11 @@
         
         if ([[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys].count == 5) {
             
-            GeneralAlertViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"Alert"];
-            vc.type = 4;
+            [Flurry logEvent:@"Team_Size_Limit-Limit_Reached" withParameters: @{ @"teamID" : [FirebaseHelper sharedHelper].teamID }];
+            
+            TeamSizeAlertViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"TeamSize"];
+            
+            logoImage.hidden = true;
             
             [self.navigationController pushViewController:vc animated:YES];
         }

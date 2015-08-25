@@ -13,6 +13,7 @@
 #import "InviteEmail.h"
 #import "Flurry.h"
 #import "GeneralAlertViewController.h"
+#import "TeamSizeAlertViewController.h"
 
 @implementation AddUserViewController
 
@@ -21,6 +22,14 @@
     [super viewDidLoad];
     
     self.navigationItem.title = @"Invite Teammates to Project";
+    
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc]
+                                   initWithTitle: @"Back"
+                                   style: UIBarButtonItemStylePlain
+                                   target:nil action:nil];
+    [self.navigationItem setBackBarButtonItem: backButton];
+    
+    logoImage = (UIImageView *)[self.navigationController.navigationBar viewWithTag:800];
     
     self.selectedUsers = [NSMutableArray array];
     self.inviteEmails = [NSMutableArray array];
@@ -608,10 +617,16 @@
     }
     else if (indexPath.row >= cellCount) {
         
-        if ([[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys].count == 5) {
+        if ([[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys].count == 1) {
             
-            GeneralAlertViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"Alert"];
-            vc.type = 4;
+            [Flurry logEvent:@"Team_Size_Limit-Limit_Reached" withParameters: @{ @"teamID" : [FirebaseHelper sharedHelper].teamID }];
+            
+            TeamSizeAlertViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"TeamSize"];
+            
+            logoImage.hidden = true;
+            logoImage.frame = CGRectMake(95, 8, 32, 32);
+            
+            [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
             
             [self.navigationController pushViewController:vc animated:YES];
         }
@@ -631,6 +646,16 @@
     }
     
     [UIView setAnimationsEnabled:YES];
+}
+
+-(void)showLogo {
+    
+    logoImage.alpha = 0;
+    logoImage.hidden = false;
+    
+    [UIView animateWithDuration:.3 animations:^{
+        logoImage.alpha = 1;
+    }];
 }
 
 @end
