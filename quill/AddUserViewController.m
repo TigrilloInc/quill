@@ -617,7 +617,7 @@
     }
     else if (indexPath.row >= cellCount) {
         
-        if ([[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys].count == 1) {
+        if ([[[FirebaseHelper sharedHelper].team objectForKey:@"users"] allKeys].count == 5) {
             
             [Flurry logEvent:@"Team_Size_Limit-Limit_Reached" withParameters: @{ @"teamID" : [FirebaseHelper sharedHelper].teamID }];
             
