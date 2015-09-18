@@ -1424,8 +1424,8 @@
     
     NSString *projectString = [NSString stringWithFormat:@"https://%@.firebaseio.com/projects/%@/info", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].currentProjectID];
     Firebase *projectRef = [[Firebase alloc] initWithUrl:projectString];
-    
-    if (![self.editProjectNameTextField.text isEqualToString:self.projectNameLabel.text]) {
+
+    if (![self.editProjectNameTextField.text isEqualToString:[[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"name"]]) {
         
         self.showButtons = true;
         
