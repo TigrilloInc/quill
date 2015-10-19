@@ -51,6 +51,14 @@
     return YES;
 }
 
+//-(void) application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+//    
+//    if (application.applicationState == UIApplicationStateInactive || application.applicationState == UIApplicationStateBackground) {
+//     
+//        [Flurry logEvent:@"Notification-Messaging-Notification_Opened"];
+//    }
+//}
+
 void uncaughtExceptionHandler(NSException *exception) {
     
     if (![FirebaseHelper sharedHelper].uid) return;

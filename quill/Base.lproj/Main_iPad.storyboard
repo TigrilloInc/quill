@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="u5o-7l-ZfK">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="u5o-7l-ZfK">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
     </dependencies>
     <customFonts key="customFonts">
         <mutableArray key="SourceSansPro-ExtraLight.otf">
@@ -336,14 +336,14 @@
                                 <inset key="contentInset" minX="0.0" minY="7" maxX="0.0" maxY="0.0"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="UserCell" textLabel="HQk-m0-5Ox" rowHeight="64" style="IBUITableViewCellStyleDefault" id="Enf-IW-VBX">
-                                        <rect key="frame" x="0.0" y="22" width="540" height="64"/>
+                                        <rect key="frame" x="0.0" y="29" width="540" height="64"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Enf-IW-VBX" id="OgQ-0i-1uA">
                                             <rect key="frame" x="0.0" y="0.0" width="540" height="64"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="HQk-m0-5Ox">
-                                                    <rect key="frame" x="103" y="0.0" width="158" height="74"/>
+                                                    <rect key="frame" x="15" y="0.0" width="510" height="64"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -944,7 +944,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="62" height="62"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <accessibility key="accessibilityConfiguration">
-                                                <accessibilityTraits key="traits" none="YES" image="YES" notEnabled="YES"/>
+                                                <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
                                             </accessibility>
                                         </imageView>
                                     </subviews>
@@ -1780,7 +1780,7 @@
             </objects>
             <point key="canvasLocation" x="-5894" y="-3093"/>
         </scene>
-        <!--Project Detail View Controller-->
+        <!--Data Source-->
         <scene sceneID="DGE-om-W17">
             <objects>
                 <viewController id="u5o-7l-ZfK" customClass="ProjectDetailViewController" sceneMemberID="viewController">
@@ -1938,7 +1938,7 @@
                                 <rect key="frame" x="210" y="719" width="814" height="49"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Leave a comment..." minimumFontSize="17" id="ljg-T3-hgU">
+                                    <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Send a message..." minimumFontSize="17" id="ljg-T3-hgU">
                                         <rect key="frame" x="51" y="10" width="667" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -2284,9 +2284,4 @@
         <image name="userbuttonmask.png" width="250" height="250"/>
         <image name="versions.png" width="700" height="700"/>
     </resources>
-    <simulatedMetricsContainer key="defaultSimulatedMetrics">
-        <simulatedStatusBarMetrics key="statusBar"/>
-        <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination"/>
-    </simulatedMetricsContainer>
 </document>

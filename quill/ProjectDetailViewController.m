@@ -1027,10 +1027,11 @@
     CGRect projectNameRect = [self.view viewWithTag:101].frame;
     boardNameLabel.frame = CGRectMake(projectNameRect.size.width+46, projectNameRect.origin.y+5.5, boardNameLabel.frame.size.width, boardNameLabel.frame.size.height);
     UILabel *versionLabel = (UILabel *)[self.view viewWithTag:105];
-    versionLabel.text = [NSString stringWithFormat:@"Version %d", self.versionsCarousel.currentItemIndex+1];
+    versionLabel.text = [NSString stringWithFormat:@"Version %ld", self.versionsCarousel.currentItemIndex+1];
     versionLabel.frame = CGRectMake(boardNameLabel.frame.origin.x+17, 42, 100, 50);
     
     self.chatTextField.text = nil;
+    self.chatTextField.placeholder = @"Leave a comment...";
     self.messages = [NSMutableArray array];
     [self.chatTable reloadData];
     [self hideChat];
@@ -1147,6 +1148,7 @@
     
     self.commentTitleView.hidden = true;
     self.messages = [NSMutableArray array];
+    self.chatTextField.placeholder = @"Send a message...";
     [self.chatTable reloadData];
     
     [UIView animateWithDuration:.25

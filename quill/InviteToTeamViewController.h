@@ -13,6 +13,7 @@
 @interface InviteToTeamViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource> {
     
     BOOL invitesSent;
+    NSInteger inviteCount;
     
     UIImageView *logoImage;
     ProjectDetailViewController *projectVC;
@@ -21,11 +22,11 @@
 }
 
 @property BOOL creatingTeam;
-@property (weak, nonatomic) IBOutlet UITableView *inviteTable;
+@property (strong, nonatomic) IBOutlet UITableView *inviteTable;
 @property (strong, nonatomic) NSMutableArray *inviteEmails;
-@property (weak, nonatomic) IBOutlet UILabel *inviteLabel;
-@property (weak, nonatomic) IBOutlet RoundedButton *inviteButton;
-@property (weak, nonatomic) IBOutlet UILabel *stepLabel;
-@property (weak, nonatomic) IBOutlet UIImageView *inviteFade;
+@property (strong, nonatomic) IBOutlet UILabel *inviteLabel;
+@property (strong, nonatomic) IBOutlet RoundedButton *inviteButton;
+@property (strong, nonatomic) IBOutlet UILabel *stepLabel;
+@property (strong, nonatomic) IBOutlet UIImageView *inviteFade;
 
 @end

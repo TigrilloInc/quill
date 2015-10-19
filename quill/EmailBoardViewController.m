@@ -154,6 +154,8 @@
     
     [self updateInviteEmails];
     
+    inviteCount = self.inviteEmails.count;
+    
     if (self.inviteEmails.count+self.selectedUsers.count == 0) {
         
         self.inviteLabel.text = @"Please add at least one user.";
@@ -256,7 +258,7 @@
             for (NSString *userEmail in self.inviteEmails) {
                 
                 NSString *token = [self generateToken];
-                NSString *tokenURL = [NSString stringWithFormat:@"quill://%@", token];
+//                NSString *tokenURL = [NSString stringWithFormat:@"quill://%@", token];
                 
                 NSString *tokenString = [NSString stringWithFormat:@"https://%@.firebaseio.com/tokens/%@", [FirebaseHelper sharedHelper].db,token];
                 Firebase *tokenRef = [[Firebase alloc] initWithUrl:tokenString];
@@ -280,13 +282,13 @@
                 [[builder header] setSubject:@"Welcome to Quill!"];
                 
                 InviteEmail *inviteEmail = [[InviteEmail alloc] init];
-                inviteEmail.inviteURL = tokenURL;
+                inviteEmail.inviteToken = token;
                 [inviteEmail updateHTML];
                 [builder setHTMLBody:inviteEmail.htmlBody];
                 
                 //[builder setTextBody:tokenURL];
                 NSData * rfc822Data = [builder data];
-                
+
                 MCOSMTPSendOperation *sendOperation =
                 [smtpSession sendOperationWithData:rfc822Data];
                 [sendOperation start:^(NSError *error) {
@@ -296,7 +298,7 @@
                         [Flurry logEvent:@"Invite_User-Invites_Sent" withParameters:
                          @{ @"userID":[FirebaseHelper sharedHelper].uid,
                             @"teamID":[FirebaseHelper sharedHelper].teamID,
-                            @"invites":@(self.inviteEmails.count),
+                            @"invites":@(inviteCount),
                             @"source": @"addUser"
                             }];
                         

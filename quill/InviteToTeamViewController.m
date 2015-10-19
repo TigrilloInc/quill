@@ -51,9 +51,10 @@
         self.navigationItem.title = @"Step 3: Send Invites";
         
         self.inviteButton.frame = CGRectMake(115, 272, 310, 50);
-        self.inviteTable.frame = CGRectMake(0, 0, 540, 212);
+//        self.inviteTable.frame = CGRectMake(0, 0, 540, 212);
         self.inviteLabel.frame = CGRectMake(0, 219, 540, 48);
         self.inviteFade.frame = CGRectMake(0, 196, 540, 112);
+        
         
         [self.inviteTable reloadData];
         
@@ -182,6 +183,8 @@
 
     [self updateInviteEmails];
     
+    inviteCount = self.inviteEmails.count;
+    
     if (self.inviteEmails.count == 0 && !self.creatingTeam) {
         
         self.inviteLabel.text = @"Please enter at least one email.";
@@ -290,7 +293,7 @@
             for (NSString *userEmail in self.inviteEmails) {
                 
                 NSString *token = [self generateToken];
-                NSString *tokenURL = [NSString stringWithFormat:@"quill://%@", token];
+//                NSString *tokenURL = [NSString stringWithFormat:@"quill://%@", token];
                 
                 NSString *tokenString = [NSString stringWithFormat:@"https://%@.firebaseio.com/tokens/%@",[FirebaseHelper sharedHelper].db, token];
                 Firebase *tokenRef = [[Firebase alloc] initWithUrl:tokenString];
@@ -312,7 +315,7 @@
                 [[builder header] setSubject:@"Welcome to Quill!"];
                 
                 InviteEmail *inviteEmail = [[InviteEmail alloc] init];
-                inviteEmail.inviteURL = tokenURL;
+                inviteEmail.inviteToken = token;
                 [inviteEmail updateHTML];
                 [builder setHTMLBody:inviteEmail.htmlBody];
 
@@ -348,7 +351,7 @@
     [Flurry logEvent:@"Invite_User-Invites_Sent" withParameters:
      @{ @"userID":[FirebaseHelper sharedHelper].uid,
         @"teamID":[FirebaseHelper sharedHelper].teamID,
-        @"invites":@(self.inviteEmails.count),
+        @"invites":@(inviteCount),
         @"source": @"inviteToTeam"
         }];
     
@@ -462,6 +465,7 @@
         plusImage.alpha = .5;
         plusImage.tag = 405;
         [cell.contentView addSubview:plusImage];
+        
     }
     else {
         
@@ -496,7 +500,7 @@
         else deleteButton.hidden = true;
 
     }
- 
+    
     return cell;
 }
 

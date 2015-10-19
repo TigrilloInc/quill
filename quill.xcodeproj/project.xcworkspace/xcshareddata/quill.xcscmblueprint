@@ -1,0 +1,42 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "F64B3784FCF4FD3FFC96FDB5C844047B2B2C5ACB",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "22754eea-fc93-e339-b032-c1f495b90c16++2896" : {
+
+    },
+    "b3aa69f0-f65c-a609-0a27-78855af037c1++2896" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "b3aa69f0-f65c-a609-0a27-78855af037c1++2896" : 0,
+    "22754eea-fc93-e339-b032-c1f495b90c16++2896" : 0,
+    "F64B3784FCF4FD3FFC96FDB5C844047B2B2C5ACB" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "BA0CAB4F-2A05-4A79-B778-1D587ADD7201",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "b3aa69f0-f65c-a609-0a27-78855af037c1++2896" : "quill\/quill\/Resources\/Google\/Source\/HTTPFetcher\/",
+    "22754eea-fc93-e339-b032-c1f495b90c16++2896" : "quill\/quill\/Resources\/Google\/Source\/OAuth2\/",
+    "F64B3784FCF4FD3FFC96FDB5C844047B2B2C5ACB" : "quill\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "quill",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "quill.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/gtm-oauth2.googlecode.com\/svn",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "22754eea-fc93-e339-b032-c1f495b90c16++2896"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/TigrilloInc\/quill.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "F64B3784FCF4FD3FFC96FDB5C844047B2B2C5ACB"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/gtm-http-fetcher.googlecode.com\/svn",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "b3aa69f0-f65c-a609-0a27-78855af037c1++2896"
+    }
+  ]
+}

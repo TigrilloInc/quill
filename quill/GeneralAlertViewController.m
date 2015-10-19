@@ -27,7 +27,7 @@
         self.navigationItem.title = @"Invalid Board Name";
         self.generalLabel.text = @"There is already a board with that name in this project.";
     }
-    else if (self.type > 1 && self.type < 3) {
+    else if (self.type > 1 && self.type < 4) {
         
         UIFont *boardFont = [UIFont fontWithName:@"SourceSansPro-Semibold" size:20];
         UIFont *labelFont = [UIFont fontWithName:@"SourceSansPro-Light" size:20];

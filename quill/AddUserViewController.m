@@ -148,12 +148,10 @@
         if ([textField isFirstResponder]) [textField resignFirstResponder];
         
         if (activate) {
-            
             cell.userInteractionEnabled = YES;
             cell.alpha = 1;
         }
         else {
-            
             cell.userInteractionEnabled = NO;
             cell.alpha = 0.5;
         }
@@ -163,6 +161,8 @@
 - (IBAction)addUserTapped:(id)sender {
     
     [self updateInviteEmails];
+    
+    inviteCount = self.inviteEmails.count;
     
     if (self.inviteEmails.count+self.selectedUsers.count == 0) {
         
@@ -266,7 +266,7 @@
             for (NSString *userEmail in self.inviteEmails) {
                 
                 NSString *token = [self generateToken];
-                NSString *tokenURL = [NSString stringWithFormat:@"quill://%@", token];
+//                NSString *tokenURL = [NSString stringWithFormat:@"quill://%@", token];
                 
                 NSString *tokenString = [NSString stringWithFormat:@"https://%@.firebaseio.com/tokens/%@", [FirebaseHelper sharedHelper].db,token];
                 Firebase *tokenRef = [[Firebase alloc] initWithUrl:tokenString];
@@ -278,7 +278,7 @@
                                              @"email" : userEmail,
                                              @"invitedBy" : [FirebaseHelper sharedHelper].userName,
                                              @"users" : usersDict
-                                                 };
+                                            };
                 [tokenRef setValue:tokenDict];
                 
                 MCOMessageBuilder *builder = [[MCOMessageBuilder alloc] init];
@@ -290,7 +290,7 @@
                 [[builder header] setSubject:@"Welcome to Quill!"];
                 
                 InviteEmail *inviteEmail = [[InviteEmail alloc] init];
-                inviteEmail.inviteURL = tokenURL;
+                inviteEmail.inviteToken = token;
                 [inviteEmail updateHTML];
                 [builder setHTMLBody:inviteEmail.htmlBody];
 
@@ -306,7 +306,7 @@
                         [Flurry logEvent:@"Invite_User-Invites_Sent" withParameters:
                          @{ @"userID":[FirebaseHelper sharedHelper].uid,
                             @"teamID":[FirebaseHelper sharedHelper].teamID,
-                            @"invites":@(self.inviteEmails.count),
+                            @"invites":@(inviteCount),
                             @"source": @"addUser"
                             }];
                         

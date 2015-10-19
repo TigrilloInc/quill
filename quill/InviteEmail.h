@@ -10,7 +10,7 @@
 
 @interface InviteEmail : NSObject
 
-@property (nonatomic, strong) NSString *inviteURL;
+@property (nonatomic, strong) NSString *inviteToken;
 @property (nonatomic, strong) NSString *htmlBody;
 
 -(void) updateHTML;

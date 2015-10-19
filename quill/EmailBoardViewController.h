@@ -12,6 +12,8 @@
 
 @interface EmailBoardViewController : UIViewController <UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource> {
     
+    NSInteger inviteCount;
+    
     ProjectDetailViewController *projectVC;
     NSMutableArray *teamEmails;
     NSMutableArray *editedText;

@@ -198,7 +198,7 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void) createUser {
     
-    if (self.projectVC.presentedViewController) [self.projectVC dismissViewControllerAnimated:YES completion:nil];
+    if (self.projectVC.presentedViewController) [self.projectVC dismissViewControllerAnimated:NO completion:nil];
     
     BOOL isDev;
     
@@ -220,13 +220,13 @@ static FirebaseHelper *sharedHelper = nil;
     NSString *tokenString = [NSString stringWithFormat:@"https://%@.firebaseio.com/tokens/%@", self.db, token];
     Firebase *tokenRef = [[Firebase alloc] initWithUrl:tokenString];
     FirebaseSimpleLogin *authClient = [[FirebaseSimpleLogin alloc] initWithRef:tokenRef];
-    
+
     [authClient logout];
-    
+
     [tokenRef observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         
         self.inviteURL = nil;
-
+        
         if ([[snapshot.value allKeys] containsObject:@"newOwner"]) {
             
             self.email = [snapshot.value objectForKey:@"newOwner"];
@@ -269,7 +269,7 @@ static FirebaseHelper *sharedHelper = nil;
             
             SignUpFromInviteViewController *vc = [self.projectVC.storyboard instantiateViewControllerWithIdentifier:@"SignUpFromInvite"];
             vc.invitedBy = [snapshot.value objectForKey:@"invitedBy"];
-            
+
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
             nav.modalPresentationStyle = UIModalPresentationFormSheet;
             nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
@@ -1291,23 +1291,28 @@ static FirebaseHelper *sharedHelper = nil;
         [chatDict setObject:snapshot.value forKey:snapshot.key];
     
         [self.chats setObject:chatDict forKey:chatID];
-
-        if (!self.projectVC.activeBoardID) {
-            
-            NSString *projectID;
-            for (NSString *pid in self.projects.allKeys) {
-                if ([[[self.projects objectForKey:pid] objectForKey:@"chatID"] isEqualToString:chatID]) {
-                    projectID = pid;
-                    break;
-                }
-            }
-            
-            if ([projectID isEqualToString:self.currentProjectID]) {
-                [self.projectVC updateMessages];
-                [self.projectVC.chatTable reloadData];
-                if (self.projectVC.chatOpen) [self.projectVC updateChatHeight];
+        
+        NSString *projectID;
+        
+        for (NSString *pid in self.projects.allKeys) {
+            if ([[[self.projects objectForKey:pid] objectForKey:@"chatID"] isEqualToString:chatID]) {
+                projectID = pid;
+                break;
             }
         }
+        
+        if ([projectID isEqualToString:self.currentProjectID] && !self.projectVC.activeBoardID) {
+            [self.projectVC updateMessages];
+            [self.projectVC.chatTable reloadData];
+            if (self.projectVC.chatOpen) [self.projectVC updateChatHeight];
+        }
+        
+//        UILocalNotification *notification = [[UILocalNotification alloc] init];
+//        NSString *projectName = [[self.projects objectForKey:projectID] objectForKey:@"name"];
+//        NSString *userName = [[[self.team objectForKey:@"users"] objectForKey:[snapshot.value objectForKey:@"user"]] objectForKey:@"name"];
+//        notification.alertBody = [NSString stringWithFormat:@"%@ sent a message in %@: %@", userName, projectName, [snapshot.value objectForKey:@"message"]];
+//        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        
     }];
 }
 
@@ -1476,6 +1481,12 @@ static FirebaseHelper *sharedHelper = nil;
         if(![threadDict objectForKey:@"messages"]) [threadDict setObject:[NSMutableDictionary dictionary] forKey:@"messages"];
         
         [[threadDict objectForKey:@"messages"] setObject:snapshot.value forKey:snapshot.key];
+        
+//        UILocalNotification *notification = [[UILocalNotification alloc] init];
+//        NSString *boardName = [[self.boards objectForKey:boardID] objectForKey:@"name"];
+//        NSString *userName = [[[self.team objectForKey:@"users"] objectForKey:[snapshot.value objectForKey:@"user"]] objectForKey:@"name"];
+//        notification.alertBody = [NSString stringWithFormat:@"%@ left a comment in %@: %@", userName, boardName, [snapshot.value objectForKey:@"message"]];
+//        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
         
         if ([self.projectVC.activeCommentThreadID isEqualToString:commentThreadID]) {
             [self.projectVC updateMessages];
