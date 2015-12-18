@@ -14,6 +14,7 @@
 #import "ChangePasswordViewController.h"
 #import "SignInViewController.h"
 #import "PhotosCollectionViewController.h"
+#import "NSString+MD5.h"
 
 @implementation PersonalSettingsViewController
 
@@ -256,6 +257,7 @@
     if (![self.emailTextField.text isEqualToString:[FirebaseHelper sharedHelper].email] && self.passwordTextField.text.length > 0) emailChanged = true;
     if (![self.nameTextField.text isEqualToString:[FirebaseHelper sharedHelper].userName]) nameChanged = true;
     
+    
     if (!nameChanged && !emailChanged) [self dismissViewControllerAnimated:YES completion:nil];
     else if (emailChanged && nameChanged) {
         
@@ -300,6 +302,8 @@
                 }
             }
         }];
+        
+        [self updateMailchimp:[FirebaseHelper sharedHelper].email email:self.emailTextField.text name:self.nameTextField.text];
     }
     else if (emailChanged) {
         
@@ -321,11 +325,14 @@
                 }];
             }
         }];
+        
+        [self updateMailchimp:[FirebaseHelper sharedHelper].email email:self.emailTextField.text name:nil];
     }
     else if (nameChanged) {
         
         NSString *nameString = [NSString stringWithFormat:@"https://%@.firebaseio.com/users/%@/info/name", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].uid];
         Firebase *ref = [[Firebase alloc] initWithUrl:nameString];
+        
         [ref setValue:self.nameTextField.text withCompletionBlock:^(NSError *error, Firebase *ref) {
             
             if (error) self.settingsLabel.text = @"Something went wrong - try again.";
@@ -337,6 +344,8 @@
                 [self performSelector:@selector(infoUpdated) withObject:nil afterDelay:.5];
             }
         }];
+        
+        [self updateMailchimp:[FirebaseHelper sharedHelper].email email:nil name:self.nameTextField.text];
     }
     
 
@@ -390,6 +399,65 @@
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)updateMailchimp:(NSString *)oldEmail email:(NSString * _Nullable)newEmail name:(NSString * _Nullable)newName {
+    
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [[@"user:114d991ae058bf09173cf01d74fa4b80-us9" dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0]];
+
+    NSString *oldURLString = [NSString stringWithFormat:@"https://us9.api.mailchimp.com/3.0/lists/6c83cbdb47/members/%@", [oldEmail MD5]];
+    NSMutableURLRequest *oldRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:oldURLString]];
+    [oldRequest setValue:authValue forHTTPHeaderField:@"Authorization"];
+    [oldRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    
+    NSNumber *isAdmin = [FirebaseHelper sharedHelper].isAdmin ? @1 : @0;
+    
+    if (newEmail != nil) {
+        
+        [oldRequest setHTTPMethod:@"DELETE"];
+        
+        NSMutableURLRequest *newRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://us9.api.mailchimp.com/3.0/lists/6c83cbdb47/members"]];
+        [newRequest setHTTPMethod:@"POST"];
+        [newRequest setValue:authValue forHTTPHeaderField:@"Authorization"];
+        [newRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        
+        NSString *name = newName != nil ? newName : [FirebaseHelper sharedHelper].userName;
+        
+        NSDictionary *dataDict = @{ @"email_address" : newEmail,
+                                    @"status"        : @"subscribed",
+                                    @"merge_fields"  : @{ @"ISADMIN"        : isAdmin,
+                                                          @"USERNAME"       : name,
+                                                          @"TEAMNAME"       : [FirebaseHelper sharedHelper].teamName
+                                                          }
+                                    };
+        NSData *data = [NSJSONSerialization dataWithJSONObject:dataDict  options:0 error:nil];
+        [newRequest setHTTPBody:data];
+        
+        NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+        NSURLSessionDataTask *newTask = [session dataTaskWithRequest:newRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            
+        }];
+        [newTask resume];
+    }
+    else if (newName != nil) {
+        
+        [oldRequest setHTTPMethod:@"PATCH"];
+        
+        NSDictionary *dataDict = @{ @"merge_fields"  : @{ @"ISADMIN"        : isAdmin,
+                                                          @"USERNAME"       : newName,
+                                                          @"TEAMNAME"       : [FirebaseHelper sharedHelper].teamName
+                                                        }
+                                              };
+        
+        NSData *data = [NSJSONSerialization dataWithJSONObject:dataDict  options:0 error:nil];
+        [oldRequest setHTTPBody:data];
+    }
+    
+    NSURLSession *oldSession = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    NSURLSessionDataTask *oldTask = [oldSession dataTaskWithRequest:oldRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+    }];
+    [oldTask resume];
 }
 
 -(void)showLogo {

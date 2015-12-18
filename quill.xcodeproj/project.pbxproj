@@ -212,6 +212,7 @@
 		F37687E91AF2D2A3005ECE60 /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = F37687E81AF2D2A3005ECE60 /* share.png */; };
 		F3782A1A1B8BC246008CC9A6 /* termschecked.png in Resources */ = {isa = PBXBuildFile; fileRef = F3782A181B8BC246008CC9A6 /* termschecked.png */; };
 		F3782A1B1B8BC246008CC9A6 /* termsunchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = F3782A191B8BC246008CC9A6 /* termsunchecked.png */; };
+		F3A7E5F41C05952E0028879C /* emptytutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = F3A7E5F31C05952E0028879C /* emptytutorial.png */; };
 		F3ABF3721B0F0C8F00BA4C28 /* board-versions1.png in Resources */ = {isa = PBXBuildFile; fileRef = F3ABF3711B0F0C8E00BA4C28 /* board-versions1.png */; };
 		F3B646E21B39198000722058 /* libGTLTouchStaticLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F3B646E11B39198000722058 /* libGTLTouchStaticLib.a */; };
 		F3B646EA1B39198700722058 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3B646E91B39198700722058 /* MobileCoreServices.framework */; };
@@ -629,6 +630,7 @@
 		F37687E81AF2D2A3005ECE60 /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = share.png; path = Resources/share.png; sourceTree = "<group>"; };
 		F3782A181B8BC246008CC9A6 /* termschecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = termschecked.png; path = Resources/termschecked.png; sourceTree = "<group>"; };
 		F3782A191B8BC246008CC9A6 /* termsunchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = termsunchecked.png; path = Resources/termsunchecked.png; sourceTree = "<group>"; };
+		F3A7E5F31C05952E0028879C /* emptytutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = emptytutorial.png; path = Resources/emptytutorial.png; sourceTree = "<group>"; };
 		F3ABF3711B0F0C8E00BA4C28 /* board-versions1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions1.png"; path = "Resources/iCarousel/board-versions1.png"; sourceTree = "<group>"; };
 		F3B646E11B39198000722058 /* libGTLTouchStaticLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGTLTouchStaticLib.a; path = "quill/Resources/Google/Source/build/Debug-iphoneos/libGTLTouchStaticLib.a"; sourceTree = "<group>"; };
 		F3B646E91B39198700722058 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
@@ -1110,6 +1112,7 @@
 				12C4E4C61A3B5B3100DB0E23 /* background.png */,
 				12860F921A3E29410074B452 /* background5.png */,
 				F34EDFF21B27832A00641E7C /* projecttutorial.png */,
+				F3A7E5F31C05952E0028879C /* emptytutorial.png */,
 				F34259301B279085000ABCB3 /* edittutorial.png */,
 				F34259381B2793BC000ABCB3 /* versionstutorial.png */,
 				F342593A1B279D0B000ABCB3 /* boardtutorial.png */,
@@ -1464,6 +1467,7 @@
 				F3F66FAA1B09458700B6D184 /* plus5.png in Resources */,
 				F3BA3A561B1CFF1C0051AA7A /* email.png in Resources */,
 				F333A1691B365042009D00BF /* dropbox-highlighted.png in Resources */,
+				F3A7E5F41C05952E0028879C /* emptytutorial.png in Resources */,
 				1243AFB319FF0A900029B976 /* userhighlight.png in Resources */,
 				12726C221A898F8F001F0346 /* arrow2.png in Resources */,
 				1201F4981A4ABFAD00186C13 /* up.png in Resources */,

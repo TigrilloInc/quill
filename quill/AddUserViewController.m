@@ -315,6 +315,33 @@
                         [self performSelector:@selector(invitesSent) withObject:nil afterDelay:0.5];
                     }
                 }];
+                
+                NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://us9.api.mailchimp.com/3.0/lists/9b9f0bf220/members"]];
+                [request setHTTPMethod:@"POST"];
+                NSString *authValue = [NSString stringWithFormat:@"Basic %@", [[@"user:114d991ae058bf09173cf01d74fa4b80-us9" dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0]];
+                [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+                [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+                
+                NSString *projectName = [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"name"];
+                
+                NSDictionary *dataDict = @{ @"email_address" : userEmail,
+                                            @"status"        : @"subscribed",
+                                            @"merge_fields"  : @{ @"INVITEDBY"  : [FirebaseHelper sharedHelper].userName,
+                                                                  @"TOKEN"      : token,
+                                                                  @"IEMAIL"     : [FirebaseHelper sharedHelper].email,
+                                                                  @"PROJECT"    : projectName,
+                                                                  @"TEAM"       : [FirebaseHelper sharedHelper].teamName
+                                                                  }
+                                            };
+                NSData *data = [NSJSONSerialization dataWithJSONObject:dataDict  options:0 error:nil];
+                [request setHTTPBody:data];
+                
+                NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+                NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                    
+                }];
+                [task resume];
+                
             }
         }
         else {

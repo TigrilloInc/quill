@@ -14,6 +14,7 @@
 #import "ProjectDetailViewController.h"
 #import "SignInViewController.h"
 #import "NSDate+ServerDate.h"
+#import "NSString+MD5.h"
 #import "Flurry.h"
 
 @implementation SignUpFromInviteViewController
@@ -125,13 +126,28 @@
         }
         else {
         
+            NSString *authValue = [NSString stringWithFormat:@"Basic %@", [[@"user:114d991ae058bf09173cf01d74fa4b80-us9" dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0]];
+            NSString *urlString = [NSString stringWithFormat:@"https://us9.api.mailchimp.com/3.0/lists/9b9f0bf220/members/%@", [[FirebaseHelper sharedHelper].email MD5]];
+            
+            NSMutableURLRequest *removeRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
+            [removeRequest setHTTPMethod:@"DELETE"];
+            [removeRequest setValue:authValue forHTTPHeaderField:@"Authorization"];
+            [removeRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+            
+            NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+            NSURLSessionDataTask *removeTask = [session dataTaskWithRequest:removeRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                
+            }];
+            [removeTask resume];
+            
+            
             [FirebaseHelper sharedHelper].uid = user.uid;
             [FirebaseHelper sharedHelper].email = user.email;
             
             NSString *userString = [NSString stringWithFormat:@"users/%@/info", user.uid];
             
-            [[ref childByAppendingPath:userString] updateChildValues: @{@"team":[FirebaseHelper sharedHelper].teamID,
-                                                                        @"email" : [FirebaseHelper sharedHelper].email
+            [[ref childByAppendingPath:userString] updateChildValues: @{ @"team"    : [FirebaseHelper sharedHelper].teamID,
+                                                                         @"email"   : [FirebaseHelper sharedHelper].email
                                                                         }];
             
             if ([FirebaseHelper sharedHelper].invitedProject != nil) {
@@ -148,9 +164,9 @@
                 if (roleNum.integerValue == 0) roleString = @"viewer";
                 else roleString = @"collaborator";
 
-                NSDictionary *flurryDict = @{ @"role" : roleString,
-                                              @"projectID" : projectID,
-                                              @"teamID" : [FirebaseHelper sharedHelper].teamID
+                NSDictionary *flurryDict = @{ @"role"       : roleString,
+                                              @"projectID"  : projectID,
+                                              @"teamID"     : [FirebaseHelper sharedHelper].teamID
                                               };
 
                 [Flurry logEvent:@"User_Added" withParameters:flurryDict];
@@ -206,6 +222,29 @@
                        [self performSelector:@selector(showLogo) withObject:nil afterDelay:.3];
                    }
             }];
+            
+            
+            NSMutableURLRequest *newsletterRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://us9.api.mailchimp.com/3.0/lists/6c83cbdb47/members"]];
+            [newsletterRequest setHTTPMethod:@"POST"];
+            [newsletterRequest setValue:authValue forHTTPHeaderField:@"Authorization"];
+            [newsletterRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+            
+            NSDictionary *newsletterDataDict = @{ @"email_address" : user.email,
+                                                  @"status"        : @"subscribed",
+                                                  @"merge_fields"  : @{ @"ISADMIN"        : @0,
+                                                                        @"USERNAME"       : [FirebaseHelper sharedHelper].userName,
+                                                                        @"TEAMNAME"       : [FirebaseHelper sharedHelper].teamName
+                                                                        }
+                                                  };
+            
+            NSData *newsletterData = [NSJSONSerialization dataWithJSONObject:newsletterDataDict  options:0 error:nil];
+            [newsletterRequest setHTTPBody:newsletterData];
+            
+            NSURLSession *newsletterSession = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+            NSURLSessionDataTask *newsletterTask = [newsletterSession dataTaskWithRequest:newsletterRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                
+            }];
+            [newsletterTask resume];
         }
     }];
 }

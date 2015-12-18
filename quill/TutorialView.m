@@ -58,6 +58,10 @@
         imageString = @"commenttutorial.png";
         self.gotItButton.center = CGPointMake(self.center.x, 540);
     }
+    else if (self.type == 6) {
+        imageString = @"emptytutorial.png";
+        self.gotItButton.center = self.center;
+    }
     
     [self setImage:[UIImage imageNamed:imageString]];
     
@@ -73,6 +77,7 @@
     else if (self.type == 3) tutorialString = @"versionsTutorial";
     else if (self.type == 4) tutorialString = @"boardTutorial";
     else if (self.type == 5) tutorialString = @"commentTutorial";
+    else if (self.type == 6) tutorialString = @"emptyTutorial";
     
     [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:tutorialString];
     

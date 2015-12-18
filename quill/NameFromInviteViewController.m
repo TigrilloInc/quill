@@ -66,6 +66,8 @@
         return;
     }
     
+    NSLog(@"teamID is %@", [FirebaseHelper sharedHelper].teamID);
+    
     [Flurry logEvent:@"New_User-Sign_up-Step_1-Username_Complete" withParameters:@{@"teamID":[FirebaseHelper sharedHelper].teamID}];
     
     NSString *nameString = [NSString stringWithFormat:@"https://%@.firebaseio.com/users/%@/info/name", [FirebaseHelper sharedHelper].db, [FirebaseHelper sharedHelper].uid];

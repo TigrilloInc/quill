@@ -200,6 +200,8 @@ static FirebaseHelper *sharedHelper = nil;
     
     if (self.projectVC.presentedViewController) [self.projectVC dismissViewControllerAnimated:NO completion:nil];
     
+    self.projectVC.connectingLabel.hidden = true;
+    
     BOOL isDev;
     
     NSString *token = [self.inviteURL.host stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -361,7 +363,7 @@ static FirebaseHelper *sharedHelper = nil;
                 
                 [self.projectVC presentViewController:nav animated:YES completion:nil];
             }
-            
+
             [signInVC accountCreated];
         }
         else if (!self.userName) {
@@ -811,10 +813,17 @@ static FirebaseHelper *sharedHelper = nil;
     self.projectVC.feedbackButton.hidden = false;
     
     [self.projectVC.masterView.projectsTable reloadData];
-    [self.projectVC.masterView.projectsTable selectRowAtIndexPath:self.projectVC.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
     
-    if (self.projectVC.masterView.defaultRow.row != [FirebaseHelper sharedHelper].visibleProjectIDs.count)
+    if (self.visibleProjectIDs.count > 0 && self.projectVC.masterView.defaultRow.row != self.visibleProjectIDs.count) {
+        [self.projectVC.masterView.projectsTable selectRowAtIndexPath:self.projectVC.masterView.defaultRow animated:NO scrollPosition:UITableViewScrollPositionNone];
         [self.projectVC.masterView tableView:self.projectVC.masterView.projectsTable didSelectRowAtIndexPath:self.projectVC.masterView.defaultRow];
+    }
+    else if (![[NSUserDefaults standardUserDefaults] objectForKey:@"emptyTutorial"]) {
+            
+        self.projectVC.tutorialView.type = 6;
+        [self.projectVC.view bringSubviewToFront:self.projectVC.tutorialView];
+        [self.projectVC.tutorialView updateTutorial];
+    }
 }
 
 -(void) observeTeam {
