@@ -101,7 +101,7 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     
-    if(range.length + range.location > textField.text.length) return NO;
+    if(range.length + range.location > textField.text.length || [string isEqualToString:@" "]) return NO;
     
     NSUInteger newLength = [textField.text length] + [string length] - range.length;
     

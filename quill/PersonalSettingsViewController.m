@@ -427,7 +427,8 @@
                                     @"status"        : @"subscribed",
                                     @"merge_fields"  : @{ @"ISADMIN"        : isAdmin,
                                                           @"USERNAME"       : name,
-                                                          @"TEAMNAME"       : [FirebaseHelper sharedHelper].teamName
+                                                          @"TEAMNAME"       : [FirebaseHelper sharedHelper].teamName,
+                                                          @"TEAMID"         : [FirebaseHelper sharedHelper].teamID
                                                           }
                                     };
         NSData *data = [NSJSONSerialization dataWithJSONObject:dataDict  options:0 error:nil];

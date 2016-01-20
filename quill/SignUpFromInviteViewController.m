@@ -223,28 +223,7 @@
                    }
             }];
             
-            
-            NSMutableURLRequest *newsletterRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://us9.api.mailchimp.com/3.0/lists/6c83cbdb47/members"]];
-            [newsletterRequest setHTTPMethod:@"POST"];
-            [newsletterRequest setValue:authValue forHTTPHeaderField:@"Authorization"];
-            [newsletterRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-            
-            NSDictionary *newsletterDataDict = @{ @"email_address" : user.email,
-                                                  @"status"        : @"subscribed",
-                                                  @"merge_fields"  : @{ @"ISADMIN"        : @0,
-                                                                        @"USERNAME"       : [FirebaseHelper sharedHelper].userName,
-                                                                        @"TEAMNAME"       : [FirebaseHelper sharedHelper].teamName
-                                                                        }
-                                                  };
-            
-            NSData *newsletterData = [NSJSONSerialization dataWithJSONObject:newsletterDataDict  options:0 error:nil];
-            [newsletterRequest setHTTPBody:newsletterData];
-            
-            NSURLSession *newsletterSession = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-            NSURLSessionDataTask *newsletterTask = [newsletterSession dataTaskWithRequest:newsletterRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-                
-            }];
-            [newsletterTask resume];
+
         }
     }];
 }
