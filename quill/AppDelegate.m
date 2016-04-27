@@ -14,6 +14,7 @@
 #import "Flurry.h"
 #import <DropboxSDK/DropboxSDK.h>
 #import "GeneralAlertViewController.h"
+#import "OneSignalHelper.h"
 
 @implementation AppDelegate
 
@@ -37,6 +38,22 @@
     DBSession *dbSession = [[DBSession alloc] initWithAppKey:@"a3njr70wv18ygn5" appSecret:@"38pnslf7rwxioz6" root:kDBRootDropbox];
     [DBSession setSharedSession:dbSession];
     
+    [OneSignalHelper sharedHelper].oneSignal = [[OneSignal alloc] initWithLaunchOptions:launchOptions appId:@"4cf29860-40b3-43fc-9a48-2a7c55a6dd3b" handleNotification:^(NSString* message, NSDictionary* additionalData, BOOL isActive) {
+        
+        NSString *projectID = additionalData[@"projectID"];
+        
+        if (projectID && [FirebaseHelper sharedHelper].projects[projectID]) {
+            
+            NSString *projectName = [FirebaseHelper sharedHelper].projects[projectID][@"name"];
+            NSInteger index = [[FirebaseHelper sharedHelper].projectVC.masterView.orderedProjectNames indexOfObject:projectName];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+            
+            [[FirebaseHelper sharedHelper].projectVC.masterView.projectsTable selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+            [[FirebaseHelper sharedHelper].projectVC.masterView tableView:[FirebaseHelper sharedHelper].projectVC.masterView.projectsTable didSelectRowAtIndexPath:indexPath];
+        }
+        
+    } autoRegister:NO];
+    
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     signal(SIGABRT, signalHandler);
     signal(SIGILL, signalHandler);
@@ -50,14 +67,6 @@
     
     return YES;
 }
-
-//-(void) application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-//    
-//    if (application.applicationState == UIApplicationStateInactive || application.applicationState == UIApplicationStateBackground) {
-//     
-//        [Flurry logEvent:@"Notification-Messaging-Notification_Opened"];
-//    }
-//}
 
 void uncaughtExceptionHandler(NSException *exception) {
     

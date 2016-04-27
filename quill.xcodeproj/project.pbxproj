@@ -237,6 +237,8 @@
 		F3E4E5CF1B04647F00301E3D /* board-versions2.png in Resources */ = {isa = PBXBuildFile; fileRef = F3E4E5CC1B04647F00301E3D /* board-versions2.png */; };
 		F3E4E5D01B04647F00301E3D /* board-versions3.png in Resources */ = {isa = PBXBuildFile; fileRef = F3E4E5CD1B04647F00301E3D /* board-versions3.png */; };
 		F3E4E5D11B04647F00301E3D /* board-versions4.png in Resources */ = {isa = PBXBuildFile; fileRef = F3E4E5CE1B04647F00301E3D /* board-versions4.png */; };
+		F3E8B3BB1C8634E1004D210E /* OneSignal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3E8B3BA1C8634E1004D210E /* OneSignal.framework */; };
+		F3E8B3BE1C86355F004D210E /* OneSignalHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F3E8B3BD1C86355F004D210E /* OneSignalHelper.m */; };
 		F3F66F8C1B0515E700B6D184 /* board-versions5.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F8B1B0515E700B6D184 /* board-versions5.png */; };
 		F3F66F8E1B05175B00B6D184 /* board-versions6.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F8D1B05175B00B6D184 /* board-versions6.png */; };
 		F3F66F901B0521B000B6D184 /* board-versions7.png in Resources */ = {isa = PBXBuildFile; fileRef = F3F66F8F1B0521B000B6D184 /* board-versions7.png */; };
@@ -657,6 +659,9 @@
 		F3E4E5CC1B04647F00301E3D /* board-versions2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions2.png"; path = "Resources/iCarousel/board-versions2.png"; sourceTree = "<group>"; };
 		F3E4E5CD1B04647F00301E3D /* board-versions3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions3.png"; path = "Resources/iCarousel/board-versions3.png"; sourceTree = "<group>"; };
 		F3E4E5CE1B04647F00301E3D /* board-versions4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions4.png"; path = "Resources/iCarousel/board-versions4.png"; sourceTree = "<group>"; };
+		F3E8B3BA1C8634E1004D210E /* OneSignal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OneSignal.framework; path = quill/Resources/OneSignal/OneSignal.framework; sourceTree = "<group>"; };
+		F3E8B3BC1C86355F004D210E /* OneSignalHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OneSignalHelper.h; sourceTree = "<group>"; };
+		F3E8B3BD1C86355F004D210E /* OneSignalHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OneSignalHelper.m; sourceTree = "<group>"; };
 		F3F66F8B1B0515E700B6D184 /* board-versions5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions5.png"; path = "Resources/iCarousel/board-versions5.png"; sourceTree = "<group>"; };
 		F3F66F8D1B05175B00B6D184 /* board-versions6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions6.png"; path = "Resources/iCarousel/board-versions6.png"; sourceTree = "<group>"; };
 		F3F66F8F1B0521B000B6D184 /* board-versions7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-versions7.png"; path = "Resources/iCarousel/board-versions7.png"; sourceTree = "<group>"; };
@@ -686,6 +691,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3B646EA1B39198700722058 /* MobileCoreServices.framework in Frameworks */,
+				F3E8B3BB1C8634E1004D210E /* OneSignal.framework in Frameworks */,
 				F3B646E21B39198000722058 /* libGTLTouchStaticLib.a in Frameworks */,
 				12F4F9CC1AA7ED6300C8FC31 /* MessageUI.framework in Frameworks */,
 				129E127219648A2C00ED9D42 /* Foundation.framework in Frameworks */,
@@ -782,6 +788,7 @@
 		129E127019648A2C00ED9D42 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F3E8B3BA1C8634E1004D210E /* OneSignal.framework */,
 				F3B646E91B39198700722058 /* MobileCoreServices.framework */,
 				F3B646E11B39198000722058 /* libGTLTouchStaticLib.a */,
 				F333A15E1B364220009D00BF /* DropboxSDK.framework */,
@@ -904,6 +911,8 @@
 				129E128719648A2C00ED9D42 /* AppDelegate.m */,
 				1230ABC519709E7B00EB2389 /* FirebaseHelper.h */,
 				1230ABC619709E7B00EB2389 /* FirebaseHelper.m */,
+				F3E8B3BC1C86355F004D210E /* OneSignalHelper.h */,
+				F3E8B3BD1C86355F004D210E /* OneSignalHelper.m */,
 				12A3FA0E1979861800E03E9E /* ProjectDetailViewController.h */,
 				12A3FA0F1979861800E03E9E /* ProjectDetailViewController.m */,
 				12899BAE1A168CA100AF95BD /* MasterView.h */,
@@ -1304,6 +1313,14 @@
 				TargetAttributes = {
 					129E126D19648A2C00ED9D42 = {
 						DevelopmentTeam = 6PY9NZMQYQ;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					129E129919648A2C00ED9D42 = {
 						TestTargetID = 129E126D19648A2C00ED9D42;
@@ -1610,6 +1627,7 @@
 				12DC979B1A80073100CC4616 /* InviteToTeamViewController.m in Sources */,
 				12B17DAA1AD31DDD003C9E9D /* ResetPasswordViewController.m in Sources */,
 				12BDC6A21A95AF28001160AF /* LeaveProjectAlertViewController.m in Sources */,
+				F3E8B3BE1C86355F004D210E /* OneSignalHelper.m in Sources */,
 				12BDC6A81A95B12B001160AF /* DeleteProjectAlertViewController.m in Sources */,
 				12A310E4197DC65B00E03E9E /* SignUpFromInviteViewController.m in Sources */,
 				12860FD01A423F000074B452 /* ColorPopoverViewController.m in Sources */,
@@ -1808,6 +1826,7 @@
 					"$(PROJECT_DIR)/quill/Resources/Instabug",
 					"$(PROJECT_DIR)/quill/Resources/Dropbox",
 					"$(PROJECT_DIR)/quill/Resources/Firebase",
+					"$(PROJECT_DIR)/quill/Resources/OneSignal",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "quill/quill-Prefix.pch";
@@ -1858,6 +1877,7 @@
 					"$(PROJECT_DIR)/quill/Resources/Instabug",
 					"$(PROJECT_DIR)/quill/Resources/Dropbox",
 					"$(PROJECT_DIR)/quill/Resources/Firebase",
+					"$(PROJECT_DIR)/quill/Resources/OneSignal",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "quill/quill-Prefix.pch";

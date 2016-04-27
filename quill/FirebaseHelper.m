@@ -23,6 +23,7 @@
 #import "OfflineAlertViewController.h"
 #import <Instabug/Instabug.h>
 #import "Flurry.h"
+#import "OneSignalHelper.h"
 
 @implementation FirebaseHelper
 
@@ -288,6 +289,8 @@ static FirebaseHelper *sharedHelper = nil;
 
 -(void) observeLocalUser {
     
+    [[OneSignalHelper sharedHelper].oneSignal registerForPushNotifications];
+    
     NSString *uidString = [NSString stringWithFormat:@"https://%@.firebaseio.com/users/%@", self.db, self.uid];
     Firebase *userRef = [[Firebase alloc] initWithUrl:uidString];
     
@@ -449,6 +452,8 @@ static FirebaseHelper *sharedHelper = nil;
 
     [[ref childByAppendingPath:@"status"] observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
 
+        if (snapshot.value == [NSNull null]) return;
+        
         NSDictionary *oldUserDict = [[[self.team objectForKey:@"users"] objectForKey:userID] copy];
         NSMutableDictionary *newUserDict = snapshot.value;
 
@@ -617,6 +622,12 @@ static FirebaseHelper *sharedHelper = nil;
 }
 
 -(void) observeProjectWithID:(NSString *)projectID {
+    
+    [[OneSignalHelper sharedHelper].oneSignal sendTag:projectID value:@"projectID" onSuccess:^(NSDictionary *result) {
+        
+    } onFailure:^(NSError *error) {
+        
+    }];
     
     NSString *projectString = [NSString stringWithFormat:@"https://%@.firebaseio.com/projects/%@", self.db, projectID];
     Firebase *ref = [[Firebase alloc] initWithUrl:projectString];

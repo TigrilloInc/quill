@@ -29,6 +29,7 @@
 #import "SignedOutAlertViewController.h"
 #import "OfflineAlertViewController.h"
 #import "Flurry.h"
+#import "OneSignalHelper.h"
 
 @implementation ProjectDetailViewController
 
@@ -101,7 +102,7 @@
     [chatTapRecognizer setDelegate:self];
     [chatTapRecognizer setNumberOfTapsRequired:1];
     chatTapRecognizer.cancelsTouchesInView = NO;
-    [self.view.window addGestureRecognizer:chatTapRecognizer];
+    [self.view addGestureRecognizer:chatTapRecognizer];
     
     outsideTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedOutside)];
     [outsideTapRecognizer setDelegate:self];
@@ -118,7 +119,7 @@
     [super viewWillDisappear:animated];
 
     [chatTapRecognizer setDelegate:nil];
-    [self.view.window removeGestureRecognizer:chatTapRecognizer];
+    [self.view removeGestureRecognizer:chatTapRecognizer];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
@@ -2118,10 +2119,10 @@
  
     if (self.presentedViewController == nil && !self.activeBoardID && !self.editing) {
         
-        CGPoint location = [chatTapRecognizer locationInView:nil];
-        CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view.window];
+        CGPoint location = [chatTapRecognizer locationInView:self.view];
+        CGPoint converted = [self.view convertPoint:CGPointMake(1024-location.y,location.x) fromView:self.view];
         
-        if (CGRectContainsPoint(self.chatTable.frame, converted) && self.tutorialView.hidden) {
+        if (CGRectContainsPoint(self.chatTable.frame, location) && self.tutorialView.hidden) {
             
             if (![self.chatTextField isFirstResponder] && self.userRole > 0) [self.chatTextField becomeFirstResponder];
             else if (!self.chatOpen && self.userRole == 0) [self openChat];
@@ -2892,6 +2893,17 @@
         
         if (self.activeCommentThreadID != nil) {
             
+            NSString *boardName = [[[FirebaseHelper sharedHelper].boards objectForKey:self.currentBoardView.boardID] objectForKey:@"name"];
+            NSString *pushText = [NSString stringWithFormat:@"%@ left a comment in %@: %@", [FirebaseHelper sharedHelper].userName, boardName, textField.text];
+            NSMutableDictionary *pushDict = [@{ @"contents" : @{@"en" : pushText},
+                                                @"tags"     : @[@{@"key"      : [FirebaseHelper sharedHelper].currentProjectID,
+                                                                  @"relation" : @"=",
+                                                                  @"value"    : @"projectID"
+                                                                  }],
+                                                @"data"     : @{@"projectID":[FirebaseHelper sharedHelper].currentProjectID}
+                                                } mutableCopy];
+            [OneSignalHelper sendPush:pushDict];
+            
             [Flurry logEvent:@"Comment_Thread-Comment_Left" withParameters:
                                                             @{ @"userID":[FirebaseHelper sharedHelper].uid,
                                                                @"boardID":self.currentBoardView.boardID,
@@ -2906,6 +2918,17 @@
             [[FirebaseHelper sharedHelper] setCommentThread:self.activeCommentThreadID updatedAt:dateString];
         }
         else {
+            
+            NSString *projectName = [[[FirebaseHelper sharedHelper].projects objectForKey:[FirebaseHelper sharedHelper].currentProjectID] objectForKey:@"name"];
+            NSString *pushText = [NSString stringWithFormat:@"%@ sent a message in %@: %@", [FirebaseHelper sharedHelper].userName, projectName, textField.text];
+            NSMutableDictionary *pushDict = [@{ @"contents" : @{@"en" : pushText},
+                                                @"tags"     : @[@{@"key"      : [FirebaseHelper sharedHelper].currentProjectID,
+                                                                  @"relation" : @"=",
+                                                                  @"value"    : @"projectID"
+                                                                  }],
+                                                @"data"     : @{@"projectID":[FirebaseHelper sharedHelper].currentProjectID}
+                                                } mutableCopy];
+            [OneSignalHelper sendPush:pushDict];
             
             [Flurry logEvent:@"Chat_Message-Posted" withParameters:
                  @{ @"userID":[FirebaseHelper sharedHelper].uid,

@@ -102,7 +102,8 @@
     self.passwordField.alpha = .5;
     self.emailField.userInteractionEnabled = false;
     self.emailField.alpha = .5;
-    
+
+    NSString *oldEmail = [FirebaseHelper sharedHelper].email;
     [FirebaseHelper sharedHelper].email = self.emailField.text;
     [[FirebaseHelper sharedHelper] setRoles];
     
@@ -127,7 +128,7 @@
         else {
         
             NSString *authValue = [NSString stringWithFormat:@"Basic %@", [[@"user:114d991ae058bf09173cf01d74fa4b80-us9" dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:0]];
-            NSString *urlString = [NSString stringWithFormat:@"https://us9.api.mailchimp.com/3.0/lists/9b9f0bf220/members/%@", [[FirebaseHelper sharedHelper].email MD5]];
+            NSString *urlString = [NSString stringWithFormat:@"https://us9.api.mailchimp.com/3.0/lists/9b9f0bf220/members/%@", [[oldEmail lowercaseString] MD5]];
             
             NSMutableURLRequest *removeRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
             [removeRequest setHTTPMethod:@"DELETE"];
@@ -139,7 +140,6 @@
                 
             }];
             [removeTask resume];
-            
             
             [FirebaseHelper sharedHelper].uid = user.uid;
             [FirebaseHelper sharedHelper].email = user.email;
